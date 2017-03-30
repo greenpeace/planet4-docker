@@ -18,3 +18,10 @@ WORKDIR /var/www/html
 RUN git clone $PLANET4_BASE_URL /var/www/html && \
   cp wp-cli.yml.default wp-cli.yml && \
   composer install
+
+USER root
+COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY conf/nginx/site.conf /etc/nginx/conf.d/site.conf
+COPY bin/entrypoint.sh /entrypoint.sh
+
+CMD [ "/entrypoint.sh" ]
