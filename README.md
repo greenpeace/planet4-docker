@@ -1,6 +1,6 @@
 # Greenpeace Planet4 Dockerfile repository
 
-![Planet4](https://wiki.greenpeace.org/images/f/f8/P4-Banner-600px-Transparent.png)
+![Planet4](https://cdn-images-1.medium.com/letterbox/300/36/50/50/1*XcutrEHk0HYv-spjnOej2w.png?source=logoAvatar-ec5f4e3b2e43---fded7925f62)
 
 ## What is Planet4?
 
