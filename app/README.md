@@ -9,4 +9,5 @@ Dockerfiles and configuration files to build Planet4 wordpress based application
 To run this docker image it is mandatory to have a mysql instance working with
 a database created and a user with access rights.
 
-
+* docker >= 17.03.0-ce
+* mysql 5.7
