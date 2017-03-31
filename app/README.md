@@ -41,6 +41,8 @@ $ docker run -e MYSQL_ROOT_PASSWORD=test \
              mysql
 ```
 
+Once the mysql container is running we can proceed to launch the planet4 container
+
 ```bash
 $ docker run -e DBUSER=planet4 \
              -e DBPASS=test \
