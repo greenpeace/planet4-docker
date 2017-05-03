@@ -4,7 +4,7 @@
 
 ## What is Planet4?
 
-Planet4 is the NEW Greenpeace web platform
+Planet4 is the NEW Greenpeace web platform.
 
 ## What is this repository?
 
