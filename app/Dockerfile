@@ -7,7 +7,7 @@ ENV DBNAME planet4
 ENV DBHOST mysql
 
 RUN apk --update add \
-  git mysql-client rsync nginx svn && \
+  git mysql-client rsync nginx subversion && \
   docker-php-ext-install mysqli && \
   curl -sS https://getcomposer.org/installer | php && \
   mv composer.phar /usr/bin/composer && \
