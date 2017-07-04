@@ -23,5 +23,6 @@ USER root
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx/site.conf /etc/nginx/conf.d/site.conf
 COPY bin/entrypoint.sh /entrypoint.sh
+COPY conf/php/php.ini /usr/local/etc/php/
 
 CMD [ "/entrypoint.sh" ]
