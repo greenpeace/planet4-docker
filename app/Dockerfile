@@ -12,9 +12,8 @@ RUN apk --update add \
   curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/3.1.2.tar.gz &&\
   tar xfz /tmp/redis.tar.gz &&\
   rm -r /tmp/redis.tar.gz &&\
-  mv phpredis-3.1.2 /usr/src/php/ext/redis &&\
+  mv /tmp/phpredis-3.1.2 /usr/src/php/ext/redis &&\
   docker-php-ext-install redis &&\
-  rm /tmp/redis.tar.gz &&\
   curl -sS https://getcomposer.org/installer | php && \
   mv composer.phar /usr/bin/composer && \
   chown nginx:nginx /var/www/html
