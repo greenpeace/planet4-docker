@@ -1,0 +1,33 @@
+# In this directory, run the following command to build this builder.
+# $ gcloud container builds submit . --config=cloudbuild.yaml
+steps:
+
+- name: 'ubuntu'
+  id: 'configure-p4-gpi-app'
+  dir: './sites/${_GOOGLE_PROJECT_ID}/p4-gpi-app'
+  args:
+    - '/bin/sed'
+    - '-i'
+    - '-r'
+    - '-e'
+    - 's;FROM.*;FROM ${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_SOURCE_TAG};'
+    - 'Dockerfile'
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'p4-gpi-app'
+  args:
+    - 'build'
+    - '--build-arg'
+    - 'GIT_SOURCE=https://github.com/greenpeace/planet4-base'
+    - '--build-arg'
+    - 'GIT_REF=${_GIT_REF}'
+    - '--build-arg'
+    - 'COMPOSER=${_COMPOSER}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-gpi-app:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-gpi-app:${_REVISION_TAG}'
+    - './sites/${_GOOGLE_PROJECT_ID}/p4-gpi-app'
+  waitFor: ['configure-p4-gpi-app']
+
+images:
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-gpi-app:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-gpi-app:${_REVISION_TAG}'

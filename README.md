@@ -1,19 +1,34 @@
-# Greenpeace Planet4 Dockerfile repository
+# Docker builds for Planet4 on Google Container Registry
 
-![Planet4](https://cdn-images-1.medium.com/letterbox/300/36/50/50/1*XcutrEHk0HYv-spjnOej2w.png?source=logoAvatar-ec5f4e3b2e43---fded7925f62)
+## Description
 
-## What is Planet4?
+This is a work in progress at creating a modular, re-usable Docker application architecture for the Greenpeace Planet 4 Wordpress application project.
 
-Planet4 is the NEW Greenpeace web platform.
+## Customising the container build
 
-## What is this repository?
+See config.default for optional build configuration parameters. The easiest way to overwrite default parameters is to add new entries to a bash key value file, eg `config.custom`, then re-run the build with command line parameter like so: `./build.sh -c config.custom`
 
-This repository contains the Dockerfiles and other scripts needed to build the Planet4 components using docker.
-Each subdirectory contains different dockerfiles, configuration and binaries required to build a custom
-component of the planet4 infrastructure along with documentation on how to do it.
+Note: to overwrite the default values, use the short form of the variable without the leading `DEFAULT_`. For example, to change the docker container tag version, use `BUILD_TAG`, not `DEFAULT_BUILD_TAG`. The reason this approach was taken was to ensure hierarchical resolution of variables from multiple sources:
 
-## Requirements
+### Variable resolution priority
+1.  Config file custom values
+2.  Environment variables
+3.  Config file default values
 
-Dockerfiles on this repo have been built and tested against:
+### Specify build time parameters from a configuration file:
+```
+echo "GOOGLE_PROJECT_ID=greenpeace-testing" >> config.custom
+./build -c config.custom
 
-* docker >= 17.03.0-ce
+```
+### Using environment variables
+```
+# Build the whole docker suite:
+./build.sh
+
+# Build the resultant sites:
+./build.sh site
+
+# Build a custom project from custom git tag:
+GOOGLE_PROJECT_ID=greenpeace-testing REV_TAG=20171222 ./build.sh site
+```

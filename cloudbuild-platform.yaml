@@ -1,0 +1,165 @@
+# In this directory
+#    - run the following command to build this builder.
+# $ gcloud container builds submit . --config=cloudbuild.yaml
+steps:
+- id: 'configure-ubuntu'
+  name: 'ubuntu'
+  dir: './source/${_GOOGLE_PROJECT_ID}/ubuntu'
+  args:
+    - '/bin/sed'
+    - '-i'
+    - '-r'
+    - '-e'
+    - 's;ENV DEFAULT_CONTAINER_TIMEZONE.*;ENV DEFAULT_CONTAINER_TIMEZONE ${_CONTAINER_TIMEZONE};g'
+    - 'Dockerfile'
+    - '-e'
+    - 's;FROM phusion/baseimage.*;FROM phusion/baseimage:${_BASEIMAGE_VERSION};g'
+    - 'Dockerfile'
+- id: 'configure-nginx-pagespeed'
+  name: 'ubuntu'
+  dir: './source/${_GOOGLE_PROJECT_ID}/nginx-pagespeed'
+  args:
+    - '/bin/sed'
+    - '-i'
+    - '-r'
+    - '-e'
+    - 's;FROM.*;FROM ${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_SOURCE_TAG};g'
+    - '-e'
+    - 's;ENV NGINX_VERSION.*;ENV NGINX_VERSION ${_NGINX_VERSION};g'
+    - '-e'
+    - 's;ENV NGINX_PAGESPEED_VERSION.*;ENV NGINX_PAGESPEED_VERSION ${_NGINX_PAGESPEED_VERSION};g'
+    - '-e'
+    - 's;ENV NGINX_PAGESPEED_RELEASE.*;ENV NGINX_PAGESPEED_RELEASE ${_NGINX_PAGESPEED_RELEASE};g'
+    - '-e'
+    - 's;ENV OPENSSL_VERSION.*;ENV OPENSSL_VERSION ${_OPENSSL_VERSION};g'
+    - '-e'
+    - 's;ENV HEADERS_MORE_VERSION.*;ENV HEADERS_MORE_VERSION ${_HEADERS_MORE_VERSION};g'
+    - 'Dockerfile'
+
+- id: 'configure-nginx-php-exim'
+  name: 'ubuntu'
+  dir: './source/${_GOOGLE_PROJECT_ID}/wordpress'
+  args:
+    - '/bin/sed'
+    - '-i'
+    - '-r'
+    - '-e'
+    - 's;FROM.*;FROM ${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_SOURCE_TAG};'
+    - 'Dockerfile'
+
+- id: 'configure-wordpress'
+  name: 'ubuntu'
+  dir: './source/${_GOOGLE_PROJECT_ID}/wordpress'
+  args:
+    - '/bin/sed'
+    - '-i'
+    - '-r'
+    - '-e'
+    - 's;FROM.*;FROM ${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_SOURCE_TAG};'
+    - 'Dockerfile'
+
+- id: 'configure-p4-onbuild'
+  name: 'ubuntu'
+  dir: './source/${_GOOGLE_PROJECT_ID}/p4-onbuild'
+  args:
+    - '/bin/sed'
+    - '-i'
+    - '-r'
+    - '-e'
+    - 's;FROM.*;FROM ${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_SOURCE_TAG};'
+    - 'Dockerfile'
+
+- id: 'configure-p4-gpi-app'
+  name: 'ubuntu'
+  dir: './sites/${_GOOGLE_PROJECT_ID}/p4-gpi-app'
+  args:
+    - '/bin/sed'
+    - '-i'
+    - '-r'
+    - '-e'
+    - 's;FROM.*;FROM ${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_SOURCE_TAG};'
+    - 'Dockerfile'
+
+- id: 'ubuntu'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_REVISION_TAG}'
+    - './source/${_GOOGLE_PROJECT_ID}/ubuntu'
+  waitFor: 'configure-ubuntu'
+
+- id: 'nginx-pagespeed'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_REVISION_TAG}'
+    - './source/${_GOOGLE_PROJECT_ID}/nginx-pagespeed'
+  waitFor:
+    - 'configure-nginx-pagespeed'
+    - 'ubuntu'
+
+- id: 'nginx-php-exim'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_REVISION_TAG}'
+    - './source/${_GOOGLE_PROJECT_ID}/nginx-php-exim'
+  waitFor:
+    - 'configure-nginx-php-exim'
+    - 'nginx-pagespeed'
+
+- id: 'wordpress'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'
+    - './source/${_GOOGLE_PROJECT_ID}/wordpress'
+  waitFor:
+    - 'configure-wordpress'
+    - 'nginx-php-exim'
+
+- id: 'p4-onbuild'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_REVISION_TAG}'
+    - './source/${_GOOGLE_PROJECT_ID}/p4-onbuild'
+  waitFor:
+    - 'configure-p4-onbuild'
+    - 'wordpress'
+# SITES TO REBUILD
+- id: 'p4-gpi-app'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--build-arg'
+    - 'GIT_SOURCE=${_GIT_SOURCE}'
+    - '--build-arg'
+    - 'GIT_REF=${_GIT_REF}'
+    - '--build-arg'
+    - 'COMPOSER=${_COMPOSER}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-gpi-app:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-gpi-app:${_REVISION_TAG}'
+    - './sites/${_GOOGLE_PROJECT_ID}/p4-gpi-app'
+  waitFor:
+    - 'configure-p4-gpi-app'
+    - 'p4-onbuild'
+
+images:
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-pagespeed:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-pagespeed:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-onbuild:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-onbuild:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-gpi-app:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-gpi-app:${_REVISION_TAG}'

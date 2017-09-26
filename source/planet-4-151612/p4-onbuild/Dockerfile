@@ -1,0 +1,32 @@
+FROM gcr.io/planet-4-151612/wordpress
+
+MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y git subversion && \
+    apt-get clean && \
+    rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+ENV COMPOSER_HOME "/app/.composer"
+
+ONBUILD ARG GIT_SOURCE="https://github.com/greenpeace/planet4-base"
+ONBUILD ARG GIT_REF="develop"
+ONBUILD ARG COMPOSER="composer.json"
+
+ONBUILD ENV GIT_SOURCE "${GIT_SOURCE}"
+ONBUILD ENV GIT_REF "${GIT_REF}"
+ONBUILD ENV COMPOSER "${COMPOSER}"
+
+ONBUILD RUN /app/bin/add_user.sh && \
+  mkdir -p "${COMPOSER_HOME}" && \
+  git clone --branch "${GIT_REF}" "${GIT_SOURCE}" /app/source
+
+ONBUILD WORKDIR /app/source
+
+ONBUILD RUN chown -R "${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP}" "${COMPOSER_HOME}" /app/source && \
+  echo "Installing composer dependencies with ${COMPOSER}" && \
+  composer config --global github-protocols https && \
+  composer install --no-interaction && \
+  cp wp-cli.yml.default wp-cli.yml && \
+  rm -fr /app/www

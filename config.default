@@ -1,0 +1,75 @@
+#!/usr/bin/env sh
+# shellcheck disable=SC2034
+set -a
+# =============================================================================
+#
+#   DEFAULT BUILD CONFIGURATION
+#
+#   Define build parameters here or as environment parameters
+#
+#   Examples of build-time configuration:
+#
+#   GOOGLE_PROJECT_ID=greenpeace-testing
+#   NGINX_VERSION=1.13.1
+#   COMPOSER=composer-dev.json
+#
+# =============================================================================
+
+# Default build parameters
+
+# Examples of build-time configuration:
+# GOOGLE_PROJECT_ID=greenpeace-testing
+# NGINX_VERSION=1.13.1
+# COMPOSER=composer-dev.json
+
+# !!!!!!!!!!!!!!!!!
+# STOP EDITING HERE
+# !!!!!!!!!!!!!!!!!
+
+# Changing any of the follow values is NOT RECOMMENDED
+# The below are defaults which are only used if custom values are not set
+#
+# Create a custom file and set values are described above, and pass it to the
+# build binary as a parameter, like so:
+
+# $ ./build.sh -c config.custom
+
+# ==============================================================================
+
+# Application environment
+
+DEFAULT_GOOGLE_PROJECT_ID=planet-4-151612
+
+DEFAULT_GIT_SOURCE=https://github.com/greenpeace/planet4-base
+DEFAULT_GIT_REF=dev-develop
+
+DEFAULT_COMPOSER=composer.json
+
+DEFAULT_SOURCE_TAG=develop
+DEFAULT_BUILD_TAG=develop
+
+DEFAULT_CONTAINER_TIMEZONE=Australia/Sydney
+
+
+# Infrastructure version numbers
+
+# https://github.com/phusion/baseimage-docker/releases
+DEFAULT_BASEIMAGE_VERSION=0.9.22
+# https://github.com/openresty/headers-more-nginx-module/tags
+DEFAULT_HEADERS_MORE_VERSION=0.32
+# https://github.com/pagespeed/ngx_pagespeed/releases
+DEFAULT_NGINX_PAGESPEED_RELEASE=stable
+DEFAULT_NGINX_PAGESPEED_VERSION=latest
+# http://nginx.org/en/download.html
+DEFAULT_NGINX_VERSION=1.13.2
+# https://www.openssl.org/source
+DEFAULT_OPENSSL_VERSION=1.1.0f
+DEFAULT_PHP_VERSION=7.0
+
+# Cloud builder configuration
+DEFAULT_BUILD_NAMESPACE=gcr.io
+DEFAULT_BUILD_LOCALLY=false
+DEFAULT_BUILD_REMOTELY=true
+DEFAULT_BUILD_TIMEOUT=30m
+DEFAULT_BUILD_TYPE=platform
+DEFAULT_REWRITE_LOCAL_DOCKERFILES=true
