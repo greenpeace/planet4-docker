@@ -76,7 +76,7 @@ else
 fi
 sed -i -r "s/DownstreamCacheRebeaconingKey \"__PAGESPEED_REBEACON_KEY__\";/DownstreamCacheRebeaconingKey \"${PAGESPEED_REBEACON_KEY:-$DEFAULT_PAGESPEED_REBEACON_KEY}\";/g" /etc/nginx/server.d/10_pagespeed.conf
 
-if [ $CLOUDFLARE_ENABLED == 'true' ]; then
+if [ "$CLOUDFLARE_ENABLED" = 'true' ]; then
 	# Update cloudflare IP ranges
 	_good "nginx:  updating cloudflare IP ranges"
 	/app/bin/cloudflare-ip-updater.sh
