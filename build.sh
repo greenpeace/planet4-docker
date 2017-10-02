@@ -23,14 +23,18 @@ Example:
 Options:
   -c    Configuration file for build variables, eg:
         $0 -c config
+  -l    Perform the docker build locally (default: false)
+  -r    Perform the docker build remotely (default: true)
 "
 }
 
-OPTIONS=':c:'
+OPTIONS=':c:lr'
 while getopts $OPTIONS option
 do
     case $option in
         c  )    CONFIG_FILE=$OPTARG;;
+        l  )    BUILD_LOCALLY='true';;
+        r  )    BUILD_REMOTELY='true';;
         *  )    usage;;
     esac
 done
