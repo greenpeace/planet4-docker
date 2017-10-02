@@ -63,6 +63,16 @@ steps:
     - 's;FROM.*;FROM gcr.io/${PROJECT_ID}/p4-onbuild:${BRANCH_NAME};g'
     - 'Dockerfile'
 
+- id: 'configure-p4-gpi-app-dev'
+  name: 'ubuntu'
+  dir: './sites/${PROJECT_ID}/p4-gpi-app-dev'
+  args:
+    - '/bin/sed'
+    - '-i'
+    - '-r'
+    - '-e'
+    - 's;FROM.*;FROM gcr.io/${PROJECT_ID}/p4-onbuild:${BRANCH_NAME};g'
+    - 'Dockerfile'
 
 #
 # End of configuration
@@ -124,7 +134,15 @@ steps:
     - 'configure-p4-onbuild'
     - 'wordpress'
 
-# SITES TO REBUILD
+
+#
+# End service image builds
+#
+# ============================================================================
+#
+# Begin application image builds
+#
+
 - id: 'p4-gpi-app'
   name: 'gcr.io/cloud-builders/docker'
   args:
@@ -137,14 +155,6 @@ steps:
   waitFor:
     - 'configure-p4-gpi-app'
     - 'p4-onbuild'
-
-#
-# End service image builds
-#
-# ============================================================================
-#
-# Begin application image builds
-#
 
 - id: 'p4-gpi-app-dev'
   name: 'gcr.io/cloud-builders/docker'
