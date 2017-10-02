@@ -210,7 +210,7 @@ if [ "${BUILD_LOCALLY}" = "true" ]; then
     echo -e "\nBuilding ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ...\n"
     docker build \
       -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} \
-      -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${REVISION_TAG}
+      -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${REVISION_TAG} \
       ${BUILD_DIR}
   done
 fi
