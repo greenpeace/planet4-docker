@@ -5,7 +5,7 @@ MAINTAINER Ray Walker <raymond.walker@greenpeace.org>
 ENV DEBIAN_FRONTEND noninteractive
 
 # Local time zone of application container
-ENV DEFAULT_CONTAINER_TIMEZONE Australia/Sydney
+ENV DEFAULT_CONTAINER_TIMEZONE UTC
 
 # Automatic choose local mirror for sources list
 COPY sources.list /etc/apt/sources.list
