@@ -1,11 +1,30 @@
 #!/usr/bin/env sh
 # shellcheck disable=SC2034
 set -a
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#  DO NOT MAKE EDITS IN THIS FILE
+
+# Changing any of the follow values is NOT RECOMMENDED
+# The below are defaults which are only used if custom values are not set
+#
+
+# How to customise the build configuration:
+# -----------------------------------------
+#
+# Create a custom file and set values are described above, and pass it to the
+# build binary as a parameter, like so:
+
+# $ ./build.sh -c config.custom
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 # =============================================================================
 #
 #   DEFAULT BUILD CONFIGURATION
 #
-#   Define build parameters here or as environment parameters
+#   Define build parameters in a custom file
 #
 #   Examples of build-time configuration:
 #
@@ -14,27 +33,6 @@ set -a
 #   COMPOSER=composer-dev.json
 #
 # =============================================================================
-
-# Default build parameters
-
-# Examples of build-time configuration:
-# GOOGLE_PROJECT_ID=greenpeace-testing
-# NGINX_VERSION=1.13.1
-# COMPOSER=composer-dev.json
-
-# !!!!!!!!!!!!!!!!!
-# STOP EDITING HERE
-# !!!!!!!!!!!!!!!!!
-
-# Changing any of the follow values is NOT RECOMMENDED
-# The below are defaults which are only used if custom values are not set
-#
-# Create a custom file and set values are described above, and pass it to the
-# build binary as a parameter, like so:
-
-# $ ./build.sh -c config.custom
-
-# ==============================================================================
 
 # Application environment
 
