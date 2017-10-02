@@ -131,8 +131,6 @@ steps:
     - 'build'
     - '--build-arg'
     - 'GIT_REF=${BRANCH_NAME}'
-    - '--build-arg'
-    - 'COMPOSER=${_COMPOSER}'
     - '--tag=gcr.io/${PROJECT_ID}/p4-gpi-app:${BRANCH_NAME}'
     - '--tag=gcr.io/${PROJECT_ID}/p4-gpi-app:${SHORT_SHA}'
     - './sites/${PROJECT_ID}/p4-gpi-app'
@@ -158,7 +156,7 @@ steps:
     - '--tag=gcr.io/${PROJECT_ID}/p4-gpi-app-dev:${SHORT_SHA}'
     - './sites/${PROJECT_ID}/p4-gpi-app'
   waitFor:
-    - 'configure-p4-gpi-app'
+    - 'configure-p4-gpi-app-dev'
     - 'p4-onbuild'
 
 images:
