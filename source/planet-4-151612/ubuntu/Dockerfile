@@ -13,7 +13,7 @@ COPY sources.list /etc/apt/sources.list
 # Update to latest packages and tidy up
 RUN apt-get update \
   && apt-get -y upgrade \
-  && apt-get install -y tzdata iputils-ping \
+  && apt-get install -y tzdata \
   && apt-get -y autoremove \
   && apt-get -y clean \
   && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
