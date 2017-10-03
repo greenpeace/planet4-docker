@@ -184,7 +184,6 @@ done
 # Perform the build locally
 if [ "${BUILD_LOCALLY}" = "true" ]; then
 
-
   # Need to explicitly define build order for local directory
   # cloudbuild.yaml defines a logical build structure but local is not alphanumeric
   LOCAL_BUILD_ORDER=(
@@ -193,7 +192,6 @@ if [ "${BUILD_LOCALLY}" = "true" ]; then
     "nginx-php-exim"
     "wordpress"
     "p4-onbuild"
-    "p4-gpi-app"
   )
 
   for IMAGE in "${LOCAL_BUILD_ORDER[@]}"; do
@@ -218,43 +216,24 @@ fi
 if [ "${BUILD_REMOTELY}" = "true" ]; then
   echo "Sending build context to Google Container Builder ..."
 
-  case "${BUILD_TYPE}" in
-    "site")
-      # Rewrite cloudbuild variables
-      SUBSTITUTIONS=(
-        "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
-        "_BUILD_TAG=${BUILD_TAG}" \
-        "_COMPOSER=${COMPOSER}" \
-        "_GIT_REF=${GIT_REF}" \
-        "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
-        "_REVISION_TAG=${REVISION_TAG}" \
-        "_SOURCE_TAG=${SOURCE_TAG}"
-      )
-      ;;
-    "platform")
-      # Rewrite cloudbuild variables
-      SUBSTITUTIONS=(
-        "_BASEIMAGE_VERSION=${BASEIMAGE_VERSION}" \
-        "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
-        "_BUILD_TAG=${BUILD_TAG}" \
-        "_COMPOSER=${COMPOSER}" \
-        "_CONTAINER_TIMEZONE=${CONTAINER_TIMEZONE}" \
-        "_GIT_SOURCE=${GIT_SOURCE}" \
-        "_GIT_REF=${GIT_REF}" \
-        "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
-        "_HEADERS_MORE_VERSION=${HEADERS_MORE_VERSION}" \
-        "_NGINX_VERSION=${NGINX_VERSION}" \
-        "_NGINX_PAGESPEED_RELEASE=${NGINX_PAGESPEED_RELEASE}" \
-        "_NGINX_PAGESPEED_VERSION=${NGINX_PAGESPEED_VERSION}" \
-        "_OPENSSL_VERSION=${OPENSSL_VERSION}" \
-        "_REVISION_TAG=${REVISION_TAG}" \
-        "_SOURCE_TAG=${SOURCE_TAG}"
-      )
-      ;;
-    *)
-      fatal "Invalid build type ${BUILD_TYPE}"
-      ;;
-  esac
+  # Rewrite cloudbuild variables
+  SUBSTITUTIONS=(
+    "_BASEIMAGE_VERSION=${BASEIMAGE_VERSION}" \
+    "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
+    "_BUILD_TAG=${BUILD_TAG}" \
+    "_COMPOSER=${COMPOSER}" \
+    "_CONTAINER_TIMEZONE=${CONTAINER_TIMEZONE}" \
+    "_GIT_SOURCE=${GIT_SOURCE}" \
+    "_GIT_REF=${GIT_REF}" \
+    "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
+    "_HEADERS_MORE_VERSION=${HEADERS_MORE_VERSION}" \
+    "_NGINX_VERSION=${NGINX_VERSION}" \
+    "_NGINX_PAGESPEED_RELEASE=${NGINX_PAGESPEED_RELEASE}" \
+    "_NGINX_PAGESPEED_VERSION=${NGINX_PAGESPEED_VERSION}" \
+    "_OPENSSL_VERSION=${OPENSSL_VERSION}" \
+    "_REVISION_TAG=${REVISION_TAG}" \
+    "_SOURCE_TAG=${SOURCE_TAG}"
+  )
 
   SUBSTITUTIONS_PROCESSOR="$(printf "%s," "${SUBSTITUTIONS[@]}")"
   SUBSTITUTIONS_STRING="${SUBSTITUTIONS_PROCESSOR%,}"
