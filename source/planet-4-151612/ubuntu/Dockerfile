@@ -20,6 +20,5 @@ RUN apt-get update \
 
 COPY . /app
 
-RUN chmod +x /app/bin/*
-
-RUN if [ ! -f "/etc/my_init.d/00_set_timezone.sh" ]; then ln -s /app/bin/set_timezone.sh /etc/my_init.d/00_set_timezone.sh; fi
+RUN chmod +x /app/bin/* && \
+    if [ ! -f "/etc/my_init.d/00_set_timezone.sh" ]; then ln -s /app/bin/set_timezone.sh /etc/my_init.d/00_set_timezone.sh; fi
