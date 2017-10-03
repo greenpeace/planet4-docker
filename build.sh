@@ -10,15 +10,8 @@ function fatal() {
 }
 
 function usage {
-  fatal "Usage: $0 [OPTION] [BUILD_TYPE]...
+  fatal "Usage: $0 [OPTION|OPTION2] ...
 Build and test artifacts in this repository
-
-Example:
-  \$1 platform
-        Uses cloudbuild-platform.yaml
-
-  \$1 site
-        Uses cloudbuild-site.yaml
 
 Options:
   -c    Configuration file for build variables, eg:
@@ -184,7 +177,7 @@ done
 # Perform the build locally
 if [ "${BUILD_LOCALLY}" = "true" ]; then
 
-  # Need to explicitly define build order for local directory
+  # Need to explicitly define build order for local directories
   # cloudbuild.yaml defines a logical build structure but local is not alphanumeric
   LOCAL_BUILD_ORDER=(
     "ubuntu"
@@ -248,7 +241,7 @@ if [ "${BUILD_REMOTELY}" = "true" ]; then
   time gcloud container builds submit \
     --verbosity=debug \
     --timeout=${BUILD_TIMEOUT} \
-    --config $ROOT_DIR/cloudbuild-${BUILD_TYPE}.yaml \
+    --config $ROOT_DIR/cloudbuild.yaml \
     --substitutions ${SUBSTITUTIONS_STRING} \
     ${TMPDIR}/docker-source.tar.gz && \
     rm -fr ${TMPDIR}
