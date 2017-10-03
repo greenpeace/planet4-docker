@@ -55,9 +55,6 @@ if [ "${CONFIG_FILE}" != "" ]; then
   source ${CONFIG_FILE}
 fi
 
-# which cloudbuild yaml file to submit
-[ -z "$1" ] && BUILD_TYPE=${DEFAULT_BUILD_TYPE} || BUILD_TYPE="$1"
-
 BUILD_NAMESPACE=${BUILD_NAMESPACE:-${DEFAULT_BUILD_NAMESPACE}}
 # Perform the Docker build locally
 BUILD_LOCALLY=${BUILD_LOCALLY:-${DEFAULT_BUILD_LOCALLY}}
