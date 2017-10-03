@@ -52,28 +52,6 @@ steps:
     - 's;FROM.*;FROM gcr.io/${PROJECT_ID}/wordpress:${BRANCH_NAME};g'
     - 'Dockerfile'
 
-- id: 'configure-p4-gpi-app'
-  name: 'ubuntu'
-  dir: './sites/${PROJECT_ID}/p4-gpi-app'
-  args:
-    - '/bin/sed'
-    - '-i'
-    - '-r'
-    - '-e'
-    - 's;FROM.*;FROM gcr.io/${PROJECT_ID}/p4-onbuild:${BRANCH_NAME};g'
-    - 'Dockerfile'
-
-- id: 'configure-p4-gpi-app-dev'
-  name: 'ubuntu'
-  dir: './sites/${PROJECT_ID}/p4-gpi-app-dev'
-  args:
-    - '/bin/sed'
-    - '-i'
-    - '-r'
-    - '-e'
-    - 's;FROM.*;FROM gcr.io/${PROJECT_ID}/p4-onbuild:${BRANCH_NAME};g'
-    - 'Dockerfile'
-
 #
 # End of configuration
 #
@@ -134,40 +112,10 @@ steps:
     - 'configure-p4-onbuild'
     - 'wordpress'
 
-
 #
 # End service image builds
 #
 # ============================================================================
-#
-# Begin application image builds
-#
-
-- id: 'p4-gpi-app'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--build-arg'
-    - 'GIT_REF=${BRANCH_NAME}'
-    - '--tag=gcr.io/${PROJECT_ID}/p4-gpi-app:${BRANCH_NAME}'
-    - '--tag=gcr.io/${PROJECT_ID}/p4-gpi-app:${SHORT_SHA}'
-    - './sites/${PROJECT_ID}/p4-gpi-app'
-  waitFor:
-    - 'configure-p4-gpi-app'
-    - 'p4-onbuild'
-
-- id: 'p4-gpi-app-dev'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--build-arg'
-    - 'GIT_REF=${BRANCH_NAME}'
-    - '--tag=gcr.io/${PROJECT_ID}/p4-gpi-app-dev:${BRANCH_NAME}'
-    - '--tag=gcr.io/${PROJECT_ID}/p4-gpi-app-dev:${SHORT_SHA}'
-    - './sites/${PROJECT_ID}/p4-gpi-app'
-  waitFor:
-    - 'configure-p4-gpi-app-dev'
-    - 'p4-onbuild'
 
 images:
   - 'gcr.io/$PROJECT_ID/ubuntu:${BRANCH_NAME}'
@@ -180,7 +128,3 @@ images:
   - 'gcr.io/$PROJECT_ID/wordpress:${SHORT_SHA}'
   - 'gcr.io/$PROJECT_ID/p4-onbuild:${BRANCH_NAME}'
   - 'gcr.io/$PROJECT_ID/p4-onbuild:${SHORT_SHA}'
-  - 'gcr.io/$PROJECT_ID/p4-gpi-app:${BRANCH_NAME}'
-  - 'gcr.io/$PROJECT_ID/p4-gpi-app:${SHORT_SHA}'
-  - 'gcr.io/$PROJECT_ID/p4-gpi-app-dev:${BRANCH_NAME}'
-  - 'gcr.io/$PROJECT_ID/p4-gpi-app-dev:${SHORT_SHA}'
