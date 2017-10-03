@@ -1,6 +1,16 @@
-# In this directory
-#    - run the following command to build this builder.
-# $ gcloud container builds submit . --config=cloudbuild.yaml
+#
+# Builds docker infrastucture via Google Container builder
+# Used in the build.sh script to generate projects with arbitrary substitutions
+# eg:
+#
+# $ GOOGLE_PROJECT_ID=greenpeace-testing ./build.sh -l -r
+#
+# See config.defaults for default substitution values
+#
+# ============================================================================
+#
+# Beginning of build configuration
+#
 steps:
 - id: 'configure-ubuntu'
   name: 'ubuntu'
@@ -69,16 +79,13 @@ steps:
     - 's;FROM.*;FROM ${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_SOURCE_TAG};'
     - 'Dockerfile'
 
-- id: 'configure-p4-gpi-app'
-  name: 'ubuntu'
-  dir: './sites/${_GOOGLE_PROJECT_ID}/p4-gpi-app'
-  args:
-    - '/bin/sed'
-    - '-i'
-    - '-r'
-    - '-e'
-    - 's;FROM.*;FROM ${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_SOURCE_TAG};'
-    - 'Dockerfile'
+#
+# End of configuration
+#
+# ============================================================================
+#
+# Begin service image builds
+#
 
 - id: 'ubuntu'
   name: 'gcr.io/cloud-builders/docker'
@@ -132,23 +139,10 @@ steps:
   waitFor:
     - 'configure-p4-onbuild'
     - 'wordpress'
-# SITES TO REBUILD
-- id: 'p4-gpi-app'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--build-arg'
-    - 'GIT_SOURCE=${_GIT_SOURCE}'
-    - '--build-arg'
-    - 'GIT_REF=${_GIT_REF}'
-    - '--build-arg'
-    - 'COMPOSER=${_COMPOSER}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-gpi-app:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-gpi-app:${_REVISION_TAG}'
-    - './sites/${_GOOGLE_PROJECT_ID}/p4-gpi-app'
-  waitFor:
-    - 'configure-p4-gpi-app'
-    - 'p4-onbuild'
+#
+# End service image builds
+#
+# ============================================================================
 
 images:
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_BUILD_TAG}'
@@ -161,5 +155,3 @@ images:
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_REVISION_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-onbuild:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-onbuild:${_REVISION_TAG}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-gpi-app:${_BUILD_TAG}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-gpi-app:${_REVISION_TAG}'
