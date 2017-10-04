@@ -97,8 +97,9 @@ GIT_REF=${GIT_REF:-${DEFAULT_GIT_REF}}
 COMPOSER=${COMPOSER:-${DEFAULT_COMPOSER}}
 
 # set source and destination tags
-SOURCE_TAG=${SOURCE_TAG:-${DEFAULT_SOURCE_TAG}}
-BUILD_TAG=${BUILD_TAG:-${DEFAULT_BUILD_TAG}}
+SOURCE_TAG=${SOURCE_TAG:-$(git rev-parse --abbrev-ref HEAD)}
+
+BUILD_TAG=${BUILD_TAG:-$(git rev-parse --abbrev-ref HEAD)}
 
 # commit tag, defaults to short commit hash
 REVISION_TAG=${REVISION_TAG:-$(git rev-parse --short HEAD)}

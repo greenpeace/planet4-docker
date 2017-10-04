@@ -38,16 +38,22 @@ set -a
 
 DEFAULT_GOOGLE_PROJECT_ID=planet-4-151612
 
+# application repository to build, expects a composer.json to be present,
+# or alternate file defined by COMPOSER | DEFAULT_COMPOSER
 DEFAULT_GIT_SOURCE=https://github.com/greenpeace/planet4-base
+
+# branch of application repository to build
+# note, composer requires prefixes with dev- for branch names
+# see: https://getcomposer.org/doc/articles/aliases.md#why-aliases-
 DEFAULT_GIT_REF=dev-develop
 
 DEFAULT_COMPOSER=composer.json
 
-DEFAULT_SOURCE_TAG=develop
-DEFAULT_BUILD_TAG=develop
+# default build and source tags are derived from `git rev-parse --abbrev-ref HEAD`
+# DEFAULT_SOURCE_TAG=develop
+# DEFAULT_BUILD_TAG=develop
 
 DEFAULT_CONTAINER_TIMEZONE=UTC
-
 
 # Infrastructure version numbers
 
