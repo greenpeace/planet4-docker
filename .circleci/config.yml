@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: gcr.io/planet-4-151612/cci-docker-primary
+    working_directory: /go/src/github.com/greenpeace/planet4-docker
+
+    environment:
+      TEST_RESULTS: /tmp/test-results
+
+    steps:
+      - checkout
+
+      - run:
+          name: gcloud authentication
+
+      - run:
+          name: Building containers on gcr.io
+          command: |
+            set -x
+            ./build.sh -r
+
+      - setup_remote_docker
+
+      - run:
+          name: Test container build with planet4-docker-compose dev environment
+          command: |
+            git clone https://github.com/greenpeace/planet4-docker-compose -b dev-feature/gitrepositories
+            cd planet4-docker-compose
+            docker-compose pull
+            docker-compose up -d
+            curl --retry 10 --retry-delay 5 -v http://localhost:80
