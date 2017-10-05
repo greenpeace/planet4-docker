@@ -70,19 +70,21 @@ fi
 
 # newrelic
 if [[ "${NEWRELIC_ENABLED:-$DEFAULT_NEWRELIC_ENABLED}" == "false" ]] || [[ "${NEWRELIC_LICENSE:-$DEFAULT_NEWRELIC_LICENSE}" =~ "DISABLED" ]]; then
-    _good "php:    newrelic.enabled:     false"
-    sed -i -r "s/newrelic.enabled =$/newrelic.enabled = false/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-newrelic.ini
-    phpdismod newrelic
-    NEWRELIC_ENABLED=false
+  _good "php:    newrelic.enabled:     false"
+  sed -i -r "s/newrelic.enabled =$/newrelic.enabled = false/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-newrelic.ini
+  phpdismod newrelic
+  NEWRELIC_ENABLED=false
 else
-    _good "php:    newrelic.enabled:     true"
-    _good "php:    newrelic.appname:     ${NEWRELIC_APPNAME:-$POOL_NAME}"
-    _good "php:    newrelic.license:     ${NEWRELIC_LICENSE:-$DEFAULT_NEWRELIC_LICENSE}"
-    sed -i -r "s/newrelic.enabled\s=.*$/newrelic.enabled = true/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-newrelic.ini
-    sed -i -r "s/newrelic.appname\s=.*$/newrelic.appname = \"${NEWRELIC_APPNAME:-$POOL_NAME}\"/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-newrelic.ini
-    sed -i -r "s/newrelic.license\s=.*$/newrelic.license=\"${NEWRELIC_LICENSE:-$DEFAULT_NEWRELIC_LICENSE}\"/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-newrelic.ini
-    phpenmod newrelic
-    NEWRELIC_ENABLED=true
+  export NEWRELIC_APPNAME
+  NEWRELIC_APPNAME=${NEWRELIC_APPNAME:-${DEFAULT_NEWRELIC_APPNAME:-$POOL_NAME}}
+  _good "php:    newrelic.enabled:     true"
+  _good "php:    newrelic.appname:     ${NEWRELIC_APPNAME}"
+  _good "php:    newrelic.license:     ${NEWRELIC_LICENSE:-$DEFAULT_NEWRELIC_LICENSE}"
+  sed -i -r "s/newrelic.enabled\s=.*$/newrelic.enabled = true/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-newrelic.ini
+  sed -i -r "s/newrelic.appname\s=.*$/newrelic.appname = '${NEWRELIC_APPNAME}'/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-newrelic.ini
+  sed -i -r "s/newrelic.license\s=.*$/newrelic.license = '${NEWRELIC_LICENSE:-$DEFAULT_NEWRELIC_LICENSE}'/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-newrelic.ini
+  phpenmod newrelic
+  NEWRELIC_ENABLED=true
 fi
 
 # xdebug
