@@ -1,8 +1,4 @@
-# Planet4 Docker Application Stack
-# Build: test-build
-# DO NOT MAKE CHANGES HERE
-# This file is built automatically from ./templates/Dockerfile.in
-FROM phusion/baseimage:0.9.22
+FROM phusion/baseimage:${BASEIMAGE_VERSION}
 MAINTAINER Ray Walker <raymond.walker@greenpeace.org>
 
 # Tell the container there is no tty

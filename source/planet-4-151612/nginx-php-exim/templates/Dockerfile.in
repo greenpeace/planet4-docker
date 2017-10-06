@@ -1,8 +1,4 @@
-# Planet4 Docker Application Stack
-# Build: test-build
-# DO NOT MAKE CHANGES HERE
-# This file is built automatically from ./templates/Dockerfile.in
-FROM gcr.io/planet-4-151612/nginx-pagespeed
+FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/nginx-pagespeed
 
 MAINTAINER Ray Walker <hello@raywalker.it>
 
@@ -42,7 +38,7 @@ RUN mkdir /root/bin/ && \
 EXPOSE 443
 EXPOSE 80
 
-ENV PHP_VERSION 7.0
+ENV PHP_VERSION ${PHP_VERSION}
 
 ENV DEFAULT_ADMIN_EMAIL nobody@example.com
 ENV DEFAULT_APP_ENV production
@@ -56,7 +52,7 @@ ENV DEFAULT_APP_GID 1000
 ENV DEFAULT_UPLOAD_MAX_SIZE 30M
 ENV DEFAULT_NGINX_MAX_WORKER_PROCESSES 8
 ENV DEFAULT_NGINX_KEEPALIVE_TIMEOUT 30
-ENV DEFAULT_NGINX_FASTCGI_BACKEND unix:/run/php/php7.0-fpm.sock
+ENV DEFAULT_NGINX_FASTCGI_BACKEND unix:/run/php/php${PHP_VERSION}-fpm.sock
 ENV DEFAULT_PHP_MEMORY_LIMIT 128M
 ENV DEFAULT_PHP_MAX_EXECUTION_TIME 300
 ENV DEFAULT_PHP_MAX_INPUT_VARS 2000
