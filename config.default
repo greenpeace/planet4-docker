@@ -50,15 +50,21 @@ DEFAULT_GIT_REF=dev-develop
 DEFAULT_COMPOSER=composer.json
 
 # default build and source tags are derived from `git rev-parse --abbrev-ref HEAD`
+# Use SOURCE_TAG or BUILD_TAG in environment or custom config to set these values
 # DEFAULT_SOURCE_TAG=develop
 # DEFAULT_BUILD_TAG=develop
 
+# Which timezone this container uses for logs etc
 DEFAULT_CONTAINER_TIMEZONE=UTC
+
+# ============================================================================
 
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases
 DEFAULT_BASEIMAGE_VERSION=0.9.22
+# https://github.com/jwilder/dockerize/releases
+DEFAULT_DOCKERIZE_VERSION=0.5.0
 # https://github.com/openresty/headers-more-nginx-module/tags
 DEFAULT_HEADERS_MORE_VERSION=0.32
 # https://github.com/pagespeed/ngx_pagespeed/releases
@@ -70,9 +76,11 @@ DEFAULT_NGINX_VERSION=1.13.2
 DEFAULT_OPENSSL_VERSION=1.1.0f
 DEFAULT_PHP_VERSION=7.0
 
+# ============================================================================
+
 # Cloud builder configuration
-DEFAULT_BUILD_NAMESPACE=gcr.io
 DEFAULT_BUILD_LOCALLY=false
+DEFAULT_BUILD_NAMESPACE=gcr.io
 DEFAULT_BUILD_REMOTELY=false
 DEFAULT_BUILD_TIMEOUT=30m
 DEFAULT_BUILD_TYPE=
