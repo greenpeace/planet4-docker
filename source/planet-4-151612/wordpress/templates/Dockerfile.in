@@ -10,8 +10,8 @@ RUN apt-get update && \
     # composer config --global github-protocols https && \
     curl -o /app/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     wget https://github.com/jwilder/dockerize/releases/download/v${DOCKERIZE_VERSION}/dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
-    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz && \
-    rm dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
+    rm dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz
 
 COPY . /app/
 
