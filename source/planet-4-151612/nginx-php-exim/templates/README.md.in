@@ -1,7 +1,7 @@
 
 # Nginx + PHP + Exim
 
-![PHP ${PHP_VERSION}](https://img.shields.io/badge/php-${PHP_VERSION}-brightgreen.svg) ![Nginx ${NGINX_VERSION}](https://img.shields.io/badge/nginx-${NGINX_VERSION}-brightgreen.svg) ![ngx_pagespeed ${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}--${NGINX_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
+![PHP ${PHP_MAJOR_VERSION}](https://img.shields.io/badge/php-${PHP_MAJOR_VERSION}-brightgreen.svg) ![Nginx ${NGINX_VERSION}](https://img.shields.io/badge/nginx-${NGINX_VERSION}-brightgreen.svg) ![ngx_pagespeed ${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}--${NGINX_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
 
 Highly configurable nginx-PHP webserver stack built on [greenpeace/nginx-pagespeed](https://hub.docker.com/r/greenpeace/nginx-pagespeed/), which is in turn built on a [lightly modified Phusion Ubuntu base image](https://hub.docker.com/r/greenpeace/ubuntu/)
 

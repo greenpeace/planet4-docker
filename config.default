@@ -74,7 +74,7 @@ DEFAULT_NGINX_PAGESPEED_VERSION=latest
 DEFAULT_NGINX_VERSION=1.13.2
 # https://www.openssl.org/source
 DEFAULT_OPENSSL_VERSION=1.1.0f
-DEFAULT_PHP_VERSION=7.0
+DEFAULT_PHP_MAJOR_VERSION=7.0
 
 # ============================================================================
 

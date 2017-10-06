@@ -42,7 +42,7 @@ RUN mkdir /root/bin/ && \
 EXPOSE 443
 EXPOSE 80
 
-ENV PHP_VERSION 7.0
+ENV PHP_MAJOR_VERSION 7.0
 
 ENV DEFAULT_ADMIN_EMAIL nobody@example.com
 ENV DEFAULT_APP_ENV production
