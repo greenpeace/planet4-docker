@@ -28,6 +28,8 @@ do
         c  )    CONFIG_FILE=$OPTARG;;
         l  )    BUILD_LOCALLY='true';;
         r  )    BUILD_REMOTELY='true';;
+        v  )    VERBOSITY='debug'
+                set -x;;
         *  )    usage;;
     esac
 done
@@ -207,7 +209,7 @@ if [ "${BUILD_REMOTELY}" = "true" ]; then
 
   # Submit the build
   time ${GCLOUD} container builds submit \
-    --verbosity=debug \
+    --verbosity=${VERBOSITY:-'warning'} \
     --timeout=${BUILD_TIMEOUT} \
     --config $ROOT_DIR/cloudbuild.yaml \
     --substitutions ${SUBSTITUTIONS_STRING} \
