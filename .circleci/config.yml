@@ -5,7 +5,7 @@ jobs:
     environment:
       PROJECT_ID: planet-4-151612
     docker:
-      - image: gcr.io/planet-4-151612/cci-docker-primary:latest
+      - image: gcr.io/planet-4-151612/circleci-base:latest
     working_directory:  /home/circleci/app
     steps:
       - run:
