@@ -35,7 +35,7 @@ set -a
 # =============================================================================
 
 # Application environment
-
+DEFAULT_APPLICATION_NAME="Greenpeace P4 Docker application"
 DEFAULT_GOOGLE_PROJECT_ID=planet-4-151612
 
 # application repository to build, expects a composer.json to be present,
@@ -84,4 +84,5 @@ DEFAULT_BUILD_NAMESPACE=gcr.io
 DEFAULT_BUILD_REMOTELY=false
 DEFAULT_BUILD_TIMEOUT=30m
 DEFAULT_BUILD_TYPE=
+DEFAULT_PULL_IMAGES=false
 DEFAULT_REWRITE_LOCAL_DOCKERFILES=true

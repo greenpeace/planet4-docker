@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
-set -xe
+set -eo pipefail
 
-# Read configuration from config file
-
-# Helper functions
-function fatal() {
-  echo -e "ERROR: $1" >&2
-  exit 1
-}
+# UTILITY
 
 function usage {
   fatal "Usage: $0 [OPTION|OPTION2] ...
@@ -17,24 +11,36 @@ Options:
   -c    Configuration file for build variables, eg:
         $0 -c config
   -l    Perform the docker build locally (default: false)
+  -p    Pull created images after build
   -r    Perform the docker build remotely (default: true)
+  -v    Verbose
 "
 }
 
-OPTIONS=':c:lr'
+function fatal() {
+ echo -e "ERROR: $1" >&2
+ exit 1
+}
+
+# COMMAND LINE OPTIONS
+
+OPTIONS=':vc:lpr'
 while getopts $OPTIONS option
 do
     case $option in
         c  )    CONFIG_FILE=$OPTARG;;
         l  )    BUILD_LOCALLY='true';;
+        p  )    PULL_IMAGES='true';;
         r  )    BUILD_REMOTELY='true';;
         v  )    VERBOSITY='debug'
                 set -x;;
-        *  )    usage;;
+        *  )    echo "Unkown option: ${OPTARG}"
+                usage;;
     esac
 done
 shift $(($OPTIND - 1))
 
+# CONFIG FILE
 # Read parameters from key->value configuration files
 # Note this will override environment variables at this stage
 # @todo prioritise ENV over config file ?
@@ -57,11 +63,28 @@ if [ "${CONFIG_FILE}" != "" ]; then
   source ${CONFIG_FILE}
 fi
 
-# Consolidate variables
+# Setup build variables based on CircleCI environment vars
+if [[ "${CIRCLECI}" ]]
+then
+  if [[ -z "${BUILD_TAG}" ]]
+  then
+    if [[ "${CIRCLE_TAG}" ]]
+    then
+      BUILD_TAG="${CIRCLE_TAG}"
+    elif [[ "${CIRCLE_BRANCH}" ]]
+    then
+      BUILD_TAG="${CIRCLE_BRANCH}"
+    fi
+  fi
+fi
+
+# Consolidate and sanitise variables
 BASEIMAGE_VERSION=${BASEIMAGE_VERSION:-${DEFAULT_BASEIMAGE_VERSION}}
 BUILD_LOCALLY=${BUILD_LOCALLY:-${DEFAULT_BUILD_LOCALLY}}
 BUILD_NAMESPACE=${BUILD_NAMESPACE:-${DEFAULT_BUILD_NAMESPACE}}
 BUILD_REMOTELY=${BUILD_REMOTELY:-${DEFAULT_BUILD_REMOTELY}}
+BUILD_NUM=${BUILD_NUM:-"test-$(git rev-parse --abbrev-ref HEAD)"}
+BUILD_NUM=${BUILD_NUM//[^a-zA-Z0-9]/-}
 BUILD_TAG=${BUILD_TAG:-$(git rev-parse --abbrev-ref HEAD)}
 BUILD_TAG=${BUILD_TAG//[^a-zA-Z0-9]/-}
 BUILD_TIMEOUT=${BUILD_TIMEOUT:-${DEFAULT_BUILD_TIMEOUT}}
@@ -77,6 +100,7 @@ NGINX_PAGESPEED_VERSION=${NGINX_PAGESPEED_VERSION:-${DEFAULT_NGINX_PAGESPEED_VER
 NGINX_VERSION=${NGINX_VERSION:-${DEFAULT_NGINX_VERSION}}
 OPENSSL_VERSION=${OPENSSL_VERSION:-${DEFAULT_OPENSSL_VERSION}}
 PHP_MAJOR_VERSION=${PHP_MAJOR_VERSION:-${DEFAULT_PHP_MAJOR_VERSION}}
+PULL_IMAGES=${PULL_IMAGES:-${DEFAULT_PULL_IMAGES}}
 REVISION_TAG=${REVISION_TAG:-$(git rev-parse --short HEAD)}
 REWRITE_LOCAL_DOCKERFILES=${REWRITE_LOCAL_DOCKERFILES:-${DEFAULT_REWRITE_LOCAL_DOCKERFILES}}
 SOURCE_TAG=${SOURCE_TAG:-$(git rev-parse --abbrev-ref HEAD)}
@@ -89,13 +113,13 @@ cd "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}"
 SOURCE_DIRECTORY=(*/)
 cd "${ROOT_DIR}"
 shopt -u nullglob
+
 if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
 
   for IMAGE in "${SOURCE_DIRECTORY[@]}"
   do
-    echo -e "->> ${GOOGLE_PROJECT_ID}/${IMAGE}"
-
     IMAGE=${IMAGE%/}
+    echo -e "->> ${GOOGLE_PROJECT_ID}/${IMAGE}"
 
     # Check the source directory exists and contains a Dockerfile template
     if [ ! -d "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}/templates" ]; then
@@ -110,7 +134,7 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
 
     BUILD_DIR="${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}"
 
-    # Rewrite cloudbuild variables
+    # Rewrite only the cloudbuild variables we want to change
     ENVVARS=(
       '${BASEIMAGE_VERSION}' \
       '${BUILD_NAMESPACE}' \
@@ -130,10 +154,13 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
     envsubst "${ENVVARS_STRING}" < ${BUILD_DIR}/templates/Dockerfile.in > ${BUILD_DIR}/Dockerfile
     envsubst "${ENVVARS_STRING}" < ${BUILD_DIR}/templates/README.md.in > ${BUILD_DIR}/README.md
 
-    BUILD_STRING="# Planet4 Docker Application Stack
-# Build: ${CIRCLE_BUILD_NUM:-"test-build"}
+    BUILD_STRING="# ${APPLICATION_NAME}
+# Build: ${BUILD_NUM}
+# ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
-# This file is built automatically from ./templates/Dockerfile.in"
+# This file is built automatically from ./templates/Dockerfile.in
+# ------------------------------------------------------------------------
+"
 
     echo -e "$BUILD_STRING\n$(cat ${BUILD_DIR}/Dockerfile)" > ${BUILD_DIR}/Dockerfile
 
@@ -177,18 +204,11 @@ if [ "${BUILD_REMOTELY}" = "true" ]; then
 
   # Rewrite cloudbuild variables
   SUBSTITUTIONS=(
-    "_BASEIMAGE_VERSION=${BASEIMAGE_VERSION}" \
+    "_BUILD_NUM=${BUILD_NUM}"
     "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
     "_BUILD_TAG=${BUILD_TAG}" \
-    "_CONTAINER_TIMEZONE=${CONTAINER_TIMEZONE}" \
     "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
-    "_HEADERS_MORE_VERSION=${HEADERS_MORE_VERSION}" \
-    "_NGINX_PAGESPEED_RELEASE=${NGINX_PAGESPEED_RELEASE}" \
-    "_NGINX_PAGESPEED_VERSION=${NGINX_PAGESPEED_VERSION}" \
-    "_NGINX_VERSION=${NGINX_VERSION}" \
-    "_OPENSSL_VERSION=${OPENSSL_VERSION}" \
     "_REVISION_TAG=${REVISION_TAG}" \
-    "_SOURCE_TAG=${SOURCE_TAG}"
   )
 
   SUBSTITUTIONS_PROCESSOR="$(printf "%s," "${SUBSTITUTIONS[@]}")"
@@ -198,7 +218,7 @@ if [ "${BUILD_REMOTELY}" = "true" ]; then
   # Since git builtin substitutions aren't available unless triggered
   # https://cloud.google.com/container-builder/docs/concepts/build-requests#substitutions
   TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
-  tar --exclude='.git/' -zcf $TMPDIR/docker-source.tar.gz .
+  tar --exclude='.git/' --exclude='.circleci/'  -zcf $TMPDIR/docker-source.tar.gz .
 
   # Check if we're running on CircleCI
   if [ ! -z "${CIRCLECI}" ]; then
@@ -211,8 +231,18 @@ if [ "${BUILD_REMOTELY}" = "true" ]; then
   time ${GCLOUD} container builds submit \
     --verbosity=${VERBOSITY:-'warning'} \
     --timeout=${BUILD_TIMEOUT} \
-    --config $ROOT_DIR/cloudbuild.yaml \
+    --config ${ROOT_DIR}/cloudbuild.yaml \
     --substitutions ${SUBSTITUTIONS_STRING} \
-    ${TMPDIR}/docker-source.tar.gz && \
-    rm -fr ${TMPDIR}
+    ${TMPDIR}/docker-source.tar.gz
+  rm -fr ${TMPDIR}
+fi
+
+if [[ "${PULL_IMAGES}" = "true" ]]
+then
+  for IMAGE in "${SOURCE_DIRECTORY[@]}"
+  do
+    IMAGE=${IMAGE%/}
+    echo -e "Pull ->> ${GOOGLE_PROJECT_ID}/${IMAGE}"
+    docker pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}"
+  done
 fi
