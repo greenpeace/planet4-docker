@@ -35,11 +35,13 @@ jobs:
           name: Building platform containers on gcr.io
           command: |
             ./build.sh -r
+            rsync -avz . /tmp/workspace/src
 
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
             - var
+            - src
 
   test:
     <<: *defaults
@@ -53,6 +55,7 @@ jobs:
       - run:
           name: Run bats unit tests
           command: |
+            cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh
 
   deploy:
@@ -69,27 +72,17 @@ jobs:
 
       - setup_remote_docker
 
-      - run:
-          name: Restore container image
-          command: |
-            export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
-            docker pull gcr.io/${GOOGLE_PROJECT_ID}/circleci-base:build-${CIRCLE_BUILD_NUM}
-
       - deploy:
           name: Deploy latest tag on master branch
           command: |
             set -x
 
-            # Hacky workaround for CircleCI checking commits out with detached HEAD
-
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
             if [[ "${CIRCLE_BRANCH}" = "master" ]] ||
                [[ "$(cat /tmp/workspace/var/circle-branch-name)" = "master" ]]
             then
-              docker tag gcr.io/${GOOGLE_PROJECT_ID}/circleci-base:build-${CIRCLE_BUILD_NUM} gcr.io/${GOOGLE_PROJECT_ID}/circleci-base:latest
-              ${HOME}/google-cloud-sdk/bin/gcloud docker -- push gcr.io/${GOOGLE_PROJECT_ID}/circleci-base:latest
+              ./deploy.sh
             fi
-
 
 
 workflows:
