@@ -109,7 +109,7 @@ SOURCE_TAG=${SOURCE_TAG//[^a-zA-Z0-9]/-}
 # Get all the project subdirectories
 ROOT_DIR=$(pwd)
 shopt -s nullglob
-cd "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}"
+cd "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}"
 SOURCE_DIRECTORY=(*/)
 cd "${ROOT_DIR}"
 shopt -u nullglob
@@ -122,17 +122,17 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
     echo -e "->> ${GOOGLE_PROJECT_ID}/${IMAGE}"
 
     # Check the source directory exists and contains a Dockerfile template
-    if [ ! -d "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}/templates" ]; then
-      fatal "ERROR :: Directory not found: source/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/"
+    if [ ! -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates" ]; then
+      fatal "ERROR :: Directory not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/"
     fi
-    if [ ! -f "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in" ]; then
-      fatal "ERROR :: Dockerfile not found: source/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in"
+    if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in" ]; then
+      fatal "ERROR :: Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in"
     fi
-    if [ ! -f "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in" ]; then
-      fatal "ERROR :: README not found: source/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in"
+    if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in" ]; then
+      fatal "ERROR :: README not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in"
     fi
 
-    BUILD_DIR="${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}"
+    BUILD_DIR="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}"
 
     # Rewrite only the cloudbuild variables we want to change
     ENVVARS=(
@@ -183,12 +183,12 @@ if [ "${BUILD_LOCALLY}" = "true" ]; then
   for IMAGE in "${LOCAL_BUILD_ORDER[@]}"; do
 
     # Check the source directory exists and contains a Dockerfile
-    if [ -d "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}" ] && [ -f "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile" ]; then
-      BUILD_DIR="${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}"
-    elif [ -d "${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${IMAGE}" ] && [ -f "${ROOT_DIR}/source/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile" ]; then
+    if [ -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile" ]; then
+      BUILD_DIR="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}"
+    elif [ -d "${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${IMAGE}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile" ]; then
       BUILD_DIR="${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${IMAGE}"
     else
-      fatal "ERROR :: Dockerfile not found. Tried:\n - ./source/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile\n - ./sites/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile"
+      fatal "ERROR :: Dockerfile not found. Tried:\n - ./src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile\n - ./sites/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile"
     fi
 
     echo -e "\nBuilding ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ...\n"

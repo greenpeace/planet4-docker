@@ -19,7 +19,7 @@ steps:
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_REVISION_TAG}'
-    - './source/${_GOOGLE_PROJECT_ID}/ubuntu'
+    - './src/${_GOOGLE_PROJECT_ID}/ubuntu'
 
 - id: 'nginx-pagespeed'
   name: 'gcr.io/cloud-builders/docker'
@@ -28,7 +28,7 @@ steps:
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_REVISION_TAG}'
-    - './source/${_GOOGLE_PROJECT_ID}/nginx-pagespeed'
+    - './src/${_GOOGLE_PROJECT_ID}/nginx-pagespeed'
   waitFor:
     - 'ubuntu'
 
@@ -39,7 +39,7 @@ steps:
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_REVISION_TAG}'
-    - './source/${_GOOGLE_PROJECT_ID}/nginx-php-exim'
+    - './src/${_GOOGLE_PROJECT_ID}/nginx-php-exim'
   waitFor:
     - 'nginx-pagespeed'
 
@@ -50,7 +50,7 @@ steps:
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'
-    - './source/${_GOOGLE_PROJECT_ID}/wordpress'
+    - './src/${_GOOGLE_PROJECT_ID}/wordpress'
   waitFor:
     - 'nginx-php-exim'
 
@@ -61,7 +61,7 @@ steps:
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_REVISION_TAG}'
-    - './source/${_GOOGLE_PROJECT_ID}/p4-onbuild'
+    - './src/${_GOOGLE_PROJECT_ID}/p4-onbuild'
   waitFor:
     - 'wordpress'
 
