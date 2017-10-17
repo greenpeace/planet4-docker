@@ -32,9 +32,15 @@ do
     export BATS_IMAGE=${image}
     export BATS_DIRECTORY=${image_dir}
     export BATS_PROJECT_ID=${project}
-    for test in ${BATS_DIRECTORY}/tests/*.bats
-    do
-      bats "${switches[@]}" $test
-    done
+    if [[ -d "${BATS_DIRECTORY}" ]]
+    then
+      for test in ${BATS_DIRECTORY}/tests/*.bats
+      do
+        bats "${switches[@]}" $test
+      done
+    else
+      >&2 echo "WARNING: ${BATS_DIRECTORY} contains no tests!"
+    fi
+
   done
 done
