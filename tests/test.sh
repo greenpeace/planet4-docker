@@ -32,7 +32,7 @@ do
     export BATS_IMAGE=${image}
     export BATS_DIRECTORY=${image_dir}
     export BATS_PROJECT_ID=${project}
-    if [[ -d "${BATS_DIRECTORY}" ]]
+    if [[ -d "${BATS_DIRECTORY}/tests" ]]
     then
       for test in ${BATS_DIRECTORY}/tests/*.bats
       do
