@@ -1,47 +1,103 @@
+defaults: &defaults
+  environment:
+    GOOGLE_PROJECT_ID: planet-4-151612
+  docker:
+    - image: gcr.io/planet-4-151612/circleci-base:latest
+  working_directory:  /home/circleci/app
+
 version: 2
 
 jobs:
   build:
-    environment:
-      PROJECT_ID: planet-4-151612
-    docker:
-      - image: gcr.io/planet-4-151612/circleci-base:latest
-    working_directory:  /home/circleci/app
+    <<: *defaults
     steps:
+      - run:
+          name: Update build numbers
+          command: |
+            curl -sSO https://gist.githubusercontent.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/4250391fe6c4d1e06824b0287b9b8a1c070a6468/circleci_update_build_numbers.sh
+            chmod +x circleci_update_build_numbers.sh
+            ./circleci_update_build_numbers.sh
+
+      - setup_remote_docker
+
+      - checkout
+
       - run:
           name: Configure gcloud
           command: |
-            set -ex
-            ${HOME}/google-cloud-sdk/bin/gcloud --quiet components update
-            echo "${GCLOUD_SERVICE_KEY}" | base64 --decode -i > ${HOME}/gcloud-service-key.json
-            export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud-service-key.json
-            ${HOME}/google-cloud-sdk/bin/gcloud config set project ${PROJECT_ID}
-            ${HOME}/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+            ${HOME}/scripts/activate-gcloud-account.sh
 
-      - setup_remote_docker
-      - checkout
       - run:
-          name: Building containers on gcr.io
+          name: Building platform containers on gcr.io
           command: |
-            set -ex
             ./build.sh -r
 
-  test-development:
-    environment:
-      PROJECT_ID: planet-4-151612
-      TEST_RESULTS: /tmp/test-results
-    docker:
-      - image: gcr.io/planet-4-151612/cci-docker-primary:latest
-    working_directory:  /home/circleci/app
+      - run:
+          name: Store build
 
+  test:
+    <<: *defaults
     steps:
-      - setup_remote_docker
       - run:
           name: Test container build with planet4-docker-compose dev environment
           command: |
-            set -ex
-            git clone https://github.com/greenpeace/planet4-docker-compose -b dev-feature/gitrepositories
-            cd planet4-docker-compose
-            docker-compose pull
-            docker-compose up -d
-            curl --retry 10 --retry-delay 5 -v http://localhost:80 | tee -a ${TEST_RESULTS}/docker-compose
+            ./tests/test.sh
+
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - run:
+          name: Configure gcloud
+          command: |
+            ${HOME}/scripts/activate-gcloud-account.sh
+
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Restore container image
+          command: |
+            export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
+            docker pull gcr.io/${GOOGLE_PROJECT_ID}/circleci-base:build-${CIRCLE_BUILD_NUM}
+
+      - deploy:
+          name: Deploy latest tag on master branch
+          command: |
+            set -x
+
+            # Hacky workaround for CircleCI checking commits out with detached HEAD
+
+            export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
+            if [[ "${CIRCLE_BRANCH}" = "master" ]] ||
+               [[ "$(cat /tmp/workspace/var/circle-branch-name)" = "master" ]]
+            then
+              docker tag gcr.io/${GOOGLE_PROJECT_ID}/circleci-base:build-${CIRCLE_BUILD_NUM} gcr.io/${GOOGLE_PROJECT_ID}/circleci-base:latest
+              ${HOME}/google-cloud-sdk/bin/gcloud docker -- push gcr.io/${GOOGLE_PROJECT_ID}/circleci-base:latest
+            fi
+
+
+
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - test:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      # Only run deploy job for tagged releases, any branch
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
