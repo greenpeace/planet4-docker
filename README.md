@@ -21,9 +21,16 @@ This triggers a Google Container Registry (GCR) build using the settings from `c
 ./build.sh -r
 ```
 
+## Pull new images after remote build
+```
+./build.sh -r
+```
+
 ## Updating build configuration variables
 
-Containers can be modified at build time as well as on container start by build arguments `ARG` or environment variables `ENV`.  To build containers with parameters other than the default, or to specify different default values, you can supply build-time command line arguments (see below) or make edits to a configuration file.
+Containers can be modified at build time by build arguments `ARG`, or on container start with environment variables `ENV`.  
+
+To build containers with custom values, or to specify different default values, you can supply build-time command line arguments (see below) or make edits to a configuration file.
 
 To rewrite platform variables without triggering a build, run `build.sh` without the `-l` or `-r` command line arguments:
 
@@ -31,11 +38,11 @@ To rewrite platform variables without triggering a build, run `build.sh` without
 ./build.sh
 ```
 
-This updates local Dockerfile ENV variables such as `NGINX_VERSION` or `OPENSSL_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically.
+This will update the local Dockerfile ENV variables such as `NGINX_VERSION` or `OPENSSL_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically in the CI pipeline.
 
 ## Customising the container build
 
-See config.default for optional build configuration parameters. The easiest way to overwrite default parameters is to add new entries to a bash key value file, eg `config.custom`, then re-run the build with command line parameter like so: `./build.sh -c config.custom`
+See `config.default` for optional build configuration parameters. The easiest way to overwrite default parameters is to add new entries to a bash key value file, eg `config.custom`, then re-run the build with command line parameter like so: `./build.sh -c config.custom`
 
 Note: to overwrite the default values, it's recommended to edit the short form of the variable without the leading `DEFAULT_`. For example, to change the application repository branch, use `GIT_REF`, not `DEFAULT_GIT_REF`. This ensures hierarchical resolution of variables from multiple sources, and enables the values to be configured at build and runtime, while falling back to sane default values.
 
