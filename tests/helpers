@@ -24,7 +24,6 @@ function start_docker_compose {
   do
     sleep $interval
     loop=$((loop-1))
-    echo "$loop" >> /tmp/what
     if [[ $loop -lt .1 ]]
     then
       docker-compose -f $compose_file stop
