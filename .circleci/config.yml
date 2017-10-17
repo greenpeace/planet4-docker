@@ -11,6 +11,8 @@ jobs:
   build:
     <<: *defaults
     steps:
+      - checkout
+
       - run:
           name: Update build numbers
           command: |
@@ -23,8 +25,6 @@ jobs:
             ./circleci_update_build_numbers.sh
 
       - setup_remote_docker
-
-      - checkout
 
       - run:
           name: Configure gcloud
