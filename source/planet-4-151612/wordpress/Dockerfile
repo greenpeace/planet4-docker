@@ -1,7 +1,10 @@
-# Planet4 Docker Application Stack
-# Build: test-build
+# 
+# Build: test-feature-circleci
+# ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
+# ------------------------------------------------------------------------
+
 FROM gcr.io/planet-4-151612/nginx-php-exim
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
@@ -14,8 +17,8 @@ RUN apt-get update && \
     # composer config --global github-protocols https && \
     curl -o /app/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     wget https://github.com/jwilder/dockerize/releases/download/v0.5.0/dockerize-linux-amd64-v0.5.0.tar.gz && \
-    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-0.5.0.tar.gz && \
-    rm dockerize-linux-amd64-0.5.0.tar.gz
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.5.0.tar.gz && \
+    rm dockerize-linux-amd64-v0.5.0.tar.gz
 
 COPY . /app/
 

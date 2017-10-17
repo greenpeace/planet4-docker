@@ -1,7 +1,10 @@
-# Planet4 Docker Application Stack
-# Build: test-build
+# 
+# Build: test-feature-circleci
+# ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
+# ------------------------------------------------------------------------
+
 FROM phusion/baseimage:0.9.22
 MAINTAINER Ray Walker <raymond.walker@greenpeace.org>
 

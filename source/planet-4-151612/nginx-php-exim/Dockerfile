@@ -1,7 +1,10 @@
-# Planet4 Docker Application Stack
-# Build: test-build
+# 
+# Build: test-feature-circleci
+# ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
+# ------------------------------------------------------------------------
+
 FROM gcr.io/planet-4-151612/nginx-pagespeed
 
 MAINTAINER Ray Walker <hello@raywalker.it>
