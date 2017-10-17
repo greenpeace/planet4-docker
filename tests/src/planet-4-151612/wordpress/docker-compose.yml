@@ -1,0 +1,6 @@
+version: '3'
+services:
+  app:
+    image: ${IMAGE_NAMESPACE}/${PROJECT_ID}/wordpress:${IMAGE_TAG:-develop}
+    ports:
+      - "80:80"

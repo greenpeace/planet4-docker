@@ -1,0 +1,4 @@
+version: '3'
+services:
+  app:
+    image: ${IMAGE_NAMESPACE}/${PROJECT_ID}/ubuntu:${IMAGE_TAG:-develop}

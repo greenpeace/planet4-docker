@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -ae
+
+project=$(basename "$BATS_DIRECTORY")
+image="${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${project}:${IMAGE_TAG}"
+
+function fatal {
+  >&2 echo "$1"
+  exit 1
+}
+
+function start_docker_compose {
+  local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
+  local endpoint="${2:-http://localhost:80}"
+  # local port="${2:-80}"
+
+  # Wait 30s, retry every .1s
+  local -i loop=300
+  local interval=0.1
+
+  docker-compose -f $compose_file up -d
+
+  until curl -s -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "200"
+  do
+    sleep $interval
+    loop=$((loop-1))
+    echo "$loop" >> /tmp/what
+    if [[ $loop -lt .1 ]]
+    then
+      docker-compose -f $compose_file stop
+      >&2 "Timeout without successful connection to ${endpoint}"
+      exit 1
+    fi
+  done
+}
+
+function clean_container {
+  [[ -z "$1" ]] && fatal "Container name not set"
+  docker stop $1
+}
+
+function clean_docker_compose {
+  local compose_file=${1:-"docker-compose.yml"}
+  docker-compose -f $compose_file stop
+  yes | docker-compose -f $1 rm || true
+}
+
+function run_test_image_exists {
+  [[ -z "$1" ]] && fatal "Expected response regex not set"
+  local image_regex="$1"
+  docker images | grep -q "${image_regex}"
+}
+
+function run_test_container_starts {
+  [[ -z "$1" ]] && fatal "No container name specified"
+  [[ -z "$2" ]] && fatal "No image specified"
+  local $name=$1
+  local $image=$2
+  docker run --rm -d --name "$name" "$image"
+}
+
+function run_test_http_response_code {
+  [[ -z "$1" ]] && fatal "Expected response code not set"
+  local -i response=$1
+  local endpoint=${2:-"http://localhost:80"}
+  curl -s -k -o /dev/null -w "%{http_code}" "$endpoint" | grep -q "$response"
+}
+
+function run_test_http_response_grep {
+  [[ -z "$1" ]] && fatal "Expected response regex not set"
+  local response=$1
+  local endpoint=${2:-"http://localhost:80"}
+  curl -s -k "$endpoint" | grep -q "$response"
+}
