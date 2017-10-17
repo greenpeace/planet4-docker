@@ -38,7 +38,7 @@ do
                 usage;;
     esac
 done
-shift $(($OPTIND - 1))
+shift $((OPTIND - 1))
 
 # CONFIG FILE
 # Read parameters from key->value configuration files
