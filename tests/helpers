@@ -24,7 +24,7 @@ function start_docker_compose {
   do
     sleep $interval
     loop=$((loop-1))
-    if [[ $loop -lt .1 ]]
+    if [[ $loop -lt 1 ]]
     then
       docker-compose -f $compose_file stop
       >&2 "Timeout without successful connection to ${endpoint}"
