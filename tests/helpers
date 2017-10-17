@@ -53,8 +53,8 @@ function run_test_image_exists {
 function run_test_container_starts {
   [[ -z "$1" ]] && fatal "No container name specified"
   [[ -z "$2" ]] && fatal "No image specified"
-  local $name=$1
-  local $image=$2
+  local name=$1
+  local image=$2
   docker run --rm -d --name "$name" "$image"
 }
 
