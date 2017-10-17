@@ -14,6 +14,10 @@ jobs:
       - run:
           name: Update build numbers
           command: |
+            # Store current build number for future jobs
+            mkdir -p /tmp/workspace/var
+            echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
+            # Fetch build number script from gist
             curl -sSO https://gist.githubusercontent.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/4250391fe6c4d1e06824b0287b9b8a1c070a6468/circleci_update_build_numbers.sh
             chmod +x circleci_update_build_numbers.sh
             ./circleci_update_build_numbers.sh
@@ -32,18 +36,29 @@ jobs:
           command: |
             ./build.sh -r
 
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - var
 
   test:
     <<: *defaults
     steps:
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - setup_remote_docker
+
       - run:
-          name: Test container build with planet4-docker-compose dev environment
+          name: Run bats unit tests
           command: |
-            ./tests/test.sh
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh
 
   deploy:
     <<: *defaults
     steps:
+
       - attach_workspace:
           at: /tmp/workspace
 
@@ -52,8 +67,6 @@ jobs:
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
 
-      - checkout
-      
       - setup_remote_docker
 
       - run:
