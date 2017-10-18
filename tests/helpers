@@ -20,7 +20,8 @@ function begin_output {
 }
 
 function store_output {
-  local string=$(echo -e "$output" | sed -e "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")
+  local string
+  string=$(echo -e "${output:?}" | sed -e "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")
   echo -e "$string\n=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >> $ARTIFACTS_DIR/${BATS_IMAGE}
   PS4=''
 }
