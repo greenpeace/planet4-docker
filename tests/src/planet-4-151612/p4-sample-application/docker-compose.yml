@@ -4,3 +4,5 @@ services:
     build: .
     ports:
       - "80:80"
+    environment:
+      - APP_HOSTNAME=${APP_HOSTNAME}
