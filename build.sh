@@ -76,7 +76,7 @@ then
       BUILD_TAG="${CIRCLE_BRANCH}"
     fi
   fi
-  BUILD_NUM=${CIRCLE_BUILD_NUM}
+  BUILD_NUM="build-${CIRCLE_BUILD_NUM}"
 fi
 
 # Consolidate and sanitise variables
