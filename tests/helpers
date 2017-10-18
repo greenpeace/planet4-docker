@@ -9,6 +9,10 @@ function fatal {
   exit 1
 }
 
+function pull_image {
+  docker pull "${image}"
+}
+
 function start_docker_compose {
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
   local endpoint="${2:-http://localhost:80}"
