@@ -3,40 +3,32 @@ set -e
 
 switches=("$@")
 
-IMAGE_NAMESPACE=${BUILD_NAMESPACE:-"gcr.io"}
-IMAGE_TAG=${BUILD_TAG:-${CIRCLE_TAG:-${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}}}
-IMAGE_TAG=${IMAGE_TAG//[^a-zA-Z0-9]/-}
-
-export IMAGE_TAG
-export IMAGE_NAMESPACE
-
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
   DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
   SOURCE="$(readlink "$SOURCE")"
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
-CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-export CURRENT_DIR
+FILE_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+export FILE_DIR
 
-# shellcheck source=./helpers
-. ${CURRENT_DIR}/helpers
+. ${FILE_DIR}/env
+. ${FILE_DIR}/helpers
 
-for project_dir in ${CURRENT_DIR}/src/*/
+for project_dir in ${FILE_DIR}/src/*/
 do
   project=$(basename ${project_dir})
   for image_dir in ${project_dir}/*/
   do
     image=$(basename ${image_dir})
-    >&2 echo " >> ${project}/${image}:${IMAGE_TAG}"
+    >&2 echo -e "\n >> ${project}/${image}:${IMAGE_TAG}"
     export BATS_IMAGE=${image}
-    export BATS_DIRECTORY=${image_dir}
     export BATS_PROJECT_ID=${project}
-    if [[ -d "${BATS_DIRECTORY}/tests" ]]
+    if [[ -d "${image_dir}/tests" ]]
     then
-      bats "${switches[@]}" ${BATS_DIRECTORY}/tests
+      bats "${switches[@]}" ${image_dir}/tests
     else
-      >&2 echo "WARNING: ${BATS_DIRECTORY} contains no tests!"
+      >&2 echo "WARNING: ${image_dir} contains no tests!"
     fi
 
   done

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -a
+
+IMAGE_NAMESPACE=${IMAGE_NAMESPACE:-"gcr.io"}
+BATS_PROJECT_ID=${BATS_PROJECT_ID:-"planet-4-151612"}
+IMAGE_TAG=${BUILD_TAG:-${CIRCLE_TAG:-${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}}}
+IMAGE_TAG=${IMAGE_TAG//[^a-zA-Z0-9]/-}
