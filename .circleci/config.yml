@@ -58,6 +58,9 @@ jobs:
             cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh
 
+      - store_artifacts:
+          path: /tmp/artifacts
+
   deploy:
     <<: *defaults
     steps:
