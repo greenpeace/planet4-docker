@@ -3,7 +3,11 @@ set -e
 
 load env
 
-@test "image exists: ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}:${IMAGE_TAG}" {
+@test "pull image: ${image}" {
+  pull_image "${image}"
+}
+
+@test "image exists" {
   run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
   [ "$status" -eq 0 ]
 }
