@@ -30,11 +30,11 @@ load env
   run_test_http_response_grep "PHP Version 7.[0-9]*.[0-9]*"
 }
 
-@test "environment variable PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}" {
+@test "environment variable set correctly: PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}" {
   run_test_http_response_grep "memory_limit.*${PHP_MEMORY_LIMIT}"
 }
 
-@test "environment variable UPLOAD_MAX_SIZE=${UPLOAD_MAX_SIZE}" {
+@test "environment variable set correctly: UPLOAD_MAX_SIZE=${UPLOAD_MAX_SIZE}" {
   run_test_http_response_grep "upload_max_filesize.*${UPLOAD_MAX_SIZE}"
   run_test_http_response_grep "post_max_size.*${UPLOAD_MAX_SIZE}"
 }
