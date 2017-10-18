@@ -1,19 +1,38 @@
 #!/usr/bin/env bash
 set -ae
 
-project=$(basename "$BATS_DIRECTORY")
-image="${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${project}:${IMAGE_TAG}"
+function finish {
+  set +ex
+}
+trap finish EXIT
 
 function fatal {
   >&2 echo "$1"
   exit 1
 }
 
+function begin_output {
+  ARTIFACTS_DIR=${ARTIFACTS_DIR:-"/tmp/artifacts"}
+  [[ -d "$ARTIFACTS_DIR" ]] || mkdir -p $ARTIFACTS_DIR
+
+  PS4='+($(basename $BASH_SOURCE):${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+  echo -e "=============== vvv [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}" >> $ARTIFACTS_DIR/${BATS_IMAGE}
+}
+
+function store_output {
+  echo -e "$output\n=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >> $ARTIFACTS_DIR/${BATS_IMAGE}
+  PS4=''
+}
+
 function pull_image {
+  set -ex
+  trap finish EXIT
   docker pull "${image}"
 }
 
 function start_docker_compose {
+  set -ex
+  trap finish EXIT
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
   local endpoint="${2:-http://localhost:80}"
   # local port="${2:-80}"
@@ -24,7 +43,7 @@ function start_docker_compose {
 
   docker-compose -f $compose_file up -d
 
-  until curl -s -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "200"
+  until time curl -s -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "200"
   do
     sleep $interval
     loop=$((loop-1))
@@ -38,23 +57,31 @@ function start_docker_compose {
 }
 
 function clean_container {
+  set -ex
+  trap finish EXIT
   [[ -z "$1" ]] && fatal "Container name not set"
   docker stop $1
 }
 
 function clean_docker_compose {
+  set -ex
+  trap finish EXIT
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
   docker-compose -f $compose_file stop
-  yes | docker-compose -f $1 rm || true
+  yes | docker-compose -f $1 rm
 }
 
 function run_test_image_exists {
+  set -ex
+  trap finish EXIT
   [[ -z "$1" ]] && fatal "Expected response regex not set"
   local image_regex="$1"
-  docker images | grep -q "${image_regex}"
+  docker images | grep "${image_regex}"
 }
 
 function run_test_container_starts {
+  set -ex
+  trap finish EXIT
   [[ -z "$1" ]] && fatal "No container name specified"
   [[ -z "$2" ]] && fatal "No image specified"
   local name=$1
@@ -63,14 +90,18 @@ function run_test_container_starts {
 }
 
 function run_test_http_response_code {
+  set -ex
+  trap finish EXIT
   local -i response=${1:-"200"}
   local endpoint=${2:-"http://localhost:80"}
-  curl -s -k -o /dev/null -w "%{http_code}" "$endpoint" | grep -q "$response"
+  curl -s -k -o /dev/null -w "%{http_code}" "$endpoint" | grep "$response"
 }
 
 function run_test_http_response_grep {
+  set -ex
+  trap finish EXIT
   [[ -z "$1" ]] && fatal "Expected response regex not set"
   local response=$1
   local endpoint=${2:-"http://localhost:80"}
-  curl -s -k "$endpoint" | grep -q "$response"
+  curl -s -k "$endpoint" | grep "$response"
 }
