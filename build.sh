@@ -107,6 +107,7 @@ REVISION_TAG=${REVISION_TAG:-$(git rev-parse --short HEAD)}
 REWRITE_LOCAL_DOCKERFILES=${REWRITE_LOCAL_DOCKERFILES:-${DEFAULT_REWRITE_LOCAL_DOCKERFILES}}
 SOURCE_TAG=${SOURCE_TAG:-$(git rev-parse --abbrev-ref HEAD)}
 SOURCE_TAG=${SOURCE_TAG//[^a-zA-Z0-9]/-}
+UBUNTU_BASE_VERSION=${UBUNTU_BASE_VERSION:-${DEFAULT_UBUNTU_BASE_VERSION}}
 
 # Get all the project subdirectories
 ROOT_DIR=$(pwd)
@@ -148,6 +149,7 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
       '${NGINX_VERSION}' \
       '${OPENSSL_VERSION}' \
       '${PHP_MAJOR_VERSION}' \
+      '${UBUNTU_BASE_VERSION}' \
     )
 
     ENVVARS_STRING="$(printf "%s:" "${ENVVARS[@]}")"

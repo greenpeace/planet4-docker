@@ -5,7 +5,7 @@
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/ubuntu
+FROM gcr.io/planet-4-151612/ubuntu:latest
 
 EXPOSE 80
 EXPOSE 443

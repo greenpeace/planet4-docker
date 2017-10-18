@@ -61,6 +61,7 @@ DEFAULT_CONTAINER_TIMEZONE=UTC
 
 # Infrastructure version numbers
 
+DEFAULT_UBUNTU_BASE_VERSION=latest
 # https://github.com/phusion/baseimage-docker/releases
 DEFAULT_BASEIMAGE_VERSION=0.9.22
 # https://github.com/jwilder/dockerize/releases
