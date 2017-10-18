@@ -63,8 +63,7 @@ function run_test_container_starts {
 }
 
 function run_test_http_response_code {
-  [[ -z "$1" ]] && fatal "Expected response code not set"
-  local -i response=$1
+  local -i response=${1:-"200"}
   local endpoint=${2:-"http://localhost:80"}
   curl -s -k -o /dev/null -w "%{http_code}" "$endpoint" | grep -q "$response"
 }
