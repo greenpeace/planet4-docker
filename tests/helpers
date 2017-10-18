@@ -43,7 +43,7 @@ function clean_container {
 }
 
 function clean_docker_compose {
-  local compose_file=${1:-"docker-compose.yml"}
+  local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
   docker-compose -f $compose_file stop
   yes | docker-compose -f $1 rm || true
 }
