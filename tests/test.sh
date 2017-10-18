@@ -3,19 +3,22 @@ set -e
 
 switches=("$@")
 
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+source="${BASH_SOURCE[0]}"
+while [[ -h "$source" ]]
+do # resolve $source until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$source" )" && pwd )"
+  source="$(readlink "$source")"
+  [[ $source != /* ]] && source="$DIR/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
-FILE_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-export FILE_DIR
+file_dir="$( cd -P "$( dirname "$source" )" && pwd )"
+export file_dir
 
-. ${FILE_DIR}/env
-. ${FILE_DIR}/helpers
+# shellcheck source=./env
+. ${file_dir}/env
+# shellcheck source=./helpers
+. ${file_dir}/helpers
 
-for project_dir in ${FILE_DIR}/src/*/
+for project_dir in ${file_dir}/src/*/
 do
   project=$(basename ${project_dir})
   for image_dir in ${project_dir}/*/
