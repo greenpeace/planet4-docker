@@ -3,27 +3,40 @@ set -e
 
 load env
 
-@test "pull image: ${image}" {
-  pull_image "${image}"
+function setup {
+  begin_output
+}
+
+function teardown {
+  store_output
+}
+
+@test "pull image" {
+  run pull_image "${image}"
+  [[ $status -eq 0 ]]
 }
 
 @test "image exists" {
-  run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
+  run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
+  [[ $status -eq 0 ]]
 }
 
 @test "container starts" {
-  start_docker_compose
+  run start_docker_compose
+  [[ $status -eq 0 ]]
 }
 
 @test "container responds on port 80 with status 200" {
-  run_test_http_response_code
+  run run_test_http_response_code
+  [[ $status -eq 0 ]]
 }
 
 @test "container fails to respond on port 443" {
   run run_test_http_response_code 200 https://localhost:443
-  [[ "$status" -eq 1 ]]
+  [[ $status -ne 0 ]]
 }
 
 @test "container cleans up" {
-  clean_docker_compose "${compose_file}"
+  run clean_docker_compose "${compose_file}"
+  echo $output > $ARTIFACTS_DIR/${BATS_IMAGE}
 }
