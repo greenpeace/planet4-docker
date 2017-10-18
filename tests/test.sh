@@ -34,10 +34,7 @@ do
     export BATS_PROJECT_ID=${project}
     if [[ -d "${BATS_DIRECTORY}/tests" ]]
     then
-      for test in ${BATS_DIRECTORY}/tests/*.bats
-      do
-        bats "${switches[@]}" $test
-      done
+      bats "${switches[@]}" ${BATS_DIRECTORY}/tests
     else
       >&2 echo "WARNING: ${BATS_DIRECTORY} contains no tests!"
     fi
