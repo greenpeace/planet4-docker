@@ -37,6 +37,6 @@ function teardown {
 }
 
 @test "container cleans up" {
-  run clean_docker_compose "${compose_file}"
-  echo $output > $ARTIFACTS_DIR/${BATS_IMAGE}
+  run clean_docker_compose
+  [[ $status -ne 0 ]]
 }
