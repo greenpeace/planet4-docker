@@ -6,3 +6,9 @@ services:
       - "80:80"
     environment:
       - APP_HOSTNAME=${APP_HOSTNAME}
+    env_file:
+      - db.env
+  db:
+    image: ${DB_IMAGE:-mysql:5.7}
+    env_file:
+      - db.env
