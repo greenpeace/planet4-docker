@@ -22,17 +22,17 @@ function teardown {
 }
 
 @test "container starts" {
-  run start_docker_compose
+  run start_docker_compose "${compose_file}" "${ENDPOINT}"
   [[ $status -eq 0 ]]
 }
 
 @test "container responds on port 80 with status 200" {
-  run run_test_http_response_code
+  run run_test_http_response_code 200 ${ENDPOINT}
   [[ $status -eq 0 ]]
 }
 
 @test "container fails to respond on port 443" {
-  run run_test_http_response_code 200 https://localhost:443
+  run run_test_http_response_code 200 https://localhost:${ENDPOINT_PORT}
   [[ $status -ne 0 ]]
 }
 

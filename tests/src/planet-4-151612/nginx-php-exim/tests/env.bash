@@ -16,8 +16,15 @@ export image
 
 # docker-compose.yml environment variables
 APP_HOSTNAME=testing.local
+ENDPOINT_PORT_HTTP=8080
+ENDPOINT_PORT_HTTPS=8443
+ENDPOINT_HTTP="http://localhost:${ENDPOINT_PORT_HTTP}"
+ENDPOINT_HTTPS="https://localhost:${ENDPOINT_PORT_HTTPS}"
+
 PHP_MEMORY_LIMIT=192M
 UPLOAD_MAX_SIZE=42M
 export APP_HOSTNAME
+export ENDPOINT_PORT
+export ENDPOINT
 export PHP_MEMORY_LIMIT
 export UPLOAD_MAX_SIZE

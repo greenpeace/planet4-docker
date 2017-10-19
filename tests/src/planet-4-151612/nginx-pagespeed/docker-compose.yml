@@ -3,4 +3,4 @@ services:
   app:
     image: ${IMAGE_NAMESPACE:-gcr.io}/${BATS_PROJECT_ID:-planet-4-151612}/nginx-pagespeed:${IMAGE_TAG:-develop}
     ports:
-      - "80:80"
+      - "${ENDPOINT_PORT}:80"
