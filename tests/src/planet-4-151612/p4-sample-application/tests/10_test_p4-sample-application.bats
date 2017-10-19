@@ -36,16 +36,19 @@ function teardown {
 }
 
 @test "container starts" {
+  skip "More to be implemented here"
   run start_docker_compose
   [[ "$status" -eq 0 ]]
 }
 
 @test "container responds on port 80 with status 200" {
+  skip "Awaiting 'container starts' to be implemented properly"
   run run_test_http_response_code
   [[ "$status" -eq 0 ]]
 }
 
 @test "container cleans up" {
+  skip "Awaiting 'container starts' to be implemented properly"
   run clean_docker_compose "${compose_file}"
   [[ "$status" -eq 0 ]]
 }
