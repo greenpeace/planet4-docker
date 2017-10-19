@@ -38,5 +38,5 @@ function teardown {
 
 @test "container cleans up" {
   run clean_docker_compose
-  [[ $status -ne 0 ]]
+  [[ $status -eq 0 ]]
 }
