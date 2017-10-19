@@ -13,7 +13,14 @@ export compose_file
 export container_name
 export image
 
-ENDPOINT_PORT=8080
+ENDPOINT_PORT=80
 ENDPOINT="http://localhost:${ENDPOINT_PORT}"
+if [[ ${CI} ]]
+then
+  NETWORK_MODE="host"
+else
+  NETWORK_MODE="bridge"
+fi
 export ENDPOINT_PORT
 export ENDPOINT
+export NETWORK_MODE

@@ -4,3 +4,4 @@ services:
     image: ${IMAGE_NAMESPACE:-gcr.io}/${BATS_PROJECT_ID:-planet-4-151612}/nginx-pagespeed:${IMAGE_TAG:-develop}
     ports:
       - "${ENDPOINT_PORT}:80"
+    network_mode: "${NETWORK_MODE}"
