@@ -11,7 +11,7 @@ _good "nginx:    upstream  ${NGINX_FASTCGI_BACKEND:-$DEFAULT_NGINX_FASTCGI_BACKE
 sed -i -r "s#server:.*;#server: ${NGINX_FASTCGI_BACKEND:-$DEFAULT_NGINX_FASTCGI_BACKEND};#g" /etc/nginx/sites-enabled/upstream.conf
 
 # replace PHP Pool name
-POOL_NAME=`echo ${APP_HOSTNAME} | sed -e 's/[^a-zA-Z]/_/g'`
+POOL_NAME=$(echo ${APP_HOSTNAME} | sed -e 's/[^a-zA-Z]/_/g')
 _good "php:    pool name   ${POOL_NAME}"
 sed -i -r "s/^\[.*\]$/\[${POOL_NAME}\]/g" /etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf
 
@@ -60,7 +60,7 @@ sed -i -r "s/pm.max_spare_servers\s*=\s*[0-9]+/pm.max_spare_servers = ${PHP_MAX_
 sed -i -r "s/pm.max_requests\s*=\s*[0-9]+/pm.max_requests = ${PHP_MAX_REQUESTS:-$DEFAULT_PHP_MAX_REQUESTS}/g" /etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf
 
 # disable_functions
-DIST_DISABLE_FUNCTIONS=`grep "disable_functions =" /etc/php/${PHP_MAJOR_VERSION}/fpm/php.ini.dist`
+DIST_DISABLE_FUNCTIONS=$(grep "disable_functions =" /etc/php/${PHP_MAJOR_VERSION}/fpm/php.ini.dist)
 if [[ "${PHP_DISABLE_FUNCTIONS:-$DEFAULT_PHP_DISABLE_FUNCTIONS}" != "false" ]]; then
     _good "php:    disable_functions:    ${PHP_DISABLE_FUNCTIONS:-$DEFAULT_PHP_DISABLE_FUNCTIONS}"
     sed -i -r "s/^disable_functions =.*$/${DIST_DISABLE_FUNCTIONS}${PHP_DISABLE_FUNCTIONS:-$DEFAULT_PHP_DISABLE_FUNCTIONS}/g" /etc/php/${PHP_MAJOR_VERSION}/fpm/php.ini
