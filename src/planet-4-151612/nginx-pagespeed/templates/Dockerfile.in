@@ -1,5 +1,7 @@
 FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/ubuntu:${UBUNTU_BASE_VERSION}
 
+MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
+
 EXPOSE 80
 EXPOSE 443
 
