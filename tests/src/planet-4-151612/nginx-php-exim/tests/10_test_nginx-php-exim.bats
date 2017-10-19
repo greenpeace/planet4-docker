@@ -17,7 +17,7 @@ function teardown {
 }
 
 @test "image exists" {
-  run run_test_image_exists "p4sampleapplication_app"
+  run run_test_image_exists "${image}"
   [[ $status -eq 0 ]]
 }
 
