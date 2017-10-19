@@ -1,5 +1,5 @@
 # Greenpeace P4 Docker application
-# Build: build-36
+# Build: build-39
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
