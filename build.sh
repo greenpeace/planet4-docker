@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2059
+
 set -eo pipefail
 
 # UTILITY
