@@ -47,7 +47,7 @@ function start_docker_compose {
   local -i loop=300
   local interval=0.1
 
-  docker-compose -f $compose_file up -d
+  docker-compose --no-ansi -f $compose_file up -d 
 
   until time curl -s -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "200"
   do
@@ -55,7 +55,7 @@ function start_docker_compose {
     loop=$((loop-1))
     if [[ $loop -lt 1 ]]
     then
-      docker-compose -f $compose_file stop
+      docker-compose --no-ansi -f $compose_file stop
       >&2 "Timeout without successful connection to ${endpoint}"
       exit 1
     fi
@@ -73,8 +73,8 @@ function clean_docker_compose {
   set -ex
   trap finish EXIT
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
-  docker-compose -f $compose_file stop
-  yes | docker-compose -f $1 rm
+  docker-compose --no-ansi -f $compose_file stop
+  yes | docker-compose --no-ansi -f $1 rm
 }
 
 function run_test_image_exists {
