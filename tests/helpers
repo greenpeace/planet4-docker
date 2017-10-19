@@ -17,13 +17,16 @@ function begin_output {
   [[ -f "${ARTIFACTS_DIR}/${BATS_IMAGE}" ]] || touch "${ARTIFACTS_DIR}/${BATS_IMAGE}"
 
   PS4='+($(basename $BASH_SOURCE):${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
-  echo -e "=============== vvv [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}" >> $ARTIFACTS_DIR/${BATS_IMAGE}
+  echo -e "=============== vvv [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}" >> "${ARTIFACTS_DIR}/${BATS_IMAGE}"
 }
 
 function store_output {
   local string
-  string=$(echo -e "${output:?}" | sed -e "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")
-  echo -e "$string\n=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >> $ARTIFACTS_DIR/${BATS_IMAGE}
+  # $output is defined in bats `run` command, don't panic @shellcheck
+  # shellcheck disable=SC2154
+  string=$(echo "${output}" | sed -e "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")
+  echo "$string" >> "${ARTIFACTS_DIR}/${BATS_IMAGE}"
+  echo -e "=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >> "${ARTIFACTS_DIR}/${BATS_IMAGE}"
   PS4=''
 }
 
