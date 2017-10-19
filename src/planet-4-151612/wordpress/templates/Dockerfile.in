@@ -1,4 +1,4 @@
-FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/nginx-php-exim
+FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/nginx-php-exim:${SOURCE_VERSION}
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
