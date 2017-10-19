@@ -31,7 +31,7 @@ function teardown {
 }
 
 @test "image exists" {
-  run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
+  run run_test_image_exists "p4sampleapplication_app"
   [[ "$status" -eq 0 ]]
 }
 
