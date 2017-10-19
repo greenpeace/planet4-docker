@@ -1,5 +1,5 @@
 # Greenpeace P4 Docker application
-# Build: build-48
+# Build: build-51
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -22,7 +22,7 @@ COPY . /app
 # Update to latest packages and tidy up
 RUN apt-get update && \
     apt-get -y upgrade && \
-    apt-get install -y tzdata && \
+    apt-get install --no-install-recommends -y tzdata && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     chmod +x /app/bin/* && \
     if [ ! -f "/etc/my_init.d/00_set_timezone.sh" ]; then ln -s /app/bin/set_timezone.sh /etc/my_init.d/00_set_timezone.sh; fi

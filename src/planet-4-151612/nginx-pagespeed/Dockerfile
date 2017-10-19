@@ -1,17 +1,19 @@
 # Greenpeace P4 Docker application
-# Build: build-48
+# Build: build-51
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/ubuntu:latest
+FROM gcr.io/planet-4-151612/ubuntu:feature-circleci
+
+MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
 EXPOSE 80
 EXPOSE 443
 
 # http://nginx.org/en/download.html
-ENV NGINX_VERSION 1.13.2
+ENV NGINX_VERSION 1.13.6
 
 # https://github.com/pagespeed/ngx_pagespeed/releases
 ENV NGINX_PAGESPEED_VERSION latest
@@ -29,13 +31,13 @@ RUN chmod 750 /app/bin/*.sh && \
     useradd -r -s /usr/sbin/nologin nginx && mkdir -p /var/log/nginx /var/cache/nginx && \
   	apt-get update && \
   	apt-get -y --no-install-recommends install wget git-core autoconf automake libtool build-essential zlib1g-dev libpcre3-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev && \
-  	echo "Downloading nginx 1.13.2 from http://nginx.org/download/nginx-1.13.2.tar.gz ..." && \
-  	wget -O - http://nginx.org/download/nginx-1.13.2.tar.gz --progress=bar --tries=3 | tar zxf - -C /tmp && \
+  	echo "Downloading nginx 1.13.6 from http://nginx.org/download/nginx-1.13.6.tar.gz ..." && \
+  	wget -O - http://nginx.org/download/nginx-1.13.6.tar.gz --progress=bar --tries=3 | tar zxf - -C /tmp && \
   	echo "Downloading headers-more 0.32 from https://github.com/openresty/headers-more-nginx-module/archive/v0.32.tar.gz ..." && \
   	wget -O - https://github.com/openresty/headers-more-nginx-module/archive/v0.32.tar.gz --progress=bar  --tries=3 | tar zxf - -C /tmp && \
   	/app/bin/download_pagespeed.sh && \
   	echo "Downloading openssl v1.1.0f from https://www.openssl.org/source/openssl-1.1.0f.tar.gz ..." && wget -O - https://www.openssl.org/source/openssl-1.1.0f.tar.gz  --progress=bar --tries=3 | tar xzf  - -C /tmp && \
-  	cd /tmp/nginx-1.13.2 && \
+  	cd /tmp/nginx-1.13.6 && \
   	./configure \
   		--prefix=/etc/nginx  \
   		--sbin-path=/usr/sbin/nginx  \
