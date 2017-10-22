@@ -39,9 +39,9 @@ function store_output {
 function curl_check_response_regex {
   set -ex
   trap finish EXIT
-  local endpoint=${1:-"http://localhost:80"}
-  local container=${2:-$(get_container_name)}
-  local regex=${3:-"OK"}
+  local regex=${1:-"OK"}
+  local endpoint=${2:-"http://localhost:80"}
+  local container=${3:-$(get_container_name)}
 
   if [[ $CIRCLECI ]]
   then
@@ -55,9 +55,9 @@ function curl_check_response_regex {
 function curl_check_status_code {
   set -ex
   trap finish EXIT
-  local endpoint=${1:-"http://localhost:80"}
-  local container=${2:-$(get_container_name)}
-  local status_code=${3:-200}
+  local status_code=${1:-200}
+  local endpoint=${2:-"http://localhost:80"}
+  local container=${3:-$(get_container_name)}
 
   if [[ $CIRCLECI ]]
   then
@@ -88,7 +88,7 @@ function start_docker_compose {
 
   docker-compose --no-ansi -f "${compose_file}" up -d
 
-  until curl_check_status_code ${endpoint} ${container} 200
+  until curl_check_status_code
   do
     sleep $interval
     loop=$((loop-1))

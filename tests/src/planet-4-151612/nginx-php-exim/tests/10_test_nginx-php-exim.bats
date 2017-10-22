@@ -32,24 +32,24 @@ function teardown {
 }
 
 @test "container responds on port 443 with status 200" {
-  run curl_check_status_code ${ENDPOINT_HTTPS}
+  run curl_check_status_code 200 ${ENDPOINT_HTTPS}
   [[ $status -eq 0 ]]
 }
 
 @test "http response contains PHP 7 version string" {
-  run curl_check_response_regex ${ENDPOINT_HTTPS} $(get_container_name) "PHP Version 7.[0-9]*.[0-9]*"
+  run curl_check_response_regex "PHP Version 7.[0-9]*.[0-9]*"
   [[ $status -eq 0 ]]
 }
 
 @test "environment variable set correctly: PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}" {
-  run curl_check_response_regex ${ENDPOINT_HTTP} $(get_container_name) "memory_limit.*${PHP_MEMORY_LIMIT}"
+  run curl_check_response_regex "memory_limit.*${PHP_MEMORY_LIMIT}"
   [[ $status -eq 0 ]]
 }
 
 @test "environment variable set correctly: UPLOAD_MAX_SIZE=${UPLOAD_MAX_SIZE}" {
-  run curl_check_response_regex ${ENDPOINT_HTTP} $(get_container_name) "upload_max_filesize.*${UPLOAD_MAX_SIZE}"
+  run curl_check_response_regex "upload_max_filesize.*${UPLOAD_MAX_SIZE}"
   [[ $status -eq 0 ]]
-  run curl_check_response_regex ${ENDPOINT_HTTP} $(get_container_name) "post_max_size.*${UPLOAD_MAX_SIZE}"
+  run curl_check_response_regex "post_max_size.*${UPLOAD_MAX_SIZE}"
   [[ $status -eq 0 ]]
 }
 

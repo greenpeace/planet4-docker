@@ -32,7 +32,7 @@ function teardown {
 }
 
 @test "container fails to respond on port 443" {
-  run curl_check_status_code https://localhost:443
+  run curl_check_status_code 200 https://localhost:443
   [[ $status -ne 0 ]]
 }
 
