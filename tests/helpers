@@ -46,9 +46,9 @@ function curl_check_response_regex {
   if [[ $CIRCLECI ]]
   then
     # See: https://circleci.com/docs/2.0/docker-compose/
-    docker run --network "container:${container}" appropriate/curl -s -k "${endpoint}" | grep "${regex}"
+    docker run --network "container:${container}" appropriate/curl -s -k "${endpoint}" | grep -q "${regex}"
   else
-    curl -s -k "${endpoint}" | grep "${regex}"
+    curl -s -k "${endpoint}" | grep -q "${regex}"
   fi
 }
 
@@ -62,9 +62,9 @@ function curl_check_status_code {
   if [[ $CIRCLECI ]]
   then
     # See: https://circleci.com/docs/2.0/docker-compose/
-    docker run --network "container:${container}" appropriate/curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep "${status_code}"
+    docker run --network "container:${container}" appropriate/curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "${status_code}"
   else
-    curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep "${status_code}"
+    curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "${status_code}"
   fi
 }
 
