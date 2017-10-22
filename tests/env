@@ -2,6 +2,12 @@
 set -a
 
 IMAGE_NAMESPACE=${IMAGE_NAMESPACE:-"gcr.io"}
+BATS_IMAGE=$(basename "$(realpath ${BATS_TEST_DIRNAME}/../)")
 BATS_PROJECT_ID=${BATS_PROJECT_ID:-"planet-4-151612"}
 IMAGE_TAG=${BUILD_TAG:-${CIRCLE_TAG:-${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}}}
-IMAGE_TAG=${IMAGE_TAG//[^a-zA-Z0-9]/-}
+IMAGE_TAG=${IMAGE_TAG//[^[:alnum:]]/-}
+
+export IMAGE_NAMESPACE
+export BATS_IMAGE
+export BATS_PROJECT_ID
+export IMAGE_TAG

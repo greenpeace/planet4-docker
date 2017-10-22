@@ -25,8 +25,6 @@ do
   do
     image=$(basename ${image_dir})
     >&2 echo -e "\n >> ${project}/${image}:${IMAGE_TAG}"
-    export BATS_IMAGE=${image}
-    export BATS_PROJECT_ID=${project}
     if [[ -d "${image_dir}/tests" ]]
     then
       bats "${switches[@]}" ${image_dir}/tests
