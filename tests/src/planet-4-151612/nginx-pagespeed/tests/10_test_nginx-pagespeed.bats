@@ -11,12 +11,12 @@ function teardown {
   store_output
 }
 
-@test "pull image" {
+@test "pull image: ${image}" {
   run pull_image "${image}"
   [[ $status -eq 0 ]]
 }
 
-@test "image exists: ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}" {
+@test "image exists" {
   run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
   [[ $status -eq 0 ]]
 }
