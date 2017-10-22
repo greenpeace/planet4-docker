@@ -16,23 +16,23 @@ function teardown {
   [[ $status -eq 0 ]]
 }
 
-@test "image exists" {
+@test "image exists: ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}" {
   run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
   [[ $status -eq 0 ]]
 }
 
 @test "container starts" {
-  run start_docker_compose "${compose_file}" "${ENDPOINT}"
+  run start_docker_compose
   [[ $status -eq 0 ]]
 }
 
 @test "container responds on port 80 with status 200" {
-  run run_test_http_response_code 200 ${ENDPOINT}
+  run curl_check_status_code
   [[ $status -eq 0 ]]
 }
 
 @test "container fails to respond on port 443" {
-  run run_test_http_response_code 200 https://localhost:${ENDPOINT_PORT}
+  run curl_check_status_code https://localhost:443
   [[ $status -ne 0 ]]
 }
 

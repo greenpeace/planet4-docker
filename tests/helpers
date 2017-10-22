@@ -11,6 +11,12 @@ function fatal {
   exit 1
 }
 
+function get_container_name {
+  # Removes any non-alphanumeric or '_' characters,
+  # in an attempt to match docker-compose service naming convention
+  echo "${BATS_IMAGE//[^[:alnum:]_]/}_app_1"
+}
+
 function begin_output {
   ARTIFACT_LOGS_DIR=${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}
   [[ -d "$ARTIFACT_LOGS_DIR" ]] || mkdir -p $ARTIFACT_LOGS_DIR
@@ -30,6 +36,38 @@ function store_output {
   PS4=''
 }
 
+function curl_check_response_regex {
+  set -ex
+  trap finish EXIT
+  local endpoint=${1:-"http://localhost:80"}
+  local container=${2:-$(get_container_name)}
+  local regex=${3:-"OK"}
+
+  if [[ $CIRCLECI ]]
+  then
+    # See: https://circleci.com/docs/2.0/docker-compose/
+    docker run --network "container:${container}" appropriate/curl -s -k "${endpoint}" | grep "${regex}"
+  else
+    curl -s -k "${endpoint}" | grep "${regex}"
+  fi
+}
+
+function curl_check_status_code {
+  set -ex
+  trap finish EXIT
+  local endpoint=${1:-"http://localhost:80"}
+  local container=${2:-$(get_container_name)}
+  local status_code=${3:-200}
+
+  if [[ $CIRCLECI ]]
+  then
+    # See: https://circleci.com/docs/2.0/docker-compose/
+    docker run --network "container:${container}" appropriate/curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep "${status_code}"
+  else
+    curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep "${status_code}"
+  fi
+}
+
 function pull_image {
   set -ex
   trap finish EXIT
@@ -39,16 +77,18 @@ function pull_image {
 function start_docker_compose {
   set -ex
   trap finish EXIT
+  # [[ -z "$1" ]] && fatal "Container name not set"
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
   local endpoint="${2:-http://localhost:80}"
+  local container="${3:-$(get_container_name)}"
 
   # Wait 30s, retry every .1s
-  local -i loop=300
+  local -i loop=30
   local interval=0.1
 
   docker-compose --no-ansi -f "${compose_file}" up -d
 
-  until curl -s -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "200"
+  until curl_check_status_code ${endpoint} ${container} 200
   do
     sleep $interval
     loop=$((loop-1))
@@ -93,21 +133,4 @@ function run_test_container_starts {
   local name=$1
   local image=$2
   docker run --rm -d --name "$name" "$image"
-}
-
-function run_test_http_response_code {
-  set -ex
-  trap finish EXIT
-  local -i response=${1:-"200"}
-  local endpoint=${2:-"http://localhost:80"}
-  curl -s -k -o /dev/null -w "%{http_code}" "$endpoint" | grep "$response"
-}
-
-function run_test_http_response_grep {
-  set -ex
-  trap finish EXIT
-  [[ -z "$1" ]] && fatal "Expected response regex not set"
-  local response=$1
-  local endpoint=${2:-"http://localhost:80"}
-  curl -s -k "$endpoint" | grep "$response"
 }
