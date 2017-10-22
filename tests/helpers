@@ -83,7 +83,7 @@ function start_docker_compose {
   local container="${3:-$(get_container_name)}"
 
   # Wait 30s, retry every .1s
-  local -i loop=30
+  local -i loop=300
   local interval=0.1
 
   docker-compose --no-ansi -f "${compose_file}" up -d

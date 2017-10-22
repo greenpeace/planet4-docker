@@ -6,8 +6,6 @@ services:
       - "${ENDPOINT_PORT_HTTP:-80}:80"
       - "${ENDPOINT_PORT_HTTPS:-443}:443"
     network_mode: "${NETWORK_MODE}"
-    volumes:
-      - ./persistence/ssl:/etc/nginx/ssl:cached
     environment:
       - APP_HOSTNAME=${APP_HOSTNAME}
       - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
