@@ -67,6 +67,7 @@ _good "WP_DB_PREFIX       ${WP_DB_PREFIX}"
 _good "Installing Wordpress for site ${WP_HOSTNAME}..."
 
 mkdir -p /app/source/public
+chown ${APP_USER:-${DEFAULT_APP_USER}} /app/source/public
 
 # Overwrite the stock wp-config to use env vars (again)
 cp /app/wp-config.php.default /app/source/public/wp-config.php
