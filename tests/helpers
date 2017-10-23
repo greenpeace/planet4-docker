@@ -127,8 +127,8 @@ function clean_docker_compose {
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
   # Stop all docker-compose containers
   docker-compose --no-ansi -f "${compose_file}" stop
-  yes | docker-compose --no-ansi -f "${compose_file}" rm
   # Delete all containers
+  yes | docker-compose --no-ansi -f "${compose_file}" rm || true
 }
 
 function run_test_image_exists {
