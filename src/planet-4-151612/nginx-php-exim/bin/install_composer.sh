@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
+
 # Find updated scripts at:
 # https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
 
@@ -17,4 +19,7 @@ fi
 php composer-setup.php --install-dir=/app/bin
 RESULT=$?
 rm composer-setup.php
+
+/app/bin/composer.phar --no-plugins --no-scripts --profile -vvv global require hirak/prestissimo
+
 exit $RESULT
