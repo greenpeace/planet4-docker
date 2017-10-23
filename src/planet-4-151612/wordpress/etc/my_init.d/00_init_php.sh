@@ -11,7 +11,7 @@ _good "nginx:    upstream  ${NGINX_FASTCGI_BACKEND:-$DEFAULT_NGINX_FASTCGI_BACKE
 sed -i -r "s#server:.*;#server: ${NGINX_FASTCGI_BACKEND:-$DEFAULT_NGINX_FASTCGI_BACKEND};#g" /etc/nginx/sites-enabled/upstream.conf
 
 # replace PHP Pool name
-POOL_NAME=$(echo ${APP_HOSTNAME} | sed -e 's/[^a-zA-Z]/_/g')
+POOL_NAME=${APP_HOSTNAME//[^[:alnum:]_]/_}
 _good "php:    pool name   ${POOL_NAME}"
 sed -i -r "s/^\[.*\]$/\[${POOL_NAME}\]/g" /etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf
 
