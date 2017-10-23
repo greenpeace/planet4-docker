@@ -15,7 +15,7 @@ Options:
   -l    Perform the docker build locally (default: false)
   -p    Pull created images after build
   -r    Perform the docker build remotely (default: true)
-  -v    Verbose
+  -v    Verbose output
 "
 }
 
@@ -251,5 +251,17 @@ then
     docker pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}" &
   done
 fi
+
+# Rewrite README.md variables
+BRANCH_NAME=${BUILD_TAG//\//%2F}
+
+ENVVARS=(
+  '${BRANCH_NAME}' \
+)
+
+ENVVARS_STRING="$(printf "%s:" "${ENVVARS[@]}")"
+ENVVARS_STRING="${ENVVARS_STRING%:}"
+
+envsubst "${ENVVARS_STRING}" < ./README.md.in > ./README.md
 
 wait
