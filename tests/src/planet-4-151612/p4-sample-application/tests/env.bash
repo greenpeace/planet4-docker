@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -a
 
+if [ -z "${GITHUB_OAUTH_TOKEN}" ]
+then
+  echo 'ERROR: $GITHUB_OAUTH_TOKEN environment variable not set'
+  exit 1
+fi
+
 # shellcheck source=./../../../../env
 . ${BATS_TEST_DIRNAME}/../../../../env
 # shellcheck source=./../../../../helpers
