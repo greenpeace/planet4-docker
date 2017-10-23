@@ -39,8 +39,8 @@ if [ "${OVERWRITE_FILES,,}" == "true" ]; then
     mkdir -p /app/source/public
 fi
 
-if [ "$WP_DB_HOST" == "mysql" ]; then
-    _warning "Using default WP_DB_HOST: mysql"
+if [ "$WP_DB_HOST" == "db" ]; then
+    _warning "Using default WP_DB_HOST: db"
 else
     _good "WP_DB_HOST         $WP_DB_HOST"
 fi
@@ -65,6 +65,8 @@ _good "WP_DB_PREFIX       ${WP_DB_PREFIX}"
 # WORDPRESS INSTALLATION
 
 _good "Installing Wordpress for site ${WP_HOSTNAME}..."
+
+mkdir -p /app/source/public
 
 # Overwrite the stock wp-config to use env vars (again)
 cp /app/wp-config.php.default /app/source/public/wp-config.php
