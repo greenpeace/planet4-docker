@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DEFAULT_CONTAINER_TIMEZONE UTC
 
 # Automatic choose local mirror for sources list
-# COPY sources.list /etc/apt/sources.list
+COPY sources.list /etc/apt/sources.list
 
 COPY . /app
 
