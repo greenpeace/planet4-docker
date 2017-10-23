@@ -17,6 +17,8 @@ function get_container_name {
   echo "${BATS_IMAGE//[^[:alnum:]_]/}_app_1"
 }
 
+# Used in setup function to log file, line number and function information in
+# artifact storage for review and debug information
 function begin_output {
   ARTIFACT_LOGS_DIR=${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}
   [[ -d "$ARTIFACT_LOGS_DIR" ]] || mkdir -p $ARTIFACT_LOGS_DIR
@@ -26,6 +28,7 @@ function begin_output {
   echo -e "=============== vvv [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
 }
 
+# Used in teardown function to store function output in artifacts
 function store_output {
   local string
   # $output is defined in bats `run` command, don't panic @shellcheck
@@ -36,6 +39,7 @@ function store_output {
   PS4=''
 }
 
+# Queries an endpoint and expects a response to match regular expression parameter
 function curl_check_response_regex {
   set -ex
   trap finish EXIT
@@ -52,6 +56,7 @@ function curl_check_response_regex {
   fi
 }
 
+# Queries an endpoint and expects a response status code to match parameter
 function curl_check_status_code {
   set -ex
   trap finish EXIT
@@ -68,6 +73,7 @@ function curl_check_status_code {
   fi
 }
 
+# Pulls docker image parameter
 function pull_image {
   set -ex
   trap finish EXIT
@@ -86,8 +92,10 @@ function start_docker_compose {
   local -i loop=300
   local interval=0.1
 
+  # Start all containers in the compose file
   docker-compose --no-ansi -f "${compose_file}" up -d
 
+  # Query the container until a 200 response is returned
   until curl_check_status_code
   do
     sleep $interval
@@ -100,6 +108,7 @@ function start_docker_compose {
       exit 1
     fi
   done
+  # Container is up and running
 }
 
 function clean_container {
@@ -107,14 +116,19 @@ function clean_container {
   trap finish EXIT
   [[ -z "$1" ]] && fatal "Container name not set"
   docker stop $1
+  # Delete the container if it didn't have --rm flag
+  yes | docker rm $1 || true
+
 }
 
 function clean_docker_compose {
   set -ex
   trap finish EXIT
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
+  # Stop all docker-compose containers
   docker-compose --no-ansi -f "${compose_file}" stop
   yes | docker-compose --no-ansi -f "${compose_file}" rm
+  # Delete all containers
 }
 
 function run_test_image_exists {
