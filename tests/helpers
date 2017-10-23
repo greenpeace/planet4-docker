@@ -77,7 +77,7 @@ function curl_check_status_code {
 function pull_image {
   set -ex
   trap finish EXIT
-  docker pull "${image}"
+  docker pull "${1:-${image}}"
 }
 
 function start_docker_compose {
