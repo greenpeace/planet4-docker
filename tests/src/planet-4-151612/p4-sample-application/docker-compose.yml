@@ -1,7 +1,12 @@
 version: '3'
 services:
   app:
-    build: .
+    build:
+      context: .
+      args:
+        - COMPOSER=composer-dev.json
+        - GIT_REF=dev-feature/gitrepositories
+        - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
     ports:
       - "80:80"
     environment:
