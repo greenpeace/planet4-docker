@@ -1,6 +1,6 @@
 # Docker builds for Planet4 on Google Container Registry
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4c9d5b08e9b046cbba9cdcbc9ba8eaf9)](https://www.codacy.com/app/rawalker/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/${BRANCH_NAME}.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/${BRANCH_NAME})
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4c9d5b08e9b046cbba9cdcbc9ba8eaf9)](https://www.codacy.com/app/rawalker/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop)
 
 
 ## Description
@@ -31,7 +31,7 @@ This triggers a Google Container Registry (GCR) build using the settings from `c
 
 ## Updating build configuration variables
 
-Containers can be modified at build time by build arguments `ARG`, or on container start with environment variables `ENV`.  
+Containers can be modified at build time by build arguments `ARG`, or on container start with environment variables `ENV`.
 
 To build containers with custom values, or to specify different default values, you can supply build-time command line arguments (see below) or make edits to a configuration file.
 
