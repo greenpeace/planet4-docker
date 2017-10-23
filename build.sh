@@ -248,6 +248,8 @@ then
   do
     IMAGE=${IMAGE%/}
     echo -e "Pull ->> ${GOOGLE_PROJECT_ID}/${IMAGE}"
-    docker pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}"
+    docker pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}" &
   done
 fi
+
+wait
