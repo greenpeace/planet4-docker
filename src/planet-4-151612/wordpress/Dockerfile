@@ -1,5 +1,5 @@
 # Greenpeace P4 Docker application
-# Build: build-72
+# Build: build-79
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -39,7 +39,7 @@ ENV WP_HOSTNAME ""
 ENV WP_SITE_URL ""
 ENV WP_SITE_HOME ""
 ENV WP_SITE_PROTOCOL "https"
-ENV WP_DB_HOST "mysql"
+ENV WP_DB_HOST "db"
 ENV WP_DB_PORT "3306"
 ENV WP_DB_NAME ""
 ENV WP_DB_USER ""

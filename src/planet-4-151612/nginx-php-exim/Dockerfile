@@ -1,5 +1,5 @@
 # Greenpeace P4 Docker application
-# Build: build-72
+# Build: build-79
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -37,7 +37,7 @@ RUN wget -O - https://download.newrelic.com/548C16BF.gpg | apt-key add - && \
 	    newrelic-php5 && \
     newrelic-install install && \
   	apt-get clean && \
-      rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
 RUN mkdir /root/bin/ && \
 	echo "export PATH=/root/bin:$PATH" > /root/.bashrc
@@ -46,6 +46,7 @@ EXPOSE 443
 EXPOSE 80
 
 ENV PHP_MAJOR_VERSION 7.0
+ENV COMPOSER_HOME "/app/.composer"
 
 ENV DEFAULT_ADMIN_EMAIL nobody@example.com
 ENV DEFAULT_APP_ENV production
@@ -89,7 +90,7 @@ RUN chmod 750 /app/bin/* && \
     sync && \
     /app/bin/init_php.sh && \
     /app/bin/install_composer.sh && \
-    cp /app/bin/composer.sh /usr/local/bin/composer
+    ln -s /app/bin/composer.sh /usr/local/bin/composer
 
 ENTRYPOINT ["/app/bin/boot.sh"]
 

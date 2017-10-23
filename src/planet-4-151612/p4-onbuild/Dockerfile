@@ -1,5 +1,5 @@
 # Greenpeace P4 Docker application
-# Build: build-72
+# Build: build-79
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -11,19 +11,19 @@ MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y git subversion && \
+RUN apt-get update && apt-get install -y subversion && \
     apt-get clean && \
     rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
-
-ENV COMPOSER_HOME "/app/.composer"
 
 ONBUILD ARG GIT_SOURCE="https://github.com/greenpeace/planet4-base"
 ONBUILD ARG GIT_REF="develop"
 ONBUILD ARG COMPOSER="composer.json"
+ONBUILD ARG GITHUB_OAUTH_TOKEN
 
 ONBUILD ENV GIT_SOURCE "${GIT_SOURCE}"
 ONBUILD ENV GIT_REF "${GIT_REF}"
 ONBUILD ENV COMPOSER "${COMPOSER}"
+ONBUILD ENV GITHUB_OAUTH_TOKEN "${GITHUB_OAUTH_TOKEN}"
 
 ONBUILD RUN /app/bin/add_user.sh && \
   mkdir -p "${COMPOSER_HOME}" && \
@@ -33,7 +33,7 @@ ONBUILD WORKDIR /app/source
 
 ONBUILD RUN chown -R "${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP}" "${COMPOSER_HOME}" /app/source && \
   echo "Installing composer dependencies with ${COMPOSER}" && \
-  composer config --global github-protocols https && \
-  composer install --no-interaction && \
+  composer --profile -vvv config --global github-oauth.github.com ${GITHUB_OAUTH_TOKEN} && \
+  composer --profile -vvv install --no-interaction && \
   cp wp-cli.yml.default wp-cli.yml && \
   rm -fr /app/www

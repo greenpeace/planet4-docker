@@ -1,5 +1,5 @@
 # Greenpeace P4 Docker application
-# Build: build-72
+# Build: build-79
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -15,7 +15,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DEFAULT_CONTAINER_TIMEZONE UTC
 
 # Automatic choose local mirror for sources list
-# COPY sources.list /etc/apt/sources.list
+COPY sources.list /etc/apt/sources.list
 
 COPY . /app
 

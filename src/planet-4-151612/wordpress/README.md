@@ -31,7 +31,7 @@ var | default | description
 OVERWRITE_FILES | false | Set true to force install Wordpress and overwrite the contents of /app/www
 WP_TITLE | greenpeace/wordpress | The title of the Wordpress install
 WP_HOSTNAME |  | Wordpress URL. Tries to fallback to `$APP_HOSTNAME` if blank
-WP_DB_HOST | mysql | Database hostname
+WP_DB_HOST | db | Database hostname
 WP_DB_NAME |  | Database name
 WP_DB_USER |  | Database username
 WP_DB_PASS |  | Database password
