@@ -33,8 +33,8 @@ function store_output {
   local string
   # $output is defined in bats `run` command, don't panic @shellcheck
   # shellcheck disable=SC2154
-  string=$(echo "${output}" | sed -e "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")
-  echo "$string" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
+  # string=$(echo "${output}" | sed -e "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")
+  echo "$output" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
   echo -e "=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
   PS4=''
 }
