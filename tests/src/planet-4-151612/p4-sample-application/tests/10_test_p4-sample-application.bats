@@ -36,8 +36,8 @@ function teardown {
 }
 
 @test "container starts" {
-  skip "More to be implemented here"
-  run start_docker_compose
+  # Wait up to 10 minutes for the build to complete!
+  run start_docker_compose ${BATS_TEST_DIRNAME}/../docker-compose.yml http://localhost:80 600
   [[ "$status" -eq 0 ]]
 }
 
