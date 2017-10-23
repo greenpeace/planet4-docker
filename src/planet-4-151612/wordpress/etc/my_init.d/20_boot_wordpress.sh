@@ -76,7 +76,9 @@ until /usr/local/bin/dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 60s mysql
   sleep 1;
 done
 
-/usr/local/bin/composer --profile site-install
+_good "Running composer site-install with COMPOSER=${COMPOSER}"
+
+/usr/local/bin/composer --profile -vvv site-install
 
 # Links the source directory to expected path
 # @todo remap all references to '/app/www' in docker parents to an ENV var
