@@ -9,6 +9,9 @@ services:
         - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
     ports:
       - "80:80"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     environment:
       - APP_HOSTNAME=${APP_HOSTNAME}
     env_file:
