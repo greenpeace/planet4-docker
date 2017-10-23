@@ -1,0 +1,22 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      args:
+        - COMPOSER=composer-dev.json
+        - GIT_REF=dev-feature/gitrepositories
+        - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
+    ports:
+      - "80:80"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      - APP_HOSTNAME=${APP_HOSTNAME}
+    env_file:
+      - db.env
+  db:
+    image: ${DB_IMAGE:-mysql:5.7}
+    env_file:
+      - db.env

@@ -35,7 +35,7 @@ set -a
 # =============================================================================
 
 # Application environment
-
+DEFAULT_APPLICATION_NAME="Greenpeace P4 Docker application"
 DEFAULT_GOOGLE_PROJECT_ID=planet-4-151612
 
 # application repository to build, expects a composer.json to be present,
@@ -49,31 +49,43 @@ DEFAULT_GIT_REF=dev-develop
 
 DEFAULT_COMPOSER=composer.json
 
-# default build and source tags are derived from `git rev-parse --abbrev-ref HEAD`
-# DEFAULT_SOURCE_TAG=develop
-# DEFAULT_BUILD_TAG=develop
+# default build tags are derived from `git rev-parse --abbrev-ref HEAD`
+# Use SOURCE_VERSION or BUILD_TAG in environment or custom config to set these values
+# Note that each step in the build chain relies on the previous image, so unless
+# you really know what you're doing, these two values should probably be the same
+# eg:
+# SOURCE_VERSION=develop
+# BUILD_TAG=develop
 
+# Which timezone this container uses for logs etc
 DEFAULT_CONTAINER_TIMEZONE=UTC
+
+# ============================================================================
 
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases
 DEFAULT_BASEIMAGE_VERSION=0.9.22
+# https://github.com/jwilder/dockerize/releases
+DEFAULT_DOCKERIZE_VERSION=0.5.0
 # https://github.com/openresty/headers-more-nginx-module/tags
 DEFAULT_HEADERS_MORE_VERSION=0.32
 # https://github.com/pagespeed/ngx_pagespeed/releases
 DEFAULT_NGINX_PAGESPEED_RELEASE=stable
 DEFAULT_NGINX_PAGESPEED_VERSION=latest
 # http://nginx.org/en/download.html
-DEFAULT_NGINX_VERSION=1.13.2
+DEFAULT_NGINX_VERSION=1.13.6
 # https://www.openssl.org/source
 DEFAULT_OPENSSL_VERSION=1.1.0f
-DEFAULT_PHP_VERSION=7.0
+DEFAULT_PHP_MAJOR_VERSION=7.0
+
+# ============================================================================
 
 # Cloud builder configuration
-DEFAULT_BUILD_NAMESPACE=gcr.io
 DEFAULT_BUILD_LOCALLY=false
+DEFAULT_BUILD_NAMESPACE=gcr.io
 DEFAULT_BUILD_REMOTELY=false
 DEFAULT_BUILD_TIMEOUT=30m
 DEFAULT_BUILD_TYPE=
+DEFAULT_PULL_IMAGES=false
 DEFAULT_REWRITE_LOCAL_DOCKERFILES=true

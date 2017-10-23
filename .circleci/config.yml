@@ -1,0 +1,111 @@
+defaults: &defaults
+  environment:
+    GOOGLE_PROJECT_ID: planet-4-151612
+  docker:
+    - image: gcr.io/planet-4-151612/circleci-base:latest
+  working_directory:  /home/circleci/app
+
+version: 2
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - run:
+          name: Update build numbers
+          command: |
+            # Store current build number for future jobs
+            mkdir -p /tmp/workspace/var
+            echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
+            # Fetch build number script from gist
+            curl -sSL https://gist.githubusercontent.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/4250391fe6c4d1e06824b0287b9b8a1c070a6468/circleci_update_build_numbers.sh -o /tmp/circleci_update_build_numbers.sh
+            chmod +x /tmp/circleci_update_build_numbers.sh
+            /tmp/circleci_update_build_numbers.sh || true
+
+      - setup_remote_docker
+
+      - run:
+          name: Configure gcloud
+          command: |
+            ${HOME}/scripts/activate-gcloud-account.sh
+
+      - run:
+          name: Building platform containers on gcr.io
+          command: |
+            ./build.sh -r
+            rsync -avz . /tmp/workspace/src
+
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - var
+            - src
+
+  test:
+    <<: *defaults
+    steps:
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Run bats unit tests
+          command: |
+            cd /tmp/workspace/src
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh
+
+      - store_artifacts:
+          path: /tmp/artifacts
+
+  deploy:
+    <<: *defaults
+    steps:
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - run:
+          name: Configure gcloud
+          command: |
+            ${HOME}/scripts/activate-gcloud-account.sh
+
+      - setup_remote_docker
+
+      - deploy:
+          name: Deploy latest tag on master branch
+          command: |
+            set -x
+
+            export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
+            if [[ "${CIRCLE_BRANCH}" = "master" ]] ||
+               [[ "$(cat /tmp/workspace/var/circle-branch-name)" = "master" ]]
+            then
+              ./deploy.sh
+            fi
+
+
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - test:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      # Only run deploy job for tagged releases, any branch
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/

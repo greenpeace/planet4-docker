@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+set -ae
+
+function finish {
+  set +ex
+}
+trap finish EXIT
+
+function fatal {
+  >&2 echo "$1"
+  exit 1
+}
+
+function get_container_name {
+  # Removes any non-alphanumeric or '_' characters,
+  # in an attempt to match docker-compose service naming convention
+  echo "${BATS_IMAGE//[^[:alnum:]_]/}_app_1"
+}
+
+# Used in setup function to log file, line number and function information in
+# artifact storage for review and debug information
+function begin_output {
+  ARTIFACT_LOGS_DIR=${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}
+  [[ -d "$ARTIFACT_LOGS_DIR" ]] || mkdir -p $ARTIFACT_LOGS_DIR
+  [[ -f "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}" ]] || touch "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
+
+  PS4='+($(basename $BASH_SOURCE):${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+  echo -e "=============== vvv [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
+}
+
+# Used in teardown function to store function output in artifacts
+function store_output {
+  local string
+  # $output is defined in bats `run` command, don't panic @shellcheck
+  # shellcheck disable=SC2154
+  # string=$(echo "${output}" | sed -e "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")
+  echo "$output" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
+  echo -e "=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
+  PS4=''
+}
+
+# Queries an endpoint and expects a response to match regular expression parameter
+function curl_check_response_regex {
+  set -ex
+  trap finish EXIT
+  local regex=${1:-"OK"}
+  local endpoint=${2:-"http://localhost:80"}
+  local container=${3:-$(get_container_name)}
+
+  if [[ $CIRCLECI ]]
+  then
+    # See: https://circleci.com/docs/2.0/docker-compose/
+    docker run --network "container:${container}" --rm appropriate/curl -s -k "${endpoint}" | grep -q "${regex}"
+  else
+    curl -s -k "${endpoint}" | grep -q "${regex}"
+  fi
+}
+
+# Queries an endpoint and expects a response status code to match parameter
+function curl_check_status_code {
+  set -ex
+  trap finish EXIT
+  local status_code=${1:-200}
+  local endpoint=${2:-"http://localhost:80"}
+  local container=${3:-$(get_container_name)}
+
+  if [[ $CIRCLECI ]]
+  then
+    # See: https://circleci.com/docs/2.0/docker-compose/
+    docker run --network "container:${container}" --rm appropriate/curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "${status_code}"
+  else
+    curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep -q "${status_code}"
+  fi
+}
+
+# Pulls docker image parameter
+function pull_image {
+  set -ex
+  trap finish EXIT
+  docker pull "${1:-${image}}"
+}
+
+function start_docker_compose {
+  set -ex
+  trap finish EXIT
+  # [[ -z "$1" ]] && fatal "Container name not set"
+  local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
+  local endpoint="${2:-http://localhost:80}"
+  local container="${3:-$(get_container_name)}"
+
+  # Wait 30s, retry every .1s
+  local -i loop=${4:-300}
+  local interval=0.1
+
+  # Start all containers in the compose file
+  docker-compose --no-ansi -f "${compose_file}" up -d
+
+  # Query the container until a 200 response is returned
+  until curl_check_status_code
+  do
+    sleep $interval
+    loop=$((loop-1))
+    if [[ $loop -lt 1 ]]
+    then
+      docker-compose --no-ansi -f "$compose_file" stop
+      >&2 echo "Timeout without successful connection to ${endpoint}"
+      >&2 docker-compose --no-ansi -f "$compose_file" logs
+      exit 1
+    fi
+  done
+  # Container is up and running
+}
+
+function clean_container {
+  set -ex
+  trap finish EXIT
+  [[ -z "$1" ]] && fatal "Container name not set"
+  docker stop $1
+  # Delete the container if it didn't have --rm flag
+  yes | docker rm $1 || true
+
+}
+
+function clean_docker_compose {
+  set -ex
+  trap finish EXIT
+  local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
+  # Stop all docker-compose containers
+  docker-compose --no-ansi -f "${compose_file}" stop
+  # Delete all containers
+  yes | docker-compose --no-ansi -f "${compose_file}" rm || true
+}
+
+function run_test_image_exists {
+  set -ex
+  trap finish EXIT
+  [[ -z "$1" ]] && fatal "Expected response regex not set"
+  local image_regex="$1"
+  docker images | grep "${image_regex}"
+}
+
+function run_test_container_starts {
+  set -ex
+  trap finish EXIT
+  [[ -z "$1" ]] && fatal "No container name specified"
+  [[ -z "$2" ]] && fatal "No image specified"
+  local name=$1
+  local image=$2
+  docker run --rm -d --name "$name" "$image"
+}

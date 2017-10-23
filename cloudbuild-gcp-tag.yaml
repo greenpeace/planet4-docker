@@ -10,7 +10,7 @@
 steps:
 - id: 'configure-nginx-pagespeed'
   name: 'ubuntu'
-  dir: './source/${PROJECT_ID}/nginx-pagespeed'
+  dir: './src/${PROJECT_ID}/nginx-pagespeed'
   args:
     - '/bin/sed'
     - '-i'
@@ -21,7 +21,7 @@ steps:
 
 - id: 'configure-nginx-php-exim'
   name: 'ubuntu'
-  dir: './source/${PROJECT_ID}/wordpress'
+  dir: './src/${PROJECT_ID}/wordpress'
   args:
     - '/bin/sed'
     - '-i'
@@ -32,7 +32,7 @@ steps:
 
 - id: 'configure-wordpress'
   name: 'ubuntu'
-  dir: './source/${PROJECT_ID}/wordpress'
+  dir: './src/${PROJECT_ID}/wordpress'
   args:
     - '/bin/sed'
     - '-i'
@@ -43,7 +43,7 @@ steps:
 
 - id: 'configure-p4-onbuild'
   name: 'ubuntu'
-  dir: './source/${PROJECT_ID}/p4-onbuild'
+  dir: './src/${PROJECT_ID}/p4-onbuild'
   args:
     - '/bin/sed'
     - '-i'
@@ -66,7 +66,7 @@ steps:
     - 'build'
     - '--tag=gcr.io/${PROJECT_ID}/ubuntu:${TAG_NAME}'
     - '--tag=gcr.io/${PROJECT_ID}/ubuntu:${SHORT_SHA}'
-    - './source/${PROJECT_ID}/ubuntu'
+    - './src/${PROJECT_ID}/ubuntu'
 
 - id: 'nginx-pagespeed'
   name: 'gcr.io/cloud-builders/docker'
@@ -74,7 +74,7 @@ steps:
     - 'build'
     - '--tag=gcr.io/${PROJECT_ID}/nginx-pagespeed:${TAG_NAME}'
     - '--tag=gcr.io/${PROJECT_ID}/nginx-pagespeed:${SHORT_SHA}'
-    - './source/${PROJECT_ID}/nginx-pagespeed'
+    - './src/${PROJECT_ID}/nginx-pagespeed'
   waitFor:
     - 'configure-nginx-pagespeed'
     - 'ubuntu'
@@ -85,7 +85,7 @@ steps:
     - 'build'
     - '--tag=gcr.io/${PROJECT_ID}/nginx-php-exim:${TAG_NAME}'
     - '--tag=gcr.io/${PROJECT_ID}/nginx-php-exim:${SHORT_SHA}'
-    - './source/${PROJECT_ID}/nginx-php-exim'
+    - './src/${PROJECT_ID}/nginx-php-exim'
   waitFor:
     - 'configure-nginx-php-exim'
     - 'nginx-pagespeed'
@@ -96,7 +96,7 @@ steps:
     - 'build'
     - '--tag=gcr.io/${PROJECT_ID}/wordpress:${TAG_NAME}'
     - '--tag=gcr.io/${PROJECT_ID}/wordpress:${SHORT_SHA}'
-    - './source/${PROJECT_ID}/wordpress'
+    - './src/${PROJECT_ID}/wordpress'
   waitFor:
     - 'configure-wordpress'
     - 'nginx-php-exim'
@@ -107,7 +107,7 @@ steps:
     - 'build'
     - '--tag=gcr.io/${PROJECT_ID}/p4-onbuild:${TAG_NAME}'
     - '--tag=gcr.io/${PROJECT_ID}/p4-onbuild:${SHORT_SHA}'
-    - './source/${PROJECT_ID}/p4-onbuild'
+    - './src/${PROJECT_ID}/p4-onbuild'
   waitFor:
     - 'configure-p4-onbuild'
     - 'wordpress'
