@@ -1,11 +1,11 @@
 # Greenpeace P4 Docker application
-# Build: build-79
+# Build: build-86
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/wordpress:feature-circleci
+FROM gcr.io/planet-4-151612/wordpress:develop
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 

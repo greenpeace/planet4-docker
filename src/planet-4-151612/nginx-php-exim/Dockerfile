@@ -1,11 +1,11 @@
 # Greenpeace P4 Docker application
-# Build: build-79
+# Build: build-86
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/nginx-pagespeed:feature-circleci
+FROM gcr.io/planet-4-151612/nginx-pagespeed:develop
 
 MAINTAINER Ray Walker <hello@raywalker.it>
 
