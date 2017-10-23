@@ -253,6 +253,7 @@ then
 fi
 
 # Rewrite README.md variables
+# shellcheck disable=SC2034
 BRANCH_NAME=${BUILD_TAG//\//%2F}
 
 ENVVARS=(
