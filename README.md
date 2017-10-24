@@ -1,6 +1,6 @@
 # Docker builds for Planet4 on Google Container Registry
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=master)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/master.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=develop)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop)
 
 
 ## Description
@@ -24,9 +24,11 @@ This triggers a Google Container Registry (GCR) build using the settings from `c
 ./build.sh -r
 ```
 
-## Pull new images after remote build
 ```
-./build.sh -r
+# Perform a remote build, pull new images once complete, and show verbose build output
+./build.sh -r -p -v
+# or
+./build.sh -rpv
 ```
 
 ## Updating build configuration variables

@@ -1,11 +1,25 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
 
 # Find updated scripts at:
 # https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
 
-EXPECTED_SIGNATURE=$(wget -q -O - https://composer.github.io/installer.sig)
-php -r "copy('http://getcomposer.org/installer', 'composer-setup.php');"
+retries=5
+
+EXPECTED_SIGNATURE=$(wget --retry-connrefused --waitretry=1 -t $retries -q -O - https://composer.github.io/installer.sig)
+
+loop=$retries
+until php -r "copy('http://getcomposer.org/installer', 'composer-setup.php');"
+do
+  loop=$((loop - 1))
+  if [[ loop -lt 1 ]]
+  then
+    >&2 echo "Failed to download composer after $retries attempts"
+    exit 1
+  fi
+  sleep 1
+done
+
 ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', 'composer-setup.php');")
 
 if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]
