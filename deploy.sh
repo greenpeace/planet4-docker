@@ -70,12 +70,21 @@ cd "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}" || exit 1
 SOURCE_DIRECTORY=(*/)
 shopt -u nullglob
 
+
+# Check if we're running on CircleCI
+if [ ! -z "${CIRCLECI}" ]
+then
+  DOCKER="${HOME}/google-cloud-sdk/bin/gcloud docker --"
+else
+  DOCKER="docker"
+fi
+
 for IMAGE in "${SOURCE_DIRECTORY[@]}"
 do
   IMAGE=${IMAGE%/}
 
-  docker pull ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}
-  docker tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
-  docker push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
+  ${DOCKER} pull ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}
+  ${DOCKER} tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
+  ${DOCKER} push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
 
 done
