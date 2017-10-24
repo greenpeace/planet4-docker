@@ -5,7 +5,7 @@
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/wordpress:develop
+FROM gcr.io/planet-4-151612/wordpress:master
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
