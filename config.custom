@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+# shellcheck disable=SC2034
+set -a
+# =============================================================================
+#
+#   CUSTOM BUILD CONFIGURATION
+#
+#   Define build parameters here or as environment parameters
+#
+#   Examples of build-time configuration:
+#
+#   GOOGLE_PROJECT_ID=greenpeace-testing
+#   NGINX_VERSION=1.13.2
+#   COMPOSER=composer-dev.json
+#
+# =============================================================================
+
+# Experimental branch of planet-4-base
+GIT_REF=dev-feature/gitrepositories
+
+# Developer 'branch' of composer file, enables editing repositories in-situ
+COMPOSER=composer-dev.json

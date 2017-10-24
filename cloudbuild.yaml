@@ -1,0 +1,88 @@
+#
+# Builds docker infrastucture via Google Container builder
+# Used in the build.sh script to generate projects with arbitrary substitutions
+# eg:
+#
+# $ GOOGLE_PROJECT_ID=greenpeace-testing ./build.sh -l -r
+#
+# See config.defaults for default substitution values
+#
+# ============================================================================
+#
+# Begin service image builds
+#
+steps:
+- id: 'ubuntu'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/ubuntu'
+
+- id: 'nginx-pagespeed'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/nginx-pagespeed'
+  waitFor:
+    - 'ubuntu'
+
+- id: 'nginx-php-exim'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/nginx-php-exim'
+  waitFor:
+    - 'nginx-pagespeed'
+
+- id: 'wordpress'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/wordpress'
+  waitFor:
+    - 'nginx-php-exim'
+
+- id: 'p4-onbuild'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/p4-onbuild'
+  waitFor:
+    - 'wordpress'
+
+#
+# End service image builds
+#
+# ============================================================================
+
+images:
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-pagespeed:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-pagespeed:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-pagespeed:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-onbuild:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-onbuild:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-onbuild:${_REVISION_TAG}'

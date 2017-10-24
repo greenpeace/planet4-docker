@@ -1,0 +1,91 @@
+#!/usr/bin/env sh
+# shellcheck disable=SC2034
+set -a
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#  DO NOT MAKE EDITS IN THIS FILE
+
+# Changing any of the follow values is NOT RECOMMENDED
+# The below are defaults which are only used if custom values are not set
+#
+
+# How to customise the build configuration:
+# -----------------------------------------
+#
+# Create a custom file and set values are described above, and pass it to the
+# build binary as a parameter, like so:
+
+# $ ./build.sh -c config.custom
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# =============================================================================
+#
+#   DEFAULT BUILD CONFIGURATION
+#
+#   Define build parameters in a custom file
+#
+#   Examples of build-time configuration:
+#
+#   GOOGLE_PROJECT_ID=greenpeace-testing
+#   NGINX_VERSION=1.13.1
+#   COMPOSER=composer-dev.json
+#
+# =============================================================================
+
+# Application environment
+DEFAULT_APPLICATION_NAME="Greenpeace P4 Docker application"
+DEFAULT_GOOGLE_PROJECT_ID=planet-4-151612
+
+# application repository to build, expects a composer.json to be present,
+# or alternate file defined by COMPOSER | DEFAULT_COMPOSER
+DEFAULT_GIT_SOURCE=https://github.com/greenpeace/planet4-base
+
+# branch of application repository to build
+# note, composer requires prefixes with dev- for branch names
+# see: https://getcomposer.org/doc/articles/aliases.md#why-aliases-
+DEFAULT_GIT_REF=dev-develop
+
+DEFAULT_COMPOSER=composer.json
+
+# default build tags are derived from `git rev-parse --abbrev-ref HEAD`
+# Use SOURCE_VERSION or BUILD_TAG in environment or custom config to set these values
+# Note that each step in the build chain relies on the previous image, so unless
+# you really know what you're doing, these two values should probably be the same
+# eg:
+# SOURCE_VERSION=develop
+# BUILD_TAG=develop
+
+# Which timezone this container uses for logs etc
+DEFAULT_CONTAINER_TIMEZONE=UTC
+
+# ============================================================================
+
+# Infrastructure version numbers
+
+# https://github.com/phusion/baseimage-docker/releases
+DEFAULT_BASEIMAGE_VERSION=0.9.22
+# https://github.com/jwilder/dockerize/releases
+DEFAULT_DOCKERIZE_VERSION=0.5.0
+# https://github.com/openresty/headers-more-nginx-module/tags
+DEFAULT_HEADERS_MORE_VERSION=0.32
+# https://github.com/pagespeed/ngx_pagespeed/releases
+DEFAULT_NGINX_PAGESPEED_RELEASE=stable
+DEFAULT_NGINX_PAGESPEED_VERSION=latest
+# http://nginx.org/en/download.html
+DEFAULT_NGINX_VERSION=1.13.6
+# https://www.openssl.org/source
+DEFAULT_OPENSSL_VERSION=1.1.0f
+DEFAULT_PHP_MAJOR_VERSION=7.0
+
+# ============================================================================
+
+# Cloud builder configuration
+DEFAULT_BUILD_LOCALLY=false
+DEFAULT_BUILD_NAMESPACE=gcr.io
+DEFAULT_BUILD_REMOTELY=false
+DEFAULT_BUILD_TIMEOUT=30m
+DEFAULT_BUILD_TYPE=
+DEFAULT_PULL_IMAGES=false
+DEFAULT_REWRITE_LOCAL_DOCKERFILES=true
