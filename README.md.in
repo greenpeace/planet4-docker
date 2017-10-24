@@ -24,9 +24,11 @@ This triggers a Google Container Registry (GCR) build using the settings from `c
 ./build.sh -r
 ```
 
-## Pull new images after remote build
 ```
-./build.sh -r
+# Perform a remote build, pull new images once complete, and show verbose build output
+./build.sh -r -p -v
+# or
+./build.sh -rpv
 ```
 
 ## Updating build configuration variables
