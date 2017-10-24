@@ -40,7 +40,7 @@ shift $((OPTIND - 1))
 
 DEFAULT_CONFIG_FILE="./config.default"
 if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
- # shellcheck source=/dev/null
+ # shellcheck source=./config.default
  source ${DEFAULT_CONFIG_FILE}
 fi
 
@@ -68,7 +68,6 @@ ROOT_DIR=$(pwd)
 shopt -s nullglob
 cd "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}" || exit 1
 SOURCE_DIRECTORY=(*/)
-popd
 shopt -u nullglob
 
 for IMAGE in "${SOURCE_DIRECTORY[@]}"
