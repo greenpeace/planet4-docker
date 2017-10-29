@@ -19,20 +19,20 @@ else
 fi
 
 _title() {
-    printf "${CYAN}*** ${LIGHTCYAN}$@${NC}\n"
+    printf "${CYAN}*** ${LIGHTCYAN}" "$@" "${NC}\n"
 }
 
 _good() {
-    printf "${GREEN}  * ${NC}$@\n"
+    printf "${GREEN}  * ${NC}" "$@" "\n"
 }
 
 _error() {
-    printf "  ${RED}* [ERROR]${NC} $@\n\n"
+    2>&1 printf "  ${RED}* [ERROR]${NC} " "$@" "\n\n"
     exit 1;
 }
 
 _warning() {
-    printf "  ${YELLOW}* [WARNING]${NC} $@\n"
+    2>&1 printf "  ${YELLOW}* [WARNING]${NC} " "$@" "\n"
 }
 
 export -f _title
