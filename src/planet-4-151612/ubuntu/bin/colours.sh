@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+set -e
+
+# Description: Provides a bright, colourful output wrapper for scripts
+# Author:      Raymond Walker <raymond.walker@greenpeace.org>
 
 # https://unix.stackexchange.com/questions/26676/how-to-check-if-a-shell-is-login-interactive-batch
 if [[ $- == *i* ]]
