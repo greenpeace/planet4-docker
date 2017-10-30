@@ -21,7 +21,7 @@ function get_container_name {
 # artifact storage for review and debug information
 function begin_output {
   ARTIFACT_LOGS_DIR=${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}
-  [[ -d "$ARTIFACT_LOGS_DIR" ]] || mkdir -p $ARTIFACT_LOGS_DIR
+  [[ -d "$ARTIFACT_LOGS_DIR" ]] || mkdir -p "$ARTIFACT_LOGS_DIR"
   [[ -f "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}" ]] || touch "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
 
   PS4='+($(basename $BASH_SOURCE):${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
@@ -30,7 +30,6 @@ function begin_output {
 
 # Used in teardown function to store function output in artifacts
 function store_output {
-  local string
   # $output is defined in bats `run` command, don't panic @shellcheck
   # shellcheck disable=SC2154
   # string=$(echo "${output}" | sed -e "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")
@@ -57,6 +56,7 @@ function curl_check_response_regex {
 }
 
 # Queries an endpoint and expects a response status code to match parameter
+# shellcheck disable=SC2120
 function curl_check_status_code {
   set -ex
   trap finish EXIT
@@ -115,9 +115,9 @@ function clean_container {
   set -ex
   trap finish EXIT
   [[ -z "$1" ]] && fatal "Container name not set"
-  docker stop $1
+  docker stop "$1"
   # Delete the container if it didn't have --rm flag
-  yes | docker rm $1 || true
+  yes | docker rm "$1" || true
 
 }
 

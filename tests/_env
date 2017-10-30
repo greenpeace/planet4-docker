@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -a
 
+# Description:  Configures project- and image-specific environment variables
+#               Expected to be sourced from each test file
+
 IMAGE_NAMESPACE=${IMAGE_NAMESPACE:-"gcr.io"}
-BATS_IMAGE=$(basename "$(realpath ${BATS_TEST_DIRNAME}/../)")
+BATS_IMAGE=$(basename "$(realpath "${BATS_TEST_DIRNAME}/../")")
 BATS_PROJECT_ID=${BATS_PROJECT_ID:-"planet-4-151612"}
 IMAGE_TAG=${BUILD_TAG:-${CIRCLE_TAG:-${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}}}
 IMAGE_TAG=${IMAGE_TAG//[^[:alnum:]_]/-}
