@@ -7,10 +7,10 @@ then
   exit 1
 fi
 
-# shellcheck source=./../../../../env
-. ${BATS_TEST_DIRNAME}/../../../../env
-# shellcheck source=./../../../../helpers
-. ${BATS_TEST_DIRNAME}/../../../../helpers
+# shellcheck source=/dev/null
+. ${BATS_TEST_DIRNAME}/../../../../_env
+# shellcheck source=/dev/null
+. ${BATS_TEST_DIRNAME}/../../../../_helpers
 
 # bats test parameters
 compose_file=${BATS_TEST_DIRNAME}/../docker-compose.yml
