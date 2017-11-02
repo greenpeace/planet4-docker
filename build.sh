@@ -126,7 +126,7 @@ cd "${ROOT_DIR}"
 shopt -u nullglob
 
 if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
-
+  echo "Updating local Dockerfiles from templates..."
   for IMAGE in "${SOURCE_DIRECTORY[@]}"
   do
     IMAGE=${IMAGE%/}
@@ -261,7 +261,9 @@ fi
 
 # Rewrite README.md variables
 # shellcheck disable=SC2034
+# Ignore tags for codacy branch badge
 CIRCLE_BADGE_BRANCH=${BRANCH_NAME//\//%2F}
+# Try to determine which branch we're on
 CODACY_BRANCH_NAME=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//[^[:alnum:]\._\/-]/-}
 CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//\//%2F}
