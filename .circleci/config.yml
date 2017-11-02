@@ -57,10 +57,15 @@ jobs:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
-            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh --tap | docker run --rm -i gcr.io/planet-4-151612/tap-xunit:0.1.0 > /tmp/test-results/xunit.xml
 
+      - store_test_results:
+          path:
+            - /tmp/test-results
       - store_artifacts:
-          path: /tmp/artifacts
+          path:
+            - /tmp/artifacts
+            - /tmp/test-results
 
   deploy:
     <<: *defaults
