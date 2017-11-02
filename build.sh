@@ -3,6 +3,17 @@
 
 set -eo pipefail
 
+# DEFAULT CONFIGURATION
+# Read parameters from key->value configuration files
+# Note this will override environment variables at this stage
+# @todo prioritise ENV over config file ?
+
+DEFAULT_CONFIG_FILE="./config.default"
+if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
+  # shellcheck source=/dev/null
+  source ${DEFAULT_CONFIG_FILE}
+fi
+
 # UTILITY
 
 function usage {
@@ -13,9 +24,9 @@ Options:
   -c    Configuration file for build variables, eg:
         $0 -c config
   -h    Print usage information (this text)
-  -l    Perform the docker build locally (default: false)
+  -l    Perform the docker build locally (default: ${DEFAULT_BUILD_LOCALLY})
   -p    Pull created images after build
-  -r    Perform the docker build remotely (default: true)
+  -r    Perform the docker build remotely (default: ${DEFAULT_BUILD_REMOTELY})
   -v    Verbose output
 "
 }
@@ -45,16 +56,7 @@ do
 done
 shift $((OPTIND - 1))
 
-# CONFIG FILE
-# Read parameters from key->value configuration files
-# Note this will override environment variables at this stage
-# @todo prioritise ENV over config file ?
 
-DEFAULT_CONFIG_FILE="./config.default"
-if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
-  # shellcheck source=/dev/null
-  source ${DEFAULT_CONFIG_FILE}
-fi
 
 # Read from custom config file from command line parameter
 if [ "${CONFIG_FILE}" != "" ]; then
