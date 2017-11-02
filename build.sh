@@ -6,12 +6,13 @@ set -eo pipefail
 # UTILITY
 
 function usage {
-  fatal "Usage: $0 [OPTION|OPTION2] ...
+  echo "Usage: $0 [OPTION|OPTION2] ...
 Build and test artifacts in this repository
 
 Options:
   -c    Configuration file for build variables, eg:
         $0 -c config
+  -h    Print usage information (this text)
   -l    Perform the docker build locally (default: false)
   -p    Pull created images after build
   -r    Perform the docker build remotely (default: true)
@@ -26,12 +27,14 @@ function fatal() {
 
 # COMMAND LINE OPTIONS
 
-OPTIONS=':vc:lpr'
+OPTIONS=':vc:lhpr'
 while getopts $OPTIONS option
 do
     case $option in
         c  )    CONFIG_FILE=$OPTARG;;
         l  )    BUILD_LOCALLY='true';;
+        h  )    usage
+                exit;;
         p  )    PULL_IMAGES='true';;
         r  )    BUILD_REMOTELY='true';;
         v  )    VERBOSITY='debug'
