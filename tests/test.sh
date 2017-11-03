@@ -23,7 +23,9 @@ export TEST_BASE_DIR
 # shellcheck source=/dev/null
 . ${TEST_BASE_DIR}/_helpers
 
-# Pass any remaining parameters to bats
+type -P bats >/dev/null 2>&1 || fatal "bats not found in path"
+
+# Pass any command line parameters to bats
 bats_switches=("$@")
 
 # If first parameter is name of a directory, assume that's the test base
