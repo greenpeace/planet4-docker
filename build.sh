@@ -134,13 +134,13 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
 
     # Check the source directory exists and contains a Dockerfile template
     if [ ! -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates" ]; then
-      fatal "ERROR :: Directory not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/"
+      fatal "Directory not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/"
     fi
     if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in" ]; then
-      fatal "ERROR :: Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in"
+      fatal "Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in"
     fi
     if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in" ]; then
-      fatal "ERROR :: README not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in"
+      fatal "README not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in"
     fi
 
     BUILD_DIR="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}"
@@ -200,7 +200,7 @@ if [ "${BUILD_LOCALLY}" = "true" ]; then
     elif [ -d "${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${IMAGE}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile" ]; then
       BUILD_DIR="${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${IMAGE}"
     else
-      fatal "ERROR :: Dockerfile not found. Tried:\n - ./src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile\n - ./sites/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile"
+      fatal "Dockerfile not found. Tried:\n - ./src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile\n - ./sites/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile"
     fi
 
     echo -e "\nBuilding ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ...\n"
