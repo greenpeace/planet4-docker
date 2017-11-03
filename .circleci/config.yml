@@ -40,7 +40,6 @@ jobs:
 
       - persist_to_workspace:
           root: /tmp/workspace
-          paths:
             - var
             - src
 
@@ -63,10 +62,7 @@ jobs:
           path: /tmp/test-results/merged
 
       - store_artifacts:
-          root: /tmp
-          paths:
-            - artifacts
-            - test-results
+          path: /tmp/test-results
 
   deploy:
     <<: *defaults
