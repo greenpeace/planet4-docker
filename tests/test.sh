@@ -85,6 +85,7 @@ do
   type -P junit-merge >/dev/null 2>&1 || { warning "junit-merge not found in path, skipping merge"; continue; }
 
   echo "Merging xUnit results to: ${TEST_OUTPUT_DIR}/_test_results_merged.xml"
-  junit-merge -d "${TEST_OUTPUT_DIR}" -o "${TEST_OUTPUT_DIR}/_test_results_merged.xml"
+  mkdir -p ${TEST_OUTPUT_DIR}/merged
+  junit-merge -d "${TEST_OUTPUT_DIR}" -o "${TEST_OUTPUT_DIR}/merged/test_results_merged.xml"
 
 done
