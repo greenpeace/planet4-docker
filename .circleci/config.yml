@@ -60,10 +60,13 @@ jobs:
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh
 
       - store_test_results:
-          path: /tmp/test-results
+          path: /tmp/test-results/merged
 
       - store_artifacts:
-          path: /tmp/artifacts
+          root: /tmp
+          paths:
+            - artifacts
+            - test-results
 
   deploy:
     <<: *defaults
