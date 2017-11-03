@@ -28,11 +28,9 @@ type -P bats >/dev/null 2>&1 || fatal "bats not found in path"
 # Pass any command line parameters to bats
 bats_switches=("$@")
 
-
 # Configure test output directory
 if [[ -z ${TEST_OUTPUT_DIR} ]]
 then
-
   TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
   TEST_OUTPUT_DIR="${TMPDIR}/test-results"
   echo "Test output directory: $TEST_OUTPUT_DIR"
@@ -42,6 +40,15 @@ mkdir -p "${TEST_OUTPUT_DIR}"
 
 bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
 
+# Ensure tap-xunit exists in path
+if [[ $(type -P tap-xunit >/dev/null 2>&1) -ne 1 ]]
+then
+  # Convert .tap file to .xml
+  tap-xunit > "${TEST_OUTPUT_DIR}/self.xml" < "${TEST_OUTPUT_DIR}/self.tap"
+  # Replace name attribute with something meaningful
+  sed -i -e "s:name=\"Default\":name=\"Self-test\":" "${TEST_OUTPUT_DIR}/self.xml"
+fi
+
 # Testing main project suite
 shopt -s nullglob
 # Iterate over all projects in src
@@ -49,42 +56,44 @@ for project_dir in ${TEST_BASE_DIR}/src/*/
 do
   project_name="$(basename "${project_dir}")"
   # Iterate over all container images in the project
-  for image_dir in ${project_dir}/*/
+  for image_dir in ${project_dir}*/
   do
-    # Check if this project contains tests
-    tests=($(find "${image_dir}tests" -maxdepth 1 -name "*.bats"))
-    if [[ ${#tests[@]} -gt 0 ]]
+    # Ensure the directory contains a 'tests' subdirectory
+    if [[ ! -d "${image_dir}tests" ]]
     then
-      # Run bats tests, piping output to file
-      bats "${bats_switches[@]}" "${image_dir}tests" | tee "${TEST_OUTPUT_DIR}/${project_name}_$(basename "${image_dir}").tap"
-    else
       warning "${image_dir} contains no tests!"
+      continue
     fi
-  done
 
-  type -P tap-xunit >/dev/null 2>&1 || { warning "tap-xunit not found in path, skipping conversion..."; continue; }
+    # Ensure the tests subdirectory contains at least one .bats test file
+    tests=($(find "${image_dir}tests" -maxdepth 1 -name "*.bats"))
+    if [[ ${#tests[@]} -lt 1 ]]
+    then
+      warning "${image_dir} contains no tests!"
+      continue
+    fi
 
-  set -x
+    filename="${project_name}_$(basename "${image_dir}")"
 
-  echo "Converting results from TAP to xUnit format"
-  for i in $TEST_OUTPUT_DIR/*.tap
-  do
-    filename="$(basename "$i")"
+    # Run bats tests, piping output to file
+    bats "${bats_switches[@]}" "${image_dir}tests" | tee "${TEST_OUTPUT_DIR}/${filename}.tap"
+
+    # Ensure tap-xunit exists in path
+    type -P tap-xunit >/dev/null 2>&1 || { warning "tap-xunit not found in path, skipping conversion..."; continue; }
+
     # Convert .tap file to .xml
-    tap-xunit > "${TEST_OUTPUT_DIR}/${filename%%\.*}.xml" < "${i}"
+    tap-xunit > "${TEST_OUTPUT_DIR}/${filename}.xml" < "${TEST_OUTPUT_DIR}/${filename}.tap"
 
-    # Strip all after first period
-    clean_filename="${filename%%\.*}"
-    # Replace underscore with forward slash
-    image="${clean_filename//_//}"
+    # Replace underscore in filename with forward slash to suit image naming convention
+    image="${filename//_//}"
 
     # Replace name attribute with something meaningful
-    sed -i -e "s:name=\"Default\":name=\"${image}\":" "${TEST_OUTPUT_DIR}/${clean_filename}.xml"
+    sed -i -e "s:name=\"Default\":name=\"${image}\":" "${TEST_OUTPUT_DIR}/${filename}.xml"
   done
 
+  # Ensure junit-merge exists in path
   type -P junit-merge >/dev/null 2>&1 || { warning "junit-merge not found in path, skipping merge"; continue; }
 
-  echo "Merging xUnit results to: ${TEST_OUTPUT_DIR}/_test_results_merged.xml"
   mkdir -p ${TEST_OUTPUT_DIR}/merged
   junit-merge -d "${TEST_OUTPUT_DIR}" -o "${TEST_OUTPUT_DIR}/merged/test_results_merged.xml"
 
