@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
-set -exo pipefail
+set -eo pipefail
 
 # UTILITY
 
 function usage {
-  fatal "Usage: $0 [OPTION|OPTION2] ...
+  echo "Usage: $0 [OPTION|OPTION2] ...
 Build and test artifacts in this repository
 
 Options:
   -c    Configuration file for build variables, eg:
-        $0 -c config
+          \$ $(basename "$0") -c config.custom
+        Note that the file config.default is always loaded first and any
+        key-value pairs in this custom configuration file overrides the defaults
+  -h    Show usage (this information)
   -v    Verbose output
 "
 }
@@ -21,14 +24,17 @@ function fatal {
 
 # COMMAND LINE OPTIONS
 
-OPTIONS=':vc:'
+OPTIONS=':c:hv'
 while getopts $OPTIONS option
 do
     case $option in
         c  )    CONFIG_FILE=$OPTARG;;
+        h  )    usage
+                exit 0;;
         v  )    set -x;;
-        *  )    echo "Unkown option: ${OPTARG}"
-                usage;;
+        *  )    >&2 echo "Unkown option: ${OPTARG}"
+                usage
+                exit 1;;
     esac
 done
 shift $((OPTIND - 1))
