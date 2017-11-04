@@ -12,7 +12,7 @@ function teardown {
 }
 
 @test "ack exists and is executable" {
-  if [[ ! -x "$(which ack)" ]]
+  if [[ ! -x "$(type -P ack)" ]]
   then
     >&2 echo "FATAL: ack not found"
     >&2 echo "Please download and install ack from https://beyondgrep.com/"
