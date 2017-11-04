@@ -3,6 +3,7 @@ set -a
 
 # shellcheck source=/dev/null
 PROJECT_ROOT_DIR="${BATS_TEST_DIRNAME}/../../"
+PROJECT_ID="$(grep "PROJECT_ID=.*" "${PROJECT_ROOT_DIR}/tests/self/fixtures/config.test" | cut -d \" -f 2)"
 
 # shellcheck source=/dev/null
 . "${BATS_TEST_DIRNAME}/../_env"
@@ -22,5 +23,6 @@ function shellcheck_all_bash_scripts {
 }
 
 export PROJECT_ROOT_DIR
+export PROJECT_ID
 
 export -f shellcheck_all_bash_scripts
