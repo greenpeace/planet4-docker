@@ -149,6 +149,7 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
     ENVVARS=(
       '${BASEIMAGE_VERSION}' \
       '${BUILD_NAMESPACE}' \
+      '${CONTAINER_TIMEZONE}' \
       '${DOCKERIZE_VERSION}' \
       '${GOOGLE_PROJECT_ID}' \
       '${HEADERS_MORE_VERSION}'\
