@@ -5,6 +5,7 @@ load env
 
 function setup {
   begin_output
+  run "${PROJECT_ROOT_DIR}/build.sh" -c "${TEST_CONFIG_FILE}"
 }
 
 function teardown {
