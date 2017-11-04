@@ -2,6 +2,9 @@
 # shellcheck disable=SC2034
 set -a
 
+# Note: ensure all variable values are wrapped in double-quotes ("..."), else
+#       tests will fail, since cut is looking for delimiter "
+
 # Application environment
 APPLICATION_NAME="Testing Greenpeace P4 Docker application"
 GOOGLE_PROJECT_ID="planet-4-151612"
