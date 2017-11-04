@@ -9,6 +9,9 @@ PROJECT_ID="$(grep "PROJECT_ID=.*" "${PROJECT_ROOT_DIR}/tests/self/fixtures/conf
 # shellcheck source=/dev/null
 . "${BATS_TEST_DIRNAME}/../_helpers"
 
+# Override automatic image name for self-test
+BATS_IMAGE="self"
+
 function shellcheck_all_bash_scripts {
   set -ex
   trap finish EXIT
@@ -21,6 +24,7 @@ function shellcheck_all_bash_scripts {
   done
 }
 
+export BATS_IMAGE
 export PROJECT_ROOT_DIR
 export PROJECT_ID
 
