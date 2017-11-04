@@ -13,7 +13,12 @@ function shellcheck_all_bash_scripts {
   set -ex
   trap finish EXIT
 
-  ack --shell -l "" "${PROJECT_ROOT_DIR}"
+  files=$(ack --shell -l "" "${PROJECT_ROOT_DIR}")
+
+  for i in $files
+  do
+    shellcheck $i
+  done
 }
 
 export PROJECT_ROOT_DIR
