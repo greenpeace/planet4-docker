@@ -22,5 +22,9 @@ function teardown {
 
 @test "shellcheck all Bash scripts" {
   run shellcheck_all_bash_scripts
-  [[ ${status} -ne 1 ]]
+  # We don't care bout failures here, just log them for future reference
+  if [[ $status -ne 0 ]]
+  then
+    echo "${output}" > "${ARTIFACT_LOGS_DIR:-/tmp/artifacts/logs}/shellcheck.txt"
+  fi
 }
