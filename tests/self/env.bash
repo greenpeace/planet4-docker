@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -a
 
-# shellcheck source=/dev/null
 PROJECT_ROOT_DIR="${BATS_TEST_DIRNAME}/../../"
 PROJECT_ID="$(grep "PROJECT_ID=.*" "${PROJECT_ROOT_DIR}/tests/self/fixtures/config.test" | cut -d \" -f 2)"
 
