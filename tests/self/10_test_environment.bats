@@ -42,3 +42,14 @@ function teardown {
     echo "${output}" > "${ARTIFACT_LOGS_DIR:-/tmp/artifacts/logs}/shellcheck.txt"
   fi
 }
+
+@test "build.sh exists and is executable" {
+  [[ -f "${PROJECT_ROOT_DIR}/build.sh" ]]
+  [[ -x "${PROJECT_ROOT_DIR}/build.sh" ]]
+}
+
+@test "build.sh prints usage information with -h flag" {
+  run ${PROJECT_ROOT_DIR}/build.sh -h
+  [[ $status -eq 0 ]]
+  [[ $output =~ "usage" ]]
+}
