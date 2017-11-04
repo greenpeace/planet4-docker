@@ -98,3 +98,4 @@ do
   junit-merge -d "${TEST_OUTPUT_DIR}" -o "${TEST_OUTPUT_DIR}/merged/test_results_merged.xml"
 
 done
+shopt -u nullglob
