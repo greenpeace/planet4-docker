@@ -88,6 +88,7 @@ jobs:
             if [[ "${CIRCLE_BRANCH}" = "master" ]] ||
                [[ "$(cat /tmp/workspace/var/circle-branch-name)" = "master" ]]
             then
+              cd /tmp/workspace/src
               ./deploy.sh
             fi
 

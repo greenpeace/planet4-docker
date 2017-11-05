@@ -46,7 +46,7 @@ shift $((OPTIND - 1))
 
 DEFAULT_CONFIG_FILE="./config.default"
 if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
- # shellcheck source=/dev/null
+ # shellcheck source=./config.default
  source ${DEFAULT_CONFIG_FILE}
 fi
 
@@ -65,7 +65,7 @@ fi
 # Environment consolidation
 
 BUILD_NAMESPACE=${BUILD_NAMESPACE:-${DEFAULT_BUILD_NAMESPACE}}
-BUILD_TAG=${BUILD_TAG:-$CIRCLE_BUILD_NUM}
+BUILD_TAG=${BUILD_TAG:-"build-$CIRCLE_BUILD_NUM"}
 GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID:-${DEFAULT_GOOGLE_PROJECT_ID}}
 
 # Get all the project subdirectories
@@ -74,15 +74,30 @@ ROOT_DIR=$(pwd)
 shopt -s nullglob
 cd "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}" || exit 1
 SOURCE_DIRECTORY=(*/)
-popd
 shopt -u nullglob
+
+
+# Check if we're running on CircleCI
+if [ ! -z "${CIRCLECI}" ]
+then
+  DOCKER="${HOME}/google-cloud-sdk/bin/gcloud docker --"
+else
+  DOCKER="docker"
+fi
 
 for IMAGE in "${SOURCE_DIRECTORY[@]}"
 do
   IMAGE=${IMAGE%/}
 
-  docker pull ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}
-  docker tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
-  docker push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
+  ${DOCKER} pull ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}
+
+  ${DOCKER} tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
+  ${DOCKER} push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
+
+  if [ ! -z "${CIRCLE_TAG}" ]
+  then
+    ${DOCKER} tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${CIRCLE_TAG}
+    ${DOCKER} push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${CIRCLE_TAG}
+  fi
 
 done
