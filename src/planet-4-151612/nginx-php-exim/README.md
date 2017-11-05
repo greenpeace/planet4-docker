@@ -33,7 +33,7 @@ ADMIN_EMAIL | nobody@example.com | Server administrator email, used for intercep
 CHOWN_APP_DIR | true | if true, `chown -R $APP_USER:$APP_GROUP /app/www`
 APP_HOSTNAME | `hostname -f` |  hostname of application
 VIRTUAL_HOST | example.com | virtualhosts which this service should respond to, separated by commmas. Useful for operating behind [jwilder/nginx-proxy](https://hub.docker.com/r/jwilder/nginx-proxy/).
-CONTAINER_TIMEZONE | Australia/Sydney | Server timezone
+CONTAINER_TIMEZONE | UTC | Server timezone
 APP_USER | app | nginx and php5-fpm user
 APP_GROUP | app | nginx and php5-fpm group
 APP_UID | 1000 | user_id - useful when mounting volumes from host > guest to either share or delineate file access permission
