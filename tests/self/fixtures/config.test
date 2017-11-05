@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+# shellcheck disable=SC2034
+set -a
+
+# Note: ensure all variable values are wrapped in double-quotes ("..."), else
+#       tests will fail, since cut is looking for delimiter "
+
+# Application environment
+APPLICATION_NAME="Testing-SLEUOkQOh9wz"
+GOOGLE_PROJECT_ID="planet-4-151612"
+CONTAINER_TIMEZONE="Australia/Hobart"
+
+# ============================================================================
+
+# Infrastructure version numbers
+
+# Random strings generated with:
+# pwgen -s 12 1
+
+BASEIMAGE_VERSION="test-wulOFntnak3m"
+DOCKERIZE_VERSION="test-D0eODsbkR9kU"
+HEADERS_MORE_VERSION="test-ikamFAnXSp9Z"
+NGINX_PAGESPEED_RELEASE="test-Bwv3ksGXM80r"
+NGINX_PAGESPEED_VERSION="test-38H1MCb5sJix"
+NGINX_VERSION="test-K4GiwqC3znRL"
+OPENSSL_VERSION="test-Q82dknjk3RHX"
+
+# ============================================================================

@@ -1,36 +1,101 @@
 #!/usr/bin/env bash
 set -e
 
-switches=("$@")
+# Description:  Performs Bash Automated Shell Tests
+#               Usage:
+#               ./test.sh [directory] [Bats command line switches]
+# Author:       Raymond Walker <raymond.walker@greenpeace.org>
 
+# Find real file path of current script
+# https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 source="${BASH_SOURCE[0]}"
 while [[ -h "$source" ]]
 do # resolve $source until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$source" )" && pwd )"
+  dir="$( cd -P "$( dirname "$source" )" && pwd )"
   source="$(readlink "$source")"
-  [[ $source != /* ]] && source="$DIR/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+  [[ $source != /* ]] && source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
-file_dir="$( cd -P "$( dirname "$source" )" && pwd )"
-export file_dir
+TEST_BASE_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
+export TEST_BASE_DIR
 
-# shellcheck source=./env
-. ${file_dir}/env
-# shellcheck source=./helpers
-. ${file_dir}/helpers
 
-for project_dir in ${file_dir}/src/*/
+# Include base project helper functions
+# shellcheck source=/dev/null
+. ${TEST_BASE_DIR}/_helpers
+
+type -P bats >/dev/null 2>&1 || fatal "bats not found in path"
+
+# Pass any command line parameters to bats
+bats_switches=("$@")
+
+# Configure test output directory
+if [[ -z ${TEST_OUTPUT_DIR} ]]
+then
+  TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
+  TEST_OUTPUT_DIR="${TMPDIR}/test-results"
+  echo "Test output directory: $TEST_OUTPUT_DIR"
+fi
+
+mkdir -p "${TEST_OUTPUT_DIR}"
+
+bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
+
+# Ensure tap-xunit exists in path
+if [[ $(type -P tap-xunit >/dev/null 2>&1) -ne 1 ]]
+then
+  # Convert .tap file to .xml
+  tap-xunit > "${TEST_OUTPUT_DIR}/self.xml" < "${TEST_OUTPUT_DIR}/self.tap"
+  # Replace name attribute with something meaningful
+  sed -i -e "s:name=\"Default\":name=\"Self-test\":" "${TEST_OUTPUT_DIR}/self.xml"
+fi
+
+# Testing main project suite
+shopt -s nullglob
+# Iterate over all projects in src
+for project_dir in ${TEST_BASE_DIR}/src/*/
 do
-  project=$(basename ${project_dir})
-  for image_dir in ${project_dir}/*/
+  project_name="$(basename "${project_dir}")"
+  # Iterate over all container images in the project
+  for image_dir in ${project_dir}*/
   do
-    image=$(basename ${image_dir})
-    >&2 echo -e "\n >> ${project}/${image}:${IMAGE_TAG}"
-    if [[ -d "${image_dir}/tests" ]]
+    # Ensure the directory contains a 'tests' subdirectory
+    if [[ ! -d "${image_dir}tests" ]]
     then
-      bats "${switches[@]}" ${image_dir}/tests
-    else
-      >&2 echo "WARNING: ${image_dir} contains no tests!"
+      warning "${image_dir} contains no tests!"
+      continue
     fi
 
+    # Ensure the tests subdirectory contains at least one .bats test file
+    tests=($(find "${image_dir}tests" -maxdepth 1 -name "*.bats"))
+    if [[ ${#tests[@]} -lt 1 ]]
+    then
+      warning "${image_dir} contains no tests!"
+      continue
+    fi
+
+    filename="${project_name}_$(basename "${image_dir}")"
+
+    # Run bats tests, piping output to file
+    bats "${bats_switches[@]}" "${image_dir}tests" | tee "${TEST_OUTPUT_DIR}/${filename}.tap"
+
+    # Ensure tap-xunit exists in path
+    type -P tap-xunit >/dev/null 2>&1 || { warning "tap-xunit not found in path, skipping conversion..."; continue; }
+
+    # Convert .tap file to .xml
+    tap-xunit > "${TEST_OUTPUT_DIR}/${filename}.xml" < "${TEST_OUTPUT_DIR}/${filename}.tap"
+
+    # Replace underscore in filename with forward slash to suit image naming convention
+    image="${filename//_//}"
+
+    # Replace name attribute with something meaningful
+    sed -i -e "s:name=\"Default\":name=\"${image}\":" "${TEST_OUTPUT_DIR}/${filename}.xml"
   done
+
+  # Ensure junit-merge exists in path
+  type -P junit-merge >/dev/null 2>&1 || { warning "junit-merge not found in path, skipping merge"; continue; }
+
+  mkdir -p ${TEST_OUTPUT_DIR}/merged
+  junit-merge -d "${TEST_OUTPUT_DIR}" -o "${TEST_OUTPUT_DIR}/merged/test_results_merged.xml"
+
 done
+shopt -u nullglob
