@@ -4,6 +4,7 @@ set -e
 # Description: Provides a bright, colourful output wrapper for scripts
 # Author:      Raymond Walker <raymond.walker@greenpeace.org>
 
+# See: https://unix.stackexchange.com/questions/9957/how-to-check-if-bash-can-print-colors
 # Check if stdout is a terminal
 if test -t 1; then
 
