@@ -378,13 +378,7 @@ fi
 
 if [ "${BUILD_LOCALLY}" = "true" ]; then
   _build "Performing build locally ..."
-  for image in "${build_order[@]}"; do
-
-    if [[ ! $(containsElement "${image}" "${build_list[@]}") ]]
-    then
-      _skip "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}"
-      continue
-    fi
+  for image in "${build_list[@]}"; do
 
     # Check the source directory exists and contains a Dockerfile
     if [ -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile" ]; then
