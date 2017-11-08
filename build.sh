@@ -45,7 +45,7 @@ Options:
 
 TERM="${TERM:-'dumb'}"
 
-if [[ $TERM ]] && test -t 1
+if test -t 1
 then
     # Check that it supports colours
     ncolors=$(tput colors)
