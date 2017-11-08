@@ -62,6 +62,16 @@ if [ "${WP_DB_PASS}" == "" ]; then
 fi
 _good "WP_DB_PREFIX       ${WP_DB_PREFIX}"
 
+cd /app/source || exit 1
+
+if [[ ! -f "${PWD}/${COMPOSER}" ]]
+then
+  ls -al
+  _error "File not found: $PWD/$COMPOSER"
+else
+  cat "$COMPOSER"
+fi
+
 # WORDPRESS INSTALLATION
 
 _good "Installing Wordpress for site ${WP_HOSTNAME}..."
