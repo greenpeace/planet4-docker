@@ -1,11 +1,11 @@
 # Greenpeace P4 Docker application
-# Build: build-185
+# Build: build-191
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/ubuntu:master
+FROM gcr.io/planet-4-151612/ubuntu:develop
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
@@ -20,10 +20,10 @@ ENV NGINX_PAGESPEED_VERSION latest
 ENV NGINX_PAGESPEED_RELEASE stable
 
 # https://github.com/openresty/headers-more-nginx-module/tags
-ENV HEADERS_MORE_VERSION 0.32
+ENV HEADERS_MORE_VERSION 0.33
 
 # https://www.openssl.org/source
-ENV OPENSSL_VERSION 1.1.0f
+ENV OPENSSL_VERSION 1.1.0g
 
 COPY ./bin/download_pagespeed.sh /app/bin/download_pagespeed.sh
 
@@ -33,10 +33,10 @@ RUN chmod 750 /app/bin/*.sh && \
   	apt-get -y --no-install-recommends install wget git-core autoconf automake libtool build-essential zlib1g-dev libpcre3-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev && \
   	echo "Downloading nginx 1.13.6 from http://nginx.org/download/nginx-1.13.6.tar.gz ..." && \
   	wget -O - http://nginx.org/download/nginx-1.13.6.tar.gz --progress=bar --tries=3 | tar zxf - -C /tmp && \
-  	echo "Downloading headers-more 0.32 from https://github.com/openresty/headers-more-nginx-module/archive/v0.32.tar.gz ..." && \
-  	wget -O - https://github.com/openresty/headers-more-nginx-module/archive/v0.32.tar.gz --progress=bar  --tries=3 | tar zxf - -C /tmp && \
+  	echo "Downloading headers-more 0.33 from https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz ..." && \
+  	wget -O - https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz --progress=bar  --tries=3 | tar zxf - -C /tmp && \
   	/app/bin/download_pagespeed.sh && \
-  	echo "Downloading openssl v1.1.0f from https://www.openssl.org/source/openssl-1.1.0f.tar.gz ..." && wget -O - https://www.openssl.org/source/openssl-1.1.0f.tar.gz  --progress=bar --tries=3 | tar xzf  - -C /tmp && \
+  	echo "Downloading openssl v1.1.0g from https://www.openssl.org/source/openssl-1.1.0g.tar.gz ..." && wget -O - https://www.openssl.org/source/openssl-1.1.0g.tar.gz  --progress=bar --tries=3 | tar xzf  - -C /tmp && \
   	cd /tmp/nginx-1.13.6 && \
   	./configure \
   		--prefix=/etc/nginx  \
@@ -79,8 +79,8 @@ RUN chmod 750 /app/bin/*.sh && \
   		--with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' \
   		--with-ipv6 \
   		--with-pcre-jit \
-  		--with-openssl=/tmp/openssl-1.1.0f \
-      --add-module=/tmp/headers-more-nginx-module-0.32 \
+  		--with-openssl=/tmp/openssl-1.1.0g \
+      --add-module=/tmp/headers-more-nginx-module-0.33 \
   		--add-module=/tmp/ngx_pagespeed-latest-stable  && \
   	make && \
   	make install && \
