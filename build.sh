@@ -14,10 +14,20 @@ if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
   source ${DEFAULT_CONFIG_FILE}
 fi
 
+# Need to explicitly define build order for local directories
+# cloudbuild.yaml defines a logical build structure but local is alphanumeric
+LOCAL_BUILD_ORDER=(
+  "ubuntu"
+  "nginx-pagespeed"
+  "nginx-php-exim"
+  "wordpress"
+  "p4-onbuild"
+)
+
 # UTILITY
 
 function usage {
-  echo "Usage: $0 [OPTION|OPTION2] ...
+  echo "Usage: $0 [OPTION|OPTION2] [<image build list>|all]...
 Build and test artifacts in this repository
 
 Options:
@@ -34,6 +44,65 @@ Options:
 function fatal() {
  echo -e "ERROR: $1" >&2
  exit 1
+}
+
+function containsElement() {
+  local e match="$1"
+  shift
+  for e; do [[ "$e" == "$match" ]] && return 0; done
+  return 1
+}
+
+function sendBuildRequest() {
+  local dir=${1:-${ROOT_DIR}}
+
+  if [[ -f "$dir/cloudbuild.yaml" ]]
+  then
+    echo "Building from $dir"
+  else
+    fatal "No cloudbuild.yaml file found in $dir"
+  fi
+
+  # Check if we're running on CircleCI
+  if [ ! -z "${CIRCLECI}" ]; then
+    GCLOUD=/home/circleci/google-cloud-sdk/bin/gcloud
+  else
+    GCLOUD=$(type -P gcloud)
+  fi
+
+  if [[ ! -x ${GCLOUD} ]]
+  then
+    fatal "gcloud executable not found"
+  fi
+
+  # Rewrite cloudbuild variables
+  local sub_array=(
+    "_BUILD_NUM=${BUILD_NUM}"
+    "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
+    "_BUILD_TAG=${BUILD_TAG}" \
+    "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
+    "_REVISION_TAG=${REVISION_TAG}" \
+  )
+
+  sub="$(printf "%s," "${sub_array[@]}")"
+  sub="${sub%,}"
+
+  # Avoid sending entire .git history as build context to save some time and bandwidth
+  # Since git builtin substitutions aren't available unless triggered
+  # https://cloud.google.com/container-builder/docs/concepts/build-requests#substitutions
+  TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
+  tar --exclude='.git/' --exclude='.circleci/' -zcf $TMPDIR/docker-source.tar.gz -C $dir .
+
+  # Submit the build
+  time ${GCLOUD} container builds submit \
+    --verbosity=${VERBOSITY:-'warning'} \
+    --timeout=${BUILD_TIMEOUT} \
+    --config $dir/cloudbuild.yaml \
+    --substitutions ${sub} \
+    ${TMPDIR}/docker-source.tar.gz
+
+  # Cleanup temporary file
+  rm -fr ${TMPDIR}
 }
 
 # COMMAND LINE OPTIONS
@@ -56,9 +125,24 @@ do
 done
 shift $((OPTIND - 1))
 
+# ----------------------------------------------------------------------------
+# If there are command line arguments, these are treated as subset build items
+# instead of building the entire suite
 
+if [[ $# -gt 0 ]] && [[ $1 != 'all' ]]
+then
+  echo "Building subset: " "$@"
+  build_type='subset'
+  build_list=($@)
+else
+  echo "Building all images"
+  build_type='all'
+  build_list=(${LOCAL_BUILD_ORDER[@]})
+fi
 
+# ----------------------------------------------------------------------------
 # Read from custom config file from command line parameter
+
 if [ "${CONFIG_FILE}" != "" ]; then
   echo "Reading custom configuration from ${CONFIG_FILE}"
 
@@ -70,7 +154,9 @@ if [ "${CONFIG_FILE}" != "" ]; then
   source ${CONFIG_FILE}
 fi
 
-# Setup build variables based on CircleCI environment vars
+# ----------------------------------------------------------------------------
+# Configure build variables based on CircleCI environment vars
+
 if [[ "${CIRCLECI}" ]]
 then
   if [[ -z "${BUILD_TAG}" ]]
@@ -86,7 +172,9 @@ then
   BUILD_NUM="build-${CIRCLE_BUILD_NUM}"
 fi
 
+# ----------------------------------------------------------------------------
 # Consolidate and sanitise variables
+
 APPLICATION_NAME=${APPLICATION_NAME:-${DEFAULT_APPLICATION_NAME}}
 BASEIMAGE_VERSION=${BASEIMAGE_VERSION:-${DEFAULT_BASEIMAGE_VERSION}}
 BRANCH_NAME=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
@@ -94,7 +182,7 @@ BRANCH_NAME=${BRANCH_NAME//[^a-zA-Z0-9\._-]/-}
 BUILD_LOCALLY=${BUILD_LOCALLY:-${DEFAULT_BUILD_LOCALLY}}
 BUILD_NAMESPACE=${BUILD_NAMESPACE:-${DEFAULT_BUILD_NAMESPACE}}
 BUILD_REMOTELY=${BUILD_REMOTELY:-${DEFAULT_BUILD_REMOTELY}}
-BUILD_NUM=${BUILD_NUM:-"test-${BRANCH_NAME}"}
+BUILD_NUM=${BUILD_NUM:-"test-${USER}-$(hostname -s)"}
 BUILD_NUM=${BUILD_NUM//[^a-zA-Z0-9\._-]/-}
 BUILD_TAG=${BUILD_TAG:-${BRANCH_NAME}}
 BUILD_TAG=${BUILD_TAG//[^a-zA-Z0-9\._-]/-}
@@ -117,13 +205,28 @@ REWRITE_LOCAL_DOCKERFILES=${REWRITE_LOCAL_DOCKERFILES:-${DEFAULT_REWRITE_LOCAL_D
 SOURCE_VERSION=${SOURCE_VERSION:-${BRANCH_NAME}}
 SOURCE_VERSION=${SOURCE_VERSION//[^a-zA-Z0-9\._-]/-}
 
+# ----------------------------------------------------------------------------
 # Get all the project subdirectories
-ROOT_DIR=$(pwd)
+
+# Find real file path of current script
+# https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
+source="${BASH_SOURCE[0]}"
+while [[ -h "$source" ]]
+do # resolve $source until the file is no longer a symlink
+  dir="$( cd -P "$( dirname "$source" )" && pwd )"
+  source="$(readlink "$source")"
+  [[ $source != /* ]] && source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+ROOT_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
+
 shopt -s nullglob
 cd "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}"
 SOURCE_DIRECTORY=(*/)
 cd "${ROOT_DIR}"
 shopt -u nullglob
+
+# ----------------------------------------------------------------------------
+# Update local Dockerfiles from template
 
 if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
   echo "Updating local Dockerfiles from templates..."
@@ -180,20 +283,18 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
   done
 fi
 
+# ----------------------------------------------------------------------------
 # Perform the build locally
+
 if [ "${BUILD_LOCALLY}" = "true" ]; then
 
-  # Need to explicitly define build order for local directories
-  # cloudbuild.yaml defines a logical build structure but local is alphanumeric
-  LOCAL_BUILD_ORDER=(
-    "ubuntu"
-    "nginx-pagespeed"
-    "nginx-php-exim"
-    "wordpress"
-    "p4-onbuild"
-  )
-
   for IMAGE in "${LOCAL_BUILD_ORDER[@]}"; do
+
+    if [[ ! $(containsElement "${IMAGE}" "${build_list[@]}") ]]
+    then
+      echo "Skipping ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE} as it was not listed as a command line argument"
+      continue
+    fi
 
     # Check the source directory exists and contains a Dockerfile
     if [ -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile" ]; then
@@ -212,47 +313,29 @@ if [ "${BUILD_LOCALLY}" = "true" ]; then
   done
 fi
 
+# ----------------------------------------------------------------------------
+# Send build requests to Google Container Builder
+
 if [ "${BUILD_REMOTELY}" = "true" ]; then
   echo "Sending build context to Google Container Builder ..."
 
-  # Rewrite cloudbuild variables
-  SUBSTITUTIONS=(
-    "_BUILD_NUM=${BUILD_NUM}"
-    "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
-    "_BUILD_TAG=${BUILD_TAG}" \
-    "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
-    "_REVISION_TAG=${REVISION_TAG}" \
-  )
-
-  SUBSTITUTIONS_PROCESSOR="$(printf "%s," "${SUBSTITUTIONS[@]}")"
-  SUBSTITUTIONS_STRING="${SUBSTITUTIONS_PROCESSOR%,}"
-
-  # Avoid sending entire .git history as build context to save some time and bandwidth
-  # Since git builtin substitutions aren't available unless triggered
-  # https://cloud.google.com/container-builder/docs/concepts/build-requests#substitutions
-  TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
-  tar --exclude='.git/' --exclude='.circleci/'  -zcf $TMPDIR/docker-source.tar.gz .
-
-  # Check if we're running on CircleCI
-  if [ ! -z "${CIRCLECI}" ]; then
-    GCLOUD=/home/circleci/google-cloud-sdk/bin/gcloud
+  if [[ "$build_type" = 'all' ]]
+  then
+    sendBuildRequest
   else
-    GCLOUD=gcloud
+    for image in "${build_list[@]}"
+    do
+      sendBuildRequest "${ROOT_DIR}/src/$GOOGLE_PROJECT_ID/$image"
+    done
   fi
-
-  # Submit the build
-  time ${GCLOUD} container builds submit \
-    --verbosity=${VERBOSITY:-'warning'} \
-    --timeout=${BUILD_TIMEOUT} \
-    --config ${ROOT_DIR}/cloudbuild.yaml \
-    --substitutions ${SUBSTITUTIONS_STRING} \
-    ${TMPDIR}/docker-source.tar.gz
-  rm -fr ${TMPDIR}
 fi
+
+# ----------------------------------------------------------------------------
+# Pull any newly built images, forking to background for parallel downloads
 
 if [[ "${PULL_IMAGES}" = "true" ]]
 then
-  for IMAGE in "${SOURCE_DIRECTORY[@]}"
+  for IMAGE in "${build_list[@]}"
   do
     IMAGE=${IMAGE%/}
     echo -e "Pull ->> ${GOOGLE_PROJECT_ID}/${IMAGE}"
@@ -260,10 +343,13 @@ then
   done
 fi
 
+# ----------------------------------------------------------------------------
 # Rewrite README.md variables
+
 # shellcheck disable=SC2034
 # Ignore tags for codacy branch badge
 CIRCLE_BADGE_BRANCH=${BRANCH_NAME//\//%2F}
+
 # Try to determine which branch we're on
 CODACY_BRANCH_NAME=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//[^[:alnum:]\._\/-]/-}
@@ -279,4 +365,4 @@ ENVVARS_STRING="${ENVVARS_STRING%:}"
 
 envsubst "${ENVVARS_STRING}" < ./README.md.in > ./README.md
 
-wait
+wait # Until any docker pull requests have completed
