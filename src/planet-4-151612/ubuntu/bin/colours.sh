@@ -4,7 +4,7 @@ set -e
 # Description: Provides a bright, colourful output wrapper for scripts
 # Author:      Raymond Walker <raymond.walker@greenpeace.org>
 
-# See: https://unix.stackexchange.com/questions/9957/how-to-check-if-bash-can-print-colors
+# See: https://unix.stackexchange.com/questions/9957/how-to-check-if-bash-can-print-colours
 # Check if stdout is a terminal
 if test -t 1; then
 
@@ -28,20 +28,20 @@ if test -t 1; then
 fi
 
 _title() {
-    printf "${cyan}*** ${bold}%s${normal}\n" "$@"
+    printf "${cyan:-""}*** ${bold:-""}%s${normal:-""}\n" "$@"
 }
 
 _good() {
-    printf "${green}  * ${normal}%s\n" "$@"
+    printf "${green:-""}  * ${normal:-""}%s\n" "$@"
 }
 
 _error() {
-    >&2 printf "\n${red}${standout}[ERROR]${normal} ${red}%s${normal}\n\n" "$@"
+    >&2 printf "\n${red:-""}${standout:-""}[ERROR]${normal:-""} ${red:-""}%s${normal:-""}\n\n" "$@"
     exit 1;
 }
 
 _warning() {
-    >&2 printf "  ${yellow}* ${bold}[WARNING] ${normal}%s\n" "$@"
+    >&2 printf "  ${yellow}:-""* ${bold:-""}[WARNING] ${normal:-""}%s\n" "$@"
 }
 
 export -f _title
