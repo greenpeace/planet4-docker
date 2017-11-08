@@ -1,7 +1,6 @@
 # Docker builds for Planet4 on Google Container Registry
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=master)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/master.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/master)
-
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=develop)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop)
 
 ## Description
 
@@ -30,6 +29,37 @@ This triggers a Google Container Registry (GCR) build using the settings from `c
 # or
 ./build.sh -rpv
 ```
+
+## Subset builds
+Build order can be specified on a per-project basis by the inclusion of a `build_order` file in the root of that project.
+This is helpful in determining the correct build order for local or partial builds where projects have dependencies on parent images.
+Subset builds can significantly speed up container rebuilds if changes are made late in the dependency list.
+
+There are two different methods of specifying a subset build - providing a list of images to build, or by providing a starting point and appending `+` to the starting image which will build that image and any following it in the build order.
+
+For example, with a given `build_order` file such as:
+```
+ubuntu
+nginx-pagespeed
+nginx-php-exim
+wordpress
+p4-onbuild
+```
+
+1. Specifically stating which containers to build:
+```
+# Perform a remote build of a small subset
+./build.sh -r nginx-pagespeed wordpress
+```
+In this example, only the nginx-pagespeed and wordpress images are built.
+
+2. Building the dependency chain from a given start point:
+```
+# Performs a remote build of all images in the build_order file, starting at nginx-php-exim:
+./build.sh -r nginx-php-exim+
+```
+In this example, the `nginx-php-exim wordpress p4-onbuild` images are all built due to the trailing `+` on nginx-php-exim
+
 
 ## Updating build configuration variables
 
@@ -68,12 +98,10 @@ echo "GOOGLE_PROJECT_ID=greenpeace-testing" >> config.custom
 ```
 ### Using environment variables
 ```
-# Build the whole docker suite:
-./build.sh
+# Build the whole docker suite on GCB:
+./build.sh -r
 
-# Build the resultant sites:
-./build.sh site
-
-# Build a custom project from custom git tag:
-GOOGLE_PROJECT_ID=greenpeace-testing REV_TAG=20171222 ./build.sh site
+# Build only a subset of the project, with a custom source branch,
+# starting from wordpress and continuing down the dependency chain
+GIT_REF=dev-feature/example ./build.sh -r wordpress+
 ```
