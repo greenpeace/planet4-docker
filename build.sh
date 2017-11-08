@@ -68,7 +68,7 @@ then
 fi
 
 function _fatal() {
- _out "${bold:-''}${red:-''} [ERROR]${normal:-''}" "$1" >&2
+ _out "${bold:-}${red:-} [ERROR]${normal:-}" "$1" >&2
  exit 1
 }
 
@@ -84,19 +84,19 @@ function _out() {
 }
 
 function _notice {
-  _out "${white:-''}[NOTICE]${white:-''}" "$@"
+  _out "${white:-}[NOTICE]${white:-}" "$@"
 }
 
 function _skip() {
-  _out "${cyan:-''}  [SKIP]${normal:-''}" "$@"
+  _out "${cyan:-}  [SKIP]${normal:-}" "$@"
 }
 
 function _build() {
-  _out "${green:-''} [BUILD]${normal:-''}" "$@"
+  _out "${green:-} [BUILD]${normal:-}" "$@"
 }
 
 function _pull() {
-  _out "${green:-''}  [PULL]${normal:-''}" "$@"
+  _out "${green:-}  [PULL]${normal:-}" "$@"
 }
 
 function _verbose() {
@@ -104,14 +104,7 @@ function _verbose() {
   then
     return
   fi
-  _out "${green:-''}  [PULL]${normal:-''}" "$@"
-}
-
-function containsElement() {
-  local e match="$1"
-  shift
-  for e; do [[ "$e" == "$match" ]] && return 0; done
-  return 1
+  _out "${green:-}  [PULL]${normal:-}" "$@"
 }
 
 function sendBuildRequest() {
