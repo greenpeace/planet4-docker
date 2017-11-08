@@ -30,4 +30,5 @@ php composer-setup.php --install-dir=/app/bin
 rm composer-setup.php
 
 # Install parallel downloader hirak/prestissimo (latest version)
+echo "Installing hirak/prestissimo ..."
 /app/bin/composer.phar --no-plugins --no-scripts --profile -vvv global require hirak/prestissimo
