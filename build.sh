@@ -43,6 +43,7 @@ Options:
 "
 }
 
+TERM="${TERM:-'dumb'}"
 
 if [[ $TERM ]] && test -t 1
 then
