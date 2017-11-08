@@ -3,26 +3,28 @@
 
 set -eo pipefail
 
+# ----------------------------------------------------------------------------
+# Find real file path of current script
+# https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
+source="${BASH_SOURCE[0]}"
+while [[ -h "$source" ]]
+do # resolve $source until the file is no longer a symlink
+  dir="$( cd -P "$( dirname "$source" )" && pwd )"
+  source="$(readlink "$source")"
+  [[ $source != /* ]] && source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+ROOT_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
+
 # DEFAULT CONFIGURATION
 # Read parameters from key->value configuration files
 # Note this will override environment variables at this stage
 # @todo prioritise ENV over config file ?
 
-DEFAULT_CONFIG_FILE="./config.default"
+DEFAULT_CONFIG_FILE="${ROOT_DIR}/config.default"
 if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
   # shellcheck source=/dev/null
   source ${DEFAULT_CONFIG_FILE}
 fi
-
-# Need to explicitly define build order for local directories
-# cloudbuild.yaml defines a logical build structure but local is alphanumeric
-LOCAL_BUILD_ORDER=(
-  "ubuntu"
-  "nginx-pagespeed"
-  "nginx-php-exim"
-  "wordpress"
-  "p4-onbuild"
-)
 
 # UTILITY
 
@@ -41,9 +43,65 @@ Options:
 "
 }
 
-function fatal() {
- echo -e "ERROR: $1" >&2
+if test -t 1; then
+
+    # Check that it supports colours
+    ncolors=$(tput colors)
+
+    if test -n "$ncolors" && test $ncolors -ge 8; then
+        bold="$(tput bold)"
+        underline="$(tput smul)"
+        standout="$(tput smso)"
+        normal="$(tput sgr0)"
+        black="$(tput setaf 0)"
+        red="$(tput setaf 1)"
+        green="$(tput setaf 2)"
+        yellow="$(tput setaf 3)"
+        blue="$(tput setaf 4)"
+        magenta="$(tput setaf 5)"
+        cyan="$(tput setaf 6)"
+        white="$(tput setaf 7)"
+    fi
+fi
+
+function _fatal() {
+ _out "${bold:-''}${red:-''} [ERROR]${normal:-''}" "$1" >&2
  exit 1
+}
+
+function _out() {
+  local type
+  local text
+  type=$1
+
+  shift
+  text=$*
+
+  printf "%s %s\n" "$type" "$text"
+}
+
+function _notice {
+  _out "${white:-''}[NOTICE]${white:-''}" "$@"
+}
+
+function _skip() {
+  _out "${cyan:-''}  [SKIP]${normal:-''}" "$@"
+}
+
+function _build() {
+  _out "${green:-''} [BUILD]${normal:-''}" "$@"
+}
+
+function _pull() {
+  _out "${green:-''}  [PULL]${normal:-''}" "$@"
+}
+
+function _verbose() {
+  if [[ $verbosity != 'verbose' ]]
+  then
+    return
+  fi
+  _out "${green:-''}  [PULL]${normal:-''}" "$@"
 }
 
 function containsElement() {
@@ -58,21 +116,21 @@ function sendBuildRequest() {
 
   if [[ -f "$dir/cloudbuild.yaml" ]]
   then
-    echo "Building from $dir"
+    _notice "Building from $dir"
   else
-    fatal "No cloudbuild.yaml file found in $dir"
+    _fatal "No cloudbuild.yaml file found in $dir"
   fi
 
   # Check if we're running on CircleCI
   if [ ! -z "${CIRCLECI}" ]; then
-    GCLOUD=/home/circleci/google-cloud-sdk/bin/gcloud
+    gcloud_binary=/home/circleci/google-cloud-sdk/bin/gcloud
   else
-    GCLOUD=$(type -P gcloud)
+    gcloud_binary=$(type -P gcloud)
   fi
 
-  if [[ ! -x ${GCLOUD} ]]
+  if [[ ! -x ${gcloud_binary} ]]
   then
-    fatal "gcloud executable not found"
+    _fatal "gcloud executable not found"
   fi
 
   # Rewrite cloudbuild variables
@@ -90,19 +148,20 @@ function sendBuildRequest() {
   # Avoid sending entire .git history as build context to save some time and bandwidth
   # Since git builtin substitutions aren't available unless triggered
   # https://cloud.google.com/container-builder/docs/concepts/build-requests#substitutions
-  TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
-  tar --exclude='.git/' --exclude='.circleci/' -zcf $TMPDIR/docker-source.tar.gz -C $dir .
+  local tmpdir
+  tmpdir=$(mktemp -d "${tmpdir:-/tmp/}$(basename 0).XXXXXXXXXXXX")
+  tar --exclude='.git/' --exclude='.circleci/' -zcf $tmpdir/docker-source.tar.gz -C $dir .
 
   # Submit the build
-  time ${GCLOUD} container builds submit \
-    --verbosity=${VERBOSITY:-'warning'} \
+  time ${gcloud_binary} container builds submit \
+    --verbosity=${verbosity:-'warning'} \
     --timeout=${BUILD_TIMEOUT} \
     --config $dir/cloudbuild.yaml \
     --substitutions ${sub} \
-    ${TMPDIR}/docker-source.tar.gz
+    ${tmpdir}/docker-source.tar.gz
 
   # Cleanup temporary file
-  rm -fr ${TMPDIR}
+  rm -fr ${tmpdir}
 }
 
 # COMMAND LINE OPTIONS
@@ -117,7 +176,7 @@ do
                 exit;;
         p  )    PULL_IMAGES='true';;
         r  )    BUILD_REMOTELY='true';;
-        v  )    VERBOSITY='debug'
+        v  )    verbosity='debug'
                 set -x;;
         *  )    echo "Unkown option: ${OPTARG}"
                 usage;;
@@ -125,20 +184,6 @@ do
 done
 shift $((OPTIND - 1))
 
-# ----------------------------------------------------------------------------
-# If there are command line arguments, these are treated as subset build items
-# instead of building the entire suite
-
-if [[ $# -gt 0 ]] && [[ $1 != 'all' ]]
-then
-  echo "Building subset: " "$@"
-  build_type='subset'
-  build_list=($@)
-else
-  echo "Building all images"
-  build_type='all'
-  build_list=(${LOCAL_BUILD_ORDER[@]})
-fi
 
 # ----------------------------------------------------------------------------
 # Read from custom config file from command line parameter
@@ -147,7 +192,7 @@ if [ "${CONFIG_FILE}" != "" ]; then
   echo "Reading custom configuration from ${CONFIG_FILE}"
 
   if [ ! -f "${CONFIG_FILE}" ]; then
-    fatal "File not found: ${CONFIG_FILE}"
+    _fatal "File not found: ${CONFIG_FILE}"
   fi
   # https://github.com/koalaman/shellcheck/wiki/SC1090
   # shellcheck source=/dev/null
@@ -205,51 +250,94 @@ REWRITE_LOCAL_DOCKERFILES=${REWRITE_LOCAL_DOCKERFILES:-${DEFAULT_REWRITE_LOCAL_D
 SOURCE_VERSION=${SOURCE_VERSION:-${BRANCH_NAME}}
 SOURCE_VERSION=${SOURCE_VERSION//[^a-zA-Z0-9\._-]/-}
 
+
+
 # ----------------------------------------------------------------------------
-# Get all the project subdirectories
+# If the project has a custom build order, use that
 
-# Find real file path of current script
-# https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
-source="${BASH_SOURCE[0]}"
-while [[ -h "$source" ]]
-do # resolve $source until the file is no longer a symlink
-  dir="$( cd -P "$( dirname "$source" )" && pwd )"
-  source="$(readlink "$source")"
-  [[ $source != /* ]] && source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-done
-ROOT_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
+declare -a build_order
 
-shopt -s nullglob
-cd "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}"
-SOURCE_DIRECTORY=(*/)
-cd "${ROOT_DIR}"
-shopt -u nullglob
+if [[ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
+then
+  _notice "Using build order from src/${GOOGLE_PROJECT_ID}/build_order"
+  while read -r image_order; do
+    # push line to build_order array
+    _verbose "Adding to build order: '${image_order}'"
+    build_order[${#build_order[@]}]="${image_order}"
+  done < "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order"
+else
+  build_order=(
+    "ubuntu"
+    "nginx-pagespeed"
+    "nginx-php-exim"
+    "wordpress"
+    "p4-onbuild"
+  )
+fi
+
+# ----------------------------------------------------------------------------
+# If there are command line arguments, these are treated as subset build items
+# instead of building the entire suite
+
+if [[ $# -gt 0 ]] && [[ $1 != 'all' ]]
+then
+  _build "Building subset: "
+
+  if [[ $1 =~ '+'$ ]]
+  then
+    build_start=${1%+}
+    build_list=(${build_order[@]})
+    i=0
+    for build_image in "${build_order[@]}"
+    do
+      if [[ $build_image != "${build_start}" ]]
+      then
+        unset "build_list[$i]"
+      else
+        break
+      fi
+      i=$((i + 1))
+    done
+
+  else
+    build_type='subset'
+    build_list=($@)
+  fi
+
+  for i in "${build_list[@]}"
+  do
+    _build " - $i"
+  done
+
+else
+  _notice "Building all images"
+  build_type='all'
+  build_list=(${build_order[@]})
+fi
 
 # ----------------------------------------------------------------------------
 # Update local Dockerfiles from template
 
 if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
-  echo "Updating local Dockerfiles from templates..."
-  for IMAGE in "${SOURCE_DIRECTORY[@]}"
+  _verbose "Updating local Dockerfiles from templates..."
+  for image in "${build_list[@]}"
   do
-    IMAGE=${IMAGE%/}
-    echo -e "->> ${GOOGLE_PROJECT_ID}/${IMAGE}"
 
     # Check the source directory exists and contains a Dockerfile template
-    if [ ! -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates" ]; then
-      fatal "Directory not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/"
+    if [ ! -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
+      _fatal "Directory not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/"
     fi
-    if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in" ]; then
-      fatal "Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/Dockerfile.in"
+    if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in" ]; then
+      _fatal "Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in"
     fi
-    if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in" ]; then
-      fatal "README not found: src/${GOOGLE_PROJECT_ID}/${IMAGE}/templates/README.md.in"
+    if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in" ]; then
+      _fatal "README not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in"
     fi
 
-    BUILD_DIR="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}"
+    build_dir="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
 
-    # Rewrite only the cloudbuild variables we want to change
-    ENVVARS=(
+    # Rewrite only the Dockerfile|README.md variables we want to change
+    envvars=(
       '${BASEIMAGE_VERSION}' \
       '${BUILD_NAMESPACE}' \
       '${CONTAINER_TIMEZONE}' \
@@ -264,13 +352,15 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
       '${SOURCE_VERSION}' \
     )
 
-    ENVVARS_STRING="$(printf "%s:" "${ENVVARS[@]}")"
-    ENVVARS_STRING="${ENVVARS_STRING%:}"
+    envvars_string="$(printf "%s:" "${envvars[@]}")"
+    envvars_string="${envvars_string%:}"
 
-    envsubst "${ENVVARS_STRING}" < ${BUILD_DIR}/templates/Dockerfile.in > ${BUILD_DIR}/Dockerfile
-    envsubst "${ENVVARS_STRING}" < ${BUILD_DIR}/templates/README.md.in > ${BUILD_DIR}/README.md
+    _verbose "Update ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/Dockerfile from template"
+    envsubst "${envvars_string}" < ${build_dir}/templates/Dockerfile.in > ${build_dir}/Dockerfile
+    _verbose "Update ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md from template"
+    envsubst "${envvars_string}" < ${build_dir}/templates/README.md.in > ${build_dir}/README.md
 
-    BUILD_STRING="# ${APPLICATION_NAME}
+    build_string="# ${APPLICATION_NAME}
 # Build: ${BUILD_NUM}
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
@@ -278,7 +368,7 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
 # ------------------------------------------------------------------------
 "
 
-    echo -e "$BUILD_STRING\n$(cat ${BUILD_DIR}/Dockerfile)" > ${BUILD_DIR}/Dockerfile
+    echo -e "$build_string\n$(cat ${build_dir}/Dockerfile)" > ${build_dir}/Dockerfile
 
   done
 fi
@@ -287,29 +377,29 @@ fi
 # Perform the build locally
 
 if [ "${BUILD_LOCALLY}" = "true" ]; then
+  _build "Performing build locally ..."
+  for image in "${build_order[@]}"; do
 
-  for IMAGE in "${LOCAL_BUILD_ORDER[@]}"; do
-
-    if [[ ! $(containsElement "${IMAGE}" "${build_list[@]}") ]]
+    if [[ ! $(containsElement "${image}" "${build_list[@]}") ]]
     then
-      echo "Skipping ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE} as it was not listed as a command line argument"
+      _skip "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}"
       continue
     fi
 
     # Check the source directory exists and contains a Dockerfile
-    if [ -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile" ]; then
-      BUILD_DIR="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}"
-    elif [ -d "${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${IMAGE}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile" ]; then
-      BUILD_DIR="${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${IMAGE}"
+    if [ -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile" ]; then
+      build_dir="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
+    elif [ -d "${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${image}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile" ]; then
+      build_dir="${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${image}"
     else
-      fatal "Dockerfile not found. Tried:\n - ./src/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile\n - ./sites/${GOOGLE_PROJECT_ID}/${IMAGE}/Dockerfile"
+      _fatal "Dockerfile not found. Tried:\n - ./src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile\n - ./sites/${GOOGLE_PROJECT_ID}/${image}/Dockerfile"
     fi
 
-    echo -e "\nBuilding ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ...\n"
+    _build "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG} ...\n"
     docker build \
-      -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} \
-      -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${REVISION_TAG} \
-      ${BUILD_DIR}
+      -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG} \
+      -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG} \
+      ${build_dir}
   done
 fi
 
@@ -317,7 +407,7 @@ fi
 # Send build requests to Google Container Builder
 
 if [ "${BUILD_REMOTELY}" = "true" ]; then
-  echo "Sending build context to Google Container Builder ..."
+  _build "Performing build on Google Container Builder ..."
 
   if [[ "$build_type" = 'all' ]]
   then
@@ -335,11 +425,10 @@ fi
 
 if [[ "${PULL_IMAGES}" = "true" ]]
 then
-  for IMAGE in "${build_list[@]}"
+  for image in "${build_list[@]}"
   do
-    IMAGE=${IMAGE%/}
-    echo -e "Pull ->> ${GOOGLE_PROJECT_ID}/${IMAGE}"
-    docker pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}" &
+    _pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}"
+    docker pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" &
   done
 fi
 
