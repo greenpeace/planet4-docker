@@ -79,22 +79,24 @@ _good "Installing Wordpress for site ${WP_HOSTNAME}..."
 mkdir -p /app/source/public
 chown ${APP_USER:-${DEFAULT_APP_USER}} /app/source/public
 
-# Overwrite the stock wp-config to use env vars (again)
+# Overwrite the stock wp-config to use environment variables (again?)
 cp /app/wp-config.php.default /app/source/public/wp-config.php
 
-# Wait for SQL server to become responsive then run composer site-install
-until /usr/local/bin/dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 60s mysql -h ${WP_DB_HOST} -u ${WP_DB_USER} --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"; do
+# Wait for SQL server then run composer site-install
+until /usr/local/bin/dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 5s mysql -h ${WP_DB_HOST} -u ${WP_DB_USER} --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"; do
   sleep 1;
 done
 
-_good "Running composer site-install with COMPOSER=${COMPOSER}"
+_good "Running 'composer site-install' with COMPOSER=${COMPOSER}"
 
 /usr/local/bin/composer --profile -vvv site-install
 
 # Links the source directory to expected path
 # @todo remap all references to '/app/www' in docker parents to an ENV var
-[ ! -e /app/www ] && ln -s /app/source/public /app/www
+[[ ! -e /app/www ]] && ln -s /app/source/public /app/www || true
 
 # Wordpress configuration startup
 # /app/bin/wp.sh option set siteurl "${WP_SITE_PROTOCOL}://${WP_SITE_URL}/"
 # /app/bin/wp.sh option set home "${WP_SITE_PROTOCOL}://${WP_SITE_HOME}"
+
+exit 0
