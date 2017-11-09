@@ -52,6 +52,9 @@ function teardown {
 @test "container response contains string 'greenpeace'" {
   run curl_check_response_regex "greenpeace"
   [[ $status -eq 0 ]]
+}
+
+@test "container response does not contain string 'FNORDPTANGWIBBLE'" {
   run curl_check_response_regex "FNORDPTANGWIBBLE"
   [[ $status -ne 0 ]]
 }

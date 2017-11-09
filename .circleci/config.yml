@@ -3,7 +3,7 @@ defaults: &defaults
     GOOGLE_PROJECT_ID: planet-4-151612
     TEST_OUTPUT_DIR: /tmp/test-results
   docker:
-    - image: gcr.io/planet-4-151612/circleci-base:0.3.0
+    - image: gcr.io/planet-4-151612/circleci-base:0.3.1
   working_directory:  /home/circleci/app
 
 version: 2
@@ -21,7 +21,7 @@ jobs:
             mkdir -p /tmp/workspace/var
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
             # Fetch build number script from gist
-            curl -sSL https://gist.githubusercontent.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/4250391fe6c4d1e06824b0287b9b8a1c070a6468/circleci_update_build_numbers.sh -o /tmp/circleci_update_build_numbers.sh
+            curl -sSL https://gist.githubusercontent.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/d5675017a496f0cc966a9fc5f86266eccff3643f/circleci_update_build_numbers.sh -o /tmp/circleci_update_build_numbers.sh
             chmod +x /tmp/circleci_update_build_numbers.sh
             /tmp/circleci_update_build_numbers.sh || true
 

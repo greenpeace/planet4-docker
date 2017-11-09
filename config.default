@@ -69,14 +69,14 @@ DEFAULT_BASEIMAGE_VERSION=0.9.22
 # https://github.com/jwilder/dockerize/releases
 DEFAULT_DOCKERIZE_VERSION=0.5.0
 # https://github.com/openresty/headers-more-nginx-module/tags
-DEFAULT_HEADERS_MORE_VERSION=0.32
+DEFAULT_HEADERS_MORE_VERSION=0.33
 # https://github.com/pagespeed/ngx_pagespeed/releases
 DEFAULT_NGINX_PAGESPEED_RELEASE=stable
 DEFAULT_NGINX_PAGESPEED_VERSION=latest
 # http://nginx.org/en/download.html
 DEFAULT_NGINX_VERSION=1.13.6
 # https://www.openssl.org/source
-DEFAULT_OPENSSL_VERSION=1.1.0f
+DEFAULT_OPENSSL_VERSION=1.1.0g
 DEFAULT_PHP_MAJOR_VERSION=7.0
 
 # ============================================================================
