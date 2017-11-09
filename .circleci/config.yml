@@ -21,7 +21,7 @@ jobs:
             mkdir -p /tmp/workspace/var
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
             # Fetch build number script from gist
-            curl -sSL https://gist.githubusercontent.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/abd146618ae7b9106a6b1ec06bfea138713a0212/circleci_update_build_numbers.sh -o /tmp/circleci_update_build_numbers.sh
+            curl -sSL https://gist.githubusercontent.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/d5675017a496f0cc966a9fc5f86266eccff3643f/circleci_update_build_numbers.sh -o /tmp/circleci_update_build_numbers.sh
             chmod +x /tmp/circleci_update_build_numbers.sh
             /tmp/circleci_update_build_numbers.sh || true
 
