@@ -2,6 +2,8 @@ FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/wordpress:${SOURCE_VERSION}
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
+COPY . /app/
+
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y subversion && \
