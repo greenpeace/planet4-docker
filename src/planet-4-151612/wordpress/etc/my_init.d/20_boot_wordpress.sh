@@ -87,6 +87,21 @@ until /usr/local/bin/dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 5s mysql 
   sleep 1;
 done
 
+# @todo this is a terribly hacky way of checking upstream, fixme please
+actual_source="https://github.com/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d' ' -f1 | cut -d'.' -f1)"
+if [[ ${GIT_SOURCE} != "${actual_source}" ]]
+then
+  _warning "Expected source:     ${GIT_SOURCE}"
+  _warning "Found source:        ${actual_source}"
+fi
+
+actual_git_ref=$(git rev-parse --abbrev-ref HEAD)
+if [[ ${GIT_REF} != "${actual_git_ref}" ]]
+then
+  _warning "Expected branch/tag: ${GIT_REF}"
+  _warning "Found branch/tag:    ${actual_git_ref}"
+fi
+
 _good "Running 'composer site-install' with COMPOSER=${COMPOSER}"
 
 /usr/local/bin/composer --profile -vvv site-install
