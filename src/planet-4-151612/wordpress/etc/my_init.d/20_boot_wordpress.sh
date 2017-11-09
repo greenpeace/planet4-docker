@@ -9,9 +9,9 @@ source /app/bin/env.sh
 # If files exist we may not want to overwrite
 if [ -d "/app/source/public" ]; then
   # Directory already exists
-  FILES=$(shopt -s nullglob dotglob; echo /app/source/public/*)
+files=$(shopt -s nullglob dotglob; echo /app/source/public/*)
   # Check if files exist
-  if [ "${#FILES}" != "0" ]; then
+  if [ "${#files}" != "0" ]; then
     echo "Files exist in /app/source/public"
 
     if [ "${OVERWRITE_FILES,,}" != "true" ]; then
