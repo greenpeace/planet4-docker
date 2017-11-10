@@ -79,7 +79,7 @@ sed -i -r "s/DownstreamCacheRebeaconingKey \"__PAGESPEED_REBEACON_KEY__\";/Downs
 if [ "$CLOUDFLARE_ENABLED" = 'true' ]; then
 	# Update cloudflare IP ranges
 	_good "nginx:  updating cloudflare IP ranges"
-	/app/bin/cloudflare-ip-updater.sh
+	/app/bin/cloudflare-ip-updater.sh &
 fi
 
 wait # for openssl dhparam generation to finish
