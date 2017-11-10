@@ -83,6 +83,7 @@ if [ "$CLOUDFLARE_ENABLED" = 'true' ]; then
 fi
 
 wait # for openssl dhparam generation to finish
+wait # for background processes to finish
 
 _good "Starting service: nginx"
 exec nginx
