@@ -1,5 +1,5 @@
 # Greenpeace P4 Docker application
-# Build: build-220
+# Build: build-224
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -32,9 +32,9 @@ RUN chmod 750 /app/bin/*.sh && \
   	apt-get update && \
   	apt-get -y --no-install-recommends install wget git-core autoconf automake libtool build-essential zlib1g-dev libpcre3-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev && \
   	echo "Downloading nginx 1.13.6 from http://nginx.org/download/nginx-1.13.6.tar.gz ..." && \
-  	wget -O - http://nginx.org/download/nginx-1.13.6.tar.gz --progress=bar --tries=3 | tar zxf - -C /tmp && \
+  	wget --retry-connrefused --waitretry=1 -t 5 -O - http://nginx.org/download/nginx-1.13.6.tar.gz | tar zxf - -C /tmp && \
   	echo "Downloading headers-more 0.33 from https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz ..." && \
-  	wget -O - https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz --progress=bar  --tries=3 | tar zxf - -C /tmp && \
+  	wget --retry-connrefused --waitretry=1 -t 5 -O - https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz | tar zxf - -C /tmp && \
   	/app/bin/download_pagespeed.sh && \
   	echo "Downloading openssl v1.1.0g from https://www.openssl.org/source/openssl-1.1.0g.tar.gz ..." && wget -O - https://www.openssl.org/source/openssl-1.1.0g.tar.gz  --progress=bar --tries=3 | tar xzf  - -C /tmp && \
   	cd /tmp/nginx-1.13.6 && \
