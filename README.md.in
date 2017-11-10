@@ -105,3 +105,26 @@ echo "GOOGLE_PROJECT_ID=greenpeace-testing" >> config.custom
 # starting from wordpress and continuing down the dependency chain
 GIT_REF=dev-feature/example ./build.sh -r wordpress+
 ```
+
+## Cleaning old images
+
+A garbage collection script `gcrgc.sh` is available which can automatically delete old images in Google Container Regsitry.
+
+### Trial run
+You can test which images it would delete, without performing any changes to the registry, by setting the envionrment varible `TRIAL_RUN` to any truthy value, eg:
+```
+TRIAL_RUN=true ./gcrgc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+```
+
+### Delete all ubuntu images in the planet-4-151612 project older than 1st October 2017
+```
+./gcrgc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+```
+
+### Iterate over all images in a build order, deleting older than 1st March 2017
+```
+for i in $(cat src/planet-4-151612/build_order)
+do
+  ./gcrgc.sh gcr.io/planet-4-151612/${i} 2017-04-01
+done
+```
