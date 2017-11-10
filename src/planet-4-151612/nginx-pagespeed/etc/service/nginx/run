@@ -82,7 +82,9 @@ if [ "$CLOUDFLARE_ENABLED" = 'true' ]; then
 	/app/bin/cloudflare-ip-updater.sh &
 fi
 
-wait # for openssl dhparam generation to finish
+# Update fastcgi_backend details
+/app/bin/update_fastcgi_backend.sh &
+
 wait # for background processes to finish
 
 _good "Starting service: nginx"
