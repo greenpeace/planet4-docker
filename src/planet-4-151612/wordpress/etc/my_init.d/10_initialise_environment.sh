@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source /app/bin/colours.sh
-
 # ==============================================================================
 #
 # Consolidate ENV variables, configure environment

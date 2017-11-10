@@ -13,35 +13,35 @@ if test -t 1; then
 
     if test -n "$ncolors" && test $ncolors -ge 8; then
         bold="$(tput bold)"
-        underline="$(tput smul)"
+        # underline="$(tput smul)"
         standout="$(tput smso)"
         normal="$(tput sgr0)"
-        black="$(tput setaf 0)"
+        # black="$(tput setaf 0)"
         red="$(tput setaf 1)"
         green="$(tput setaf 2)"
         yellow="$(tput setaf 3)"
-        blue="$(tput setaf 4)"
-        magenta="$(tput setaf 5)"
+        # blue="$(tput setaf 4)"
+        # magenta="$(tput setaf 5)"
         cyan="$(tput setaf 6)"
-        white="$(tput setaf 7)"
+        # white="$(tput setaf 7)"
     fi
 fi
 
 _title() {
-    printf "${cyan:-""}*** ${bold:-""}%s${normal:-""}\n" "$@"
+    printf "${cyan:-""}*** ${bold:-""}%s${normal:-""}\n" "$*"
 }
 
 _good() {
-    printf "${green:-""}  * ${normal:-""}%s\n" "$@"
+    printf "${green:-""}  * ${normal:-""}%s\n" "$*"
 }
 
 _error() {
-    >&2 printf "\n${red:-""}${standout:-""}[ERROR]${normal:-""} ${red:-""}%s${normal:-""}\n\n" "$@"
+    >&2 printf "\n${red:-""}${standout:-""}[ERROR]${normal:-""} ${red:-""}%s${normal:-""}\n\n" "$*"
     exit 1;
 }
 
 _warning() {
-    >&2 printf "  ${yellow}:-""* ${bold:-""}[WARNING] ${normal:-""}%s\n" "$@"
+    >&2 printf "  ${yellow}:-""* ${bold:-""}[WARNING] ${normal:-""}%s\n" "$*"
 }
 
 export -f _title

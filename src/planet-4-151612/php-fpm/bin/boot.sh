@@ -6,8 +6,6 @@
 
 set -e
 
-source /app/bin/colours.sh
-
 _title "Starting config in ${APP_ENV:-$DEFAULT_APP_ENV} mode ..."
 
 export APP_HOSTNAME=${APP_HOSTNAME:-`hostname -f`}

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source /app/bin/colours.sh
-
 source /app/bin/env.sh
 
 # Check if files exist
