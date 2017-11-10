@@ -6,12 +6,13 @@ set -e
 
 # See: https://unix.stackexchange.com/questions/9957/how-to-check-if-bash-can-print-colours
 # Check if stdout is a terminal
-if test -t 1; then
-
+if test -t 1
+then
     # Check that it supports colours
     ncolors=$(tput colors)
 
-    if test -n "$ncolors" && test $ncolors -ge 8; then
+    if test -n "$ncolors" && test $ncolors -ge 8
+    then
         bold="$(tput bold)"
         # underline="$(tput smul)"
         standout="$(tput smso)"
