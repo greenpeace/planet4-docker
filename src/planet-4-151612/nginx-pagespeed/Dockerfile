@@ -1,11 +1,11 @@
 # Greenpeace P4 Docker application
-# Build: build-208
+# Build: build-216
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/ubuntu:develop
+FROM gcr.io/planet-4-151612/ubuntu:master
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
