@@ -1,6 +1,6 @@
 # Docker builds for Planet4 on Google Container Registry
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=master)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/master.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=develop)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop)
 
 ## Description
 
@@ -104,4 +104,27 @@ echo "GOOGLE_PROJECT_ID=greenpeace-testing" >> config.custom
 # Build only a subset of the project, with a custom source branch,
 # starting from wordpress and continuing down the dependency chain
 GIT_REF=dev-feature/example ./build.sh -r wordpress+
+```
+
+## Cleaning old images
+
+A garbage collection script `gcrgc.sh` is available which can automatically delete old images in Google Container Regsitry.
+
+### Trial run
+You can test which images it would delete, without performing any changes to the registry, by setting the envionrment varible `TRIAL_RUN` to any truthy value, eg:
+```
+TRIAL_RUN=true ./gcrgc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+```
+
+### Delete all ubuntu images in the planet-4-151612 project older than 1st October 2017
+```
+./gcrgc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+```
+
+### Iterate over all images in a build order, deleting older than 1st March 2017
+```
+for i in $(cat src/planet-4-151612/build_order)
+do
+  ./gcrgc.sh gcr.io/planet-4-151612/${i} 2017-04-01
+done
 ```

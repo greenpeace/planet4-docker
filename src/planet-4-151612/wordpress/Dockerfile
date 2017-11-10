@@ -1,11 +1,11 @@
 # Greenpeace P4 Docker application
-# Build: build-216
+# Build: build-220
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/nginx-php-exim:master
+FROM gcr.io/planet-4-151612/nginx-php-exim:develop
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
