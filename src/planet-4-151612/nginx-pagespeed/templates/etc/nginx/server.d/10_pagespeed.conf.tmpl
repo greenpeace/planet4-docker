@@ -1,0 +1,39 @@
+{{ if eq .Env.PAGESPEED_ENABLED "true" }}
+
+pagespeed on;
+
+pagespeed RewriteLevel "{{ default .Env.PAGESPEED_REWRITE_LEVEL .Env.DEFAULT_PAGESPEED_REWRITE_LEVEL }}";
+pagespeed DisableFilters "{{ default .Env.PAGESPEED_DISABLE_FILTERS .Env.DEFAULT_PAGESPEED_DISABLE_FILTERS }}";
+
+pagespeed RespectXForwardedProto on;
+
+# Needs to exist and be writable by nginx.  Use tmpfs for best performance.
+pagespeed FileCachePath /tmp/ngx_pagespeed_cache;
+
+pagespeed XHeaderValue "";
+more_clear_headers X-Page-Speed;
+
+# Ensure requests for pagespeed optimized resources go to the pagespeed handler
+# and no extraneous headers get set.
+location ~ "\.pagespeed\.([a-z]\.)?[a-z]{2}\.[^.]{10}\.[^.]+" {
+    add_header "" "";
+}
+
+location ~ "^/pagespeed_static/" { }
+location ~ "^/ngx_pagespeed_beacon$" { }
+
+pagespeed Disallow "*/wp-admin/*";
+
+# Pagespeed *sometimes* breaks SVG files
+pagespeed Disallow "*.svg*";
+
+pagespeed MapOriginDomain "http://{{ .Env.APP_HOSTNAME }}" "https://{{ .Env.APP_HOSTNAME }}";
+pagespeed LoadFromFile "https://{{ .Env.APP_HOSTNAME }}" "/app/www/";
+
+pagespeed DownstreamCacheRebeaconingKey "{{ default .Env.PAGESPEED_REBEACON_KEY .Env.DEFAULT_PAGESPEED_REBEACON_KEY }}";
+
+{{ else }}
+
+pagespeed off;
+
+{{ end }}

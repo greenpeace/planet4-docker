@@ -1,0 +1,13 @@
+server {
+    listen 80;
+    listen [::]:80 default ipv6only=on;
+
+    server_name {{ .Env.APP_HOSTNAME }} www.{{ .Env.APP_HOSTNAME }} -;
+
+    root /app/www;
+
+    index index.html;
+
+    include server.d/*.conf;
+
+}
