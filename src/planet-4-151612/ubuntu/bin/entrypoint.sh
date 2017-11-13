@@ -11,18 +11,26 @@ done
 # Add application user
 /app/bin/add_user.sh
 
+# Install configuration overrides
+[[ -d "/app/etc" ]] && cp -R /app/etc/* /etc/
+
+[[ -d "/etc/my_init.d" ]] && chmod 755 /etc/my_init.d/*.sh
+
+# Ensure service start scripts are executable
+chmod 755 /etc/service/*/run
+
 # =============================================================================
 # 	BOOT
 # =============================================================================
 
-_good "$(date) - " "exec $*"
+_good "$(date) -" "exec $*"
 
 # Default Docker CMD will be /sbin/my_init
 if [[ "$1" = "/sbin/my_init" ]]
 then
   shift
-	exec /sbin/my_init "$@"
+	exec /sbin/my_init
 else
   # Execute the custom CMD
-	exec /bin/sh -c "$@"
+	exec /bin/bash -c "$*"
 fi

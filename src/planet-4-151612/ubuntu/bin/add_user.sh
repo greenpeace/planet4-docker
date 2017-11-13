@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 # =============================================================================
@@ -73,7 +73,7 @@ if [[ $EXISTING_USER_UID =~ $R_NUMBER ]] ; then
 else
 	# Create new user
  	_good "useradd ${APP_USER:-$DEFAULT_APP_USER}"
-	useradd -r -s /usr/sbin/nologin -G nginx -u ${APP_UID:-$DEFAULT_APP_UID} -g ${APP_GROUP:-$DEFAULT_APP_GROUP} ${APP_USER:-$DEFAULT_APP_USER}
+	useradd -r -s /usr/sbin/nologin -u ${APP_UID:-$DEFAULT_APP_UID} -g ${APP_GROUP:-$DEFAULT_APP_GROUP} ${APP_USER:-$DEFAULT_APP_USER}
 fi
 
 if [[ "${CHOWN_APP_DIR:-$DEFAULT_CHOWN_APP_DIR}" == "true" ]] && [ -d "/app/www" ] ; then
