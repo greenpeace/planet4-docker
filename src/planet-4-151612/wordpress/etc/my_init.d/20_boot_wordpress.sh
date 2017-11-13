@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source /app/bin/env.sh
-
 # Check if files exist
 # This indicates whether the container is mounting files from an external source
 # If files exist we may not want to overwrite
@@ -81,7 +79,7 @@ chown ${APP_USER:-${DEFAULT_APP_USER}} /app/source/public
 cp /app/wp-config.php.default /app/source/public/wp-config.php
 
 # Wait for SQL server then run composer site-install
-until /usr/local/bin/dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 5s mysql -h ${WP_DB_HOST} -u ${WP_DB_USER} --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"; do
+until dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 5s mysql -h ${WP_DB_HOST} -u ${WP_DB_USER} --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"; do
   sleep 1;
 done
 

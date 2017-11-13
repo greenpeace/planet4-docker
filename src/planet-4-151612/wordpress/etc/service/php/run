@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euf
 
-source /app/bin/env.sh
-
 _good "Starting service: php-fpm${PHP_MAJOR_VERSION} ..."
 
 # start PHP
