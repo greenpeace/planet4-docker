@@ -1,43 +1,57 @@
 # Greenpeace P4 Docker application
-# Build: build-224
+# Image: gcr.io/planet-4-151612/nginx-pagespeed:feature-php
+# Build: build-228
+# Date:  Mon Nov 13 10:25:07 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/ubuntu:develop
+FROM gcr.io/planet-4-151612/ubuntu:feature-php
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
 EXPOSE 80
 EXPOSE 443
 
-# http://nginx.org/en/download.html
-ENV NGINX_VERSION 1.13.6
+ENV APP_GROUP="nginx" \
+    APP_USER="nginx" \
+    HEADERS_MORE_VERSION="0.33" \
+    NGINX_PAGESPEED_VERSION="latest" \
+    NGINX_PAGESPEED_RELEASE="stable" \
+    NGINX_VERSION="1.13.6" \
+    OPENSSL_VERSION="1.1.0g"
 
-# https://github.com/pagespeed/ngx_pagespeed/releases
-ENV NGINX_PAGESPEED_VERSION latest
-ENV NGINX_PAGESPEED_RELEASE stable
+COPY . /app/
 
-# https://github.com/openresty/headers-more-nginx-module/tags
-ENV HEADERS_MORE_VERSION 0.33
-
-# https://www.openssl.org/source
-ENV OPENSSL_VERSION 1.1.0g
-
-COPY ./bin/download_pagespeed.sh /app/bin/download_pagespeed.sh
-
-RUN chmod 750 /app/bin/*.sh && \
-    useradd -r -s /usr/sbin/nologin nginx && mkdir -p /var/log/nginx /var/cache/nginx && \
-  	apt-get update && \
-  	apt-get -y --no-install-recommends install wget git-core autoconf automake libtool build-essential zlib1g-dev libpcre3-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev && \
-  	echo "Downloading nginx 1.13.6 from http://nginx.org/download/nginx-1.13.6.tar.gz ..." && \
-  	wget --retry-connrefused --waitretry=1 -t 5 -O - http://nginx.org/download/nginx-1.13.6.tar.gz | tar zxf - -C /tmp && \
-  	echo "Downloading headers-more 0.33 from https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz ..." && \
-  	wget --retry-connrefused --waitretry=1 -t 5 -O - https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz | tar zxf - -C /tmp && \
-  	/app/bin/download_pagespeed.sh && \
-  	echo "Downloading openssl v1.1.0g from https://www.openssl.org/source/openssl-1.1.0g.tar.gz ..." && wget -O - https://www.openssl.org/source/openssl-1.1.0g.tar.gz  --progress=bar --tries=3 | tar xzf  - -C /tmp && \
-  	cd /tmp/nginx-1.13.6 && \
+RUN set -x && \
+    chmod 755 /app/bin/*.sh && \
+    useradd -r -s /usr/sbin/nologin "${APP_USER}" && \
+    mkdir -p /var/log/nginx /var/cache/nginx && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://www.openssl.org/source/openssl-1.1.0g.tar.gz" | tar xzf - -C /tmp && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://nginx.org/download/nginx-1.13.6.tar.gz" | tar zxf - -C /tmp && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz" | tar zxf - -C /tmp && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.tar.gz" | tar zxf - -C /tmp && \
+    PSOL_URL="$(cat "/tmp/ngx_pagespeed-latest-stable/PSOL_BINARY_URL")" && \
+    if [ "$(uname -m)" = x86_64 ]; then PSOL_BIT_SIZE_NAME="x64"; else PSOL_BIT_SIZE_NAME="ia32"; fi && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "$(echo $PSOL_URL | sed "s/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME/g")" | tar zxf - -C "/tmp/ngx_pagespeed-latest-stable" && \
+    apt-get update && \
+  	apt-get -y --no-install-recommends install \
+      autoconf \
+      automake \
+      build-essential \
+      git-core \
+      libgd2-xpm-dev \
+      libgeoip-dev \
+      libgoogle-perftools-dev \
+      libpcre3-dev \
+      libperl-dev \
+      libtool \
+      libxml2-dev \
+      libxslt1-dev \
+      zlib1g-dev \
+      && \
+  	cd "/tmp/nginx-1.13.6" && \
   	./configure \
   		--prefix=/etc/nginx  \
   		--sbin-path=/usr/sbin/nginx  \
@@ -51,8 +65,8 @@ RUN chmod 750 /app/bin/*.sh && \
   		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp  \
   		--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp  \
   		--http-scgi-temp-path=/var/cache/nginx/scgi_temp  \
-  		--user=nginx  \
-  		--group=nginx  \
+  		--user="${APP_USER}"  \
+  		--group="${APP_USER}"  \
   		--with-http_ssl_module  \
   		--with-http_realip_module  \
   		--with-http_addition_module  \
@@ -87,25 +101,20 @@ RUN chmod 750 /app/bin/*.sh && \
   	apt-get purge -yqq automake autoconf libtool git-core build-essential zlib1g-dev libpcre3-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev && \
   	apt-get autoremove -yqq && \
   	apt-get clean && \
-  	rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+  	rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
+    mkdir -p /etc/nginx/ssl /app/www && \
+    echo "$(nginx -V 2>&1)" > /app/www/index.html 
 
-ENV DEFAULT_APP_USER app
-ENV DEFAULT_APP_GROUP app
-ENV DEFAULT_APP_UID 1000
-ENV DEFAULT_APP_GID 1000
-ENV DEFAULT_UPLOAD_MAX_SIZE 30M
-ENV DEFAULT_NGINX_MAX_WORKER_PROCESSES 8
-ENV DEFAULT_CHOWN_APP_DIR true
-
-ENV DEFAULT_PAGESPEED_REBEACON_KEY uwuudeL7iedoo7Meengi
-
-ENV SSL_ENABLED false
-
-ENV CLOUDFLARE_ENABLED false
-
-COPY . /app
-
-RUN chmod 750 /app/bin/*.sh && sync && \
-    /app/bin/init_nginx.sh
-
-CMD ["/sbin/my_init"]
+ENV CLOUDFLARE_ENABLED="false" \
+    DEFAULT_CHOWN_APP_DIR="true" \
+    DEFAULT_NGINX_FASTCGI_BACKEND="php-fpm:9000" \
+    DEFAULT_NGINX_KEEPALIVE_TIMEOUT="30" \
+    DEFAULT_NGINX_MAX_WORKER_PROCESSES="8" \
+    DEFAULT_NGINX_SENDFILE="on" \
+    DEFAULT_PAGESPEED_DISABLE_FILTERS="" \
+    DEFAULT_PAGESPEED_REBEACON_KEY="uwuudeL7iedoo7Meengi" \
+    DEFAULT_PAGESPEED_REWRITE_LEVEL="CoreFilters" \
+    DEFAULT_UPLOAD_MAX_SIZE="50M" \
+    PAGESPEED_ENABLED="true" \
+    PHP_ENABLED="false" \
+    SSL_ENABLED="false"
