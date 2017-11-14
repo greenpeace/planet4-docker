@@ -1,5 +1,7 @@
 {{ if eq .Env.PHP_ENABLED "true" }}
 upstream fastcgi_backend {
-    server {{ default .Env.NGINX_FASTCGI_BACKEND .Env.DEFAULT_NGINX_FASTCGI_BACKEND }};
+{{ range $upstream := split .Env.NGINX_FASTCGI_BACKEND "," }}
+    server {{ $upstream }};
+{{ end }}
 }
 {{ end }}
