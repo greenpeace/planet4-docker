@@ -9,7 +9,6 @@ set -e
 #  - retry connection failures using wget
 #  - install hirak/prestissimo (parallel composer dependency downloader)
 
-
 retries=5
 
 EXPECTED_SIGNATURE=$(wget --retry-connrefused --waitretry=1 -t $retries -q -O - https://composer.github.io/installer.sig)
@@ -25,10 +24,14 @@ then
 fi
 
 # Installs composer.phar to /app/bin/composer.phar
-# Available on path, wrapped by /app/bin/composer.sh
+# Available on path, wrapped by /app/bin/composer.sh, symlinked to /app/bin/composer
 php composer-setup.php --install-dir=/app/bin
 rm composer-setup.php
+ln -s /app/bin/composer.phar /app/bin/composer
 
 # Install parallel downloader hirak/prestissimo (latest version)
-echo "Installing hirak/prestissimo ..."
+echo "Installing hirak/prestissimo"
 /app/bin/composer.phar --no-plugins --no-scripts --profile -vvv global require hirak/prestissimo
+
+echo "Clearing composer cache"
+/app/bin/composer.phar clear-cache
