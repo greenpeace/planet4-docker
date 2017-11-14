@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/php-fpm:feature-php
-# Build: build-228
-# Date:  Mon Nov 13 10:25:07 UTC 2017
+# Build: build-231
+# Date:  Tue Nov 14 01:29:20 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -77,5 +77,4 @@ COPY . /app/
 RUN chmod 750 /app/bin/* && \
     sync && \
     /app/bin/init_php.sh && \
-    /app/bin/php_install_composer.sh && \
-    ln -s /app/bin/composer.sh /usr/local/bin/composer
+    /app/bin/php_install_composer.sh

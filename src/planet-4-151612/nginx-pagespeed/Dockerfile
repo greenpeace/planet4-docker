@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/nginx-pagespeed:feature-php
-# Build: build-228
-# Date:  Mon Nov 13 10:25:07 UTC 2017
+# Build: build-231
+# Date:  Tue Nov 14 01:29:20 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -103,10 +103,10 @@ RUN set -x && \
   	apt-get clean && \
   	rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     mkdir -p /etc/nginx/ssl /app/www && \
-    echo "$(nginx -V 2>&1)" > /app/www/index.html 
+    echo "$(nginx -V 2>&1)" > /app/www/index.html
 
 ENV CLOUDFLARE_ENABLED="false" \
-    DEFAULT_CHOWN_APP_DIR="true" \
+    DEFAULT_CHOWN_APP_DIR="false" \
     DEFAULT_NGINX_FASTCGI_BACKEND="php-fpm:9000" \
     DEFAULT_NGINX_KEEPALIVE_TIMEOUT="30" \
     DEFAULT_NGINX_MAX_WORKER_PROCESSES="8" \
