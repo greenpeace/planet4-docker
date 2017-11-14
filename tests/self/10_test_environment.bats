@@ -34,6 +34,14 @@ function teardown {
   fi
 }
 
+@test "cgi-fcgi exists and is executable" {
+  if [[ ! -x "$(type -P cgi-fcgi)" ]]
+  then
+    fatal "FATAL: cgi-fcgi not found.\nPlease install the 'fcgi' package from your operating system repository. See https://www.thatsgeeky.com/2012/02/directly-connecting-to-php-fpm/"
+    exit 1
+  fi
+}
+
 @test "shellcheck all Bash scripts" {
   run shellcheck_all_bash_scripts
   # We don't care bout failures here, just log them for future reference
