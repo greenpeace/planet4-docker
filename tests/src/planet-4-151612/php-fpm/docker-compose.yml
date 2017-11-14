@@ -5,13 +5,16 @@ services:
     ports:
       - "${ENDPOINT_PORT_HTTP:-80}:80"
       - "${ENDPOINT_PORT_HTTPS:-443}:443"
-    network_mode: "${NETWORK_MODE}"
+    networks:
+      - default
     environment:
       - APP_HOSTNAME=${APP_HOSTNAME}
-      - SSL_ENABLED=true
+      - SSL_ENABLED=false
+      - PHP_ENABLED=true
   php-fpm:
     image: ${IMAGE_NAMESPACE:-gcr.io}/${BATS_PROJECT_ID:-planet-4-151612}/php-fpm:${IMAGE_TAG:-develop}
-    network_mode: "${NETWORK_MODE}"
+    networks:
+      - default
     environment:
       - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
       - UPLOAD_MAX_SIZE=${UPLOAD_MAX_SIZE}
