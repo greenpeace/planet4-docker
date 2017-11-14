@@ -31,5 +31,5 @@ ENV OVERWRITE_FILES="false" \
     WP_SITE_HOME="" \
     WP_SITE_PROTOCOL="https" \
     WP_SITE_URL="" \
-    WP_TITLE="planet4/wordpress" \
+    WP_TITLE="${APPLICATION_NAME}" \
     WP_VERSION="latest"
