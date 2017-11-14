@@ -68,5 +68,4 @@ COPY . /app/
 RUN chmod 750 /app/bin/* && \
     sync && \
     /app/bin/init_php.sh && \
-    /app/bin/php_install_composer.sh && \
-    ln -s /app/bin/composer.sh /usr/local/bin/composer
+    /app/bin/php_install_composer.sh
