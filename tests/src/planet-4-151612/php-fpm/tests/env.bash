@@ -5,6 +5,8 @@ set -a
 . ${BATS_TEST_DIRNAME}/../../../../_env
 # shellcheck source=/dev/null
 . ${BATS_TEST_DIRNAME}/../../../../_helpers
+# shellcheck source=/dev/null
+. ${BATS_TEST_DIRNAME}/../../../../../env.sh
 
 # bats test parameters
 compose_file=${BATS_TEST_DIRNAME}/../docker-compose.yml
@@ -36,3 +38,45 @@ export ENDPOINT_HTTPS
 export NETWORK_MODE
 export PHP_MEMORY_LIMIT
 export UPLOAD_MAX_SIZE
+
+
+function test_minimal_cleanup() {
+  local name="${1:-phpfpm-test}"
+
+  docker rm -f $name
+}
+
+function test_minimal_startup() {
+  set -exo pipefail
+  trap finish EXIT
+  local name="${1:-phpfpm-test}"
+
+  docker rm -f $name >/dev/null || true
+
+  if [[ -z $CIRCLECI ]]
+  then
+    docker run --name $name -p "9000:9000" -d --rm $image
+  else
+    docker run --name $name -d --rm $image
+  fi
+  sleep 5
+}
+
+# Queries a fastcgi endpoint and expects a response to match regular expression parameter
+function test_fastcgi_response() {
+  set -exo pipefail
+  trap finish EXIT
+  local path=${1:-"/health-check"}
+  local endpoint=${2:-"127.0.0.1:9000"}
+  local container=${3:-"phpfpm-test"}
+  # local out
+
+  docker run --network "container:${container}" \
+    -e "SCRIPT_FILENAME=${path}" \
+    -e "SCRIPT_NAME=${path}" \
+    -t --rm gcr.io/greenpeace-global-it/cgi-fcgi -bind -connect "${endpoint}"
+}
+
+export -f test_minimal_cleanup
+export -f test_minimal_startup
+export -f test_fastcgi_response
