@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/wordpress:feature-php
-# Build: build-231
-# Date:  Tue Nov 14 01:29:20 UTC 2017
+# Build: build-238
+# Date:  Tue Nov 14 23:10:32 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -40,5 +40,5 @@ ENV OVERWRITE_FILES="false" \
     WP_SITE_HOME="" \
     WP_SITE_PROTOCOL="https" \
     WP_SITE_URL="" \
-    WP_TITLE="planet4/wordpress" \
+    WP_TITLE="${APPLICATION_NAME}" \
     WP_VERSION="latest"
