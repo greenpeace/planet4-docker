@@ -97,7 +97,7 @@ RUN set -x && \
     echo "$(nginx -V 2>&1)" > /app/www/index.html 
 
 ENV CLOUDFLARE_ENABLED="false" \
-    DEFAULT_CHOWN_APP_DIR="true" \
+    DEFAULT_CHOWN_APP_DIR="false" \
     DEFAULT_NGINX_FASTCGI_BACKEND="php-fpm:9000" \
     DEFAULT_NGINX_KEEPALIVE_TIMEOUT="30" \
     DEFAULT_NGINX_MAX_WORKER_PROCESSES="8" \
