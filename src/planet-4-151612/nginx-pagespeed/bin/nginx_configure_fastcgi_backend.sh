@@ -8,7 +8,18 @@ dockerize -template /app/templates/etc/nginx/server.d/00_php.conf.tmpl:/etc/ngin
 
 dockerize -template /app/templates/etc/nginx/sites-enabled/upstream.conf.tmpl:/etc/nginx/sites-enabled/upstream.conf
 
-[[ ${PHP_ENABLED} = 'true' ]] && _good "$(printf "%-10s " "nginx:")" "fastcgi_backend=${NGINX_FASTCGI_BACKEND}"
+if [[ ${PHP_ENABLED} = 'true' ]]
+then
+  _good "$(printf "%-10s " "nginx:")" "PHP enabled"
+  _good "$(printf "%-10s " "nginx:")" "fastcgi_backend=${NGINX_FASTCGI_BACKEND}"
+
+  # Mostly used for testing
+  if [[ ! -f "/app/www/index.php" ]]
+  then
+    echo "<?php phpinfo();" > /app/www/index.php
+  fi
+
+fi
 
 # Reload configuration if running
 if [[ $(pgrep nginx > /dev/null 2>&1) ]]
