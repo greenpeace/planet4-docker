@@ -36,6 +36,16 @@ function teardown {
   [[ $status -ne 0 ]]
 }
 
+@test "http response contains regex 'nginx/${NGINX_VERSION}'" {
+  run curl_check_response_regex "nginx/${NGINX_VERSION}"
+  [[ $status -eq 0 ]]
+}
+
+@test "http response contains regex 'OpenSSL ${OPENSSL_VERSION}'" {
+  run curl_check_response_regex "OpenSSL ${OPENSSL_VERSION}"
+  [[ $status -eq 0 ]]
+}
+
 @test "container cleans up" {
   run clean_docker_compose
   [[ $status -eq 0 ]]

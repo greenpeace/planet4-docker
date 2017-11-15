@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
-
-source /app/bin/colours.sh
+set -ea
 
 # ==============================================================================
 #
 # Consolidate ENV variables, configure environment
 # Must be sourced from each script which depends on these variables
 
-ENV_FILE=/app/bin/env.sh
+ENV_FILE=/app/bin/wp_env.sh
 
 echo -e "#!/usr/bin/env sh\n# Generated file from /etc/my_init.d/10_initialise_environment" > $ENV_FILE
-
-# shellcheck disable=SC2034
-# echo "GEN_RANDOM='</dev/urandom tr -dc 'A-Za-z0-9!#% &()*+,-./:;<=>?@^_{|}~\" | head -c 64  ; echo'" >> $ENV_FILE
 
 echo "export WP_DB_NAME=${WP_DB_NAME:-$MYSQL_DATABASE}" >> $ENV_FILE
 echo "export WP_DB_USER=${WP_DB_USER:-$MYSQL_USER}" >> $ENV_FILE
@@ -66,4 +62,5 @@ echo "export WP_LOGGED_IN_SALT='${WP_LOGGED_IN_SALT}'" >> $ENV_FILE
 echo "export WP_NONCE_SALT='${WP_NONCE_SALT}'" >> $ENV_FILE
 
 # # Propogate ENV vars to environment
-# source $ENV_FILE
+# shellcheck source=/dev/null
+. $ENV_FILE

@@ -91,7 +91,3 @@ RUN chmod 750 /app/bin/* && \
     /app/bin/init_php.sh && \
     /app/bin/install_composer.sh && \
     ln -s /app/bin/composer.sh /usr/local/bin/composer
-
-ENTRYPOINT ["/app/bin/boot.sh"]
-
-CMD ["/sbin/my_init"]

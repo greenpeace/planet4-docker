@@ -1,11 +1,13 @@
 # Greenpeace P4 Docker application
-# Build: build-224
+# Image: gcr.io/planet-4-151612/p4-onbuild:feature-php
+# Build: build-238
+# Date:  Tue Nov 14 23:10:32 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/wordpress:develop
+FROM gcr.io/planet-4-151612/wordpress:feature-php
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 

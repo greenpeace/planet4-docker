@@ -32,6 +32,17 @@ steps:
   waitFor:
     - 'ubuntu'
 
+- id: 'php-fpm'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpm:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpm:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpmd:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/php-fpm'
+  waitFor:
+    - 'ubuntu'
+
 - id: 'nginx-php-exim'
   name: 'gcr.io/cloud-builders/docker'
   args:
@@ -52,7 +63,7 @@ steps:
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'
     - './src/${_GOOGLE_PROJECT_ID}/wordpress'
   waitFor:
-    - 'nginx-php-exim'
+    - 'php-fpm'
 
 - id: 'p4-onbuild'
   name: 'gcr.io/cloud-builders/docker'

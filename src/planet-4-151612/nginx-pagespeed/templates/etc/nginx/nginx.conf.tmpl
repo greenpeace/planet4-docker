@@ -1,28 +1,28 @@
-user nginx;
-worker_processes 2;
+user {{ default .Env.APP_USER .Env.DEFAULT_APP_USER }};
+worker_processes {{ default .Env.WORKER_PROCESSES .Env.DEFAULT_NGINX_MAX_WORKER_PROCESSES }};
 
-pid        /var/run/nginx.pid;
+pid /var/run/nginx.pid;
 
 # Add stdout logging
-error_log /dev/stdout warn;
+error_log /var/log/nginx/error.log warn;
 
 events {
-    worker_connections  1024;
+    worker_connections 1024;
 }
 
 http {
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
 
     log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
         '$status $body_bytes_sent "$http_referer" '
         '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log /dev/stdout main;
+    access_log /var/log/nginx/access.log main;
 
-    sendfile on;
+    sendfile {{ default .Env.NGINX_SENDFILE .Env.DEFAULT_NGINX_SENDFILE }};
 
-    client_max_body_size 32M;
+    client_max_body_size {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }};
 
     gzip on;
     gzip_comp_level 6;

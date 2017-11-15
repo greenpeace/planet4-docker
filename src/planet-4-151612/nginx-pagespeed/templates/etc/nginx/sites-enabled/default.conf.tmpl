@@ -2,7 +2,7 @@ server {
     listen 80;
     listen [::]:80 default ipv6only=on;
 
-    server_name example.com www.example.com -;
+    server_name {{ .Env.APP_HOSTNAME }} www.{{ .Env.APP_HOSTNAME }} -;
 
     root /app/www;
 

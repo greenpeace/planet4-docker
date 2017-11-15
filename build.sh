@@ -43,6 +43,27 @@ Options:
 "
 }
 
+# COMMAND LINE OPTIONS
+
+OPTIONS=':vc:lhpr'
+while getopts $OPTIONS option
+do
+    case $option in
+        c  )    CONFIG_FILE=$OPTARG;;
+        l  )    BUILD_LOCALLY='true';;
+        h  )    usage
+                exit;;
+        p  )    PULL_IMAGES='true';;
+        r  )    BUILD_REMOTELY='true';;
+        v  )    verbosity='debug'
+                set -x;;
+        *  )    echo "Unkown option: ${OPTARG}"
+                usage
+                exit 1;;
+    esac
+done
+shift $((OPTIND - 1))
+
 TERM="${TERM:-'dumb'}"
 
 if test -t 1
@@ -160,93 +181,10 @@ function sendBuildRequest() {
   rm -fr ${tmpdir}
 }
 
-# COMMAND LINE OPTIONS
-
-OPTIONS=':vc:lhpr'
-while getopts $OPTIONS option
-do
-    case $option in
-        c  )    CONFIG_FILE=$OPTARG;;
-        l  )    BUILD_LOCALLY='true';;
-        h  )    usage
-                exit;;
-        p  )    PULL_IMAGES='true';;
-        r  )    BUILD_REMOTELY='true';;
-        v  )    verbosity='debug'
-                set -x;;
-        *  )    echo "Unkown option: ${OPTARG}"
-                usage;;
-    esac
-done
-shift $((OPTIND - 1))
-
-
-# ----------------------------------------------------------------------------
-# Read from custom config file from command line parameter
-
-if [ "${CONFIG_FILE}" != "" ]; then
-  echo "Reading custom configuration from ${CONFIG_FILE}"
-
-  if [ ! -f "${CONFIG_FILE}" ]; then
-    _fatal "File not found: ${CONFIG_FILE}"
-  fi
-  # https://github.com/koalaman/shellcheck/wiki/SC1090
-  # shellcheck source=/dev/null
-  source ${CONFIG_FILE}
-fi
-
-# ----------------------------------------------------------------------------
-# Configure build variables based on CircleCI environment vars
-
-if [[ "${CIRCLECI}" ]]
-then
-  if [[ -z "${BUILD_TAG}" ]]
-  then
-    if [[ "${CIRCLE_TAG}" ]]
-    then
-      BUILD_TAG="${CIRCLE_TAG}"
-    elif [[ "${CIRCLE_BRANCH}" ]]
-    then
-      BUILD_TAG="${CIRCLE_BRANCH}"
-    fi
-  fi
-  BUILD_NUM="build-${CIRCLE_BUILD_NUM}"
-fi
-
 # ----------------------------------------------------------------------------
 # Consolidate and sanitise variables
 
-APPLICATION_NAME=${APPLICATION_NAME:-${DEFAULT_APPLICATION_NAME}}
-BASEIMAGE_VERSION=${BASEIMAGE_VERSION:-${DEFAULT_BASEIMAGE_VERSION}}
-BRANCH_NAME=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
-BRANCH_NAME=${BRANCH_NAME//[^a-zA-Z0-9\._-]/-}
-BUILD_LOCALLY=${BUILD_LOCALLY:-${DEFAULT_BUILD_LOCALLY}}
-BUILD_NAMESPACE=${BUILD_NAMESPACE:-${DEFAULT_BUILD_NAMESPACE}}
-BUILD_REMOTELY=${BUILD_REMOTELY:-${DEFAULT_BUILD_REMOTELY}}
-BUILD_NUM=${BUILD_NUM:-"test-${USER}-$(hostname -s)"}
-BUILD_NUM=${BUILD_NUM//[^a-zA-Z0-9\._-]/-}
-BUILD_TAG=${BUILD_TAG:-${BRANCH_NAME}}
-BUILD_TAG=${BUILD_TAG//[^a-zA-Z0-9\._-]/-}
-BUILD_TIMEOUT=${BUILD_TIMEOUT:-${DEFAULT_BUILD_TIMEOUT}}
-COMPOSER=${COMPOSER:-${DEFAULT_COMPOSER}}
-CONTAINER_TIMEZONE=${CONTAINER_TIMEZONE:-$DEFAULT_CONTAINER_TIMEZONE}
-DOCKERIZE_VERSION=${DOCKERIZE_VERSION:-$DEFAULT_DOCKERIZE_VERSION}
-GIT_REF=${GIT_REF:-${DEFAULT_GIT_REF}}
-GIT_SOURCE=${GIT_SOURCE:-${DEFAULT_GIT_SOURCE}}
-GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID:-${DEFAULT_GOOGLE_PROJECT_ID}}
-HEADERS_MORE_VERSION=${HEADERS_MORE_VERSION:-${DEFAULT_HEADERS_MORE_VERSION}}
-NGINX_PAGESPEED_RELEASE=${NGINX_PAGESPEED_RELEASE:-${DEFAULT_NGINX_PAGESPEED_RELEASE}}
-NGINX_PAGESPEED_VERSION=${NGINX_PAGESPEED_VERSION:-${DEFAULT_NGINX_PAGESPEED_VERSION}}
-NGINX_VERSION=${NGINX_VERSION:-${DEFAULT_NGINX_VERSION}}
-OPENSSL_VERSION=${OPENSSL_VERSION:-${DEFAULT_OPENSSL_VERSION}}
-PHP_MAJOR_VERSION=${PHP_MAJOR_VERSION:-${DEFAULT_PHP_MAJOR_VERSION}}
-PULL_IMAGES=${PULL_IMAGES:-${DEFAULT_PULL_IMAGES}}
-REVISION_TAG=${REVISION_TAG:-$(git rev-parse --short HEAD)}
-REWRITE_LOCAL_DOCKERFILES=${REWRITE_LOCAL_DOCKERFILES:-${DEFAULT_REWRITE_LOCAL_DOCKERFILES}}
-SOURCE_VERSION=${SOURCE_VERSION:-${BRANCH_NAME}}
-SOURCE_VERSION=${SOURCE_VERSION//[^a-zA-Z0-9\._-]/-}
-
-
+. env.sh
 
 # ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
@@ -357,7 +295,9 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
     envsubst "${envvars_string}" < ${build_dir}/templates/README.md.in > ${build_dir}/README.md
 
     build_string="# ${APPLICATION_NAME}
+# Image: ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}
 # Build: ${BUILD_NUM}
+# Date:  $(date)
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -370,11 +310,35 @@ if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
 fi
 
 # ----------------------------------------------------------------------------
+# Rewrite README.md variables
+
+# shellcheck disable=SC2034
+# Ignore tags for codacy branch badge
+CIRCLE_BADGE_BRANCH=${BRANCH_NAME//\//%2F}
+
+# Try to determine which branch we're on
+CODACY_BRANCH_NAME=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
+CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//[^[:alnum:]\._\/-]/-}
+CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//\//%2F}
+
+ENVVARS=(
+  '${CIRCLE_BADGE_BRANCH}' \
+  '${CODACY_BRANCH_NAME}' \
+)
+
+ENVVARS_STRING="$(printf "%s:" "${ENVVARS[@]}")"
+ENVVARS_STRING="${ENVVARS_STRING%:}"
+
+envsubst "${ENVVARS_STRING}" < ./README.md.in > ./README.md
+
+# ----------------------------------------------------------------------------
 # Perform the build locally
 
-if [ "${BUILD_LOCALLY}" = "true" ]; then
+if [ "${BUILD_LOCALLY}" = "true" ]
+then
   _build "Performing build locally ..."
-  for image in "${build_list[@]}"; do
+  for image in "${build_list[@]}"
+  do
 
     # Check the source directory exists and contains a Dockerfile
     if [ -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile" ]; then
@@ -396,7 +360,8 @@ fi
 # ----------------------------------------------------------------------------
 # Send build requests to Google Container Builder
 
-if [ "${BUILD_REMOTELY}" = "true" ]; then
+if [ "${BUILD_REMOTELY}" = "true" ]
+then
   _build "Performing build on Google Container Builder ..."
 
   if [[ "$build_type" = 'all' ]]
@@ -422,26 +387,5 @@ then
   done
 fi
 
-# ----------------------------------------------------------------------------
-# Rewrite README.md variables
-
-# shellcheck disable=SC2034
-# Ignore tags for codacy branch badge
-CIRCLE_BADGE_BRANCH=${BRANCH_NAME//\//%2F}
-
-# Try to determine which branch we're on
-CODACY_BRANCH_NAME=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
-CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//[^[:alnum:]\._\/-]/-}
-CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//\//%2F}
-
-ENVVARS=(
-  '${CIRCLE_BADGE_BRANCH}' \
-  '${CODACY_BRANCH_NAME}' \
-)
-
-ENVVARS_STRING="$(printf "%s:" "${ENVVARS[@]}")"
-ENVVARS_STRING="${ENVVARS_STRING%:}"
-
-envsubst "${ENVVARS_STRING}" < ./README.md.in > ./README.md
 
 wait # Until any docker pull requests have completed
