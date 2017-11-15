@@ -36,7 +36,7 @@ EXAMPLE
   pushed before 2017-04-01.
 EOF
   exit 1
-elif [[ "${#2}" -ne 10 ]]; then
+elif [[ ! "${2}" =~ [0-9]{4}-[0-9]{2}-[0-9]{2} ]]; then
   echo "wrong DATE format; use YYYY-MM-DD." >&2
   exit 1
 fi
