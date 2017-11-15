@@ -1,13 +1,13 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/php-fpm:feature-php
-# Build: build-238
-# Date:  Tue Nov 14 23:10:32 UTC 2017
+# Image: gcr.io/planet-4-151612/php-fpm:develop
+# Build: build-241
+# Date:  Wed Nov 15 00:20:39 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM gcr.io/planet-4-151612/ubuntu:feature-php
+FROM gcr.io/planet-4-151612/ubuntu:develop
 
 MAINTAINER Ray Walker <hello@raywalker.it>
 
