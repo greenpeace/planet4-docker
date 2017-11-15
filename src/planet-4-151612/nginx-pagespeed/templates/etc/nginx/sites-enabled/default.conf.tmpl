@@ -6,7 +6,11 @@ server {
 
     root /app/www;
 
+    {{ if eq .Env.PHP_ENABLED "true" }}
     index index.html;
+    {{ else }}
+    index index.html index.php;
+    {{ end }}
 
     include server.d/*.conf;
 
