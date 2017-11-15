@@ -38,7 +38,7 @@ steps:
     - 'build'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpm:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpm:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpmd:${_REVISION_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpm:${_REVISION_TAG}'
     - './src/${_GOOGLE_PROJECT_ID}/php-fpm'
   waitFor:
     - 'ubuntu'
