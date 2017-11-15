@@ -14,8 +14,8 @@ location / {
 
 # pass the PHP scripts to FastCGI
 location ~ \.php$ {
-  include fastcgi.conf
-  
+  include fastcgi.conf;
+
   # Remove PHP version from response
   more_clear_headers x-powered-by;
 
