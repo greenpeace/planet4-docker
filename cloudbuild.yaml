@@ -43,16 +43,16 @@ steps:
   waitFor:
     - 'ubuntu'
 
-- id: 'nginx-php-exim'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_REVISION_TAG}'
-    - './src/${_GOOGLE_PROJECT_ID}/nginx-php-exim'
-  waitFor:
-    - 'nginx-pagespeed'
+# - id: 'nginx-php-exim'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args:
+#     - 'build'
+#     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_TAG}'
+#     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_BUILD_NUM}'
+#     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_REVISION_TAG}'
+#     - './src/${_GOOGLE_PROJECT_ID}/nginx-php-exim'
+#   waitFor:
+#     - 'nginx-pagespeed'
 
 - id: 'wordpress'
   name: 'gcr.io/cloud-builders/docker'
@@ -91,9 +91,9 @@ images:
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/php-fpm:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/php-fpm:${_BUILD_NUM}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/php-fpm:${_REVISION_TAG}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_BUILD_TAG}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_BUILD_NUM}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_REVISION_TAG}'
+  # - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_BUILD_TAG}'
+  # - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_BUILD_NUM}'
+  # - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-php-exim:${_REVISION_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_BUILD_NUM}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_REVISION_TAG}'
