@@ -42,7 +42,7 @@ _error() {
 }
 
 _warning() {
-    >&2 printf "  ${yellow}:-""* ${bold:-""}[WARNING] ${normal:-""}%s\n" "$*"
+    >&2 printf "  ${yellow:-""}* ${bold:-""}[WARNING] ${normal:-""}%s\n" "$*"
 }
 
 export -f _title
