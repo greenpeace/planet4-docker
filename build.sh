@@ -252,7 +252,8 @@ fi
 # ----------------------------------------------------------------------------
 # Update local Dockerfiles from template
 
-if [ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]; then
+if [[ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]]
+then
   _verbose "Updating local Dockerfiles from templates..."
   for image in "${build_list[@]}"
   do
@@ -334,7 +335,7 @@ envsubst "${ENVVARS_STRING}" < ./README.md.in > ./README.md
 # ----------------------------------------------------------------------------
 # Perform the build locally
 
-if [ "${BUILD_LOCALLY}" = "true" ]
+if [[ "${BUILD_LOCALLY}" = "true" ]]
 then
   _build "Performing build locally ..."
   for image in "${build_list[@]}"
@@ -360,7 +361,7 @@ fi
 # ----------------------------------------------------------------------------
 # Send build requests to Google Container Builder
 
-if [ "${BUILD_REMOTELY}" = "true" ]
+if [[ "${BUILD_REMOTELY}" = "true" ]]
 then
   _build "Performing build on Google Container Builder ..."
 
@@ -370,6 +371,7 @@ then
   else
     for image in "${build_list[@]}"
     do
+      _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}"
       sendBuildRequest "${ROOT_DIR}/src/$GOOGLE_PROJECT_ID/$image"
     done
   fi
@@ -382,10 +384,9 @@ if [[ "${PULL_IMAGES}" = "true" ]]
 then
   for image in "${build_list[@]}"
   do
-    _pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}"
-    docker pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" &
+    _pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}"
+    docker pull "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" >/dev/null &
   done
 fi
-
 
 wait # Until any docker pull requests have completed
