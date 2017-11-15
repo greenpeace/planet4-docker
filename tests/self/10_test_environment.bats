@@ -35,6 +35,11 @@ function teardown {
 }
 
 @test "cgi-fcgi exists and is executable" {
+  # Circle doesn't need this, the test relies on docker
+  if [[ ${CIRCLECI} ]]
+  then
+    skip "CircleCI doesn't require cgi-fcgi binary"
+  fi
   if [[ ! -x "$(type -P cgi-fcgi)" ]]
   then
     fatal "FATAL: cgi-fcgi not found.\nPlease install the 'fcgi' package from your operating system repository. See https://www.thatsgeeky.com/2012/02/directly-connecting-to-php-fpm/"
