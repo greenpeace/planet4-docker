@@ -51,6 +51,7 @@ php_configure_newrelic.sh
 # # sendmail parameters
 # _good "$(printf "%-10s " "php:")" "sendmail_path:         /usr/bin/sendmail -t -f no-reply@${EXIM_MAIL_FROM:-$DEFAULT_EXIM_MAIL_FROM}"
 # sed -i -r "s/sendmail_path =.*$/sendmail_path = \/usr\/sbin\/sendmail -t -f no-reply@${EXIM_MAIL_FROM:-$DEFAULT_EXIM_MAIL_FROM}/g" /etc/php/${PHP_MAJOR_VERSION}/fpm/php.ini
+_title "Starting service: php-fpm $(php --version | head -n 1 | cut -d " " -f 2)"
 
 # start PHP
 exec dockerize \
