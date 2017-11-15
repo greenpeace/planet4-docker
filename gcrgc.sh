@@ -21,7 +21,8 @@
 IFS=$'\n\t'
 set -eo pipefail
 
-if [[ "$#" -ne 2 || "${1}" == '-h' || "${1}" == '--help' ]]; then
+if [[ "$#" -ne 2 || "${1}" == '-h' || "${1}" == '--help' ]]
+then
   cat >&2 <<"EOF"
 gcrgc.sh cleans up tagged or untagged images pushed before specified date
 for a given repository (an image name without a tag/digest).
@@ -30,28 +31,40 @@ USAGE:
   gcrgc.sh REPOSITORY DATE
 
 EXAMPLE
-  gcrgc.sh gcr.io/ahmet/my-app 2017-04-01
+  gcrgc.sh gcr.io/greenpeace/php-fpm 2017-04-01
 
-  would clean up everything under the gcr.io/ahmet/my-app repository
+  would clean up everything under the gcr.io/greenpeace/php-fpm repository
   pushed before 2017-04-01.
+
+TRIAL RUN
+  Setting the environment variable will display a list of all images that would
+  be deleted.
+
+  TRIAL_RUN=1 gcrgc.sh gcr.io/greenpeace/php-fpm 2017-04-01
+
+  Would list all image digests that would be deleted.
 EOF
   exit 1
-elif [[ ! "${2}" =~ [0-9]{4}-[0-9]{2}-[0-9]{2} ]]; then
+elif [[ ! "${2}" =~ [0-9]{4}-[0-9]{2}-[0-9]{2} ]]
+then
   echo "wrong DATE format; use YYYY-MM-DD." >&2
   exit 1
 fi
 
-if [[ ! -z "${TRIAL_RUN}" ]] && [[ "${TRIAL_RUN}" != 'false' ]] && [[ ${TRIAL_RUN} -ne 0 ]]
+if  [[ ! -z "${TRIAL_RUN}" ]] && \
+    [[ "${TRIAL_RUN}" != 'false' ]] && \
+    [[ ${TRIAL_RUN} -ne 0 ]]
 then
   echo >&2 "Trial run only, no changes will be committed"
 fi
 
-main(){
+main() {
   local C=0
   IMAGE="${1}"
   DATE="${2}"
   for digest in $(gcloud container images list-tags ${IMAGE} --limit=999999 --sort-by=TIMESTAMP \
-    --filter="timestamp.datetime < '${DATE}'" --format='get(digest)'); do
+    --filter="timestamp.datetime < '${DATE}'" --format='get(digest)')
+  do
     (
 
       if [[ ${TRIAL_RUN} = "true" ]]
