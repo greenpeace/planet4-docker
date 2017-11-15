@@ -15,7 +15,6 @@ nginx_configure_cloudflare.sh &
 nginx_configure_fastcgi_backend.sh &
 
 # Set worker_processes = num cpu cores
-export WORKER_PROCESSES
 WORKER_PROCESSES=$(cat /proc/cpuinfo |grep processor | wc -l)
 if [[ $WORKER_PROCESSES -gt ${NGINX_MAX_WORKER_PROCESSES:-$DEFAULT_NGINX_MAX_WORKER_PROCESSES} ]]; then
 	# number of available processor cores exceeds the maximum permitted, limit to maximum
@@ -23,11 +22,11 @@ if [[ $WORKER_PROCESSES -gt ${NGINX_MAX_WORKER_PROCESSES:-$DEFAULT_NGINX_MAX_WOR
 	WORKER_PROCESSES=${NGINX_MAX_WORKER_PROCESSES:-$DEFAULT_NGINX_MAX_WORKER_PROCESSES}
 fi
 _good "$(printf "%-10s " "nginx:")" "worker_processes=$WORKER_PROCESSES"
-
+export WORKER_PROCESSES
 
 wait # for background processes to finish
 
-_good "Starting service: nginx v${NGINX_VERSION:-${DEFAULT_NGINX_VERSION}}"
+_title "Starting service: nginx v${NGINX_VERSION:-${DEFAULT_NGINX_VERSION}}"
 
 exec dockerize \
 	-template /app/templates/etc/nginx/sites-enabled/default.conf.tmpl:/etc/nginx/sites-enabled/default.conf \
