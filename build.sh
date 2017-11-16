@@ -29,16 +29,16 @@ fi
 # UTILITY
 
 function usage {
-  echo "Usage: $0 [OPTION|OPTION2] [<image build list>|all]...
+  echo "Usage: $(basename $0) [OPTION|OPTION2] [<image build list>|all]...
 Build and test artifacts in this repository
 
 Options:
   -c    Configuration file for build variables, eg:
-        $0 -c config
-  -h    Print usage information (this text)
-  -l    Perform the docker build locally (default: ${DEFAULT_BUILD_LOCALLY})
-  -p    Pull created images after build
-  -r    Perform the docker build remotely (default: ${DEFAULT_BUILD_REMOTELY})
+          $(basename $0) -c config
+  -h    Help information (this text)
+  -l    Local docker build (default: ${DEFAULT_BUILD_LOCALLY})
+  -p    Pull images after build (default: ${DEFAULT_BUILD_LOCALLY})
+  -r    Remote docker build on Google Container Registry (default: ${DEFAULT_BUILD_REMOTELY})
   -v    Verbose output
 "
 }
