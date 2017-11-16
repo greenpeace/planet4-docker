@@ -41,8 +41,6 @@ WP_ADMIN_NAME |  | Name of Wordpress administrator user to create
 WP_ADMIN_USER |  | Username of Wordpress administrator user to create
 WP_ADMIN_PASS |  | Password of Wordpress administrator user to create
 WP_ADMIN_EMAIL |  | Email address of Wordpress administrator user to create
-WP_VERSION | latest | Version of Wordpress to install
-WP_LOCALE | en_AU | Locale of Wordpress to install
 WP_THEME_HTTP |  | HTTP address of Wordpress theme to install
 WP_THEME_GIT |  | Git address of Wordpress theme to install
 WP_THEME_USERNAME |  | Username for theme install if authentication is required
