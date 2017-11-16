@@ -56,5 +56,6 @@ _title "Starting service: php-fpm $(php --version | head -n 1 | cut -d " " -f 2)
 # start PHP
 exec dockerize \
   -template /app/templates/etc/php/fpm/pool.d/www.conf.tmpl:/etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf \
-  -stderr /var/log/fpm-php.${PHP_POOL_NAME}.error.log \
+  -stdout /var/log/php${PHP_MAJOR_VERSION}-fpm.log \
+  -stderr /var/log/php${PHP_MAJOR_VERSION}-fpm.${PHP_POOL_NAME}.error.log \
   php-fpm${PHP_MAJOR_VERSION} -c /etc/php/${PHP_MAJOR_VERSION}/fpm
