@@ -144,8 +144,9 @@ fi
 _good "Running 'composer site-install' with COMPOSER=${COMPOSER}"
 
 cd /app/source
-setuser ${APP_USER:-${DEFAULT_APP_USER}} /app/bin/composer --profile -vvv site-install
-setuser ${APP_USER:-${DEFAULT_APP_USER}} /app/bin/composer clear-cache
+
+/app/bin/composer --profile -vv site-install
+/app/bin/composer --profile -vv core:add-super-admin-user
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
