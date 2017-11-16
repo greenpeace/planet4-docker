@@ -30,5 +30,6 @@ ONBUILD RUN chown -R "${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_G
   echo "Installing composer dependencies with ${COMPOSER}" && \
   composer --profile -vvv config --global github-oauth.github.com ${GITHUB_OAUTH_TOKEN} && \
   composer --profile -vvv install --no-interaction && \
+  composer clear-cache && \
   cp wp-cli.yml.default wp-cli.yml && \
   rm -fr /app/www
