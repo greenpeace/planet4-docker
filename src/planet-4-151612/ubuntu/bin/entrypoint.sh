@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+chmod +x /app/bin/*
+
 # Configure environment
 for env_file in /app/env/*
 do
