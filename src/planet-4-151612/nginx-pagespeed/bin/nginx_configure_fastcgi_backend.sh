@@ -16,7 +16,7 @@ then
   # Mostly used for testing
   if [[ ! -f "/app/www/index.php" ]]
   then
-    echo "<?php phpinfo();" > /app/www/index.php
+    echo -e "<?php //TEST-DATA-ONLY\nphpinfo();" > /app/www/index.php
   fi
 
 fi
