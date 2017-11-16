@@ -138,18 +138,6 @@ function sendBuildRequest() {
     _fatal "No cloudbuild.yaml file found in $dir"
   fi
 
-  # Check if we're running on CircleCI
-  if [ ! -z "${CIRCLECI}" ]; then
-    gcloud_binary=/home/circleci/google-cloud-sdk/bin/gcloud
-  else
-    gcloud_binary=$(type -P gcloud)
-  fi
-
-  if [[ ! -x ${gcloud_binary} ]]
-  then
-    _fatal "gcloud executable not found"
-  fi
-
   # Rewrite cloudbuild variables
   local sub_array=(
     "_BUILD_NUM=${BUILD_NUM}"
@@ -185,6 +173,21 @@ function sendBuildRequest() {
 # Consolidate and sanitise variables
 
 . env.sh
+
+# ----------------------------------------------------------------------------
+# Check if we're running on CircleCI
+
+if [ ! -z "${CIRCLECI}" ]; then
+  # FIXME add the gcloud binary in planet4-base to PATH
+  gcloud_binary=/home/circleci/google-cloud-sdk/bin/gcloud
+else
+  gcloud_binary=$(type -P gcloud)
+fi
+
+if [[ ! -x ${gcloud_binary} ]]
+then
+  _fatal "gcloud executable not found"
+fi
 
 # ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
