@@ -18,12 +18,9 @@
  * @package WordPress
  */
 
-if (stripos(getenv('APP_ENV'),'develop') === true) {
-  define( 'WP_DEBUG', true );
-  define( 'WP_DEBUG_LOG', true );
-}
 
 // ** MySQL settings ** //
+
 define('DB_NAME',     getenv('WP_DB_NAME'));
 define('DB_USER',     getenv('WP_DB_USER'));
 define('DB_PASSWORD', getenv('WP_DB_PASS'));
@@ -33,21 +30,14 @@ define('DB_CHARSET',  getenv('WP_DB_CHARSET'));
 define('DB_COLLATE',  getenv('WP_DB_COLLATION'));
 
 // ** Wordpress configuration settings ** //
-
 define('SITE_URL',    getenv('WP_SITE_URL'));
 define('SITE_HOME',   getenv('WP_SITE_HOME'));
 
-# Force SSL in the administration section
-if (getenv('WP_FORCE_SSL_ADMIN') == 'true') {
-    define('FORCE_SSL_ADMIN', true);
-}
 
-# Respect upstream SSL termination headers
-if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
-    $_SERVER['HTTPS']='on';
+if (stripos(getenv('APP_ENV'), 'develop') === true) {
+  define( 'WP_DEBUG', true );
+  define( 'WP_DEBUG_LOG', true );
 }
-
-// ** Wordpress configuration settings ** //
 
 # Force SSL in the administration section
 if (getenv('WP_FORCE_SSL_ADMIN') == 'true') {
