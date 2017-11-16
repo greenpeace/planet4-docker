@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 set -e
 
+# shellcheck disable=SC2120
 function files_exist() {
   local files
   # Check if files exist
   # This indicates whether the container is mounting files from an external source
   # If files exist we may not want to overwrite
-  if [[ -d "/app/source/public" ]]
+  if [[ -d "${1:-/app/source/public}" ]]
   then
     # Directory already exists
-    files=$(shopt -s nullglob dotglob; echo /app/source/public/* | wc -w)
-    echo ${files}
+    shopt -s nullglob dotglob
+    files=(/app/source/public/*)
+    shopt -u nullglob dotglob
+    echo "${#files[@]}"
+    exit 0
+  else
+    echo 0
   fi
-  echo 0
 }
 
 function delete_source_directories() {
@@ -20,6 +25,7 @@ function delete_source_directories() {
   rm -fr /app/www || true
   rm -fr /app/source/public/* /app/source/public/.* /app/source/public || true
   mkdir -p /app/source/public
+  true > "/app/source/public/.installing"
 }
 
 # ==============================================================================
@@ -60,13 +66,23 @@ _good "WP_DB_PREFIX       ${WP_DB_PREFIX}"
 # FILE SYSTEM CHECKS
 # ==============================================================================
 
-files=$(files_exist)
+if [[ -f "/app/source/public/.installing" ]]
+then
+  _good "Installation already underway, skipping..."
+  # Ensure the symlink exists
+  [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
+  exit 0
+fi
 
-if [[ ${files} -eq 1 ]] && [[ $(grep -q TEST-DATA-ONLY /app/source/public/index.php) ]]
+files="$(files_exist)"
+
+true > "/app/source/public/.installing"
+
+if [[ "${files}" -eq 1 ]] && [[ $(grep -q TEST-DATA-ONLY /app/source/public/index.php) ]]
 then
   _good "Test data detected, deleting /app/source/public /app/www"
   delete_source_directories
-elif [[ ${files} -ne 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
+elif [[ "${files}" -ne 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
 then
   _good "OVERWRITE_FILES is not 'true', cowardly refusing to reinstall Wordpress"
 
