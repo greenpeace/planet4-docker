@@ -27,7 +27,8 @@ fi
 # Available on path, wrapped by /app/bin/composer.sh, symlinked to /app/bin/composer
 php composer-setup.php --install-dir=/app/bin
 rm composer-setup.php
-ln -s /app/bin/composer.phar /app/bin/composer
+
+ln -s /app/bin/composer.sh /app/bin/composer
 
 # Install parallel downloader hirak/prestissimo (latest version)
 echo "Installing hirak/prestissimo"
