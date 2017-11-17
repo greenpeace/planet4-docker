@@ -1,9 +1,9 @@
-deb http://mirror.rackspace.com/ubuntu/ xenial main restricted
-deb http://mirror.rackspace.com/ubuntu/ xenial-updates main restricted
-deb http://mirror.rackspace.com/ubuntu/ xenial-backports main restricted
-deb http://mirror.rackspace.com/ubuntu/ xenial-security main restricted
+deb http://mirror.rackspace.com/ubuntu/ xenial main restricted universe
+deb http://mirror.rackspace.com/ubuntu/ xenial-updates main restricted universe
+deb http://mirror.rackspace.com/ubuntu/ xenial-backports main restricted universe
+deb http://mirror.rackspace.com/ubuntu/ xenial-security main restricted universe
 
-deb-src http://mirror.rackspace.com/ubuntu/ xenial main restricted
-deb-src http://mirror.rackspace.com/ubuntu/ xenial-updates main restricted
-deb-src http://mirror.rackspace.com/ubuntu/ xenial-backports main restricted
-deb-src http://mirror.rackspace.com/ubuntu/ xenial-security main restricted
+# deb-src http://mirror.rackspace.com/ubuntu/ xenial main restricted universe
+# deb-src http://mirror.rackspace.com/ubuntu/ xenial-updates main restricted universe
+# deb-src http://mirror.rackspace.com/ubuntu/ xenial-backports main restricted universe
+# deb-src http://mirror.rackspace.com/ubuntu/ xenial-security main restricted universe
