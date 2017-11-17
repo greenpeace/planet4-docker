@@ -1,6 +1,6 @@
 # Wordpress
 
-![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx test-K4GiwqC3znRL](https://img.shields.io/badge/nginx-test-K4GiwqC3znRL-brightgreen.svg) ![ngx_pagespeed test-38H1MCb5sJix-test-Bwv3ksGXM80r](https://img.shields.io/badge/ngx_pagespeed-test-38H1MCb5sJix--test-Bwv3ksGXM80r-brightgreen.svg) ![OpenSSL test-Q82dknjk3RHX](https://img.shields.io/badge/OpenSSL-test-Q82dknjk3RHX-brightgreen.svg)
+![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6](https://img.shields.io/badge/nginx-1.13.6-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.1.0g](https://img.shields.io/badge/OpenSSL-1.1.0g-brightgreen.svg)
 
 Wordpress-ready webserver stack built on [greenpeace/nginx-php-exim](https://hub.docker.com/r/greenpeace/nginx-php-exim/)
 

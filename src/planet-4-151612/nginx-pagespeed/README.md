@@ -1,6 +1,6 @@
 # Nginx + Pagespeed + OpenSSL
 
-![Nginx test-K4GiwqC3znRL](https://img.shields.io/badge/nginx-test-K4GiwqC3znRL-brightgreen.svg) ![ngx_pagespeed test-38H1MCb5sJix-test-Bwv3ksGXM80r](https://img.shields.io/badge/ngx_pagespeed-test-38H1MCb5sJix--test-Bwv3ksGXM80r-brightgreen.svg) ![OpenSSL test-Q82dknjk3RHX](https://img.shields.io/badge/OpenSSL-test-Q82dknjk3RHX-brightgreen.svg)
+![Nginx 1.13.6](https://img.shields.io/badge/nginx-1.13.6-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.1.0g](https://img.shields.io/badge/OpenSSL-1.1.0g-brightgreen.svg)
 
 
 Built on [greenpeace/ubuntu](https://registry.hub.docker.com/u/greenpeace/ubuntu/), a lightly modified Ubuntu Xenial [Phusion Base Image](https://phusion.github.io/baseimage-docker/).
@@ -50,9 +50,9 @@ CHOWN_APP_DIR | false | If true `chown` `/app/www` as `APP_USER:APP_GROUP`
 ### Security
 
 Nginx is compiled from mainline source according to Ubuntu compile flags, with the following modifications:
-- OpenSSL vtest-Q82dknjk3RHX sources - https://www.openssl.org/source/
+- OpenSSL v1.1.0g sources - https://www.openssl.org/source/
 - Google Pagespeed nginx module - https://github.com/pagespeed/ngx_pagespeed/releases
-- headers-more nginx module vtest-ikamFAnXSp9Z - https://github.com/openresty/headers-more-nginx-module/tags
+- headers-more nginx module v0.33 - https://github.com/openresty/headers-more-nginx-module/tags
 - `http_ssi_module` and `http_autoindex_module` disabled
 
 HTTPS is configured using modern sane defaults, including

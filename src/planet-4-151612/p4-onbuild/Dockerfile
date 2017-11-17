@@ -1,7 +1,7 @@
-# Testing-SLEUOkQOh9wz
+# Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/p4-onbuild:develop
-# Build: build-244
-# Date:  Fri Nov 17 00:37:06 UTC 2017
+# Build: build-246
+# Date:  Fri Nov 17 04:51:05 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -32,9 +32,8 @@ ONBUILD RUN git clone --branch "${GIT_REF}" "${GIT_SOURCE}" /app/source
 
 ONBUILD WORKDIR /app/source
 
-ONBUILD RUN /app/bin/composer.phar --profile -vv config --global github-oauth.github.com ${GITHUB_OAUTH_TOKEN} && \
-  /app/bin/composer.phar --profile -vv require wpackagist-plugin/wp-stateless && \
-  /app/bin/composer.phar --profile -vv require wpackagist-plugin/wp-redis && \
+ONBUILD RUN \
+  /app/bin/composer.phar --profile -vv config --global github-oauth.github.com ${GITHUB_OAUTH_TOKEN} && \
   /app/bin/composer.phar --profile -vv install --no-interaction && \
   /app/bin/composer.phar clear-cache && \
   cp wp-cli.yml.default wp-cli.yml && \
