@@ -144,8 +144,7 @@ _good "Running 'composer site-install' with COMPOSER=${COMPOSER}"
 
 cd /app/source
 
-/app/bin/composer --profile -vv site-install
-/app/bin/composer --profile -vv core:add-super-admin-user
+/app/bin/composer --profile -vv docker-site-install
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
