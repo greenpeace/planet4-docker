@@ -118,7 +118,7 @@ mkdir -p /app/source/public
 chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app
 
 # Overwrite the stock wp-config to use environment variables (again?)
-cp /app/wp-config.php.default /app/source/public/wp-config.php
+dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
 
 # Wait for SQL server then run composer site-install
 until dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 60s mysql -h ${WP_DB_HOST} -u ${WP_DB_USER} --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"; do

@@ -33,7 +33,6 @@ define('DB_COLLATE',  getenv('WP_DB_COLLATION'));
 define('SITE_URL',    getenv('WP_SITE_URL'));
 define('SITE_HOME',   getenv('WP_SITE_HOME'));
 
-
 if (stripos(getenv('APP_ENV'), 'develop') === true) {
   define( 'WP_DEBUG', true );
   define( 'WP_DEBUG_LOG', true );
@@ -66,6 +65,8 @@ define('AUTH_SALT',        getenv('WP_AUTH_SALT'));
 define('SECURE_AUTH_SALT', getenv('WP_SECURE_AUTH_SALT'));
 define('LOGGED_IN_SALT',   getenv('WP_LOGGED_IN_SALT'));
 define('NONCE_SALT',       getenv('WP_NONCE_SALT'));
+
+{{ .Env.WP_EXTRA_CONFIG }}
 
 /**
  * WordPress Database Table prefix.

@@ -28,6 +28,7 @@ ENV \
     WP_DB_PORT="3306" \
     WP_DB_PREFIX="wp_" \
     WP_DB_USER="" \
+    WP_EXTRA_CONFIG="" \
     WP_FORCE_SSL_ADMIN="false" \
     WP_HOSTNAME="" \
     WP_LOCALE="en_AU" \
