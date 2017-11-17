@@ -64,5 +64,5 @@ function teardown {
 @test "build.sh prints usage information with -h flag" {
   run ${PROJECT_ROOT_DIR}/build.sh -h
   [[ $status -eq 0 ]]
-  [[ $output =~ "usage" ]]
+  [[ $output =~ Usage ]]
 }
