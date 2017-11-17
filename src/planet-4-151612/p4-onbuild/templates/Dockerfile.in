@@ -4,8 +4,6 @@ MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
 COPY . /app/
 
-WORKDIR /app
-
 RUN apt-get update && apt-get install -y subversion && \
     apt-get clean && \
     mkdir -p /app/source && \

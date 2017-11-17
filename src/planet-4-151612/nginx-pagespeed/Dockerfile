@@ -1,4 +1,4 @@
-# Greenpeace P4 Docker application
+# Testing-SLEUOkQOh9wz
 # Image: gcr.io/planet-4-151612/nginx-pagespeed:develop
 # Build: build-244
 # Date:  Fri Nov 17 00:37:06 UTC 2017
@@ -16,11 +16,11 @@ EXPOSE 443
 
 ENV APP_GROUP="nginx" \
     APP_USER="nginx" \
-    HEADERS_MORE_VERSION="0.33" \
-    NGINX_PAGESPEED_VERSION="latest" \
-    NGINX_PAGESPEED_RELEASE="stable" \
-    NGINX_VERSION="1.13.6" \
-    OPENSSL_VERSION="1.1.0g"
+    HEADERS_MORE_VERSION="test-ikamFAnXSp9Z" \
+    NGINX_PAGESPEED_VERSION="test-38H1MCb5sJix" \
+    NGINX_PAGESPEED_RELEASE="test-Bwv3ksGXM80r" \
+    NGINX_VERSION="test-K4GiwqC3znRL" \
+    OPENSSL_VERSION="test-Q82dknjk3RHX"
 
 COPY . /app/
 
@@ -28,13 +28,13 @@ RUN set -x && \
     chmod 755 /app/bin/*.sh && \
     useradd -r -s /usr/sbin/nologin "${APP_USER}" && \
     mkdir -p /var/log/nginx /var/cache/nginx && \
-    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://www.openssl.org/source/openssl-1.1.0g.tar.gz" | tar xzf - -C /tmp && \
-    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://nginx.org/download/nginx-1.13.6.tar.gz" | tar zxf - -C /tmp && \
-    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/openresty/headers-more-nginx-module/archive/v0.33.tar.gz" | tar zxf - -C /tmp && \
-    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.tar.gz" | tar zxf - -C /tmp && \
-    PSOL_URL="$(cat "/tmp/ngx_pagespeed-latest-stable/PSOL_BINARY_URL")" && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://www.openssl.org/source/openssl-test-Q82dknjk3RHX.tar.gz" | tar xzf - -C /tmp && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://nginx.org/download/nginx-test-K4GiwqC3znRL.tar.gz" | tar zxf - -C /tmp && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/openresty/headers-more-nginx-module/archive/vtest-ikamFAnXSp9Z.tar.gz" | tar zxf - -C /tmp && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/pagespeed/ngx_pagespeed/archive/test-38H1MCb5sJix-test-Bwv3ksGXM80r.tar.gz" | tar zxf - -C /tmp && \
+    PSOL_URL="$(cat "/tmp/ngx_pagespeed-test-38H1MCb5sJix-test-Bwv3ksGXM80r/PSOL_BINARY_URL")" && \
     if [ "$(uname -m)" = x86_64 ]; then PSOL_BIT_SIZE_NAME="x64"; else PSOL_BIT_SIZE_NAME="ia32"; fi && \
-    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "$(echo $PSOL_URL | sed "s/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME/g")" | tar zxf - -C "/tmp/ngx_pagespeed-latest-stable" && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "$(echo $PSOL_URL | sed "s/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME/g")" | tar zxf - -C "/tmp/ngx_pagespeed-test-38H1MCb5sJix-test-Bwv3ksGXM80r" && \
     apt-get update && \
   	apt-get -y --no-install-recommends install \
       autoconf \
@@ -51,7 +51,7 @@ RUN set -x && \
       libxslt1-dev \
       zlib1g-dev \
       && \
-  	cd "/tmp/nginx-1.13.6" && \
+  	cd "/tmp/nginx-test-K4GiwqC3znRL" && \
   	./configure \
   		--prefix=/etc/nginx  \
   		--sbin-path=/usr/sbin/nginx  \
@@ -93,9 +93,9 @@ RUN set -x && \
   		--with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' \
   		--with-ipv6 \
   		--with-pcre-jit \
-  		--with-openssl=/tmp/openssl-1.1.0g \
-      --add-module=/tmp/headers-more-nginx-module-0.33 \
-  		--add-module=/tmp/ngx_pagespeed-latest-stable  && \
+  		--with-openssl=/tmp/openssl-test-Q82dknjk3RHX \
+      --add-module=/tmp/headers-more-nginx-module-test-ikamFAnXSp9Z \
+  		--add-module=/tmp/ngx_pagespeed-test-38H1MCb5sJix-test-Bwv3ksGXM80r  && \
   	make && \
   	make install && \
   	apt-get purge -yqq automake autoconf libtool git-core build-essential zlib1g-dev libpcre3-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev && \

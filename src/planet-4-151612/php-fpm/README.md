@@ -1,7 +1,7 @@
 
 # Nginx + PHP + Exim
 
-![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6](https://img.shields.io/badge/nginx-1.13.6-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.1.0g](https://img.shields.io/badge/OpenSSL-1.1.0g-brightgreen.svg)
+![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx test-K4GiwqC3znRL](https://img.shields.io/badge/nginx-test-K4GiwqC3znRL-brightgreen.svg) ![ngx_pagespeed test-38H1MCb5sJix-test-Bwv3ksGXM80r](https://img.shields.io/badge/ngx_pagespeed-test-38H1MCb5sJix--test-Bwv3ksGXM80r-brightgreen.svg) ![OpenSSL test-Q82dknjk3RHX](https://img.shields.io/badge/OpenSSL-test-Q82dknjk3RHX-brightgreen.svg)
 
 Highly configurable nginx-PHP webserver stack built on [greenpeace/nginx-pagespeed](https://hub.docker.com/r/greenpeace/nginx-pagespeed/), which is in turn built on a [lightly modified Phusion Ubuntu base image](https://hub.docker.com/r/greenpeace/ubuntu/)
 
@@ -33,7 +33,7 @@ ADMIN_EMAIL | nobody@example.com | Server administrator email, used for intercep
 CHOWN_APP_DIR | true | if true, `chown -R $APP_USER:$APP_GROUP /app/www`
 APP_HOSTNAME | `hostname -f` |  hostname of application
 VIRTUAL_HOST | example.com | virtualhosts which this service should respond to, separated by commmas. Useful for operating behind [jwilder/nginx-proxy](https://hub.docker.com/r/jwilder/nginx-proxy/).
-CONTAINER_TIMEZONE | UTC | Server timezone
+CONTAINER_TIMEZONE | Australia/Hobart | Server timezone
 APP_USER | app | nginx and php5-fpm user
 APP_GROUP | app | nginx and php5-fpm group
 APP_UID | 1000 | user_id - useful when mounting volumes from host > guest to either share or delineate file access permission

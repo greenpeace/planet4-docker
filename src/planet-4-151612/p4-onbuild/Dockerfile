@@ -1,4 +1,4 @@
-# Greenpeace P4 Docker application
+# Testing-SLEUOkQOh9wz
 # Image: gcr.io/planet-4-151612/p4-onbuild:develop
 # Build: build-244
 # Date:  Fri Nov 17 00:37:06 UTC 2017
@@ -12,8 +12,6 @@ FROM gcr.io/planet-4-151612/wordpress:develop
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
 COPY . /app/
-
-WORKDIR /app
 
 RUN apt-get update && apt-get install -y subversion && \
     apt-get clean && \
@@ -34,8 +32,10 @@ ONBUILD RUN git clone --branch "${GIT_REF}" "${GIT_SOURCE}" /app/source
 
 ONBUILD WORKDIR /app/source
 
-ONBUILD RUN /app/bin/composer.phar --profile -vvv config --global github-oauth.github.com ${GITHUB_OAUTH_TOKEN} && \
-  /app/bin/composer.phar --profile -vvv install --no-interaction && \
+ONBUILD RUN /app/bin/composer.phar --profile -vv config --global github-oauth.github.com ${GITHUB_OAUTH_TOKEN} && \
+  /app/bin/composer.phar --profile -vv require wpackagist-plugin/wp-stateless && \
+  /app/bin/composer.phar --profile -vv require wpackagist-plugin/wp-redis && \
+  /app/bin/composer.phar --profile -vv install --no-interaction && \
   /app/bin/composer.phar clear-cache && \
   cp wp-cli.yml.default wp-cli.yml && \
   rm -fr /app/www

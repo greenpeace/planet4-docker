@@ -1,4 +1,4 @@
-# Greenpeace P4 Docker application
+# Testing-SLEUOkQOh9wz
 # Image: gcr.io/planet-4-151612/ubuntu:develop
 # Build: build-244
 # Date:  Fri Nov 17 00:37:06 UTC 2017
@@ -7,7 +7,7 @@
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
 
-FROM phusion/baseimage:0.9.22 as base
+FROM phusion/baseimage:test-wulOFntnak3m as base
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
@@ -21,9 +21,10 @@ RUN rm -fr /etc/apt/sources.list && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     chmod 755 /app/bin/* && \
     ln -s /app/bin/set_timezone.sh /etc/my_init.d/00_set_timezone.sh && \
-    wget https://github.com/jwilder/dockerize/releases/download/v0.5.0/dockerize-linux-amd64-v0.5.0.tar.gz && \
-    tar -C /app/bin -xzvf dockerize-linux-amd64-v0.5.0.tar.gz && \
-    rm dockerize-linux-amd64-v0.5.0.tar.gz
+    wget https://github.com/jwilder/dockerize/releases/download/vtest-D0eODsbkR9kU/dockerize-linux-amd64-vtest-D0eODsbkR9kU.tar.gz && \
+    tar -C /app/bin -xzvf dockerize-linux-amd64-vtest-D0eODsbkR9kU.tar.gz && \
+    rm dockerize-linux-amd64-vtest-D0eODsbkR9kU.tar.gz && \
+    rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
 
 FROM scratch
 
@@ -37,7 +38,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     DEFAULT_APP_HOSTNAME="example.com" \
     DEFAULT_APP_UID="1000" \
     DEFAULT_APP_USER="app" \
-    DEFAULT_CONTAINER_TIMEZONE="UTC" \
+    DEFAULT_CONTAINER_TIMEZONE="Australia/Hobart" \
     PATH="/app/bin:$PATH"
 
 WORKDIR /app
