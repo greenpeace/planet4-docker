@@ -115,8 +115,7 @@ _good "Installing Wordpress for site ${WP_HOSTNAME}..."
 
 mkdir -p /app/source/public
 
-chown -R ${APP_USER:-${DEFAULT_APP_USER}} /app/.composer
-chown -R ${APP_USER:-${DEFAULT_APP_USER}} /app/source
+chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app
 
 # Overwrite the stock wp-config to use environment variables (again?)
 cp /app/wp-config.php.default /app/source/public/wp-config.php
