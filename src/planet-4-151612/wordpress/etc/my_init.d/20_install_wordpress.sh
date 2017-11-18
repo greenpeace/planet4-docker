@@ -107,23 +107,15 @@ then
   _error "File not found: $PWD/$COMPOSER"
 fi
 
+chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app
+_good "chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app"
+
 # ==============================================================================
 # WORDPRESS INSTALLATION
 # ==============================================================================
 
 _good "Installing Wordpress for site ${WP_HOSTNAME}..."
-
-mkdir -p /app/source/public
-
-chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app
-
-# Overwrite the stock wp-config to use environment variables (again?)
-dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
-
-# Wait for SQL server then run composer site-install
-until dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 60s mysql -h ${WP_DB_HOST} -u ${WP_DB_USER} --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"; do
-  sleep 1;
-done
+_good "From: ${GIT_SOURCE}:${GIT_REF}"
 
 # @todo this is a terribly hacky way of checking upstream, fixme please
 actual_source="https://github.com/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f4)/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f5 | cut -d' ' -f1)"
@@ -140,11 +132,46 @@ then
   _warning "Found branch/tag:    ${actual_git_ref}"
 fi
 
-_good "Running 'composer site-install' with COMPOSER=${COMPOSER}"
+composer --profile -vv copy:wordpress
 
-cd /app/source
+composer --profile -vv reset:themes
+composer --profile -vv reset:plugins
 
-/app/bin/composer --profile -vv docker-site-install
+composer --profile -vv copy:themes
+composer --profile -vv copy:assets
+composer --profile -vv copy:plugins
+
+setuser ${APP_USER:-$DEFAULT_APP_USER} dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
+
+# Wait up to two minutes for the database to become ready
+timeout=2
+i=0
+until dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
+do
+  let i=i+1
+  if [[ $i -gt $timeout ]];
+  then
+    _error "Timeout waiting for database to become ready"
+    exit 1
+  fi
+  sleep 1;
+done
+
+_good "Database '${WP_DB_HOST}' is ready"
+_good "Running 'composer docker-site-install' with COMPOSER=${COMPOSER}"
+
+wait # It's remotely possible that `chown /app` above hasn't finished yet
+
+composer --profile -vv core:install
+
+composer --profile -vv plugin:activate
+
+composer --profile -vv theme:activate
+
+composer --profile -vv core:initial-content
+
+
+# chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app/source/public
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
