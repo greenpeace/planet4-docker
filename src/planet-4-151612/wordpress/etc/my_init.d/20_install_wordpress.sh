@@ -2,7 +2,7 @@
 set -e
 
 # shellcheck disable=SC2120
-function files_exist() {
+function get_num_files_exist() {
   local files
   # Check if files exist
   # This indicates whether the container is mounting files from an external source
@@ -74,15 +74,15 @@ then
   exit 0
 fi
 
-files="$(files_exist)"
+num_files="$(get_num_files_exist)"
 
 true > "/app/source/public/.installing"
 
-if [[ "${files}" -eq 1 ]] && [[ $(grep -q TEST-DATA-ONLY /app/source/public/index.php) ]]
+if [[ "${num_files}" -eq 1 ]] && [[ $(grep -q TEST-DATA-ONLY /app/source/public/index.php) ]]
 then
   _good "Test data detected, deleting /app/source/public /app/www"
   delete_source_directories
-elif [[ "${files}" -ne 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
+elif [[ "${num_files}" -ne 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
 then
   _good "OVERWRITE_FILES is not 'true', cowardly refusing to reinstall Wordpress"
 
