@@ -170,6 +170,9 @@ composer --profile -vv theme:activate
 
 composer --profile -vv core:initial-content
 
+# Install WP-Redis object cache file if exist
+# FIXME there must be a better way
+[[ -f /app/source/public/wp-content/plugins/wp-redis/object-cache.php ]] && cp /app/source/public/wp-content/plugins/wp-redis/object-cache.php /app/source/public/wp-content/object-cache.php
 
 # chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app/source/public
 
