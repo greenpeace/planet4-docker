@@ -151,7 +151,5 @@ cd /app/source
 [[ ! -e /app/www ]] && ln -s /app/source/public /app/www || true
 
 # Wordpress configuration startup
-# /app/bin/wp.sh option set siteurl "${WP_SITE_PROTOCOL}://${WP_SITE_URL}/"
-# /app/bin/wp.sh option set home "${WP_SITE_PROTOCOL}://${WP_SITE_HOME}"
-
-exit 0
+wp option set siteurl "${WP_SITE_PROTOCOL}://${WP_SITE_URL}"
+wp option set home "${WP_SITE_PROTOCOL}://${WP_SITE_HOME}"
