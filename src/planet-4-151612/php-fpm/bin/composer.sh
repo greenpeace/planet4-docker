@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
+set -e
 
 # Description: Wraps Composer to provide correct user permissions
 # Author:      Raymond Walker <raymond.walker@greenpeace.org>
 
-if [[ $(stat -c "%U" "${COMPOSER_HOME}") != "${APP_USER:-$DEFAULT_APP_USER}" ]] || [[ "$(stat -c "%U" /app/.composer)" != "${APP_GROUP:-$DEFAULT_APP_GROUP}" ]]
-then
-  chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app
-fi
+uid=$(id -u)
 
-exec setuser ${APP_USER:-$DEFAULT_APP_USER} php /app/bin/composer.phar "$@"
+if [[ $uid = "0" ]]
+then
+  exec setuser ${APP_USER:-$DEFAULT_APP_USER} php /app/bin/composer.phar "$@"
+elif [[ $uid = "${APP_UID:-${DEFAULT_APP_UID}}" ]]
+then
+  php /app/bin/composer.phar "$@"
+else
+  >&2 echo "ERROR incorrect user - ${APP_USER:-$DEFAULT_APP_USER} - how did this happen? Please tell an admin!"
+  >&2 echo "Expected ${APP_UID:-${DEFAULT_APP_UID}}"
+  >&2 echo "Got      ${uid}"
+  exit 1
+fi
