@@ -1,7 +1,7 @@
-# Testing-SLEUOkQOh9wz
+# Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/wordpress:develop
-# Build: build-244
-# Date:  Fri Nov 17 00:37:06 UTC 2017
+# Build: build-246
+# Date:  Fri Nov 17 04:51:05 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -37,6 +37,7 @@ ENV \
     WP_DB_PORT="3306" \
     WP_DB_PREFIX="wp_" \
     WP_DB_USER="" \
+    WP_EXTRA_CONFIG="" \
     WP_FORCE_SSL_ADMIN="false" \
     WP_HOSTNAME="" \
     WP_LOCALE="en_AU" \
