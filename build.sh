@@ -206,7 +206,7 @@ then
 else
   build_order=(
     "ubuntu"
-    "nginx-pagespeed"
+    "openresty"
     "nginx-php-exim"
     "wordpress"
     "p4-onbuild"
@@ -285,8 +285,8 @@ then
       '${HEADERS_MORE_VERSION}'\
       '${NGINX_PAGESPEED_RELEASE}' \
       '${NGINX_PAGESPEED_VERSION}' \
-      '${NGINX_VERSION}' \
       '${OPENSSL_VERSION}' \
+      '${OPENRESTY_VERSION}' \
       '${PHP_MAJOR_VERSION}' \
       '${SOURCE_VERSION}' \
     )

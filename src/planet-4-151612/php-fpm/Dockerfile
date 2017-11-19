@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/php-fpm:develop
-# Build: build-249
-# Date:  Sat Nov 18 04:46:55 UTC 2017
+# Build: test-fish-mbp-ray
+# Date:  Sun 19 Nov 2017 15:29:22 AEDT
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -39,7 +39,8 @@ RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.c
       && \
     newrelic-install install && \
   	apt-get clean && \
-    rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
+    rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
 
 ENV \
     COMPOSER_HOME="/app/.composer" \
@@ -65,6 +66,8 @@ ENV \
     DEFAULT_PHP_PROCESS_MANAGER_MIN_SPARE_SERVERS="2" \
     DEFAULT_PHP_PROCESS_MANAGER_START_SERVERS="3" \
     DEFAULT_PHP_PROCESS_MANAGER="dynamic" \
+    DEFAULT_PHP_SESSION_SAVE_HANDLER="files" \
+    DEFAULT_PHP_SESSION_SAVE_PATH="/var/lib/php/sessions" \
     DEFAULT_UPLOAD_MAX_SIZE="50M" \
     DEFAULT_VIRTUAL_HOST="example.com" \
     NEWRELIC_LICENSE="" \

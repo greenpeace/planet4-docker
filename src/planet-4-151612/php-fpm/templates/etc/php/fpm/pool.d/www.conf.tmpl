@@ -407,14 +407,20 @@ env[HOSTNAME] = {{ .Env.APP_HOSTNAME }}
 
 ; Default Value: nothing is defined by default except the values in php.ini and
 ;                specified at startup with the -d argument
-php_admin_value[sendmail_path] = /usr/sbin/sendmail -t -i -f no-reply@{{ default .Env.APP_HOSTNAME  }}
-php_flag[display_errors] = off
-php_admin_value[error_log] = /var/log/fpm-php.$pool.error.log
+
+; Hard values, can not be overridden
 php_admin_flag[log_errors] = on
-php_admin_value[memory_limit] = {{ default .Env.PHP_MEMORY_LIMIT .Env.DEFAULT_PHP_MEMORY_LIMIT }}
-php_admin_value[upload_max_filesize] = {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }}
-php_admin_value[post_max_size] = {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }}
+php_admin_value[cgi.fix_pathinfo] = 0
+php_admin_value[disable_functions] = {{ .Env.PHP_DISABLE_FUNCTIONS }}
+php_admin_value[error_log] = /var/log/fpm-php.$pool.error.log
 php_admin_value[max_execution_time] = {{ default .Env.PHP_MAX_EXECUTION_TIME .Env.DEFAULT_PHP_MAX_EXECUTION_TIME }}
 php_admin_value[max_input_vars] = {{ default .Env.PHP_MAX_INPUT_VARS .Env.DEFAULT_PHP_MAX_INPUT_VARS }}
-php_admin_value[disable_functions] = {{ .Env.PHP_DISABLE_FUNCTIONS }}
-php_admin_value[cgi.fix_pathinfo] = 0
+php_admin_value[memory_limit] = {{ default .Env.PHP_MEMORY_LIMIT .Env.DEFAULT_PHP_MEMORY_LIMIT }}
+php_admin_value[session.save_handler] = {{ default .Env.PHP_SESSION_SAVE_HANDLER .Env.DEFAULT_PHP_SESSION_SAVE_HANDLER }}
+php_admin_value[session.save_path] = "{{ default .Env.PHP_SESSION_SAVE_PATH .Env.DEFAULT_PHP_SESSION_SAVE_PATH }}"
+
+; Soft values, can be overridden by ini_set
+php_flag[display_errors] = off
+php_value[post_max_size] = {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }}
+php_value[sendmail_path] = /usr/sbin/sendmail -t -i -f no-reply@{{ default .Env.APP_HOSTNAME  }}
+php_value[upload_max_filesize] = {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }}

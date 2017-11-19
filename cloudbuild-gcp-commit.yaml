@@ -8,9 +8,9 @@
 #
 
 steps:
-- id: 'configure-nginx-pagespeed'
+- id: 'configure-openresty'
   name: 'ubuntu'
-  dir: './src/${PROJECT_ID}/nginx-pagespeed'
+  dir: './src/${PROJECT_ID}/openresty'
   args:
     - '/bin/sed'
     - '-i'
@@ -27,7 +27,7 @@ steps:
     - '-i'
     - '-r'
     - '-e'
-    - 's;FROM.*;FROM gcr.io/${PROJECT_ID}/nginx-pagespeed:${BRANCH_NAME};g'
+    - 's;FROM.*;FROM gcr.io/${PROJECT_ID}/openresty:${BRANCH_NAME};g'
     - 'Dockerfile'
 
 - id: 'configure-wordpress'
@@ -68,15 +68,15 @@ steps:
     - '--tag=gcr.io/${PROJECT_ID}/ubuntu:${SHORT_SHA}'
     - './src/${PROJECT_ID}/ubuntu'
 
-- id: 'nginx-pagespeed'
+- id: 'openresty'
   name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
-    - '--tag=gcr.io/${PROJECT_ID}/nginx-pagespeed:${BRANCH_NAME}'
-    - '--tag=gcr.io/${PROJECT_ID}/nginx-pagespeed:${SHORT_SHA}'
-    - './src/${PROJECT_ID}/nginx-pagespeed'
+    - '--tag=gcr.io/${PROJECT_ID}/openresty:${BRANCH_NAME}'
+    - '--tag=gcr.io/${PROJECT_ID}/openresty:${SHORT_SHA}'
+    - './src/${PROJECT_ID}/openresty'
   waitFor:
-    - 'configure-nginx-pagespeed'
+    - 'configure-openresty'
     - 'ubuntu'
 
 - id: 'nginx-php-exim'
@@ -88,7 +88,7 @@ steps:
     - './src/${PROJECT_ID}/nginx-php-exim'
   waitFor:
     - 'configure-nginx-php-exim'
-    - 'nginx-pagespeed'
+    - 'openresty'
 
 - id: 'wordpress'
   name: 'gcr.io/cloud-builders/docker'
@@ -120,8 +120,8 @@ steps:
 images:
   - 'gcr.io/$PROJECT_ID/ubuntu:${BRANCH_NAME}'
   - 'gcr.io/$PROJECT_ID/ubuntu:${SHORT_SHA}'
-  - 'gcr.io/$PROJECT_ID/nginx-pagespeed:${BRANCH_NAME}'
-  - 'gcr.io/$PROJECT_ID/nginx-pagespeed:${SHORT_SHA}'
+  - 'gcr.io/$PROJECT_ID/openresty:${BRANCH_NAME}'
+  - 'gcr.io/$PROJECT_ID/openresty:${SHORT_SHA}'
   - 'gcr.io/$PROJECT_ID/nginx-php-exim:${BRANCH_NAME}'
   - 'gcr.io/$PROJECT_ID/nginx-php-exim:${SHORT_SHA}'
   - 'gcr.io/$PROJECT_ID/wordpress:${BRANCH_NAME}'

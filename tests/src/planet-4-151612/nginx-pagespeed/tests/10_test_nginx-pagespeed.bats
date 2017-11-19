@@ -32,17 +32,17 @@ function teardown {
 }
 
 @test "container fails to respond on port 443" {
-  run curl_check_status_code 200 https://localhost:443
+  run curl_check_status_code 200 "https://localhost:443"
   [[ $status -ne 0 ]]
 }
 
-@test "http response contains regex 'nginx/${NGINX_VERSION}'" {
-  run curl_check_response_regex "nginx/${NGINX_VERSION}"
+@test "http response contains regex 'nginx version: openresty/${OPENRESTY_VERSION}'" {
+  run curl_check_response_regex "nginx version: openresty/${OPENRESTY_VERSION}"
   [[ $status -eq 0 ]]
 }
 
-@test "http response contains regex 'OpenSSL ${OPENSSL_VERSION}'" {
-  run curl_check_response_regex "OpenSSL ${OPENSSL_VERSION}"
+@test "http response contains regex 'built with OpenSSL ${OPENSSL_VERSION}'" {
+  run curl_check_response_regex "built with OpenSSL ${OPENSSL_VERSION}"
   [[ $status -eq 0 ]]
 }
 

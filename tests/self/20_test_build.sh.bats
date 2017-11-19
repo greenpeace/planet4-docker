@@ -61,8 +61,8 @@ function teardown {
 # ------------------------------------------------------------------------------
 # HEADERS_MORE_VERSION
 #
-@test "${PROJECT_ID} :: build.sh : \$HEADERS_MORE_VERSION : nginx-pagespeed/Dockerfile : 3 lines" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/Dockerfile"
+@test "${PROJECT_ID} :: build.sh : \$HEADERS_MORE_VERSION : openresty/Dockerfile : 3 lines" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
   headers_more_version="$(grep "HEADERS_MORE_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   grep "HEADERS_MORE_VERSION=\"${headers_more_version}\"" "${srcfile}"
   run grep "${headers_more_version}" "${srcfile}"
@@ -73,8 +73,8 @@ function teardown {
 # ------------------------------------------------------------------------------
 # NGINX_PAGESPEED_RELEASE
 #
-@test "${PROJECT_ID} :: build.sh : \$NGINX_PAGESPEED_RELEASE : nginx-pagespeed/Dockerfile : 5 lines" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/Dockerfile"
+@test "${PROJECT_ID} :: build.sh : \$NGINX_PAGESPEED_RELEASE : openresty/Dockerfile : 5 lines" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
   nginx_pagespeed_release="$(grep "NGINX_PAGESPEED_RELEASE=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   grep "NGINX_PAGESPEED_RELEASE=\"${nginx_pagespeed_release}\"" "${srcfile}"
   run grep "${nginx_pagespeed_release}" "${srcfile}"
@@ -82,8 +82,8 @@ function teardown {
   [[ $(wc -l <<<"$output") -eq 5 ]]
 }
 
-@test "${PROJECT_ID} :: build.sh : \$NGINX_PAGESPEED_RELEASE : nginx-pagespeed/README.md : 1 lines" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/README.md"
+@test "${PROJECT_ID} :: build.sh : \$NGINX_PAGESPEED_RELEASE : openresty/README.md : 1 lines" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/README.md"
   nginx_pagespeed_release="$(grep "NGINX_PAGESPEED_RELEASE=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   run grep "${nginx_pagespeed_release}" "${srcfile}"
   [[ ${status} -eq 0 ]]
@@ -109,8 +109,8 @@ function teardown {
 # ------------------------------------------------------------------------------
 # NGINX_PAGESPEED_VERSION
 #
-@test "${PROJECT_ID} :: build.sh : \$NGINX_PAGESPEED_VERSION : nginx-pagespeed/Dockerfile : 5 lines" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/Dockerfile"
+@test "${PROJECT_ID} :: build.sh : \$NGINX_PAGESPEED_VERSION : openresty/Dockerfile : 5 lines" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
   nginx_pagespeed_version="$(grep "NGINX_PAGESPEED_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   grep "NGINX_PAGESPEED_VERSION=\"${nginx_pagespeed_version}\"" "${srcfile}"
   run grep "${nginx_pagespeed_version}" "${srcfile}"
@@ -118,8 +118,8 @@ function teardown {
   [[ $(wc -l <<<"$output") -eq 5 ]]
 }
 
-@test "${PROJECT_ID} :: build.sh : \$NGINX_PAGESPEED_VERSION : nginx-pagespeed/README.md : 1 lines" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/README.md"
+@test "${PROJECT_ID} :: build.sh : \$NGINX_PAGESPEED_VERSION : openresty/README.md : 1 lines" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/README.md"
   nginx_pagespeed_version="$(grep "NGINX_PAGESPEED_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   run grep "${nginx_pagespeed_version}" "${srcfile}"
   [[ ${status} -eq 0 ]]
@@ -143,36 +143,36 @@ function teardown {
 }
 
 # ------------------------------------------------------------------------------
-# NGINX_VERSION
+# OPENRESTY_VERSION
 #
-@test "${PROJECT_ID} :: build.sh : \$NGINX_VERSION : nginx-pagespeed/Dockerfile : 3 lines" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/Dockerfile"
-  nginx_version="$(grep "NGINX_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  grep "NGINX_VERSION=\"${nginx_version}\"" "${srcfile}"
+@test "${PROJECT_ID} :: build.sh : \$OPENRESTY_VERSION : openresty/Dockerfile : 3 lines" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
+  nginx_version="$(grep "OPENRESTY_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
+  grep "OPENRESTY_VERSION=\"${nginx_version}\"" "${srcfile}"
   run grep "${nginx_version}" "${srcfile}"
   [[ ${status} -eq 0 ]]
   [[ $(wc -l <<<"$output") -eq 3 ]]
 }
 
-@test "${PROJECT_ID} :: build.sh : \$NGINX_VERSION : nginx-pagespeed/README.md : 1 line" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/README.md"
-  nginx_version="$(grep "NGINX_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
+@test "${PROJECT_ID} :: build.sh : \$OPENRESTY_VERSION : openresty/README.md : 1 line" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/README.md"
+  nginx_version="$(grep "OPENRESTY_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   run grep "${nginx_version}" "${srcfile}"
   [[ ${status} -eq 0 ]]
   [[ $(wc -l <<<"$output") -eq 1 ]]
 }
 
-@test "${PROJECT_ID} :: build.sh : \$NGINX_VERSION : nginx-php-exim/README.md : 1 line" {
+@test "${PROJECT_ID} :: build.sh : \$OPENRESTY_VERSION : nginx-php-exim/README.md : 1 line" {
   srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-php-exim/README.md"
-  nginx_version="$(grep "NGINX_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
+  nginx_version="$(grep "OPENRESTY_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   run grep "${nginx_version}" "${srcfile}"
   [[ ${status} -eq 0 ]]
   [[ $(wc -l <<<"$output") -eq 1 ]]
 }
 
-@test "${PROJECT_ID} :: build.sh : \$NGINX_VERSION : wordpress/README.md : 1 line" {
+@test "${PROJECT_ID} :: build.sh : \$OPENRESTY_VERSION : wordpress/README.md : 1 line" {
   srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/wordpress/README.md"
-  nginx_version="$(grep "NGINX_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
+  nginx_version="$(grep "OPENRESTY_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   run grep "${nginx_version}" "${srcfile}"
   [[ ${status} -eq 0 ]]
   [[ $(wc -l <<<"$output") -eq 1 ]]
@@ -181,8 +181,8 @@ function teardown {
 # ------------------------------------------------------------------------------
 # OPENSSL_VERSION
 #
-@test "${PROJECT_ID} :: build.sh : \$OPENSSL_VERSION : nginx-pagespeed/Dockerfile : 3 lines" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/Dockerfile"
+@test "${PROJECT_ID} :: build.sh : \$OPENSSL_VERSION : openresty/Dockerfile : 3 lines" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
   openssl_version="$(grep "OPENSSL_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   grep "OPENSSL_VERSION=\"${openssl_version}\"" "${srcfile}"
   run grep "${openssl_version}" "${srcfile}"
@@ -190,8 +190,8 @@ function teardown {
   [[ $(wc -l <<<"$output") -eq 3 ]]
 }
 
-@test "${PROJECT_ID} :: build.sh : \$OPENSSL_VERSION : nginx-pagespeed/README.md : 2 lines" {
-  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/nginx-pagespeed/README.md"
+@test "${PROJECT_ID} :: build.sh : \$OPENSSL_VERSION : openresty/README.md : 2 lines" {
+  srcfile="${PROJECT_ROOT_DIR}/src/${PROJECT_ID}/openresty/README.md"
   openssl_version="$(grep "OPENSSL_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   run grep "${openssl_version}" "${srcfile}"
   [[ ${status} -eq 0 ]]

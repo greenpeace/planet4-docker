@@ -3,7 +3,7 @@
 
 ![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6](https://img.shields.io/badge/nginx-1.13.6-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.1.0g](https://img.shields.io/badge/OpenSSL-1.1.0g-brightgreen.svg)
 
-Highly configurable nginx-PHP webserver stack built on [greenpeace/nginx-pagespeed](https://hub.docker.com/r/greenpeace/nginx-pagespeed/), which is in turn built on a [lightly modified Phusion Ubuntu base image](https://hub.docker.com/r/greenpeace/ubuntu/)
+Highly configurable nginx-PHP webserver stack built on [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/), which is in turn built on a [lightly modified Phusion Ubuntu base image](https://hub.docker.com/r/greenpeace/ubuntu/)
 
 Docker Hub: [greenpeace/nginx-php-exim](https://hub.docker.com/r/greenpeace/nginx-php-exim/)
 
@@ -20,7 +20,7 @@ Included in this image:
 -   fully functional cron daemon
 -   [xdebug](https://xdebug.org/) with configurable remote host/port/key
 -   Production / development environments.  All outgoing email is redirected to a configurable destination (`$ADMIN_EMAIL`)in development
--   Sane security defaults, and SSL confugration based on Mozilla's intermediate profile. See: [greenpeace/nginx-pagespeed](https://hub.docker.com/r/greenpeace/nginx-pagespeed/) for details
+-   Sane security defaults, and SSL confugration based on Mozilla's intermediate profile. See: [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/) for details
 
 ---
 
@@ -63,5 +63,5 @@ NEWRELIC_APPNAME | $PHP_POOL_NAME | Application name in Newrelic APM list. Defau
 NEWRELIC_LICENSE | \_\_DISABLED\_\_ | Newrelic account license key.  Available from your Newrelic account page
 ∏
 See also configuration options from upstream images:
--   [greenpeace/nginx-pagespeed](https://hub.docker.com/u/greenpeace/nginx-pagespeed/)
+-   [greenpeace/openresty](https://hub.docker.com/u/greenpeace/openresty/)
 -   [greenpeace/ubuntu](https://hub.docker.com/u/greenpeace/ubuntu/)

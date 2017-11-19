@@ -21,14 +21,14 @@ steps:
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_REVISION_TAG}'
     - './src/${_GOOGLE_PROJECT_ID}/ubuntu'
 
-- id: 'nginx-pagespeed'
+- id: 'openresty'
   name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-pagespeed:${_REVISION_TAG}'
-    - './src/${_GOOGLE_PROJECT_ID}/nginx-pagespeed'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/openresty'
   waitFor:
     - 'ubuntu'
 
@@ -52,7 +52,7 @@ steps:
 #     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/nginx-php-exim:${_REVISION_TAG}'
 #     - './src/${_GOOGLE_PROJECT_ID}/nginx-php-exim'
 #   waitFor:
-#     - 'nginx-pagespeed'
+#     - 'openresty'
 
 - id: 'wordpress'
   name: 'gcr.io/cloud-builders/docker'
@@ -85,9 +85,9 @@ images:
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_BUILD_NUM}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_REVISION_TAG}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-pagespeed:${_BUILD_TAG}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-pagespeed:${_BUILD_NUM}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/nginx-pagespeed:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/openresty:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/openresty:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/openresty:${_REVISION_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/php-fpm:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/php-fpm:${_BUILD_NUM}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/php-fpm:${_REVISION_TAG}'

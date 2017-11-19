@@ -1,6 +1,6 @@
 # Wordpress
 
-![PHP ${PHP_MAJOR_VERSION}](https://img.shields.io/badge/php-${PHP_MAJOR_VERSION}-brightgreen.svg) ![Nginx ${NGINX_VERSION}](https://img.shields.io/badge/nginx-${NGINX_VERSION}-brightgreen.svg) ![ngx_pagespeed ${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}--${NGINX_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
+![PHP ${PHP_MAJOR_VERSION}](https://img.shields.io/badge/php-${PHP_MAJOR_VERSION}-brightgreen.svg) ![Nginx ${OPENRESTY_VERSION}](https://img.shields.io/badge/nginx-${OPENRESTY_VERSION}-brightgreen.svg) ![ngx_pagespeed ${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}--${NGINX_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
 
 Wordpress-ready webserver stack built on [greenpeace/nginx-php-exim](https://hub.docker.com/r/greenpeace/nginx-php-exim/)
 
@@ -20,7 +20,7 @@ Included in this image:
 - fully configurable cron daemon
 - [xdebug](https://xdebug.org/) with configurable remote host/port/key
 - Production / development environments, eg in development, all outgoing email is redirected to a configurable destination (`$ADMIN_EMAIL`)
-- Sane security defaults, and SSL configuration based on Mozilla's intermediate profile. See: [greenpeace/nginx-pagespeed](https://hub.docker.com/r/greenpeace/nginx-pagespeed/) for more details
+- Sane security defaults, and SSL configuration based on Mozilla's intermediate profile. See: [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/) for more details
 
 ---
 
@@ -50,5 +50,5 @@ SSH_DOMAIN_HOSTKEYS |  | semi-colon separated list of additional SSH hostkeys to
 
 See also features and configuration options from upstream images:
 - [greenpeace/nginx-php-exim](https://hub.docker.com/r/greenpeace/nginx-php-exim/)
-- [greenpeace/nginx-pagespeed](https://hub.docker.com/r/greenpeace/nginx-pagespeed/)
+- [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/)
 - [greenpeace/ubuntu](https://hub.docker.com/r/greenpeace/ubuntu/)

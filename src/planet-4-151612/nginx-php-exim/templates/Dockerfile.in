@@ -1,4 +1,4 @@
-FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/nginx-pagespeed:${SOURCE_VERSION}
+FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/openresty:${SOURCE_VERSION}
 
 MAINTAINER Ray Walker <hello@raywalker.it>
 

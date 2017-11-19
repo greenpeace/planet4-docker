@@ -40,7 +40,7 @@ There are two different methods of specifying a subset build - providing a list 
 For example, with a given `build_order` file such as:
 ```
 ubuntu
-nginx-pagespeed
+openresty
 nginx-php-exim
 wordpress
 p4-onbuild
@@ -49,9 +49,9 @@ p4-onbuild
 1. Specifically stating which containers to build:
 ```
 # Perform a remote build of a small subset
-./build.sh -r nginx-pagespeed wordpress
+./build.sh -r openresty wordpress
 ```
-In this example, only the nginx-pagespeed and wordpress images are built.
+In this example, only the openresty and wordpress images are built.
 
 2. Building the dependency chain from a given start point:
 ```
@@ -73,7 +73,7 @@ To rewrite platform variables without triggering a build, run `build.sh` without
 ./build.sh
 ```
 
-This will update the local Dockerfile ENV variables such as `NGINX_VERSION` or `OPENSSL_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically in the CI pipeline.
+This will update the local Dockerfile ENV variables such as `OPENRESTY_VERSION` or `OPENSSL_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically in the CI pipeline.
 
 ## Customising the container build
 
@@ -81,7 +81,7 @@ See `config.default` for optional build configuration parameters. The easiest wa
 
 Note: to overwrite the default values, it's recommended to edit the short form of the variable without the leading `DEFAULT_`. For example, to change the application repository branch, use `GIT_REF`, not `DEFAULT_GIT_REF`. This ensures hierarchical resolution of variables from multiple sources, and enables the values to be configured at build and runtime, while falling back to sane default values.
 
-Also note that not all defined variables are configurable on container start, for example changing `NGINX_VERSION` won't have any effect at container start as it's a variable used to install the infrastructure instead of control application behaviour.
+Also note that not all defined variables are configurable on container start, for example changing `OPENRESTY_VERSION` won't have any effect at container start as it's a variable used to install the infrastructure instead of control application behaviour.
 
 ### Variable resolution priority
 1.  Config file custom values (optional)
