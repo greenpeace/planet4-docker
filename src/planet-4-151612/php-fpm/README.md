@@ -1,7 +1,7 @@
 
 # Nginx + PHP + Exim
 
-![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6.1](https://img.shields.io/badge/nginx-1.13.6.1-brightgreen.svg) ![ngx_pagespeed -](https://img.shields.io/badge/ngx_pagespeed----brightgreen.svg) ![OpenSSL 1.0.2m](https://img.shields.io/badge/OpenSSL-1.0.2m-brightgreen.svg)
+![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6.1](https://img.shields.io/badge/nginx-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2m](https://img.shields.io/badge/OpenSSL-1.0.2m-brightgreen.svg)
 
 Highly configurable nginx-PHP webserver stack built on [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/), which is in turn built on a [lightly modified Phusion Ubuntu base image](https://hub.docker.com/r/greenpeace/ubuntu/)
 

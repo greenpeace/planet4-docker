@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/wordpress:develop
-# Build: test-fish-mbp-ray
-# Date:  Sun 19 Nov 2017 20:11:41 AEDT
+# Build: build-252
+# Date:  Sun Nov 19 12:13:51 UTC 2017
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
