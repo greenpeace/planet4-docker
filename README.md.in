@@ -41,7 +41,7 @@ For example, with a given `build_order` file such as:
 ```
 ubuntu
 openresty
-nginx-php-exim
+php-fpm
 wordpress
 p4-onbuild
 ```
@@ -55,10 +55,10 @@ In this example, only the openresty and wordpress images are built.
 
 2. Building the dependency chain from a given start point:
 ```
-# Performs a remote build of all images in the build_order file, starting at nginx-php-exim:
-./build.sh -r nginx-php-exim+
+# Performs a remote build of all images in the build_order file, starting at php-fpm:
+./build.sh -r php-fpm+
 ```
-In this example, the `nginx-php-exim wordpress p4-onbuild` images are all built due to the trailing `+` on nginx-php-exim
+In this example, the `php-fpm wordpress p4-onbuild` images are all built due to the trailing `+` on php-fpm
 
 
 ## Updating build configuration variables
