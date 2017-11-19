@@ -1,6 +1,6 @@
 # OpenResty + Pagespeed + OpenSSL
 
-![OpenResty ${OPENRESTY_VERSION}](https://img.shields.io/badge/openresty-${OPENRESTY_VERSION}-brightgreen.svg) ![ngx_pagespeed ${OPENRESTY_PAGESPEED_VERSION}-${OPENRESTY_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${OPENRESTY_PAGESPEED_VERSION}--${OPENRESTY_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
+![OpenResty ${OPENRESTY_VERSION}](https://img.shields.io/badge/openresty-${OPENRESTY_VERSION}-brightgreen.svg) ![ngx_pagespeed ${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${NGX_PAGESPEED_VERSION}--${NGX_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
 
 Built on [gcr.io/planet-4-151612/ubuntu](https://registry.hub.docker.com/u/greenpeace/ubuntu/), a lightly modified Ubuntu Xenial [Phusion Base Image](https://phusion.github.io/baseimage-docker/).
 

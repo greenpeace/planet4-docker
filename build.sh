@@ -283,10 +283,10 @@ then
       '${DOCKERIZE_VERSION}' \
       '${GOOGLE_PROJECT_ID}' \
       '${HEADERS_MORE_VERSION}'\
-      '${OPENRESTY_PAGESPEED_RELEASE}' \
-      '${OPENRESTY_PAGESPEED_VERSION}' \
-      '${OPENSSL_VERSION}' \
+      '${NGX_PAGESPEED_RELEASE}' \
+      '${NGX_PAGESPEED_VERSION}' \
       '${OPENRESTY_VERSION}' \
+      '${OPENSSL_VERSION}' \
       '${PHP_MAJOR_VERSION}' \
       '${SOURCE_VERSION}' \
     )

@@ -1,7 +1,7 @@
 
 # Nginx + PHP + Exim
 
-![PHP ${PHP_MAJOR_VERSION}](https://img.shields.io/badge/php-${PHP_MAJOR_VERSION}-brightgreen.svg) ![Nginx ${OPENRESTY_VERSION}](https://img.shields.io/badge/nginx-${OPENRESTY_VERSION}-brightgreen.svg) ![ngx_pagespeed ${OPENRESTY_PAGESPEED_VERSION}-${OPENRESTY_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${OPENRESTY_PAGESPEED_VERSION}--${OPENRESTY_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
+![PHP ${PHP_MAJOR_VERSION}](https://img.shields.io/badge/php-${PHP_MAJOR_VERSION}-brightgreen.svg) ![Nginx ${OPENRESTY_VERSION}](https://img.shields.io/badge/nginx-${OPENRESTY_VERSION}-brightgreen.svg) ![ngx_pagespeed ${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${NGX_PAGESPEED_VERSION}--${NGX_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
 
 Highly configurable nginx-PHP webserver stack built on [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/), which is in turn built on a [lightly modified Phusion Ubuntu base image](https://hub.docker.com/r/greenpeace/ubuntu/)
 
