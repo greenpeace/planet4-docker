@@ -207,7 +207,7 @@ else
   build_order=(
     "ubuntu"
     "openresty"
-    "nginx-php-exim"
+    "php-fpm"
     "wordpress"
     "p4-onbuild"
   )
