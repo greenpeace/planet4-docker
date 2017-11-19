@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-_good "$(printf "%-10s " "nginx:")" "server_name ${APP_HOSTNAME}"
-_good "$(printf "%-10s " "nginx:")" "client_max_body_size=${UPLOAD_MAX_SIZE:-$DEFAULT_UPLOAD_MAX_SIZE}"
+_good "$(printf "%-10s " "openresty:")" "server_name ${APP_HOSTNAME}"
+_good "$(printf "%-10s " "openresty:")" "client_max_body_size=${UPLOAD_MAX_SIZE:-$DEFAULT_UPLOAD_MAX_SIZE}"
 
 mkdir -p /etc/nginx/sites-enabled
 
@@ -18,10 +18,10 @@ nginx_configure_fastcgi_backend.sh &
 WORKER_PROCESSES=$(cat /proc/cpuinfo |grep processor | wc -l)
 if [[ $WORKER_PROCESSES -gt ${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES} ]]; then
 	# number of available processor cores exceeds the maximum permitted, limit to maximum
-	_good "$(printf "%-10s " "nginx:")" "Using max ${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES} of $WORKER_PROCESSES available cores"
+	_good "$(printf "%-10s " "openresty:")" "Using max ${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES} of $WORKER_PROCESSES available cores"
 	WORKER_PROCESSES=${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES}
 fi
-_good "$(printf "%-10s " "nginx:")" "worker_processes=$WORKER_PROCESSES"
+_good "$(printf "%-10s " "openresty:")" "worker_processes=$WORKER_PROCESSES"
 export WORKER_PROCESSES
 
 wait # for background processes to finish

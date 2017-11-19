@@ -10,8 +10,8 @@ dockerize -template /app/templates/etc/nginx/sites-enabled/upstream.conf.tmpl:/e
 
 if [[ ${PHP_ENABLED} = 'true' ]]
 then
-  _good "$(printf "%-10s " "nginx:")" "PHP enabled"
-  _good "$(printf "%-10s " "nginx:")" "fastcgi_backend=${OPENRESTY_FASTCGI_BACKEND}"
+  _good "$(printf "%-10s " "openresty:")" "PHP enabled"
+  _good "$(printf "%-10s " "openresty:")" "fastcgi_backend=${OPENRESTY_FASTCGI_BACKEND}"
 
   # Mostly used for testing
   if [[ ! -f "/app/www/index.php" ]]
@@ -24,6 +24,6 @@ fi
 # Reload configuration if running
 if [[ $(pgrep nginx > /dev/null 2>&1) ]]
 then
-  _good "$(printf "%-10s " "nginx:")" "Reloading configuration ..."
+  _good "$(printf "%-10s " "openresty:")" "Reloading configuration ..."
   sv reload nginx
 fi
