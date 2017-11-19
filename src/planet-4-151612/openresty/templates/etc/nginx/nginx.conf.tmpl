@@ -1,5 +1,5 @@
 user {{ default .Env.APP_USER .Env.DEFAULT_APP_USER }};
-worker_processes {{ default .Env.WORKER_PROCESSES .Env.DEFAULT_NGINX_MAX_WORKER_PROCESSES }};
+worker_processes {{ default .Env.WORKER_PROCESSES .Env.DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES }};
 
 pid /var/run/nginx.pid;
 
@@ -20,7 +20,7 @@ http {
 
     access_log /var/log/nginx/access.log main;
 
-    sendfile {{ default .Env.NGINX_SENDFILE .Env.DEFAULT_NGINX_SENDFILE }};
+    sendfile {{ default .Env.OPENRESTY_SENDFILE .Env.DEFAULT_OPENRESTY_SENDFILE }};
 
     client_max_body_size {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }};
 

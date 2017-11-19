@@ -9,8 +9,8 @@ set -euf
 chown -R ${APP_USER:-$DEFAULT_APP_USER} /run/php
 
 # replace PHP upstream
-_good "$(printf "%-10s " "nginx:")" "upstream  ${NGINX_FASTCGI_BACKEND:-$DEFAULT_NGINX_FASTCGI_BACKEND}"
-sed -i -r "s#server:.*;#server: ${NGINX_FASTCGI_BACKEND:-$DEFAULT_NGINX_FASTCGI_BACKEND};#g" /etc/nginx/sites-enabled/upstream.conf
+_good "$(printf "%-10s " "nginx:")" "upstream  ${OPENRESTY_FASTCGI_BACKEND:-$DEFAULT_OPENRESTY_FASTCGI_BACKEND}"
+sed -i -r "s#server:.*;#server: ${OPENRESTY_FASTCGI_BACKEND:-$DEFAULT_OPENRESTY_FASTCGI_BACKEND};#g" /etc/nginx/sites-enabled/upstream.conf
 sv reload nginx || true
 
 # replace PHP Pool name

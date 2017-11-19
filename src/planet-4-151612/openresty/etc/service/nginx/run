@@ -16,10 +16,10 @@ nginx_configure_fastcgi_backend.sh &
 
 # Set worker_processes = num cpu cores
 WORKER_PROCESSES=$(cat /proc/cpuinfo |grep processor | wc -l)
-if [[ $WORKER_PROCESSES -gt ${NGINX_MAX_WORKER_PROCESSES:-$DEFAULT_NGINX_MAX_WORKER_PROCESSES} ]]; then
+if [[ $WORKER_PROCESSES -gt ${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES} ]]; then
 	# number of available processor cores exceeds the maximum permitted, limit to maximum
-	_good "$(printf "%-10s " "nginx:")" "Using max ${NGINX_MAX_WORKER_PROCESSES:-$DEFAULT_NGINX_MAX_WORKER_PROCESSES} of $WORKER_PROCESSES available cores"
-	WORKER_PROCESSES=${NGINX_MAX_WORKER_PROCESSES:-$DEFAULT_NGINX_MAX_WORKER_PROCESSES}
+	_good "$(printf "%-10s " "nginx:")" "Using max ${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES} of $WORKER_PROCESSES available cores"
+	WORKER_PROCESSES=${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES}
 fi
 _good "$(printf "%-10s " "nginx:")" "worker_processes=$WORKER_PROCESSES"
 export WORKER_PROCESSES

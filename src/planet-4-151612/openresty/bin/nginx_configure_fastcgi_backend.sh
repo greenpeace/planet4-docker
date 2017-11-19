@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-NGINX_FASTCGI_BACKEND=${NGINX_FASTCGI_BACKEND:-${DEFAULT_NGINX_FASTCGI_BACKEND}}
-export NGINX_FASTCGI_BACKEND
+OPENRESTY_FASTCGI_BACKEND=${OPENRESTY_FASTCGI_BACKEND:-${DEFAULT_OPENRESTY_FASTCGI_BACKEND}}
+export OPENRESTY_FASTCGI_BACKEND
 
 dockerize -template /app/templates/etc/nginx/server.d/00_php.conf.tmpl:/etc/nginx/server.d/00_php.conf
 
@@ -11,7 +11,7 @@ dockerize -template /app/templates/etc/nginx/sites-enabled/upstream.conf.tmpl:/e
 if [[ ${PHP_ENABLED} = 'true' ]]
 then
   _good "$(printf "%-10s " "nginx:")" "PHP enabled"
-  _good "$(printf "%-10s " "nginx:")" "fastcgi_backend=${NGINX_FASTCGI_BACKEND}"
+  _good "$(printf "%-10s " "nginx:")" "fastcgi_backend=${OPENRESTY_FASTCGI_BACKEND}"
 
   # Mostly used for testing
   if [[ ! -f "/app/www/index.php" ]]

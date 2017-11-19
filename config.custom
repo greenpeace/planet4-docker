@@ -10,7 +10,7 @@ set -a
 #   Examples of build-time configuration:
 #
 #   GOOGLE_PROJECT_ID=greenpeace-testing
-#   NGINX_VERSION=1.13.2
+#   OPENRESTY_VERSION=1.13.2
 #   COMPOSER=composer-dev.json
 #
 # =============================================================================

@@ -1,6 +1,6 @@
 # OpenResty + Pagespeed + OpenSSL
 
-![OpenResty 1.13.6.1](https://img.shields.io/badge/openresty-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2m](https://img.shields.io/badge/OpenSSL-1.0.2m-brightgreen.svg)
+![OpenResty 1.13.6.1](https://img.shields.io/badge/openresty-1.13.6.1-brightgreen.svg) ![ngx_pagespeed -](https://img.shields.io/badge/ngx_pagespeed----brightgreen.svg) ![OpenSSL 1.0.2m](https://img.shields.io/badge/OpenSSL-1.0.2m-brightgreen.svg)
 
 Built on [gcr.io/planet-4-151612/ubuntu](https://registry.hub.docker.com/u/greenpeace/ubuntu/), a lightly modified Ubuntu Xenial [Phusion Base Image](https://phusion.github.io/baseimage-docker/).
 
@@ -41,7 +41,7 @@ variable                   | default | description
 APP_USER                   | nginx   | Service user name
 APP_GROUP                  | nginx   | Service group name
 UPLOAD_MAX_SIZE            | ${DEFAULT_UPLOAD_MAX_SIZE}     | Sets `nginx_client_max_body_size`
-NGINX_MAX_WORKER_PROCESSES | ${DEFAULT_NGINX_MAX_WORKER_PROCESSES}       | Sets `worker_processes`, will not exceed number of logical cores
+OPENRESTY_MAX_WORKER_PROCESSES | ${DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES}       | Sets `worker_processes`, will not exceed number of logical cores
 CHOWN_APP_DIR              | false   | If true `chown` `/app/www` as `APP_USER:APP_GROUP`
 
 ## Security
@@ -65,5 +65,5 @@ HTTPS2 is configured using modern sane defaults, including
 - nginx user is set to `${APP_USER:-$DEFAULT_APP_USER}` (default is nginx)
 - creates user and group from `{APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP}`, some sanity checks for matching UID / GID in the event that user/group already exists
 - if `${CHOWN_APP_DIR:-$DEFAULT_CHOWN_APP_DIR}` is true, `chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app/www` (default false)
-- `worker_processes` is set to the number of available processor cores and adjusts `/etc/nginx/nginx.conf` to match, up to a maximum number of cores `${NGINX_MAX_WORKER_PROCESSES:-$DEFAULT_MAX_WORKER_PROCESSES}`
+- `worker_processes` is set to the number of available processor cores and adjusts `/etc/nginx/nginx.conf` to match, up to a maximum number of cores `${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_MAX_WORKER_PROCESSES}`
 - `client_max_body_size` is set to `${UPLOAD_MAX_SIZE:-$DEFAULT_UPLOAD_MAX_SIZE}`

@@ -1,7 +1,7 @@
 
 # Nginx + PHP + Exim
 
-![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6.1](https://img.shields.io/badge/nginx-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2m](https://img.shields.io/badge/OpenSSL-1.0.2m-brightgreen.svg)
+![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6.1](https://img.shields.io/badge/nginx-1.13.6.1-brightgreen.svg) ![ngx_pagespeed -](https://img.shields.io/badge/ngx_pagespeed----brightgreen.svg) ![OpenSSL 1.0.2m](https://img.shields.io/badge/OpenSSL-1.0.2m-brightgreen.svg)
 
 Highly configurable nginx-PHP webserver stack built on [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/), which is in turn built on a [lightly modified Phusion Ubuntu base image](https://hub.docker.com/r/greenpeace/ubuntu/)
 
@@ -39,8 +39,8 @@ APP_GROUP | app | nginx and php5-fpm group
 APP_UID | 1000 | user_id - useful when mounting volumes from host > guest to either share or delineate file access permission
 APP_GID | 1000 | group_id
 UPLOAD_MAX_SIZE | 30M | Maximum upload size, applied to nginx and php5-fpm
-NGINX_MAX_WORKER_PROCESSES | 8 | nginx worker_processes is determined from number of processor cores on service start, up to the maximum permitted by NGINX_MAX_WORKER_PROCESSES
-NGINX_FASTCGI_BACKEND | unix:/run/php/php7.0-fpm.sock | Location of the PHP upstream fastcgi_backend
+OPENRESTY_MAX_WORKER_PROCESSES | 8 | nginx worker_processes is determined from number of processor cores on service start, up to the maximum permitted by OPENRESTY_MAX_WORKER_PROCESSES
+OPENRESTY_FASTCGI_BACKEND | unix:/run/php/php7.0-fpm.sock | Location of the PHP upstream fastcgi_backend
 PHP_MEMORY_LIMIT | 128M | Maximum memory PHP can use per worker
 PHP_PROCESS_MANAGER | dynamic | dynamic, static, ondemand :: PHP process manager scheme
 PHP_CLEAR_ENV | yes | yes, no :: if set to 'no', enables access to all environment variables via php `getenv()`

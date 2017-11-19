@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-echo "Downloading ngx_pagespeed ${NGINX_PAGESPEED_VERSION} from https://github.com/pagespeed/ngx_pagespeed/archive/${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}.tar.gz..."
+echo "Downloading ngx_pagespeed ${OPENRESTY_PAGESPEED_VERSION} from https://github.com/pagespeed/ngx_pagespeed/archive/${OPENRESTY_PAGESPEED_VERSION}-${OPENRESTY_PAGESPEED_RELEASE}.tar.gz..."
 
-wget --retry-connrefused --waitretry=1 -t 5 -O - https://github.com/pagespeed/ngx_pagespeed/archive/${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}.tar.gz --progress=bar --tries=3 | tar zxf - -C /tmp
+wget --retry-connrefused --waitretry=1 -t 5 -O - https://github.com/pagespeed/ngx_pagespeed/archive/${OPENRESTY_PAGESPEED_VERSION}-${OPENRESTY_PAGESPEED_RELEASE}.tar.gz --progress=bar --tries=3 | tar zxf - -C /tmp
 
-PSOL_URL=$(cat "/tmp/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}/PSOL_BINARY_URL")
+PSOL_URL=$(cat "/tmp/ngx_pagespeed-${OPENRESTY_PAGESPEED_VERSION}-${OPENRESTY_PAGESPEED_RELEASE}/PSOL_BINARY_URL")
 
 # The size names must match install/build_psol.sh in mod_pagespeed
 if [ "$(uname -m)" = x86_64 ]; then
@@ -13,6 +13,6 @@ else
   PSOL_BIT_SIZE_NAME=ia32
 fi
 
-echo "Downloading ngx_pagespeed PSOL ${NGINX_PAGESPEED_VERSION} from ${PSOL_URL/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME}..."
+echo "Downloading ngx_pagespeed PSOL ${OPENRESTY_PAGESPEED_VERSION} from ${PSOL_URL/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME}..."
 
-wget --retry-connrefused --waitretry=1 -t 5 -O - ${PSOL_URL/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME} | tar zxf - -C /tmp/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}
+wget --retry-connrefused --waitretry=1 -t 5 -O - ${PSOL_URL/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME} | tar zxf - -C /tmp/ngx_pagespeed-${OPENRESTY_PAGESPEED_VERSION}-${OPENRESTY_PAGESPEED_RELEASE}

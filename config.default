@@ -69,8 +69,8 @@ DEFAULT_BASEIMAGE_VERSION=0.9.22
 # https://github.com/jwilder/dockerize/releases
 DEFAULT_DOCKERIZE_VERSION=0.5.0
 # https://github.com/pagespeed/ngx_pagespeed/releases
-DEFAULT_NGINX_PAGESPEED_RELEASE=stable
-DEFAULT_NGINX_PAGESPEED_VERSION=latest
+DEFAULT_OPENRESTY_PAGESPEED_RELEASE=stable
+DEFAULT_OPENRESTY_PAGESPEED_VERSION=latest
 # https://openresty.org/en/download.html
 DEFAULT_OPENRESTY_VERSION=1.13.6.1
 # https://www.openssl.org/source

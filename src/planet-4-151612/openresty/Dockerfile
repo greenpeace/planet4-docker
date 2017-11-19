@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/openresty:develop
 # Build: test-fish-mbp-ray
-# Date:  Sun 19 Nov 2017 15:29:22 AEDT
+# Date:  Sun 19 Nov 2017 20:11:41 AEDT
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -19,8 +19,8 @@ ENV \
     APP_GROUP="nginx" \
     APP_UID="1000" \
     APP_USER="nginx" \
-    NGINX_PAGESPEED_RELEASE="stable" \
-    NGINX_PAGESPEED_VERSION="latest" \
+    NGINX_PAGESPEED_RELEASE="${NGINX_PAGESPEED_RELEASE}" \
+    NGINX_PAGESPEED_VERSION="${NGINX_PAGESPEED_VERSION}" \
     OPENRESTY_VERSION="1.13.6.1" \
     OPENSSL_VERSION="1.0.2m"
 
@@ -46,10 +46,10 @@ RUN set -ex && \
       & \
     wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://www.openssl.org/source/openssl-1.0.2m.tar.gz" | tar xzf - -C /tmp & \
     wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://openresty.org/download/openresty-1.13.6.1.tar.gz" | tar zxf - -C /tmp & \
-    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.tar.gz" | tar zxf - -C /tmp && \
-    PSOL_URL="$(cat "/tmp/ngx_pagespeed-latest-stable/PSOL_BINARY_URL")" && \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/pagespeed/ngx_pagespeed/archive/${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}.tar.gz" | tar zxf - -C /tmp && \
+    PSOL_URL="$(cat "/tmp/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}/PSOL_BINARY_URL")" && \
     if [ "$(uname -m)" = x86_64 ]; then PSOL_BIT_SIZE_NAME="x64"; else PSOL_BIT_SIZE_NAME="ia32"; fi && \
-    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "$(echo $PSOL_URL | sed "s/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME/g")" | tar zxf - -C "/tmp/ngx_pagespeed-latest-stable" & \
+    wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "$(echo $PSOL_URL | sed "s/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME/g")" | tar zxf - -C "/tmp/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}" & \
     procs=$(cat /proc/cpuinfo |grep processor | wc -l) && \
     mkdir -p /var/log/nginx /var/cache/nginx && \
     wait && \
@@ -96,7 +96,7 @@ RUN set -ex && \
   		--with-ipv6 \
   		--with-pcre-jit \
   		--with-openssl=/tmp/openssl-1.0.2m \
-  		--add-module=/tmp/ngx_pagespeed-latest-stable  && \
+  		--add-module=/tmp/ngx_pagespeed-${NGINX_PAGESPEED_VERSION}-${NGINX_PAGESPEED_RELEASE}  && \
   	make -j${procs} install && \
   	apt-get purge -yqq \
       autoconf \
