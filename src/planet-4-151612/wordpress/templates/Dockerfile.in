@@ -20,6 +20,8 @@ ENV \
     WP_ADMIN_USER="" \
     WP_AUTH_KEY="" \
     WP_AUTH_SALT="" \
+    WP_CLI_CACHE_DIR="/app/.wp-cli/cache" \
+    WP_CLI_DISABLE_AUTO_CHECK_UPDATE="true" \
     WP_DB_CHARSET="utf8" \
     WP_DB_COLLATION="" \
     WP_DB_HOST="db" \
