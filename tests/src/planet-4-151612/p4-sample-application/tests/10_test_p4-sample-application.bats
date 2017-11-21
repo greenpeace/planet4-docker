@@ -28,14 +28,14 @@ function teardown {
 @test "application builds successfully: ${image}" {
   [[ -z "${GITHUB_OAUTH_TOKEN}" ]] && >&2 echo "ERROR: GITHUB_OAUTH_TOKEN not set" && exit 1
   docker-compose  -f ${compose_file} stop || true
-  yes | docker-compose -f ${compose_file} rm || true
+  docker-compose -f ${compose_file} rm -f || true
   run docker-compose -f ${compose_file} build app
-  [[ "$status" -eq 0 ]]
+  [[ $status -eq 0 ]]
 }
 
 @test "image exists" {
   run run_test_image_exists "p4sampleapplication_app"
-  [[ "$status" -eq 0 ]]
+  [[ $status -eq 0 ]]
 }
 
 @test "container starts" {
