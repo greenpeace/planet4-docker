@@ -146,7 +146,7 @@ setuser ${APP_USER:-$DEFAULT_APP_USER} dockerize -template /app/wp-config.php.tm
 # Wait up to two minutes for the database to become ready
 timeout=2
 i=0
-until dockerize -wait tcp://${WP_DB_HOST}:3306 -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
+until dockerize -wait tcp://${WP_DB_HOST}:${WP_DB_PORT} -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
 do
   let i=i+1
   if [[ $i -gt $timeout ]];

@@ -24,7 +24,7 @@
 define('DB_NAME',     getenv('WP_DB_NAME'));
 define('DB_USER',     getenv('WP_DB_USER'));
 define('DB_PASSWORD', getenv('WP_DB_PASS'));
-define('DB_HOST',     getenv('WP_DB_HOST'));
+define('DB_HOST',     getenv('WP_DB_HOST') . ':' . getenv('WP_DB_PORT'));
 
 define('DB_CHARSET',  getenv('WP_DB_CHARSET'));
 define('DB_COLLATE',  getenv('WP_DB_COLLATION'));
