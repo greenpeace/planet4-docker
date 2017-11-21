@@ -9,6 +9,10 @@ RUN apt-get update && apt-get install -y subversion && \
     mkdir -p /app/source && \
     rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
+ENV \
+    SSL_ENABLED="false" \
+    WP_SITE_PROTOCOL="https"
+
 ONBUILD ARG GIT_SOURCE="https://github.com/greenpeace/planet4-base"
 ONBUILD ARG GIT_REF="develop"
 ONBUILD ARG COMPOSER="composer.json"
