@@ -65,69 +65,21 @@ do
 done
 shift $((OPTIND - 1))
 
-TERM="${TERM:-'dumb'}"
-
-if test -t 1
-then
-    # Check that it supports colours
-    ncolors=$(tput colors)
-
-    if test -n "$ncolors" && test $ncolors -ge 8
-    then
-        bold="$(tput bold)"
-        # underline="$(tput smul)"
-        # standout="$(tput smso)"
-        normal="$(tput sgr0)"
-        # black="$(tput setaf 0)"
-        red="$(tput setaf 1)"
-        green="$(tput setaf 2)"
-        # yellow="$(tput setaf 3)"
-        # blue="$(tput setaf 4)"
-        # magenta="$(tput setaf 5)"
-        cyan="$(tput setaf 6)"
-        white="$(tput setaf 7)"
-    fi
-fi
-
-function _fatal() {
- _out "${bold:-}${red:-} [ERROR]${normal:-}" "$1" >&2
- exit 1
+# Clean up on exit
+function finish() {
+  rm -fr "$TMPDIR"
 }
+trap finish EXIT
 
-function _out() {
-  local type
-  local text
-  type=$1
+TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
 
-  shift
-  text=$*
+# ----------------------------------------------------------------------------
+# Pretty printing
+wget -q -O ${TMPDIR}/pretty-print.sh https://gist.githubusercontent.com/27Bslash6/ffa9cfb92c25ef27cad2900c74e2f6dc/raw/7142ba210765899f5027d9660998b59b5faa500a/bash-pretty-print.sh
+# shellcheck disable=SC1090
+. ${TMPDIR}/pretty-print.sh
 
-  printf "%s %s\n" "$type" "$text"
-}
-
-function _notice {
-  _out "${white:-}[NOTICE]${white:-}" "$@"
-}
-
-function _skip() {
-  _out "${cyan:-}  [SKIP]${normal:-}" "$@"
-}
-
-function _build() {
-  _out "${green:-} [BUILD]${normal:-}" "$@"
-}
-
-function _pull() {
-  _out "${green:-}  [PULL]${normal:-}" "$@"
-}
-
-function _verbose() {
-  if [[ $verbosity != 'verbose' ]]
-  then
-    return
-  fi
-  _out "${green:-}  [PULL]${normal:-}" "$@"
-}
+# ----------------------------------------------------------------------------
 
 function sendBuildRequest() {
   local dir=${1:-${ROOT_DIR}}
@@ -166,8 +118,6 @@ function sendBuildRequest() {
     --substitutions ${sub} \
     ${tmpdir}/docker-source.tar.gz
 
-  # Cleanup temporary file
-  rm -fr ${tmpdir}
 }
 
 # ----------------------------------------------------------------------------
