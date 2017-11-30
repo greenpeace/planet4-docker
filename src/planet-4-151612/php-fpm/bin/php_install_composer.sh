@@ -7,7 +7,6 @@ set -e
 # Modified from original script to:
 #  - fail on any script errors
 #  - retry connection failures using wget
-#  - install hirak/prestissimo (parallel composer dependency downloader)
 
 retries=5
 
@@ -28,10 +27,6 @@ php composer-setup.php --install-dir=/app/bin
 rm composer-setup.php
 
 ln -s /app/bin/composer.sh /app/bin/composer
-
-# Install parallel downloader hirak/prestissimo (latest version)
-echo "Installing hirak/prestissimo"
-/app/bin/composer.phar --no-plugins --no-scripts --profile -vvv global require hirak/prestissimo
 
 echo "Clearing composer cache"
 /app/bin/composer.phar clear-cache
