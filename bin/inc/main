@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+#shellcheck disable=1090
+set -euo pipefail
+
+# ----------------------------------------------------------------------------
+
+# MAKE TEMPDIR AND CLEAN ON EXIT
+
+function clean_temp() {
+  rm -fr "$TMPDIR"
+}
+trap clean_temp EXIT
+
+TMPDIR="$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")"
+
+# ----------------------------------------------------------------------------
+
+# LOAD PRETTY PRINT HELPER
+pretty_print_url="https://gist.githubusercontent.com/27Bslash6/ffa9cfb92c25ef27cad2900c74e2f6dc/raw/4baf03fccb0125518738214623ef96957b4e3ef4/bash-pretty-print.sh"
+curl -s "${pretty_print_url}" -o "${TMPDIR}/pretty_print.sh"
+. "${TMPDIR}/pretty_print.sh"
+rm "${TMPDIR}/pretty_print.sh"
+
+# ----------------------------------------------------------------------------
+
+# LOAD REALPATH
+realpath_url="https://gist.githubusercontent.com/27Bslash6/808da5a41884cce832fb93a5650c23e3/raw/94817c592bb3cbe003a9db4f2e2847cde21d5656/realpath.sh"
+curl -s "${realpath_url}" -o "./realpath.sh"
+. realpath.sh
+rm realpath.sh
+
+GIT_ROOT_DIR="$ROOT_DIR/.."
+
+# ----------------------------------------------------------------------------
+
+# LOAD DEFAULT CONFIGURATION
+
+# Read parameters from key=value configuration file
+# Note this will override environment variables at this stage
+# @todo prioritise ENV over config file ?
+
+default_config="${GIT_ROOT_DIR}/config.default"
+if [[ -f "${default_config}" ]]
+then
+  # shellcheck source=/dev/null
+  . "${default_config}"
+fi
+
+# ----------------------------------------------------------------------------
+
+# LOAD CUSTOM CONFIGURATION
+set +u
+if [[ ! -z "${CONFIG_FILE}" ]]
+then
+  echo "Reading custom configuration from ${CONFIG_FILE}"
+
+  if [[ ! -f "${CONFIG_FILE}" ]]
+  then
+    _fatal "File not found: ${CONFIG_FILE}"
+  fi
+  # https://github.com/koalaman/shellcheck/wiki/SC1090
+  # shellcheck source=/dev/null
+  . "${CONFIG_FILE}"
+fi
+set -u

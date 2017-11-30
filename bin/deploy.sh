@@ -70,9 +70,9 @@ GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID:-${DEFAULT_GOOGLE_PROJECT_ID}}
 
 # Get all the project subdirectories
 
-ROOT_DIR=$(pwd)
+GIT_ROOT_DIR=$(pwd)
 shopt -s nullglob
-cd "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}" || exit 1
+cd "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}" || exit 1
 SOURCE_DIRECTORY=(*/)
 shopt -u nullglob
 

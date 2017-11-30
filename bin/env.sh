@@ -1,46 +1,6 @@
 #!/usr/bin/env bash
 set -ea
-
-
-# ----------------------------------------------------------------------------
-# Find real file path of current script
-# https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
-source="${BASH_SOURCE[0]}"
-while [[ -h "$source" ]]
-do # resolve $source until the file is no longer a symlink
-  dir="$( cd -P "$( dirname "$source" )" && pwd )"
-  source="$(readlink "$source")"
-  [[ $source != /* ]] && source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-done
-ROOT_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
-
-# DEFAULT CONFIGURATION
-# Read parameters from key->value configuration files
-# Note this will override environment variables at this stage
-# @todo prioritise ENV over config file ?
-
-DEFAULT_CONFIG_FILE="${ROOT_DIR}/config.default"
-if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
-  # shellcheck source=/dev/null
-  source ${DEFAULT_CONFIG_FILE}
-else
-  >&2 echo "DEFAULT_CONFIG_FILE not found: ${DEFAULT_CONFIG_FILE}"
-  exit 1
-fi
-
-# ----------------------------------------------------------------------------
-# Read from custom config file from command line parameter
-
-if [ "${CONFIG_FILE}" != "" ]; then
-  echo "Reading custom configuration from ${CONFIG_FILE}"
-
-  if [ ! -f "${CONFIG_FILE}" ]; then
-    _fatal "File not found: ${CONFIG_FILE}"
-  fi
-  # https://github.com/koalaman/shellcheck/wiki/SC1090
-  # shellcheck source=/dev/null
-  source ${CONFIG_FILE}
-fi
+set +u
 
 # ----------------------------------------------------------------------------
 # Configure build variables based on CircleCI environment vars

@@ -1,40 +1,18 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2016
+# shellcheck disable=1090,2016
+set -eou pipefail
 
-set -eo pipefail
-
-# ----------------------------------------------------------------------------
-# Find real file path of current script
-# https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
-source="${BASH_SOURCE[0]}"
-while [[ -h "$source" ]]
-do # resolve $source until the file is no longer a symlink
-  dir="$( cd -P "$( dirname "$source" )" && pwd )"
-  source="$(readlink "$source")"
-  [[ $source != /* ]] && source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-done
-ROOT_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
-
-# DEFAULT CONFIGURATION
-# Read parameters from key->value configuration files
-# Note this will override environment variables at this stage
-# @todo prioritise ENV over config file ?
-
-DEFAULT_CONFIG_FILE="${ROOT_DIR}/config.default"
-if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
-  # shellcheck source=/dev/null
-  source ${DEFAULT_CONFIG_FILE}
-fi
+. inc/main
 
 # UTILITY
 
 function usage {
-  echo "Usage: $(basename $0) [OPTION|OPTION2] [<image build list>|all]...
+  echo "Usage: $(basename "$0") [OPTION|OPTION2] [<image build list>|all]...
 Build and test artifacts in this repository
 
 Options:
   -c    Configuration file for build variables, eg:
-          $(basename $0) -c config
+          $(basename "$0") -c config
   -h    Help information (this text)
   -l    Local docker build (default: ${DEFAULT_BUILD_LOCALLY})
   -p    Pull images after build (default: ${DEFAULT_BUILD_LOCALLY})
@@ -51,13 +29,13 @@ do
     case $option in
         c  )    # shellcheck disable=SC2034
                 CONFIG_FILE=$OPTARG;;
-        l  )    BUILD_LOCALLY='true';;
+        l  )    BUILD_LOCALLY=true;;
         h  )    usage
                 exit;;
-        p  )    PULL_IMAGES='true';;
-        r  )    BUILD_REMOTELY='true';;
-        v  )    verbosity='debug'
-                set -x;;
+        p  )    PULL_IMAGES=true;;
+        r  )    BUILD_REMOTELY=true;;
+        v  )    verbosity=debug
+                _verbose_debug on;;
         *  )    echo "Unkown option: ${OPTARG}"
                 usage
                 exit 1;;
@@ -65,24 +43,8 @@ do
 done
 shift $((OPTIND - 1))
 
-# Clean up on exit
-function finish() {
-  rm -fr "$TMPDIR"
-}
-trap finish EXIT
-
-TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
-
-# ----------------------------------------------------------------------------
-# Pretty printing
-wget -q -O ${TMPDIR}/pretty-print.sh https://gist.githubusercontent.com/27Bslash6/ffa9cfb92c25ef27cad2900c74e2f6dc/raw/7142ba210765899f5027d9660998b59b5faa500a/bash-pretty-print.sh
-# shellcheck disable=SC1090
-. ${TMPDIR}/pretty-print.sh
-
-# ----------------------------------------------------------------------------
-
 function sendBuildRequest() {
-  local dir=${1:-${ROOT_DIR}}
+  local dir=${1:-${GIT_ROOT_DIR}}
 
   if [[ -f "$dir/cloudbuild.yaml" ]]
   then
@@ -106,53 +68,52 @@ function sendBuildRequest() {
   # Avoid sending entire .git history as build context to save some time and bandwidth
   # Since git builtin substitutions aren't available unless triggered
   # https://cloud.google.com/container-builder/docs/concepts/build-requests#substitutions
-  local tmpdir
-  tmpdir=$(mktemp -d "${tmpdir:-/tmp/}$(basename 0).XXXXXXXXXXXX")
-  tar --exclude='.git/' --exclude='.circleci/' -zcf $tmpdir/docker-source.tar.gz -C $dir .
+
+  tar --exclude='.git/' --exclude='.circleci/' -zcf "$TMPDIR/docker-source.tar.gz" -C "$dir" .
 
   # Submit the build
-  time ${gcloud_binary} container builds submit \
-    --verbosity=${verbosity:-'warning'} \
-    --timeout=${BUILD_TIMEOUT} \
-    --config $dir/cloudbuild.yaml \
-    --substitutions ${sub} \
-    ${tmpdir}/docker-source.tar.gz
+  time "${gcloud_binary}" container builds submit \
+    --verbosity="${verbosity:-warning}" \
+    --timeout="${BUILD_TIMEOUT}" \
+    --config "$dir/cloudbuild.yaml" \
+    --substitutions "${sub}" \
+    "${TMPDIR}/docker-source.tar.gz"
 
 }
 
 # ----------------------------------------------------------------------------
 # Consolidate and sanitise variables
 
-. env.sh
+# shellcheck disable=SC1090
+. "${GIT_ROOT_DIR}/bin/env.sh"
 
 # ----------------------------------------------------------------------------
 # Check if we're running on CircleCI
-
-if [ ! -z "${CIRCLECI}" ]; then
+if [[ ! -z "${CIRCLECI:-}" ]]
+then
   # FIXME add the gcloud binary in planet4-base to PATH
   gcloud_binary=/home/circleci/google-cloud-sdk/bin/gcloud
 else
-  gcloud_binary=$(type -P gcloud)
+  gcloud_binary="$(type -P gcloud)"
 fi
 
-if [[ ! -x ${gcloud_binary} ]]
+if [[ ! -x "${gcloud_binary}" ]]
 then
   _fatal "gcloud executable not found"
 fi
-
 # ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
 
 declare -a build_order
 
-if [[ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
+if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
 then
   _notice "Using build order from src/${GOOGLE_PROJECT_ID}/build_order"
   while read -r image_order; do
     # push line to build_order array
     _verbose "Adding to build order: '${image_order}'"
     build_order[${#build_order[@]}]="${image_order}"
-  done < "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order"
+  done < "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order"
 else
   build_order=(
     "ubuntu"
@@ -208,22 +169,18 @@ fi
 
 if [[ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]]
 then
-  _verbose "Updating local Dockerfiles from templates..."
+  _build "Updating local Dockerfiles from templates:"
   for image in "${build_list[@]}"
   do
 
+
     # Check the source directory exists and contains a Dockerfile template
-    if [ ! -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
+    if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
       _fatal "Directory not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/"
     fi
-    if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in" ]; then
-      _fatal "Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in"
-    fi
-    if [ ! -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in" ]; then
-      _fatal "README not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in"
-    fi
 
-    build_dir="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
+
+    build_dir="${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
 
     # Rewrite only the Dockerfile|README.md variables we want to change
     envvars=(
@@ -232,7 +189,6 @@ then
       '${CONTAINER_TIMEZONE}' \
       '${DOCKERIZE_VERSION}' \
       '${GOOGLE_PROJECT_ID}' \
-      '${HEADERS_MORE_VERSION}'\
       '${NGX_PAGESPEED_RELEASE}' \
       '${NGX_PAGESPEED_VERSION}' \
       '${OPENRESTY_VERSION}' \
@@ -244,12 +200,11 @@ then
     envvars_string="$(printf "%s:" "${envvars[@]}")"
     envvars_string="${envvars_string%:}"
 
-    _verbose "Update ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/Dockerfile from template"
-    envsubst "${envvars_string}" < ${build_dir}/templates/Dockerfile.in > ${build_dir}/Dockerfile
-    _verbose "Update ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md from template"
-    envsubst "${envvars_string}" < ${build_dir}/templates/README.md.in > ${build_dir}/README.md
-
-    build_string="# ${APPLICATION_NAME}
+    if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in" ]]
+    then
+      _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/Dockerfile"
+      envsubst "${envvars_string}" < "${build_dir}/templates/Dockerfile.in" > "${build_dir}/Dockerfile"
+      build_string="# ${APPLICATION_NAME}
 # Image: ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}
 # Build: ${BUILD_NUM}
 # Date:  $(date)
@@ -257,9 +212,20 @@ then
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
-"
+  "
 
-    echo -e "$build_string\n$(cat ${build_dir}/Dockerfile)" > ${build_dir}/Dockerfile
+      echo -e "$build_string\n$(cat "${build_dir}/Dockerfile")" > "${build_dir}/Dockerfile"
+    else
+      _warning "Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in"
+    fi
+
+    if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in" ]]
+    then
+      _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md"
+      envsubst "${envvars_string}" < "${build_dir}/templates/README.md.in" > "${build_dir}/README.md"
+    else
+      _warning "README not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in"
+    fi
 
   done
 fi
@@ -284,7 +250,7 @@ ENVVARS=(
 ENVVARS_STRING="$(printf "%s:" "${ENVVARS[@]}")"
 ENVVARS_STRING="${ENVVARS_STRING%:}"
 
-envsubst "${ENVVARS_STRING}" < ./README.md.in > ./README.md
+envsubst "${ENVVARS_STRING}" < "${GIT_ROOT_DIR}/README.md.in" > "${GIT_ROOT_DIR}/README.md"
 
 # ----------------------------------------------------------------------------
 # Perform the build locally
@@ -296,19 +262,19 @@ then
   do
 
     # Check the source directory exists and contains a Dockerfile
-    if [ -d "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile" ]; then
-      build_dir="${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
-    elif [ -d "${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${image}" ] && [ -f "${ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile" ]; then
-      build_dir="${ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${image}"
+    if [ -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}" ] && [ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile" ]; then
+      build_dir="${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
+    elif [ -d "${GIT_ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${image}" ] && [ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile" ]; then
+      build_dir="${GIT_ROOT_DIR}/sites/${GOOGLE_PROJECT_ID}/${image}"
     else
       _fatal "Dockerfile not found. Tried:\n - ./src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile\n - ./sites/${GOOGLE_PROJECT_ID}/${image}/Dockerfile"
     fi
 
     _build "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG} ..."
     docker build \
-      -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG} \
-      -t ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG} \
-      ${build_dir}
+      -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" \
+      -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG}" \
+      "${build_dir}"
   done
 fi
 
@@ -317,7 +283,7 @@ fi
 
 if [[ "${BUILD_REMOTELY}" = "true" ]]
 then
-  _build "Performing build on Google Container Builder ..."
+  _build "Performing build on Google Container Builder:"
 
   if [[ "$build_type" = 'all' ]]
   then
@@ -326,7 +292,7 @@ then
     for image in "${build_list[@]}"
     do
       _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}"
-      sendBuildRequest "${ROOT_DIR}/src/$GOOGLE_PROJECT_ID/$image"
+      sendBuildRequest "${GIT_ROOT_DIR}/src/$GOOGLE_PROJECT_ID/$image"
     done
   fi
 fi

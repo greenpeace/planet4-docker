@@ -24,7 +24,8 @@ set -eo pipefail
 if [[ "$#" -ne 2 || "${1}" == '-h' || "${1}" == '--help' ]]
 then
   cat >&2 <<"EOF"
-gcrgc.sh cleans up tagged or untagged images pushed before specified date
+
+$(basename "$0") cleans up tagged or untagged images pushed before specified date
 for a given repository (an image name without a tag/digest).
 
 USAGE:
@@ -62,14 +63,14 @@ main() {
   local C=0
   IMAGE="${1}"
   DATE="${2}"
-  for digest in $(gcloud container images list-tags ${IMAGE} --limit=999999 --sort-by=TIMESTAMP \
+  for digest in $(gcloud container images list-tags "${IMAGE}" --limit=999999 --sort-by=TIMESTAMP \
     --filter="timestamp.datetime < '${DATE}'" --format='get(digest)')
   do
     (
 
       if [[ ${TRIAL_RUN} = "true" ]]
       then
-        echo "gcloud container images delete -q --force-delete-tags "${IMAGE}@${digest}""
+        echo "gcloud container images delete -q --force-delete-tags ${IMAGE}@${digest}"
       else
         set -x
         gcloud container images delete -q --force-delete-tags "${IMAGE}@${digest}"
