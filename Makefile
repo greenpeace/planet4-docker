@@ -12,4 +12,4 @@ test :
 
 .PHONY : build
 build :
-		./build.sh $(BUILD_FLAGS) $(BUILD_LIST)
+		pushd bin; ./build.sh $(BUILD_FLAGS) $(BUILD_LIST); popd
