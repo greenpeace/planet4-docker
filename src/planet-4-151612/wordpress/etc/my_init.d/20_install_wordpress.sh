@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+install_lock="/app/source/public/.install"
+
 # shellcheck disable=SC2120
 function get_num_files_exist() {
   local files
@@ -25,7 +27,7 @@ function delete_source_directories() {
   rm -fr /app/www || true
   rm -fr /app/source/public/* /app/source/public/.* /app/source/public || true
   mkdir -p /app/source/public
-  true > "/app/source/public/.installing"
+  true > "${install_lock}"
 }
 
 # ==============================================================================
@@ -65,28 +67,27 @@ _good "WP_DB_PREFIX       ${WP_DB_PREFIX}"
 # ==============================================================================
 # FILE SYSTEM CHECKS
 # ==============================================================================
+num_files="$(get_num_files_exist)"
 
-if [[ -f "/app/source/public/.installing" ]]
+if [[ -f "${install_lock}" ]]
 then
-  _good "Installation already underway, skipping..."
-  # Ensure the symlink exists
+  _good "Installation already underway, "
+  # FIXME Ensure the symlink exists. The HORROR
   [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
   exit 0
 fi
-
-num_files="$(get_num_files_exist)"
-
-true > "/app/source/public/.installing"
+mkdir -p /app/source/public
+true > "${install_lock}"
 
 if [[ "${num_files}" -eq 1 ]] && [[ $(grep -q TEST-DATA-ONLY /app/source/public/index.php) ]]
 then
-  _good "Test data detected, deleting /app/source/public /app/www"
+  _good "Test data detected, deleting source directories/app/source/public /app/www"
   delete_source_directories
 elif [[ "${num_files}" -ne 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
 then
   _good "OVERWRITE_FILES is not 'true', cowardly refusing to reinstall Wordpress"
 
-  # Ensure the symlink exists
+  # FIXME Ensure the symlink exists. The HORROR
   [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
 
   # Exit this script and continue container boot
@@ -157,7 +158,10 @@ do
   sleep 1;
 done
 
-_good "Database '${WP_DB_HOST}' is ready"
+_good "Database ready: ${WP_DB_HOST}:${WP_DB_PORT}"
+
+# FIXME Run another check to test if wp is installed yet
+
 _good "Running 'composer docker-site-install' with COMPOSER=${COMPOSER}"
 
 wait # It's remotely possible that `chown /app` above hasn't finished yet
@@ -183,3 +187,5 @@ composer --profile -vv core:initial-content
 # Wordpress configuration startup
 wp option set siteurl "${WP_SITE_PROTOCOL}://${WP_SITE_URL}"
 wp option set home "${WP_SITE_PROTOCOL}://${WP_SITE_HOME}"
+wp option set blogname "${WP_TITLE}"
+wp option set blogdescription "${WP_TITLE}"
