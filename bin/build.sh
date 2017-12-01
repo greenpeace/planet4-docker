@@ -17,7 +17,8 @@ done
 GIT_ROOT_DIR="$( cd -P "$( dirname "$source" )/.." && pwd )"
 export GIT_ROOT_DIR
 
-. "${GIT_ROOT_DIR}/bin/inc/main"
+
+# ----------------------------------------------------------------------------
 
 # UTILITY
 
@@ -29,9 +30,9 @@ Options:
   -c    Configuration file for build variables, eg:
           $(basename "$0") -c config
   -h    Help information (this text)
-  -l    Local docker build (default: ${DEFAULT_BUILD_LOCALLY})
-  -p    Pull images after build (default: ${DEFAULT_BUILD_LOCALLY})
-  -r    Remote docker build on Google Container Registry (default: ${DEFAULT_BUILD_REMOTELY})
+  -l    Local docker build
+  -p    Pull images after build
+  -r    Remote docker build on Google Container Registry
   -v    Verbose output
 "
 }
@@ -46,7 +47,7 @@ do
                 CONFIG_FILE=$OPTARG;;
         l  )    BUILD_LOCALLY=true;;
         h  )    usage
-                exit;;
+                exit 0;;
         p  )    PULL_IMAGES=true;;
         r  )    BUILD_REMOTELY=true;;
         v  )    verbosity=debug
@@ -58,23 +59,7 @@ do
 done
 shift $((OPTIND - 1))
 
-# ----------------------------------------------------------------------------
-
-# LOAD CUSTOM CONFIGURATION
-set +u
-if [[ ! -z "${CONFIG_FILE}" ]]
-then
-  echo "Reading custom configuration from ${CONFIG_FILE}"
-
-  if [[ ! -f "${CONFIG_FILE}" ]]
-  then
-    _fatal "File not found: ${CONFIG_FILE}"
-  fi
-  # https://github.com/koalaman/shellcheck/wiki/SC1090
-  # shellcheck source=/dev/null
-  . "${CONFIG_FILE}"
-fi
-set -u
+. "${GIT_ROOT_DIR}/bin/inc/main"
 
 # ----------------------------------------------------------------------------
 
@@ -115,12 +100,6 @@ function sendBuildRequest() {
     "${TMPDIR}/docker-source.tar.gz"
 
 }
-
-# ----------------------------------------------------------------------------
-# Consolidate and sanitise variables
-
-# shellcheck disable=SC1090
-. "${GIT_ROOT_DIR}/bin/env.sh"
 
 # ----------------------------------------------------------------------------
 # Check if we're running on CircleCI
@@ -204,7 +183,7 @@ fi
 
 if [[ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]]
 then
-  _build "Updating local Dockerfiles from templates:"
+  _build "Generating files from templates:"
   for image in "${build_list[@]}"
   do
 

@@ -3,6 +3,37 @@ set -ea
 set +u
 
 # ----------------------------------------------------------------------------
+
+# LOAD DEFAULT CONFIGURATION
+
+# Read parameters from key=value configuration file
+# Note this will override environment variables at this stage
+# @todo prioritise ENV over config file ?
+
+default_config="${GIT_ROOT_DIR}/config.default"
+if [[ -f "${default_config}" ]]
+then
+  # shellcheck source=/dev/null
+  . "${default_config}"
+fi
+
+# ----------------------------------------------------------------------------
+
+# LOAD CUSTOM CONFIGURATION
+if [[ ! -z "${CONFIG_FILE}" ]]
+then
+  echo "Reading custom configuration from ${CONFIG_FILE}"
+
+  if [[ ! -f "${CONFIG_FILE}" ]]
+  then
+    _fatal "File not found: ${CONFIG_FILE}"
+  fi
+  # https://github.com/koalaman/shellcheck/wiki/SC1090
+  # shellcheck source=/dev/null
+  . "${CONFIG_FILE}"
+fi
+
+# ----------------------------------------------------------------------------
 # Configure build variables based on CircleCI environment vars
 
 if [[ "${CIRCLECI}" ]]
@@ -19,6 +50,7 @@ then
   fi
   BUILD_NUM="build-${CIRCLE_BUILD_NUM}"
 fi
+
 
 APPLICATION_NAME=${APPLICATION_NAME:-${DEFAULT_APPLICATION_NAME}}
 BASEIMAGE_VERSION=${BASEIMAGE_VERSION:-${DEFAULT_BASEIMAGE_VERSION}}

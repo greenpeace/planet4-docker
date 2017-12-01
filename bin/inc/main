@@ -23,15 +23,7 @@ rm "${TMPDIR}/pretty_print.sh"
 
 # ----------------------------------------------------------------------------
 
-# LOAD DEFAULT CONFIGURATION
+# LOAD VARIABLES
 
-# Read parameters from key=value configuration file
-# Note this will override environment variables at this stage
-# @todo prioritise ENV over config file ?
-
-default_config="${GIT_ROOT_DIR}/config.default"
-if [[ -f "${default_config}" ]]
-then
-  # shellcheck source=/dev/null
-  . "${default_config}"
-fi
+# shellcheck disable=SC1090
+. "${GIT_ROOT_DIR}/bin/env.sh"
