@@ -66,7 +66,16 @@ define('SECURE_AUTH_SALT', getenv('WP_SECURE_AUTH_SALT'));
 define('LOGGED_IN_SALT',   getenv('WP_LOGGED_IN_SALT'));
 define('NONCE_SALT',       getenv('WP_NONCE_SALT'));
 
-{{ .Env.WP_EXTRA_CONFIG }}
+{{ default .Env.WP_CONFIG_EXTRA "" }}
+
+{{ if eq .Env.WP_STATELESS_MEDIA_ENABLED "true" }}
+
+define( 'WP_STATELESS_MEDIA_BUCKET',            getenv('WP_STATELESS_MEDIA_BUCKET') );
+define( 'WP_STATELESS_MEDIA_MODE',              getenv('WP_STATELESS_MEDIA_MODE') );
+define( 'WP_STATELESS_MEDIA_KEY_FILE_PATH',     getenv('WP_STATELESS_MEDIA_KEY_FILE_PATH') );
+define( 'WP_STATELESS_MEDIA_SERVICE_ACCOUNT',   getenv('WP_STATELESS_MEDIA_SERVICE_ACCOUNT') );
+
+{{ end }}
 
 /**
  * WordPress Database Table prefix.
