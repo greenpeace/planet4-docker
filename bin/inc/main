@@ -23,16 +23,6 @@ rm "${TMPDIR}/pretty_print.sh"
 
 # ----------------------------------------------------------------------------
 
-# LOAD REALPATH
-realpath_url="https://gist.githubusercontent.com/27Bslash6/808da5a41884cce832fb93a5650c23e3/raw/94817c592bb3cbe003a9db4f2e2847cde21d5656/realpath.sh"
-curl -s "${realpath_url}" -o "./realpath.sh"
-. realpath.sh
-rm realpath.sh
-
-GIT_ROOT_DIR="$ROOT_DIR/.."
-
-# ----------------------------------------------------------------------------
-
 # LOAD DEFAULT CONFIGURATION
 
 # Read parameters from key=value configuration file
