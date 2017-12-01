@@ -43,6 +43,26 @@ do
 done
 shift $((OPTIND - 1))
 
+# ----------------------------------------------------------------------------
+
+# LOAD CUSTOM CONFIGURATION
+set +u
+if [[ ! -z "${CONFIG_FILE}" ]]
+then
+  echo "Reading custom configuration from ${CONFIG_FILE}"
+
+  if [[ ! -f "${CONFIG_FILE}" ]]
+  then
+    _fatal "File not found: ${CONFIG_FILE}"
+  fi
+  # https://github.com/koalaman/shellcheck/wiki/SC1090
+  # shellcheck source=/dev/null
+  . "${CONFIG_FILE}"
+fi
+set -u
+
+# ----------------------------------------------------------------------------
+
 function sendBuildRequest() {
   local dir=${1:-${GIT_ROOT_DIR}}
 
