@@ -3,13 +3,17 @@ BUILD_LIST?=
 
 .DEFAULT_GOAL := all
 
-all : build test
+all : clean build test
 .PHONY : all
 
-.PHONY : test
-test :
-		tests/test.sh
+.PHONY : clean
+clean :
+		bin/clean.sh
 
 .PHONY : build
 build :
 		pushd bin; ./build.sh $(BUILD_FLAGS) $(BUILD_LIST); popd
+
+.PHONY : test
+test :
+		tests/test.sh
