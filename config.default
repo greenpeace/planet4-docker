@@ -67,7 +67,7 @@ DEFAULT_CONTAINER_TIMEZONE=UTC
 # https://github.com/phusion/baseimage-docker/releases
 DEFAULT_BASEIMAGE_VERSION=0.9.22
 # https://github.com/jwilder/dockerize/releases
-DEFAULT_DOCKERIZE_VERSION=0.5.0
+DEFAULT_DOCKERIZE_VERSION=0.6.0
 # https://github.com/pagespeed/ngx_pagespeed/releases
 DEFAULT_NGX_PAGESPEED_RELEASE=stable
 DEFAULT_NGX_PAGESPEED_VERSION=latest
