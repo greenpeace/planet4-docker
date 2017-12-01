@@ -89,7 +89,7 @@ function sendBuildRequest() {
   # Since git builtin substitutions aren't available unless triggered
   # https://cloud.google.com/container-builder/docs/concepts/build-requests#substitutions
 
-  tar --exclude='.git/' --exclude='.circleci/' -zcf "$TMPDIR/docker-source.tar.gz" -C "$dir" .
+  tar --exclude='.git/' --exclude='.circleci/' -zcf "$BUILD_TMPDIR/docker-source.tar.gz" -C "$dir" .
 
   # Submit the build
   time "${gcloud_binary}" container builds submit \
@@ -97,7 +97,7 @@ function sendBuildRequest() {
     --timeout="${BUILD_TIMEOUT}" \
     --config "$dir/cloudbuild.yaml" \
     --substitutions "${sub}" \
-    "${TMPDIR}/docker-source.tar.gz"
+    "${BUILD_TMPDIR}/docker-source.tar.gz"
 
 }
 

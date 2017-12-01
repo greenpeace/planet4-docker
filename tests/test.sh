@@ -21,7 +21,7 @@ export TEST_BASE_DIR
 
 # Include base project helper functions
 # shellcheck source=/dev/null
-. ${TEST_BASE_DIR}/_helpers
+. "${TEST_BASE_DIR}/_helpers"
 
 type -P bats >/dev/null 2>&1 || fatal "bats not found in path"
 
@@ -29,10 +29,10 @@ type -P bats >/dev/null 2>&1 || fatal "bats not found in path"
 bats_switches=("$@")
 
 # Configure test output directory
-if [[ -z ${TEST_OUTPUT_DIR} ]]
+if [[ -z "${TEST_OUTPUT_DIR}" ]]
 then
-  TMPDIR=$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")
-  TEST_OUTPUT_DIR="${TMPDIR}/test-results"
+  TEST_TMPDIR="$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")"
+  TEST_OUTPUT_DIR="${TEST_TMPDIR}/test-results"
   echo "Test output directory: $TEST_OUTPUT_DIR"
 fi
 
@@ -52,11 +52,11 @@ fi
 # Testing main project suite
 shopt -s nullglob
 # Iterate over all projects in src
-for project_dir in ${TEST_BASE_DIR}/src/*/
+for project_dir in "${TEST_BASE_DIR}"/src/*/
 do
   project_name="$(basename "${project_dir}")"
   # Iterate over all container images in the project
-  for image_dir in ${project_dir}*/
+  for image_dir in "${project_dir}"*/
   do
     # Ensure the directory contains a 'tests' subdirectory
     if [[ ! -d "${image_dir}tests" ]]
