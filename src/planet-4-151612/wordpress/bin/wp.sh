@@ -4,6 +4,13 @@ set -e
 # Description: Wraps wp-cli to provide correct user permissions
 # Author:      Raymond Walker <raymond.walker@greenpeace.org>
 
+# Configure environment
+for env_file in /app/env/*
+do
+  # shellcheck source=/dev/null
+  . ${env_file}
+done
+
 uid=$(id -u)
 
 if [[ $uid = "0" ]]
