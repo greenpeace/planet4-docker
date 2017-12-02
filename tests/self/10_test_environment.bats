@@ -57,12 +57,12 @@ function teardown {
 }
 
 @test "build.sh exists and is executable" {
-  [[ -f "${PROJECT_ROOT_DIR}/build.sh" ]]
-  [[ -x "${PROJECT_ROOT_DIR}/build.sh" ]]
+  [[ -f "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" ]]
+  [[ -x "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" ]]
 }
 
 @test "build.sh prints usage information with -h flag" {
-  run ${PROJECT_ROOT_DIR}/build.sh -h
+  run "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -h
   [[ $status -eq 0 ]]
   [[ $output =~ Usage ]]
 }

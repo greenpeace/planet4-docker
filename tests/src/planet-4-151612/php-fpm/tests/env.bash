@@ -2,11 +2,11 @@
 set -a
 
 # shellcheck source=/dev/null
-. ${BATS_TEST_DIRNAME}/../../../../_env
+. "${BATS_TEST_DIRNAME}/../../../../../bin/inc/main"
 # shellcheck source=/dev/null
-. ${BATS_TEST_DIRNAME}/../../../../_helpers
+. "${BATS_TEST_DIRNAME}/../../../../_env"
 # shellcheck source=/dev/null
-. ${BATS_TEST_DIRNAME}/../../../../../env.sh
+. "${BATS_TEST_DIRNAME}/../../../../_helpers"
 
 # bats test parameters
 compose_file=${BATS_TEST_DIRNAME}/../docker-compose.yml

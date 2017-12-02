@@ -15,7 +15,7 @@ ENVVARS=(
 ENVVARS_STRING="$(printf "%s:" "${ENVVARS[@]}")"
 ENVVARS_STRING="${ENVVARS_STRING%:}"
 
-envsubst "${ENVVARS_STRING}" < ${BATS_DIRECTORY:-"${BATS_TEST_DIRNAME}/.."}/Dockerfile.in > ${BATS_DIRECTORY:-"${BATS_TEST_DIRNAME}/.."}/Dockerfile
+envsubst "${ENVVARS_STRING}" < "${BATS_DIRECTORY:-${BATS_TEST_DIRNAME}/..}/Dockerfile.in" > "${BATS_DIRECTORY:-${BATS_TEST_DIRNAME}/..}/Dockerfile"
 
 function setup {
   begin_output
@@ -27,9 +27,9 @@ function teardown {
 
 @test "application builds successfully: ${image}" {
   [[ -z "${GITHUB_OAUTH_TOKEN}" ]] && >&2 echo "ERROR: GITHUB_OAUTH_TOKEN not set" && exit 1
-  docker-compose  -f ${compose_file} stop || true
-  docker-compose -f ${compose_file} rm -f || true
-  run docker-compose -f ${compose_file} build app
+  docker-compose -f "${compose_file}" stop || true
+  docker-compose -f "${compose_file}" rm -f || true
+  run docker-compose -f "${compose_file}" build --no-cache --force-rm app 
   [[ $status -eq 0 ]]
 }
 
@@ -40,7 +40,7 @@ function teardown {
 
 @test "container starts" {
   # Wait up to 10 minutes for the build to complete!
-  run start_docker_compose ${BATS_TEST_DIRNAME}/../docker-compose.yml http://localhost:80 600
+  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 600
   [[ "$status" -eq 0 ]]
 }
 

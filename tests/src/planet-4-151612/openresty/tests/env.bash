@@ -2,7 +2,7 @@
 set -ea
 
 # shellcheck source=/dev/null
-. "${BATS_TEST_DIRNAME}/../../../../../env.sh"
+. "${BATS_TEST_DIRNAME}/../../../../../bin/inc/main"
 # shellcheck source=/dev/null
 . "${BATS_TEST_DIRNAME}/../../../../_env"
 # shellcheck source=/dev/null
@@ -18,7 +18,7 @@ export image
 
 ENDPOINT_PORT=80
 ENDPOINT="http://localhost:${ENDPOINT_PORT}"
-if [[ ${CI} ]]
+if [[ ${CI:-} ]]
 then
   NETWORK_MODE="host"
 else
