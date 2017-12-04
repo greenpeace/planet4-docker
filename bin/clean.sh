@@ -17,4 +17,3 @@ GIT_ROOT_DIR="$( cd -P "$( dirname "$source" )/.." && pwd )"
 
 find "${GIT_ROOT_DIR}/src" -name "Dockerfile" -exec rm -r "{}" \;
 find "${GIT_ROOT_DIR}/tests/src" -name "Dockerfile" -exec rm -r "{}" \;
-# find "${GIT_ROOT_DIR}/src" -name "README.md" -exec rm -r "{}" \;
