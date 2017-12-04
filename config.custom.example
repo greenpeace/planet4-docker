@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # shellcheck disable=SC2034
-set -a
+
 # =============================================================================
 #
 #   CUSTOM BUILD CONFIGURATION
@@ -15,8 +15,5 @@ set -a
 #
 # =============================================================================
 
-# Experimental branch of planet-4-base
-GIT_REF=dev-feature/gitrepositories
-
-# Developer 'branch' of composer file, enables editing repositories in-situ
-COMPOSER=composer-dev.json
+# Example - changing container timezone
+CONTAINER_TIMEZONE=Australia/Hobart
