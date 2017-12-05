@@ -28,7 +28,7 @@ function begin_output {
   [[ -d "$ARTIFACT_LOGS_DIR" ]] || mkdir -p "$ARTIFACT_LOGS_DIR"
   [[ -f "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}" ]] || touch "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
 
-  PS4='+($(basename $BASH_SOURCE):${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+  PS4='+($(basename "$BASH_SOURCE"):${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
   echo -e "=============== vvv [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
 }
 
