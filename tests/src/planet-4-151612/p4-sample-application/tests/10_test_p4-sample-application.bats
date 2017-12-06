@@ -25,16 +25,16 @@ function teardown {
   store_output
 }
 
-@test "application builds successfully: ${image}" {
+@test "php-application builds successfully: ${image}" {
   [[ -z "${GITHUB_OAUTH_TOKEN}" ]] && >&2 echo "ERROR: GITHUB_OAUTH_TOKEN not set" && exit 1
   docker-compose -f "${compose_file}" stop || true
   docker-compose -f "${compose_file}" rm -f || true
-  run docker-compose -f "${compose_file}" build --no-cache --force-rm app 
+  run docker-compose -f "${compose_file}" build --no-cache --force-rm php-fpm
   [[ $status -eq 0 ]]
 }
 
 @test "image exists" {
-  run run_test_image_exists "p4sampleapplication_app"
+  run run_test_image_exists "p4sampleapplication_php-fpm"
   [[ $status -eq 0 ]]
 }
 
@@ -57,6 +57,22 @@ function teardown {
 @test "container response does not contain string 'FNORDPTANGWIBBLE'" {
   run curl_check_response_regex "FNORDPTANGWIBBLE"
   [[ $status -ne 0 ]]
+}
+
+@test "wp-cli has database connection" {
+  skip "todo"
+}
+
+@test "wp-cli can modify content" {
+  skip "todo"
+}
+
+@test "container restarts with modified content" {
+  skip "todo"
+}
+
+@test "can overwrite existing files" {
+  skip "todo"
 }
 
 @test "container cleans up" {
