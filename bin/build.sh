@@ -238,7 +238,7 @@ then
       _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md"
       envsubst "${envvars_string}" < "${build_dir}/templates/README.md.in" > "${build_dir}/README.md"
     else
-      _warning "README not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in"
+      _notice "README not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in"
     fi
 
   done
