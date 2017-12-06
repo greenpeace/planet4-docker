@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Building platform containers on gcr.io
           command: |
-            ./build.sh -r
+            ./bin/build.sh -r
             rsync -avz . /tmp/workspace/src
 
       - persist_to_workspace:
@@ -89,7 +89,7 @@ jobs:
                [[ "$(cat /tmp/workspace/var/circle-branch-name)" = "master" ]]
             then
               cd /tmp/workspace/src
-              ./deploy.sh
+              ./bin/deploy.sh
             fi
 
 
