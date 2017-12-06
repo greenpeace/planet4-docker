@@ -1,21 +1,38 @@
 version: '3'
 services:
-  app:
+  openresty:
+    image: gcr.io/planet-4-151612/openresty:${OPENRESTY_BUILD_TAG:-develop}
+    volumes:
+      - data:/app/www
+    ports:
+      - "80:80"
+    environment:
+      - APP_ENVIRONMENT=develop
+      - APP_HOSTNAME=${APP_HOSTNAME:-test.planet4.dev}
+      - PHP_ENABLED=true
+      - SSL_ENABLED=false
+    depends_on:
+      - php-fpm
+  php-fpm:
     build:
       context: .
       args:
         - GIT_REF=dev-feature/gitrepositories
         - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
+        - OVERWRITE_FILES=true
     ports:
-      - "80:80"
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
+      - "9000:9000"
     environment:
+      - APP_ENVIRONMENT=develop
       - APP_HOSTNAME=${APP_HOSTNAME:-test.planet4.dev}
     env_file:
       - db.env
+    volumes:
+      - data:/app/source/public
   db:
     image: ${DB_IMAGE:-mysql:5.7}
     env_file:
       - db.env
+
+volumes:
+  data:
