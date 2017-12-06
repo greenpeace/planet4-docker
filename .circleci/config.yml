@@ -63,7 +63,7 @@ jobs:
           path: /tmp/test-results/merged
 
       - store_artifacts:
-          path: /tmp/test-results
+          path: /tmp/artifacts
 
   deploy:
     <<: *defaults
