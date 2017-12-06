@@ -17,11 +17,11 @@ function shellcheck_all_bash_scripts {
   set -ex
   trap finish EXIT
 
-  files=$(ack --shell -l "" "${PROJECT_GIT_ROOT_DIR}")
+  files=( $(ack --shell -l "" "${PROJECT_GIT_ROOT_DIR}") )
 
-  for i in $files
+  for i in "${files[@]}"
   do
-    shellcheck $i
+    shellcheck "$i"
   done
 }
 
