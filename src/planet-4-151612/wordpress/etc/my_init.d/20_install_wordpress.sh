@@ -30,6 +30,12 @@ function delete_source_directories() {
   true > "${install_lock}"
 }
 
+function backup_testing_source() {
+  mkdir -p /app/backup
+  [[ -f "/app/source/public/index.php" ]] && mv /app/source/public/index.php /app/backup/index.php
+  [[ -f "/app/source/public/index.html" ]] && mv /app/source/public/index.html /app/backup/index.html
+}
+
 # ==============================================================================
 # ENVIRONMENT VARIABLE CHECKS
 # ==============================================================================
@@ -68,22 +74,44 @@ _good "WP_DB_PREFIX       ${WP_DB_PREFIX}"
 # FILE SYSTEM CHECKS
 # ==============================================================================
 num_files="$(get_num_files_exist)"
+_good "Number of files in source folder: ${num_files}"
+ls -al /app/source/public
 
 if [[ -f "${install_lock}" ]]
 then
-  _good "Installation already underway, "
+  _good "Installation already underway, ${install_lock} exists"
+  ls -al /app/source/public
   # FIXME Ensure the symlink exists. The HORROR
   [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
   exit 0
 fi
 mkdir -p /app/source/public
 true > "${install_lock}"
+set -x
 
-if [[ "${num_files}" -eq 1 ]] && [[ $(grep -q TEST-DATA-ONLY /app/source/public/index.php) ]]
+if [[ "${num_files}" -eq 1 ]]
 then
-  _good "Test data detected, deleting source directories/app/source/public /app/www"
+  if [[ -f "/app/source/public/index.php" ]] && [[ ! -z "$(grep TEST-DATA-ONLY /app/source/public/index.php)" ]]
+  then
+    _good "Test data detected: /app/source/public/index.php"
+    _good "Deleting source directories..."
+    backup_testing_source
+    delete_source_directories
+  elif [[ -f "/app/source/public/index.html" ]] && [[ ! -z "$(grep TEST-DATA-ONLY /app/source/public/index.html)" ]]
+  then
+    _good "Test data detected: /app/source/public/index.html"
+    _good "Deleting source directories..."
+    backup_testing_source
+    delete_source_directories
+  fi
+elif [[ "${num_files}" -eq 2 ]] && \
+  [[ -f "/app/source/public/index.php" ]] && [[ ! -z "$(grep TEST-DATA-ONLY /app/source/public/index.php)" ]] && \
+  [[ -f "/app/source/public/index.html" ]] && [[ ! -z "$(grep TEST-DATA-ONLY /app/source/public/index.html)" ]]
+then
+  _good "Test data detected, deleting source directories /app/source/public /app/www"
+  backup_testing_source
   delete_source_directories
-elif [[ "${num_files}" -ne 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
+elif [[ "${num_files}" -gt 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
 then
   _good "OVERWRITE_FILES is not 'true', cowardly refusing to reinstall Wordpress"
 
