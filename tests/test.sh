@@ -55,8 +55,22 @@ shopt -s nullglob
 for project_dir in "${TEST_BASE_DIR}"/src/*/
 do
   project_name="$(basename "${project_dir}")"
-  # Iterate over all container images in the project
-  for image_dir in "${project_dir}"*/
+
+  if [[ -f "${project_dir}/test_order" ]]
+  then
+    # read test order from file
+    echo "Using test order from file: ${project_dir}/test_order"
+    while read -r line; do
+      # push line to test_order array
+      echo " - ${line}"
+      test_order[${#test_order[@]}]="${project_dir}${line}/"
+    done < "${project_dir}/test_order"
+  else
+    # alphanumeric
+    test_order=( "${project_dir}"*/ )
+  fi
+
+  for image_dir in "${test_order[@]}"
   do
     # Ensure the directory contains a 'tests' subdirectory
     if [[ ! -d "${image_dir}tests" ]]
