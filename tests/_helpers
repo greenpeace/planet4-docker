@@ -110,7 +110,7 @@ function start_docker_compose {
     if [[ $loop -lt 1 ]]
     then
       docker-compose --no-ansi -f "$compose_file" stop
-      >&2 echo "Timeout without successful connection to ${endpoint}"
+      >&2 echo "Timeout without successful connection to ${endpoint} on ${container}"
       >&2 docker-compose --no-ansi -f "$compose_file" logs
       exit 1
     fi

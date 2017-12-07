@@ -57,7 +57,7 @@ function teardown {
 }
 
 @test "docker-compose nginx/php-fpm application starts" {
-  run start_docker_compose
+  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 phpfpm_nginx_1
   [[ $status -eq 0 ]]
 }
 
