@@ -50,12 +50,12 @@ function curl_check_response_regex {
   local endpoint=${2:-"http://localhost:80"}
   local container=${3:-$(get_container_name)}
 
-  if [[ $CIRCLECI ]]
+  if [[ ! -z "${CIRCLECI:-}" ]]
   then
     # See: https://circleci.com/docs/2.0/docker-compose/
-    docker run --network "container:${container}" --rm appropriate/curl -s -k "${endpoint}" | grep -q "${regex}"
+    docker run -t --network "container:${container}" --rm appropriate/curl -s -k -N "${endpoint}" | grep "${regex}"
   else
-    curl -s -k "${endpoint}" | grep -q "${regex}"
+    curl -s -k -N "${endpoint}" | grep "${regex}"
   fi
 }
 
@@ -95,6 +95,9 @@ function start_docker_compose {
   # Wait (default: 300 = 5 minutes), retry every 1s
   local -i loop=${4:-300}
   local interval=1
+
+  docker-compose --no-ansi -f "${compose_file}" stop || true
+  docker-compose --no-ansi -f "${compose_file}" rm -f || true
 
   # Start all containers in the compose file
   docker-compose --no-ansi -f "${compose_file}" up -d
