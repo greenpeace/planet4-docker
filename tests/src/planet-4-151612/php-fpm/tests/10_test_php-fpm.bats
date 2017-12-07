@@ -72,19 +72,19 @@ function teardown {
 }
 
 @test "docker-compose nginx/php-fpm application response contains PHP 7 version string" {
-  run curl_check_response_regex "PHP Version 7.[0-9]*.[0-9]*" "http://localhost/index.php"
+  run curl_check_response_regex "PHP Version 7.[0-9]*.[0-9]*" "http://localhost/index.php" phpfpm_nginx_1
   [[ $status -eq 0 ]]
 }
 
 @test "docker-compose nginx/php-fpm application environment variable set correctly: PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}" {
-  run curl_check_response_regex "memory_limit.*${PHP_MEMORY_LIMIT}" "http://localhost/index.php"
+  run curl_check_response_regex "memory_limit.*${PHP_MEMORY_LIMIT}" "http://localhost/index.php" phpfpm_nginx_1
   [[ $status -eq 0 ]]
 }
 
 @test "docker-compose nginx/php-fpm application environment variable set correctly: UPLOAD_MAX_SIZE=${UPLOAD_MAX_SIZE}" {
-  run curl_check_response_regex "upload_max_filesize.*${UPLOAD_MAX_SIZE}" "http://localhost/index.php"
+  run curl_check_response_regex "upload_max_filesize.*${UPLOAD_MAX_SIZE}" "http://localhost/index.php" phpfpm_nginx_1
   [[ $status -eq 0 ]]
-  run curl_check_response_regex "post_max_size.*${UPLOAD_MAX_SIZE}" "http://localhost/index.php"
+  run curl_check_response_regex "post_max_size.*${UPLOAD_MAX_SIZE}" "http://localhost/index.php" phpfpm_nginx_1
   [[ $status -eq 0 ]]
 }
 
