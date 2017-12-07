@@ -30,7 +30,6 @@ _good "$(date) -" "exec $*"
 # Default Docker CMD will be /sbin/my_init
 if [[ "$1" = "/sbin/my_init" ]]
 then
-  shift
 	exec /sbin/my_init
 else
   # Execute the custom CMD
