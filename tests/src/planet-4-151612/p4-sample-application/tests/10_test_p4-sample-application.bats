@@ -40,27 +40,28 @@ function teardown {
 
 @test "container starts" {
   # Wait up to 10 minutes for the build to complete!
-  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 600
+  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 p4sampleapplication_openresty_1 600
   [[ "$status" -eq 0 ]]
 }
 
 @test "container responds on port 80 with status 200" {
-  run curl_check_status_code
+  run curl_check_status_code 200 http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -eq 0 ]]
 }
 
 @test "container response contains string 'greenpeace'" {
-  run curl_check_response_regex "greenpeace"
+  run curl_check_response_regex "greenpeace" http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -eq 0 ]]
 }
 
 @test "container response does not contain string 'FNORDPTANGWIBBLE'" {
-  run curl_check_response_regex "FNORDPTANGWIBBLE"
+  run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -ne 0 ]]
 }
 
 @test "wp-cli has database connection" {
-  skip "todo"
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec php-fpm wp db check
+  [[ $status -eq 0 ]]
 }
 
 @test "wp-cli can modify content" {
