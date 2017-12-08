@@ -44,7 +44,6 @@ function teardown {
   [[ $output =~ newrelic.enabled.*yes ]]
 }
 
-
 @test "service responds with opcache.enable On" {
   run test_fastcgi_response "/app/www/index.php"
   [[ $status -eq 0 ]]
@@ -57,17 +56,17 @@ function teardown {
 }
 
 @test "docker-compose nginx/php-fpm application starts" {
-  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 phpfpm_nginx_1
+  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" ${ENDPOINT_HTTP} phpfpm_nginx_1
   [[ $status -eq 0 ]]
 }
 
 @test "docker-compose nginx/php-fpm application responds on port 80 with status 200" {
-  run curl_check_status_code
+  run curl_check_status_code 200 ${ENDPOINT_HTTP} phpfpm_nginx_1
   [[ $status -eq 0 ]]
 }
 
 @test "docker-compose nginx/php-fpm application fails to respond on port 443" {
-  run curl_check_status_code 200 ${ENDPOINT_HTTPS}
+  run curl_check_status_code 200 ${ENDPOINT_HTTPS} phpfpm_nginx_1
   [[ $status -ne 0 ]]
 }
 
