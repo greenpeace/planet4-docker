@@ -68,7 +68,7 @@ function sendBuildRequest() {
 
   if [[ -f "$dir/cloudbuild.yaml" ]]
   then
-    _notice "Building from $dir"
+    _build "Building from $dir"
   else
     _fatal "No cloudbuild.yaml file found in $dir"
   fi
