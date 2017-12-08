@@ -87,7 +87,6 @@ then
 fi
 mkdir -p /app/source/public
 true > "${install_lock}"
-set -x
 
 if [[ "${num_files}" -eq 1 ]]
 then
