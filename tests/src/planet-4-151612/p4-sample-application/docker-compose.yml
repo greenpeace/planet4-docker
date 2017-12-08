@@ -17,7 +17,7 @@ services:
     build:
       context: .
       args:
-        - GIT_REF=dev-feature/gitrepositories
+        - GIT_REF=feature/dockerized
         - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
         - OVERWRITE_FILES=true
     ports:

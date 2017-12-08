@@ -13,7 +13,7 @@ GIT_SOURCE=https://github.com/greenpeace/planet4-base
 # branch of application repository to build
 # note, composer requires prefixes with dev- for branch names
 # see: https://getcomposer.org/doc/articles/aliases.md#why-aliases-
-GIT_REF=dev-feature/gitrepositories
+GIT_REF=feature/dockerized
 
 COMPOSER=composer.json
 
