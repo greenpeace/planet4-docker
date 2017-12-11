@@ -33,6 +33,8 @@ define('DB_COLLATE',  getenv('WP_DB_COLLATION'));
 define('SITE_URL',    getenv('WP_SITE_URL'));
 define('SITE_HOME',   getenv('WP_SITE_HOME'));
 
+define( 'WP_AUTO_UPDATE_CORE', getenv('WP_AUTO_UPDATE_CORE') );
+
 if (stripos(getenv('APP_ENV'), 'develop') === true) {
   define( 'WP_DEBUG', true );
   define( 'WP_DEBUG_LOG', true );
