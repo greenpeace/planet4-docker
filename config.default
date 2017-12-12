@@ -1,53 +1,21 @@
 #!/usr/bin/env sh
 # shellcheck disable=SC2034
-set -a
-
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-#  DO NOT MAKE EDITS IN THIS FILE
-
-# Changing any of the follow values is NOT RECOMMENDED
-# The below are defaults which are only used if custom values are not set
-#
-
-# How to customise the build configuration:
-# -----------------------------------------
-#
-# Create a custom file and set values are described above, and pass it to the
-# build binary as a parameter, like so:
-
-# $ ./build.sh -c config.custom
-
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-# =============================================================================
-#
-#   DEFAULT BUILD CONFIGURATION
-#
-#   Define build parameters in a custom file
-#
-#   Examples of build-time configuration:
-#
-#   GOOGLE_PROJECT_ID=greenpeace-testing
-#   NGINX_VERSION=1.13.1
-#   COMPOSER=composer-dev.json
-#
-# =============================================================================
 
 # Application environment
-DEFAULT_APPLICATION_NAME="Greenpeace P4 Docker application"
-DEFAULT_GOOGLE_PROJECT_ID=planet-4-151612
+
+APPLICATION_NAME="Greenpeace P4 Docker application"
+GOOGLE_PROJECT_ID=planet-4-151612
 
 # application repository to build, expects a composer.json to be present,
 # or alternate file defined by COMPOSER | DEFAULT_COMPOSER
-DEFAULT_GIT_SOURCE=https://github.com/greenpeace/planet4-base
+GIT_SOURCE=https://github.com/greenpeace/planet4-base
 
 # branch of application repository to build
 # note, composer requires prefixes with dev- for branch names
 # see: https://getcomposer.org/doc/articles/aliases.md#why-aliases-
-DEFAULT_GIT_REF=dev-develop
+GIT_REF=feature/dockerized
 
-DEFAULT_COMPOSER=composer.json
+COMPOSER=composer.json
 
 # default build tags are derived from `git rev-parse --abbrev-ref HEAD`
 # Use SOURCE_VERSION or BUILD_TAG in environment or custom config to set these values
@@ -67,16 +35,15 @@ DEFAULT_CONTAINER_TIMEZONE=UTC
 # https://github.com/phusion/baseimage-docker/releases
 DEFAULT_BASEIMAGE_VERSION=0.9.22
 # https://github.com/jwilder/dockerize/releases
-DEFAULT_DOCKERIZE_VERSION=0.5.0
-# https://github.com/openresty/headers-more-nginx-module/tags
-DEFAULT_HEADERS_MORE_VERSION=0.33
+DEFAULT_DOCKERIZE_VERSION=0.6.0
 # https://github.com/pagespeed/ngx_pagespeed/releases
-DEFAULT_NGINX_PAGESPEED_RELEASE=stable
-DEFAULT_NGINX_PAGESPEED_VERSION=latest
-# http://nginx.org/en/download.html
-DEFAULT_NGINX_VERSION=1.13.6
+DEFAULT_NGX_PAGESPEED_RELEASE=stable
+DEFAULT_NGX_PAGESPEED_VERSION=latest
+# https://openresty.org/en/download.html
+DEFAULT_OPENRESTY_VERSION=1.13.6.1
 # https://www.openssl.org/source
-DEFAULT_OPENSSL_VERSION=1.1.0g
+DEFAULT_OPENSSL_VERSION=1.0.2n
+
 DEFAULT_PHP_MAJOR_VERSION=7.0
 
 # ============================================================================

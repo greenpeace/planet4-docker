@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-set -a
+set -ea
 
-PROJECT_ROOT_DIR="${BATS_TEST_DIRNAME}/../../"
-PROJECT_ID="$(grep "PROJECT_ID=.*" "${PROJECT_ROOT_DIR}/tests/self/fixtures/config.test" | cut -d \" -f 2)"
-TEST_CONFIG_FILE="${PROJECT_ROOT_DIR}/tests/self/fixtures/config.test"
+PROJECT_GIT_ROOT_DIR="${BATS_TEST_DIRNAME}/../../"
+PROJECT_ID="$(grep "PROJECT_ID=.*" "${PROJECT_GIT_ROOT_DIR}/tests/self/fixtures/config.test" | cut -d \" -f 2)"
+TEST_CONFIG_FILE="${PROJECT_GIT_ROOT_DIR}/tests/self/fixtures/config.test"
 
 # shellcheck source=/dev/null
 . "${BATS_TEST_DIRNAME}/../_env"
@@ -17,16 +17,16 @@ function shellcheck_all_bash_scripts {
   set -ex
   trap finish EXIT
 
-  files=$(ack --shell -l "" "${PROJECT_ROOT_DIR}")
+  files=( $(ack --shell -l "" "${PROJECT_GIT_ROOT_DIR}") )
 
-  for i in $files
+  for i in "${files[@]}"
   do
-    shellcheck $i
+    shellcheck "$i"
   done
 }
 
 export BATS_IMAGE
-export PROJECT_ROOT_DIR
+export PROJECT_GIT_ROOT_DIR
 export PROJECT_ID
 export TEST_CONFIG_FILE
 

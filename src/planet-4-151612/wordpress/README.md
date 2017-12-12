@@ -1,6 +1,6 @@
 # Wordpress
 
-![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6](https://img.shields.io/badge/nginx-1.13.6-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.1.0g](https://img.shields.io/badge/OpenSSL-1.1.0g-brightgreen.svg)
+![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6.1](https://img.shields.io/badge/nginx-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2m](https://img.shields.io/badge/OpenSSL-1.0.2m-brightgreen.svg)
 
 Wordpress-ready webserver stack built on [greenpeace/nginx-php-exim](https://hub.docker.com/r/greenpeace/nginx-php-exim/)
 
@@ -20,7 +20,7 @@ Included in this image:
 - fully configurable cron daemon
 - [xdebug](https://xdebug.org/) with configurable remote host/port/key
 - Production / development environments, eg in development, all outgoing email is redirected to a configurable destination (`$ADMIN_EMAIL`)
-- Sane security defaults, and SSL configuration based on Mozilla's intermediate profile. See: [greenpeace/nginx-pagespeed](https://hub.docker.com/r/greenpeace/nginx-pagespeed/) for more details
+- Sane security defaults, and SSL configuration based on Mozilla's intermediate profile. See: [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/) for more details
 
 ---
 
@@ -41,8 +41,6 @@ WP_ADMIN_NAME |  | Name of Wordpress administrator user to create
 WP_ADMIN_USER |  | Username of Wordpress administrator user to create
 WP_ADMIN_PASS |  | Password of Wordpress administrator user to create
 WP_ADMIN_EMAIL |  | Email address of Wordpress administrator user to create
-WP_VERSION | latest | Version of Wordpress to install
-WP_LOCALE | en_AU | Locale of Wordpress to install
 WP_THEME_HTTP |  | HTTP address of Wordpress theme to install
 WP_THEME_GIT |  | Git address of Wordpress theme to install
 WP_THEME_USERNAME |  | Username for theme install if authentication is required
@@ -52,5 +50,5 @@ SSH_DOMAIN_HOSTKEYS |  | semi-colon separated list of additional SSH hostkeys to
 
 See also features and configuration options from upstream images:
 - [greenpeace/nginx-php-exim](https://hub.docker.com/r/greenpeace/nginx-php-exim/)
-- [greenpeace/nginx-pagespeed](https://hub.docker.com/r/greenpeace/nginx-pagespeed/)
+- [greenpeace/openresty](https://hub.docker.com/r/greenpeace/openresty/)
 - [greenpeace/ubuntu](https://hub.docker.com/r/greenpeace/ubuntu/)

@@ -34,6 +34,19 @@ function teardown {
   fi
 }
 
+@test "cgi-fcgi exists and is executable" {
+  # Circle doesn't need this, the test relies on docker
+  if [[ ${CIRCLECI} ]]
+  then
+    skip "CircleCI doesn't require cgi-fcgi binary"
+  fi
+  if [[ ! -x "$(type -P cgi-fcgi)" ]]
+  then
+    fatal "FATAL: cgi-fcgi not found.\nPlease install the 'fcgi' package from your operating system repository. See https://www.thatsgeeky.com/2012/02/directly-connecting-to-php-fpm/"
+    exit 1
+  fi
+}
+
 @test "shellcheck all Bash scripts" {
   run shellcheck_all_bash_scripts
   # We don't care bout failures here, just log them for future reference
@@ -44,12 +57,12 @@ function teardown {
 }
 
 @test "build.sh exists and is executable" {
-  [[ -f "${PROJECT_ROOT_DIR}/build.sh" ]]
-  [[ -x "${PROJECT_ROOT_DIR}/build.sh" ]]
+  [[ -f "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" ]]
+  [[ -x "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" ]]
 }
 
 @test "build.sh prints usage information with -h flag" {
-  run ${PROJECT_ROOT_DIR}/build.sh -h
+  run "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -h
   [[ $status -eq 0 ]]
-  [[ $output =~ "usage" ]]
+  [[ $output =~ Usage ]]
 }

@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+# shellcheck disable=SC2034
+
+# =============================================================================
+#
+#   CUSTOM BUILD CONFIGURATION
+#
+#   Define build parameters here or as environment parameters
+#
+#   Examples of build-time configuration:
+#
+#   GOOGLE_PROJECT_ID=greenpeace-testing
+#   OPENRESTY_VERSION=1.13.2
+#   COMPOSER=composer-dev.json
+#
+# =============================================================================
+
+# Example - changing container timezone
+CONTAINER_TIMEZONE=Australia/Hobart

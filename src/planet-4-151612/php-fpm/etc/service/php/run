@@ -1,0 +1,65 @@
+#!/bin/bash
+set -eufo pipefail
+
+# =============================================================================
+# 	PHP-FPM
+# =============================================================================
+
+# Ubuntu xenial php doesn't create /run/php, where it expects socket files to live
+mkdir -p /run/php
+chown -R ${APP_USER:-$DEFAULT_APP_USER} /run/php
+
+# replace PHP Pool name
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "pool name:")" "${PHP_POOL_NAME}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "user:")" "${APP_USER:-$DEFAULT_APP_USER}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "group:")" "${APP_GROUP:-$DEFAULT_APP_GROUP}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "memory_limit:")" "${PHP_MEMORY_LIMIT:-$DEFAULT_PHP_MEMORY_LIMIT}"
+
+# file upload limits
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "upload_max_filesize:")" "${UPLOAD_MAX_SIZE:-$DEFAULT_UPLOAD_MAX_SIZE}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "post_max_size:")" "${UPLOAD_MAX_SIZE:-$DEFAULT_UPLOAD_MAX_SIZE}"
+
+# maximum execution time
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "max_input_vars:")" "${PHP_MAX_EXECUTION_TIME:-$DEFAULT_PHP_MAX_EXECUTION_TIME}"
+
+# maximum input variables
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "max_input_vars:")" "${PHP_MAX_INPUT_VARS:-$DEFAULT_PHP_MAX_INPUT_VARS}"
+
+# expose environment variables
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "clear_env:")" "${PHP_CLEAR_ENV:-$DEFAULT_PHP_CLEAR_ENV}"
+
+# session handler
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "session.save_handler:")" "${PHP_SESSION_SAVE_HANDLER:-$DEFAULT_PHP_SESSION_SAVE_HANDLER}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "session.save_path:")" "${PHP_SESSION_SAVE_PATH:-$DEFAULT_PHP_SESSION_SAVE_PATH}"
+
+# php process manager
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "pm.max_children:")" "${PHP_PROCESS_MANAGER_MAX_CHILDREN:-$DEFAULT_PHP_PROCESS_MANAGER_MAX_CHILDREN}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "pm.start_servers:")" "${PHP_PROCESS_MANAGER_START_SERVERS:-$DEFAULT_PHP_PROCESS_MANAGER_START_SERVERS}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "pm.min_spare_servers:")" "${PHP_PROCESS_MANAGER_MIN_SPARE_SERVERS:-$DEFAULT_PHP_PROCESS_MANAGER_MIN_SPARE_SERVERS}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "pm.max_spare_servers:")" "${PHP_PROCESS_MANAGER_MAX_SPARE_SERVERS:-$DEFAULT_PHP_PROCESS_MANAGER_MAX_SPARE_SERVERS}"
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "pm.max_requests:")" "${PHP_PROCESS_MANAGER_MAX_REQUESTS:-$DEFAULT_PHP_PROCESS_MANAGER_MAX_REQUESTS}"
+
+# disable_functions
+PHP_DISABLE_FUNCTIONS="$(grep "disable_functions =" /etc/php/${PHP_MAJOR_VERSION}/fpm/php.ini.dist | cut -d"=" -f2 | xargs)${PHP_DISABLE_FUNCTIONS:-${DEFAULT_PHP_DISABLE_FUNCTIONS}}"
+export PHP_DISABLE_FUNCTIONS
+_good "$(printf "%-10s " "php:")" "$(printf "%-22s" "disable_functions:")" "${PHP_DISABLE_FUNCTIONS}"
+
+# newrelic
+php_configure_newrelic.sh
+
+# if [[ "${EXIM_MAIL_FROM:-$DEFAULT_EXIM_MAIL_FROM}" == "example.com" ]]; then
+# 	# _good "exim:   mail_from ${APP_HOSTNAME}"
+# 	EXIM_MAIL_FROM=${APP_HOSTNAME}
+# fi
+#
+# # sendmail parameters
+# _good "$(printf "%-10s " "php:")" "sendmail_path:         /usr/bin/sendmail -t -f no-reply@${EXIM_MAIL_FROM:-$DEFAULT_EXIM_MAIL_FROM}"
+# sed -i -r "s/sendmail_path =.*$/sendmail_path = \/usr\/sbin\/sendmail -t -f no-reply@${EXIM_MAIL_FROM:-$DEFAULT_EXIM_MAIL_FROM}/g" /etc/php/${PHP_MAJOR_VERSION}/fpm/php.ini
+_title "Starting service: php-fpm $(php --version | head -n 1 | cut -d " " -f 2)"
+
+# start PHP
+exec dockerize \
+  -template /app/templates/etc/php/fpm/pool.d/www.conf.tmpl:/etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf \
+  -stdout /var/log/php${PHP_MAJOR_VERSION}-fpm.log \
+  -stderr /var/log/php${PHP_MAJOR_VERSION}-fpm.${PHP_POOL_NAME}.error.log \
+  php-fpm${PHP_MAJOR_VERSION} -c /etc/php/${PHP_MAJOR_VERSION}/fpm

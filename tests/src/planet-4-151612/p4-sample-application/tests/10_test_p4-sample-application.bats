@@ -15,7 +15,7 @@ ENVVARS=(
 ENVVARS_STRING="$(printf "%s:" "${ENVVARS[@]}")"
 ENVVARS_STRING="${ENVVARS_STRING%:}"
 
-envsubst "${ENVVARS_STRING}" < ${BATS_DIRECTORY:-"${BATS_TEST_DIRNAME}/.."}/Dockerfile.in > ${BATS_DIRECTORY:-"${BATS_TEST_DIRNAME}/.."}/Dockerfile
+envsubst "${ENVVARS_STRING}" < "${BATS_DIRECTORY:-${BATS_TEST_DIRNAME}/..}/Dockerfile.in" > "${BATS_DIRECTORY:-${BATS_TEST_DIRNAME}/..}/Dockerfile"
 
 function setup {
   begin_output
@@ -25,38 +25,55 @@ function teardown {
   store_output
 }
 
-@test "application builds successfully: ${image}" {
+@test "php-application builds successfully: ${image}" {
   [[ -z "${GITHUB_OAUTH_TOKEN}" ]] && >&2 echo "ERROR: GITHUB_OAUTH_TOKEN not set" && exit 1
-  docker-compose  -f ${compose_file} stop || true
-  yes | docker-compose -f ${compose_file} rm || true
-  run docker-compose -f ${compose_file} build app
-  [[ "$status" -eq 0 ]]
+  docker-compose -f "${compose_file}" stop || true
+  docker-compose -f "${compose_file}" rm -f || true
+  run docker-compose -f "${compose_file}" build --no-cache --force-rm php-fpm
+  [[ $status -eq 0 ]]
 }
 
 @test "image exists" {
-  run run_test_image_exists "p4sampleapplication_app"
-  [[ "$status" -eq 0 ]]
+  run run_test_image_exists "p4sampleapplication_php-fpm"
+  [[ $status -eq 0 ]]
 }
 
 @test "container starts" {
   # Wait up to 10 minutes for the build to complete!
-  run start_docker_compose ${BATS_TEST_DIRNAME}/../docker-compose.yml http://localhost:80 600
+  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 p4sampleapplication_openresty_1 600
   [[ "$status" -eq 0 ]]
 }
 
 @test "container responds on port 80 with status 200" {
-  run curl_check_status_code
+  run curl_check_status_code 200 http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -eq 0 ]]
 }
 
 @test "container response contains string 'greenpeace'" {
-  run curl_check_response_regex "greenpeace"
+  run curl_check_response_regex "greenpeace" http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -eq 0 ]]
 }
 
 @test "container response does not contain string 'FNORDPTANGWIBBLE'" {
-  run curl_check_response_regex "FNORDPTANGWIBBLE"
+  run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -ne 0 ]]
+}
+
+@test "wp-cli has database connection" {
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec php-fpm wp db check
+  [[ $status -eq 0 ]]
+}
+
+@test "wp-cli can modify content" {
+  skip "todo"
+}
+
+@test "container restarts with modified content" {
+  skip "todo"
+}
+
+@test "can overwrite existing files" {
+  skip "todo"
 }
 
 @test "container cleans up" {

@@ -8,9 +8,11 @@ then
 fi
 
 # shellcheck source=/dev/null
-. ${BATS_TEST_DIRNAME}/../../../../_env
+. "${BATS_TEST_DIRNAME}/../../../../../bin/inc/main"
 # shellcheck source=/dev/null
-. ${BATS_TEST_DIRNAME}/../../../../_helpers
+. "${BATS_TEST_DIRNAME}/../../../../_env"
+# shellcheck source=/dev/null
+. "${BATS_TEST_DIRNAME}/../../../../_helpers"
 
 # bats test parameters
 compose_file=${BATS_TEST_DIRNAME}/../docker-compose.yml
@@ -21,12 +23,8 @@ export compose_file
 export container_name
 export image
 
-# Dockerfile.in replacements
-COMPOSER="composer-dev.json"
-export COMPOSER
-
 # docker-compose.yml environment variables
-APP_HOSTNAME="test.planet4.local"
+APP_HOSTNAME="test.planet4.dev"
 DB_IMAGE="mysql:5.7"
 export APP_HOSTNAME
 export DB_IMAGE

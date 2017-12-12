@@ -1,0 +1,7 @@
+{{ if eq .Env.PHP_ENABLED "true" }}
+upstream fastcgi_backend {
+{{ range $upstream := split .Env.OPENRESTY_FASTCGI_BACKEND "," }}
+    server {{ $upstream }};
+{{ end }}
+}
+{{ end }}

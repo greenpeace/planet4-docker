@@ -5,5 +5,3 @@ MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 ENV WP_TITLE="GPI - Testing Site"
 ENV APP_HOSTNAME "${APP_HOSTNAME}"
 ENV SSL_ENABLED "false"
-
-ENV COMPOSER="${COMPOSER}"

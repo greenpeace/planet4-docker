@@ -1,6 +1,6 @@
 # Docker builds for Planet4 on Google Container Registry
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=master)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/master.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=develop)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop)
 
 ## Description
 
@@ -40,8 +40,8 @@ There are two different methods of specifying a subset build - providing a list 
 For example, with a given `build_order` file such as:
 ```
 ubuntu
-nginx-pagespeed
-nginx-php-exim
+openresty
+php-fpm
 wordpress
 p4-onbuild
 ```
@@ -49,16 +49,16 @@ p4-onbuild
 1. Specifically stating which containers to build:
 ```
 # Perform a remote build of a small subset
-./build.sh -r nginx-pagespeed wordpress
+./build.sh -r openresty wordpress
 ```
-In this example, only the nginx-pagespeed and wordpress images are built.
+In this example, only the openresty and wordpress images are built.
 
 2. Building the dependency chain from a given start point:
 ```
-# Performs a remote build of all images in the build_order file, starting at nginx-php-exim:
-./build.sh -r nginx-php-exim+
+# Performs a remote build of all images in the build_order file, starting at php-fpm:
+./build.sh -r php-fpm+
 ```
-In this example, the `nginx-php-exim wordpress p4-onbuild` images are all built due to the trailing `+` on nginx-php-exim
+In this example, the `php-fpm wordpress p4-onbuild` images are all built due to the trailing `+` on php-fpm
 
 
 ## Updating build configuration variables
@@ -73,7 +73,7 @@ To rewrite platform variables without triggering a build, run `build.sh` without
 ./build.sh
 ```
 
-This will update the local Dockerfile ENV variables such as `NGINX_VERSION` or `OPENSSL_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically in the CI pipeline.
+This will update the local Dockerfile ENV variables such as `OPENRESTY_VERSION` or `OPENSSL_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically in the CI pipeline.
 
 ## Customising the container build
 
@@ -81,7 +81,7 @@ See `config.default` for optional build configuration parameters. The easiest wa
 
 Note: to overwrite the default values, it's recommended to edit the short form of the variable without the leading `DEFAULT_`. For example, to change the application repository branch, use `GIT_REF`, not `DEFAULT_GIT_REF`. This ensures hierarchical resolution of variables from multiple sources, and enables the values to be configured at build and runtime, while falling back to sane default values.
 
-Also note that not all defined variables are configurable on container start, for example changing `NGINX_VERSION` won't have any effect at container start as it's a variable used to install the infrastructure instead of control application behaviour.
+Also note that not all defined variables are configurable on container start, for example changing `OPENRESTY_VERSION` won't have any effect at container start as it's a variable used to install the infrastructure instead of control application behaviour.
 
 ### Variable resolution priority
 1.  Config file custom values (optional)
@@ -104,4 +104,27 @@ echo "GOOGLE_PROJECT_ID=greenpeace-testing" >> config.custom
 # Build only a subset of the project, with a custom source branch,
 # starting from wordpress and continuing down the dependency chain
 GIT_REF=dev-feature/example ./build.sh -r wordpress+
+```
+
+## Cleaning old images
+
+A garbage collection script `gcrgc.sh` is available which can automatically delete old images in Google Container Regsitry.
+
+### Trial run
+You can test which images it would delete, without performing any changes to the registry, by setting the envionrment varible `TRIAL_RUN` to any truthy value, eg:
+```
+TRIAL_RUN=true ./gcrgc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+```
+
+### Delete all ubuntu images in the planet-4-151612 project older than 1st October 2017
+```
+./gcrgc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+```
+
+### Iterate over all images in a build order, deleting older than 1st March 2017
+```
+for i in $(cat src/planet-4-151612/build_order)
+do
+  ./gcrgc.sh gcr.io/planet-4-151612/${i} 2017-04-01
+done
 ```

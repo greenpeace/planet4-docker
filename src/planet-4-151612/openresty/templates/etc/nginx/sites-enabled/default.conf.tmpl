@@ -1,0 +1,17 @@
+server {
+    listen 80;
+    listen [::]:80 default ipv6only=on;
+
+    server_name {{ .Env.APP_HOSTNAME }} www.{{ .Env.APP_HOSTNAME }} -;
+
+    root /app/www;
+
+    {{ if eq .Env.PHP_ENABLED "true" }}
+    index index.html;
+    {{ else }}
+    index index.html index.php;
+    {{ end }}
+
+    include server.d/*.conf;
+
+}
