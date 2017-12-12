@@ -9,7 +9,7 @@ set -eu
 dockerize \
 	-template /app/templates/etc/exim4/passwd.client.tmpl:/etc/exim4/passwd.client \
 	-template /app/templates/etc/exim4/update-exim4.conf.conf.tmpl:/etc/exim4/update-exim4.conf.conf \
-	-template /app/templates/etc/exim4/conf.d/router/190_exim4-config_intercept:/etc/exim4/conf.d/router/190_exim4-config_intercept
+	-template /app/templates/etc/exim4/conf.d/router/190_exim4-config_intercept.tmpl:/etc/exim4/conf.d/router/190_exim4-config_intercept
 
 _good "exim4:  ${EXIM_DELIVERY_MODE}"
 _good "exim4:  relay: ${EXIM_SMARTHOST}"
