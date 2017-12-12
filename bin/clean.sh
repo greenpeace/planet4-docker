@@ -22,6 +22,8 @@ test_containers=(
   "p4sampleapplication_openresty" \
   "p4sampleapplication_php-fpm" \
   "p4sampleapplication_db" \
+  "phpfpm_nginx" \
+  "phpfpm_php-fpm" \
 )
 
 for container in "${test_containers[@]}"
@@ -38,9 +40,7 @@ do
   docker rm ${container}_3 >/dev/null 2>&1 &
   docker rm ${container}_4 >/dev/null 2>&1 &
   wait
-  docker rmi -f ${container}
+  docker rmi -f ${container} >/dev/null 2>&1
 done
-docker network rm p4sampleapplication_default || true
-docker volume rm -f p4sampleapplication_data || true
-
-echo -e "\nClean"
+docker network rm p4sampleapplication_default >/dev/null 2>&1 || true
+docker volume rm -f p4sampleapplication_data >/dev/null 2>&1 || true

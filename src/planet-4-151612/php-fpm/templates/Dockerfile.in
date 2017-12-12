@@ -26,6 +26,7 @@ RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.c
       php-recode \
       php-redis \
       php-soap \
+      ssmtp \
       && \
     newrelic-install install && \
   	apt-get clean && \
@@ -36,11 +37,6 @@ ENV \
     COMPOSER_HOME="/app/.composer" \
     DEFAULT_ADMIN_EMAIL="nobody@example.com" \
     DEFAULT_CHOWN_APP_DIR="false" \
-    DEFAULT_EXIM_DELIVERY_MODE="local" \
-    DEFAULT_EXIM_MAIL_FROM="example.com" \
-    DEFAULT_EXIM_SMARTHOST_AUTH_PASSWORD="password_123" \
-    DEFAULT_EXIM_SMARTHOST_AUTH_USERNAME="postmaster@example.com" \
-    DEFAULT_EXIM_SMARTHOST="smtp.example.org::587" \
     DEFAULT_NEWRELIC_APPNAME="${APPLICATION_NAME}" \
     DEFAULT_NEWRELIC_ENABLED="false" \
     DEFAULT_PHP_CLEAR_ENV="yes" \
@@ -60,6 +56,7 @@ ENV \
     DEFAULT_PHP_SESSION_SAVE_PATH="/var/lib/php/sessions" \
     DEFAULT_UPLOAD_MAX_SIZE="50M" \
     DEFAULT_VIRTUAL_HOST="example.com" \
+    SSMTP_MAIL_RELAY="smtp" \
     NEWRELIC_LICENSE="" \
     PHP_MAJOR_VERSION="${PHP_MAJOR_VERSION}"
 
