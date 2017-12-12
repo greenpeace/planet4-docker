@@ -12,7 +12,7 @@ EXPOSE 25
 COPY . /app
 
 ENV \
-  EXIM_ADMIN_MAIL="raymond.walker@greenpeace.org" \
+  EXIM_ADMIN_EMAIL="raymond.walker@greenpeace.org" \
   EXIM_DELIVERY_MODE="smarthost" \
   EXIM_MAIL_FROM="greenpeace.org" \
   EXIM_SMARTHOST_AUTH_PASSWORD="" \
