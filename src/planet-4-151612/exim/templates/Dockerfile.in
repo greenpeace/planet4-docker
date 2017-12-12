@@ -9,6 +9,8 @@ RUN apt-get update \
 
 EXPOSE 25
 
+COPY . /app
+
 ENV \
   EXIM_ADMIN_MAIL="raymond.walker@greenpeace.org" \
   EXIM_DELIVERY_MODE="smarthost" \
