@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -eu
+
+# =============================================================================
+# 	EXIM4
+# =============================================================================
+
+
+dockerize \
+	-template /app/templates/etc/exim4/passwd.client.tmpl:/etc/exim4/passwd.client \
+	-template /app/templates/etc/exim4/update-exim4.conf.conf.tmpl:/etc/exim4/update-exim4.conf.conf \
+	-template /app/templates/etc/exim4/conf.d/router/190_exim4-config_intercept:/etc/exim4/conf.d/router/190_exim4-config_intercept
+
+_good "exim4:  ${EXIM_DELIVERY_MODE}"
+_good "exim4:  relay: ${EXIM_SMARTHOST}"
+_good "exim4:  from:  ${EXIM_MAIL_FROM:-$DEFAULT_EXIM_MAIL_FROM}"
+
+if [[ ! -z ${EXIM_SMARTHOST_AUTH_USERNAME} ]] && [[ ! -z ${EXIM_SMARTHOST_AUTH_PASSWORD} ]]
+then
+	_good "exim4:  *:${EXIM_SMARTHOST_AUTH_USERNAME}:********"
+fi
+
+# -----------------------------------------------------------------------------
+#   EXIM email redirect
+# -----------------------------------------------------------------------------
+
+if [[ "${APP_ENV:-$DEFAULT_APP_ENV}" =~ develop ]]
+then
+	_good "exim4:  re-routing all outgoing email to ${EXIM_ADMIN_EMAIL}"
+else
+	rm -fr /etc/exim4/conf.d/router/190_exim4-config_intercept
+fi
+
+update-exim4.conf -v
+
+_good "exim4:  Starting service exim4..."
+
+exec dockerize \
+	-stdout /var/log/exim4/mainlog \
+	exim4 -bd -v
