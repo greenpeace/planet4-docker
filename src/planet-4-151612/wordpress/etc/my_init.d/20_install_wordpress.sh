@@ -212,7 +212,8 @@ composer --profile -vv core:initial-content
 [[ ! -e /app/www ]] && ln -s /app/source/public /app/www || true
 
 # Wordpress configuration startup
-wp option set siteurl "${WP_SITE_PROTOCOL}://${WP_SITE_URL}"
-wp option set home "${WP_SITE_PROTOCOL}://${WP_SITE_HOME}"
-wp option set blogname "${WP_TITLE}"
-wp option set blogdescription "${WP_TITLE}"
+wp option set siteurl "${WP_SITE_PROTOCOL}://${WP_SITE_URL}" &
+wp option set home "${WP_SITE_PROTOCOL}://${WP_SITE_HOME}" &
+wp option set blogname "${WP_TITLE}" &
+wp option set blogdescription "${WP_TITLE}" &
+wait
