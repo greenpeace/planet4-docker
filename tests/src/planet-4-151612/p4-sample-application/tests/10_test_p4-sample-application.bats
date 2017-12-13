@@ -29,6 +29,7 @@ function teardown {
   [[ -z "${GITHUB_OAUTH_TOKEN}" ]] && >&2 echo "ERROR: GITHUB_OAUTH_TOKEN not set" && exit 1
   docker-compose -f "${compose_file}" stop || true
   docker-compose -f "${compose_file}" rm -f || true
+  docker-compose -f "${compose_file}" pull
   run docker-compose -f "${compose_file}" build --no-cache --force-rm php-fpm
   [[ $status -eq 0 ]]
 }
