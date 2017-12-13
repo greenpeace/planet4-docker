@@ -3,39 +3,6 @@ set -e
 
 install_lock="/app/source/public/.install"
 
-# shellcheck disable=SC2120
-function get_num_files_exist() {
-  local files
-  # Check if files exist
-  # This indicates whether the container is mounting files from an external source
-  # If files exist we may not want to overwrite
-  if [[ -d "${1:-/app/source/public}" ]]
-  then
-    # Directory already exists
-    shopt -s nullglob dotglob
-    files=(/app/source/public/*)
-    shopt -u nullglob dotglob
-    echo "${#files[@]}"
-    exit 0
-  else
-    echo 0
-  fi
-}
-
-function delete_source_directories() {
-  # Force clean exit code in the event that these are bind-mounted
-  rm -fr /app/www || true
-  rm -fr /app/source/public/* /app/source/public/.* /app/source/public || true
-  mkdir -p /app/source/public
-  true > "${install_lock}"
-}
-
-function backup_testing_source() {
-  mkdir -p /app/backup
-  [[ -f "/app/source/public/index.php" ]] && mv /app/source/public/index.php /app/backup/index.php
-  [[ -f "/app/source/public/index.html" ]] && mv /app/source/public/index.html /app/backup/index.html
-}
-
 # ==============================================================================
 # ENVIRONMENT VARIABLE CHECKS
 # ==============================================================================
@@ -71,22 +38,74 @@ fi
 _good "WP_DB_PREFIX       ${WP_DB_PREFIX}"
 
 # ==============================================================================
+# UTILITY FUNCTIONS
+# ==============================================================================
+
+# ==============================================================================
+# get_num_files_exist()
+#
+# Displays the number of files in a directory.
+#
+# shellcheck disable=SC2120
+function get_num_files_exist() {
+  local -a files
+  local dir
+  dir="${1:-/app/source/public}"
+
+  if [[ ! -d "$dir" ]]
+  then
+    echo 0
+    exit 0
+  fi
+  shopt -s nullglob dotglob
+  files=(/app/source/public/*)
+  shopt -u nullglob dotglob
+  echo "${#files[@]}"
+}
+# ==============================================================================
+# create_source_directories()
+#
+function create_source_directories() {
+  [[ ! -e /app/source/public ]] && mkdir -p /app/source/public
+  [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
+}
+# ==============================================================================
+# delete_source_directories()
+#
+function delete_source_directories() {
+  # Force clean exit code in the event that these are bind-mounted
+  rm -fr /app/www || true
+  rm -fr /app/source/public/* /app/source/public/.* /app/source/public || true
+}
+# ==============================================================================
+# touch_install_lock()
+#
+function touch_install_lock() {
+  mkdir -p /app/source/public
+  true > "${install_lock}"
+}
+
+# Random sleep between .1 and 1 second
+milliseconds="$[ ( $RANDOM % 1000 ) ]"
+_good "Sleeping ${milliseconds}ms ..."
+sleep ".${milliseconds}"
+
+# ==============================================================================
 # FILE SYSTEM CHECKS
 # ==============================================================================
+
 num_files="$(get_num_files_exist)"
-_good "Number of files in source folder: ${num_files}"
-ls -al /app/source/public
 
 if [[ -f "${install_lock}" ]]
 then
   _good "Installation already underway, ${install_lock} exists"
-  ls -al /app/source/public
-  # FIXME Ensure the symlink exists. The HORROR
-  [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
+  create_source_directories
   exit 0
 fi
-mkdir -p /app/source/public
 true > "${install_lock}"
+
+_good "Installing Wordpress for site ${WP_HOSTNAME}..."
+_good "Number of files in source folder: ${num_files}"
 
 if [[ "${num_files}" -eq 1 ]]
 then
@@ -94,28 +113,23 @@ then
   then
     _good "Test data detected: /app/source/public/index.php"
     _good "Deleting source directories..."
-    backup_testing_source
     delete_source_directories
   elif [[ -f "/app/source/public/index.html" ]] && [[ ! -z "$(grep TEST-DATA-ONLY /app/source/public/index.html)" ]]
   then
     _good "Test data detected: /app/source/public/index.html"
     _good "Deleting source directories..."
-    backup_testing_source
     delete_source_directories
   fi
 elif [[ "${num_files}" -eq 2 ]] && \
   [[ -f "/app/source/public/index.php" ]] && [[ ! -z "$(grep TEST-DATA-ONLY /app/source/public/index.php)" ]] && \
   [[ -f "/app/source/public/index.html" ]] && [[ ! -z "$(grep TEST-DATA-ONLY /app/source/public/index.html)" ]]
 then
-  _good "Test data detected, deleting source directories /app/source/public /app/www"
-  backup_testing_source
+  _good "Test data detected, deleting source directories..."
   delete_source_directories
 elif [[ "${num_files}" -gt 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
 then
   _good "OVERWRITE_FILES is not 'true', cowardly refusing to reinstall Wordpress"
-
-  # FIXME Ensure the symlink exists. The HORROR
-  [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
+  create_source_directories
 
   # Exit this script and continue container boot
   exit 0
@@ -135,6 +149,8 @@ then
   _error "File not found: $PWD/$COMPOSER"
 fi
 
+create_source_directories
+
 chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app
 _good "chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app"
 
@@ -142,7 +158,6 @@ _good "chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} 
 # WORDPRESS INSTALLATION
 # ==============================================================================
 
-_good "Installing Wordpress for site ${WP_HOSTNAME}..."
 _good "From: ${GIT_SOURCE}:${GIT_REF}"
 
 # @todo this is a terribly hacky way of checking upstream, fixme please
@@ -182,7 +197,6 @@ do
     _error "Timeout waiting for database to become ready"
     exit 1
   fi
-  sleep 1;
 done
 
 _good "Database ready: ${WP_DB_HOST}:${WP_DB_PORT}"
