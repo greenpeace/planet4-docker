@@ -6,7 +6,7 @@
 time ( make clean; \
   make build ${1:+BUILD_FLAGS=${1}} ${2:+BUILD_LIST=${2}}; \
   pushd "../planet4-base"; \
-  make build FROM_TAG=develop BUILD_FLAGS=-rp; \
+  make build; \
   beep.sh; \
   popd; \
   make test;
