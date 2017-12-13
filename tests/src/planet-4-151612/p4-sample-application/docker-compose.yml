@@ -13,6 +13,7 @@ services:
       - SSL_ENABLED=false
     depends_on:
       - php-fpm
+
   php-fpm:
     build:
       context: .
@@ -20,6 +21,8 @@ services:
         - GIT_REF=${GIT_REF:-develop}
         - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
         - OVERWRITE_FILES=true
+    dns:
+      - ${DNS_RESOLVER:-8.8.8.8}
     ports:
       - "9000:9000"
     environment:
