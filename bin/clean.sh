@@ -24,6 +24,7 @@ test_containers=(
   "p4sampleapplication_db" \
   "phpfpm_nginx" \
   "phpfpm_php-fpm" \
+  "openresty_app" \
 )
 
 for container in "${test_containers[@]}"
