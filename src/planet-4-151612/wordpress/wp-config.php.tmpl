@@ -76,6 +76,13 @@ define( 'WP_STATELESS_MEDIA_BUCKET',            getenv('WP_STATELESS_MEDIA_BUCKE
 define( 'WP_STATELESS_MEDIA_MODE',              getenv('WP_STATELESS_MEDIA_MODE') );
 define( 'WP_STATELESS_MEDIA_KEY_FILE_PATH',     getenv('WP_STATELESS_MEDIA_KEY_FILE_PATH') );
 define( 'WP_STATELESS_MEDIA_SERVICE_ACCOUNT',   getenv('WP_STATELESS_MEDIA_SERVICE_ACCOUNT') );
+{{ if eq .Env.WP_REDIS_ENABLED "true" }}
+
+$redis_server = array(
+  'database'  => '{{ .Env.WP_REDIS_DB }}',
+  'host'      => '{{ .Env.WP_REDIS_HOST }}',
+  'port'      => '{{ .Env.WP_REDIS_PORT }}'
+);
 
 {{ end }}
 
