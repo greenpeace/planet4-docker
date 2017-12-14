@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+[[ ! -d /etc/rc.docker.d ]] && mkdir -p /etc/rc.docker.d
+
+# Configure environment
+shopt -s nullglob dotglob
+for rc in /etc/rc.docker.d/*
+do
+  # shellcheck source=/dev/null
+  . "${rc}"
+done
+shopt -u nullglob dotglob
