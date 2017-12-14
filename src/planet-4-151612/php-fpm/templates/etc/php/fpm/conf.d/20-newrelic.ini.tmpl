@@ -20,7 +20,7 @@ extension = "newrelic.so"
 ;          agent will not initialize at all. However, you can selectively
 ;          disable the agent on a per-directory basis.
 ;
-newrelic.enabled = {{ .Env.PAGESPEED_ENABLED }}
+newrelic.enabled = {{ .Env.NEWRELIC_ENABLED }}
 
 ; Setting: newrelic.license
 ; Type   : string
@@ -46,7 +46,7 @@ newrelic.enabled = {{ .Env.PAGESPEED_ENABLED }}
 ;          eliminate the potential for confusion about exactly where the key
 ;          is coming from.
 ;
-newrelic.license = "{{ .Env.PAGESPEED_LICENSE }}"
+newrelic.license = "{{ .Env.NEWRELIC_LICENSE }}"
 
 ; Setting: newrelic.logfile
 ; Type   : string
