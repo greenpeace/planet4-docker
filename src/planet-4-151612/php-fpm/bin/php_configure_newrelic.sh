@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-if [[ ${NEWRELIC_ENABLED:-$DEFAULT_NEWRELIC_ENABLED} = 'true' ]]
+if [[ ${NEWRELIC_ENABLED} = 'true' ]]
 then
   if [[ -z "${NEWRELIC_LICENSE}" ]]
   then
@@ -10,7 +10,7 @@ then
     _warning "$(printf "%-10s " "php:")" "NEWRELIC_LICENSE is blank, license key is required"
     _warning "$(printf "%-10s " "php:")" "disabling newrelic"
   else
-    _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "newrelic.enabled:")" "${NEWRELIC_ENABLED:-$DEFAULT_NEWRELIC_ENABLED}"
+    _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "newrelic.enabled:")" "${NEWRELIC_ENABLED}"
     _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "newrelic.appname:")" "${NEWRELIC_APPNAME}"
     _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "newrelic.license:")" "${NEWRELIC_LICENSE}"
   fi
