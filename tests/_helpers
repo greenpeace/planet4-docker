@@ -50,7 +50,7 @@ function curl_check_response_regex {
   local endpoint=${2:-"http://localhost:80"}
   local container=${3:-$(get_container_name)}
 
-  docker run -t --network "container:${container}" --rm appropriate/curl -s -k -N "${endpoint}" | grep "${regex}"
+  docker run -t --network "container:${container}" --rm "${CURL_CONTAINER}" -s -k -N "${endpoint}" | grep "${regex}"
 }
 
 # Queries an endpoint and expects a response status code to match parameter
@@ -62,7 +62,7 @@ function curl_check_status_code {
   local endpoint=${2:-"http://localhost:80"}
   local container=${3:-$(get_container_name)}
 
-  docker run --network "container:${container}" --rm appropriate/curl -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep "${status_code}"
+  docker run --network "container:${container}" --rm "${CURL_CONTAINER}" -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep "${status_code}"
 }
 
 # Pulls docker image parameter
