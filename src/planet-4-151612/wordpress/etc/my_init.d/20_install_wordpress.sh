@@ -102,7 +102,7 @@ function touch_install_lock() {
   true > "${install_lock}"
 }
 
-# Random sleep between .1 and 1 second
+# Random sleep from 0ms to 1000ms
 milliseconds="$[ ( $RANDOM % 1000 ) ]"
 _good "Sleeping ${milliseconds}ms ..."
 sleep ".${milliseconds}"
@@ -126,8 +126,10 @@ then
 fi
 true > "${install_lock}"
 
-_good "Installing Wordpress for site ${WP_HOSTNAME}..."
-_good "Number of files in source folder: ${num_files}"
+_good "Installing Wordpress for site ${WP_HOSTNAME} ..."
+_good "From: ${GIT_SOURCE}:${GIT_REF}"
+
+# _good "Number of files in source folder: ${num_files}"
 
 if [[ "${num_files}" -eq 1 ]]
 then
@@ -174,8 +176,8 @@ fi
 
 create_source_directories
 
+_good "Setting permissions of /app to ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP}..."
 chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app
-_good "chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app"
 
 # ==============================================================================
 # WORDPRESS INSTALLATION
@@ -198,7 +200,7 @@ i=0
 until dockerize -wait tcp://${WP_DB_HOST}:${WP_DB_PORT} -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
 do
   let i=i+1
-  if [[ $i -gt $timeout ]];
+  if [[ $i -gt $timeout ]]
   then
     _error "Timeout waiting for database to become ready"
     exit 1
@@ -208,10 +210,7 @@ done
 _good "Database ready: ${WP_DB_HOST}:${WP_DB_PORT}"
 
 # FIXME Run another check to test if wp is installed yet
-
-_good "Running 'composer docker-site-install' with COMPOSER=${COMPOSER}"
-
-wait # It's remotely possible that `chown /app` above hasn't finished yet
+# FIXME If installed, perform site-update?
 
 composer --profile -vv core:install
 
@@ -224,8 +223,6 @@ composer --profile -vv core:initial-content
 # Install WP-Redis object cache file if exist
 # FIXME there must be a better way
 [[ -f /app/source/public/wp-content/plugins/wp-redis/object-cache.php ]] && cp /app/source/public/wp-content/plugins/wp-redis/object-cache.php /app/source/public/wp-content/object-cache.php
-
-# chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app/source/public
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
