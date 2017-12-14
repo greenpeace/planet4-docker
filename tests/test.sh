@@ -58,8 +58,6 @@ shopt -s nullglob
 
 for project_dir in "${TEST_BASE_DIR}"/src/*/
 do
-  project_name="$(basename "${project_dir}")"
-
   if [[ -f "${project_dir}/test_order" ]]
   then
     # read test order from file
@@ -91,7 +89,7 @@ do
       continue
     fi
 
-    filename="${project_name}_$(basename "${image_dir}")"
+    filename="$(basename "${project_dir}")_$(basename "${image_dir}")"
 
     # Run bats tests, piping output to file
     bats "${bats_switches[@]}" "${image_dir}tests" | tee "${TEST_OUTPUT_DIR}/${filename}.tap"
