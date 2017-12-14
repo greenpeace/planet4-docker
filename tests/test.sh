@@ -36,7 +36,9 @@ then
   echo "Test output directory: $TEST_OUTPUT_DIR"
 fi
 
-mkdir -p "${TEST_OUTPUT_DIR}"
+[[ ! -e "${TEST_OUTPUT_DIR}" ]] && mkdir -p "${TEST_OUTPUT_DIR}"
+[[ ! -d "${TEST_OUTPUT_DIR}" ]] && _error "${TEST_OUTPUT_DIR} is not a directory"
+[[ ! -w "${TEST_OUTPUT_DIR}" ]] && chmod 755 "${TEST_OUTPUT_DIR}" || _error "${TEST_OUTPUT_DIR} is not writable"
 
 bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
 
@@ -50,8 +52,10 @@ then
 fi
 
 # Testing main project suite
-shopt -s nullglob
 # Iterate over all projects in src
+
+shopt -s nullglob
+
 for project_dir in "${TEST_BASE_DIR}"/src/*/
 do
   project_name="$(basename "${project_dir}")"
