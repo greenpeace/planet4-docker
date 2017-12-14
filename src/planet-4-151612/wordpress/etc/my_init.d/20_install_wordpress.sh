@@ -37,6 +37,23 @@ then
 fi
 _good "WP_DB_PREFIX       ${WP_DB_PREFIX}"
 
+# @todo this is a terribly hacky way of checking upstream, fixme please
+actual_source="https://github.com/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f4)/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f5 | cut -d' ' -f1)"
+if [[ ${GIT_SOURCE} != "${actual_source}" ]]
+then
+  _warning "Expected source:     ${GIT_SOURCE}"
+  _warning "Found source:        ${actual_source}"
+fi
+
+actual_git_ref=$(git rev-parse --abbrev-ref HEAD)
+if [[ ${GIT_REF} != "${actual_git_ref}" ]]
+then
+  _warning "Expected branch/tag: ${GIT_REF}"
+  _warning "Found branch/tag:    ${actual_git_ref}"
+else
+  _good "COMPOSER           ${COMPOSER}"
+fi
+
 # ==============================================================================
 # UTILITY FUNCTIONS
 # ==============================================================================
@@ -163,23 +180,6 @@ _good "chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} 
 # ==============================================================================
 # WORDPRESS INSTALLATION
 # ==============================================================================
-
-_good "From: ${GIT_SOURCE}:${GIT_REF}"
-
-# @todo this is a terribly hacky way of checking upstream, fixme please
-actual_source="https://github.com/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f4)/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f5 | cut -d' ' -f1)"
-if [[ ${GIT_SOURCE} != "${actual_source}" ]]
-then
-  _warning "Expected source:     ${GIT_SOURCE}"
-  _warning "Found source:        ${actual_source}"
-fi
-
-actual_git_ref=$(git rev-parse --abbrev-ref HEAD)
-if [[ ${GIT_REF} != "${actual_git_ref}" ]]
-then
-  _warning "Expected branch/tag: ${GIT_REF}"
-  _warning "Found branch/tag:    ${actual_git_ref}"
-fi
 
 composer --profile -vv copy:wordpress
 
