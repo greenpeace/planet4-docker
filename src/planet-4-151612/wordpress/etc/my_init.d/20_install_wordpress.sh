@@ -98,7 +98,12 @@ num_files="$(get_num_files_exist)"
 
 if [[ -f "${install_lock}" ]]
 then
-  _good "Installation already underway, ${install_lock} exists"
+  _good "Installation already underway, ${install_lock} exists. Sleeping..."
+  until [[ ! -f "${install_lock}" ]]
+  do
+    sleep .1
+  done
+  _good "Install finished, resuming startup ..."
   create_source_directories
   exit 0
 fi
