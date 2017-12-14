@@ -237,3 +237,4 @@ wp option set home "${WP_SITE_PROTOCOL}://${WP_SITE_HOME}" &
 wp option set blogname "${WP_TITLE}" &
 wp option set blogdescription "${WP_TITLE}" &
 wait
+rm -f "${install_lock}"
