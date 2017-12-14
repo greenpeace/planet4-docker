@@ -60,6 +60,7 @@ _title "Starting service: php-fpm $(php --version | head -n 1 | cut -d " " -f 2)
 # start PHP
 exec dockerize \
   -template /app/templates/etc/php/fpm/pool.d/www.conf.tmpl:/etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf \
+  -template /app/templates/etc/php/fpm/conf.d/20-newrelic.ini.tmpl:/etc/php/${PHP_MAJOR_VERSION}/fpm/conf.d/20-newrelic.ini \
   -template /app/templates/etc/ssmtp/ssmtp.conf.tmpl:/etc/ssmtp/ssmtp.conf \
   -stdout /var/log/php${PHP_MAJOR_VERSION}-fpm.log \
   -stderr /var/log/php${PHP_MAJOR_VERSION}-fpm.${PHP_POOL_NAME}.error.log \
