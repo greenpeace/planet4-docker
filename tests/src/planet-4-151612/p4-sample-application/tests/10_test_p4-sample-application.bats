@@ -45,6 +45,16 @@ function teardown {
   [[ "$status" -eq 0 ]]
 }
 
+@test "print openresty environment" {
+  run print_docker_compose_env openresty
+  [[ $status -eq 0 ]]
+}
+
+@test "print php-fpm environment" {
+  run print_docker_compose_env php-fpm
+  [[ $status -eq 0 ]]
+}
+
 @test "container responds on port 80 with status 200" {
   run curl_check_status_code 200 http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -eq 0 ]]

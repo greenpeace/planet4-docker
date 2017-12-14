@@ -26,6 +26,11 @@ function teardown {
   [[ $status -eq 0 ]]
 }
 
+@test "print service environment" {
+  run print_docker_env "${image}"
+  [[ $status -eq 0 ]]
+}
+
 @test "service responds 'ok' to health checks" {
   run test_fastcgi_response
   [[ $status -eq 0 ]]

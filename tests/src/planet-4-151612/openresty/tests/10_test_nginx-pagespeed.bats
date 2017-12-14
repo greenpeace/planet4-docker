@@ -26,6 +26,11 @@ function teardown {
   [[ $status -eq 0 ]]
 }
 
+@test "print app environment" {
+  run print_docker_compose_env app
+  [[ $status -eq 0 ]]
+}
+
 @test "container responds on port 80 with status 200" {
   run curl_check_status_code
   [[ $status -eq 0 ]]
