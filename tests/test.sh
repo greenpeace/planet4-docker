@@ -18,7 +18,6 @@ done
 TEST_BASE_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
 export TEST_BASE_DIR
 
-
 # Include base project helper functions
 # shellcheck source=/dev/null
 . "${TEST_BASE_DIR}/_helpers"
@@ -36,9 +35,12 @@ then
   echo "Test output directory: $TEST_OUTPUT_DIR"
 fi
 
+# Make directory if not exist
 [[ ! -e "${TEST_OUTPUT_DIR}" ]] && mkdir -p "${TEST_OUTPUT_DIR}"
-[[ ! -d "${TEST_OUTPUT_DIR}" ]] && _error "${TEST_OUTPUT_DIR} is not a directory"
-[[ ! -w "${TEST_OUTPUT_DIR}" ]] && chmod 755 "${TEST_OUTPUT_DIR}" || _error "${TEST_OUTPUT_DIR} is not writable"
+# Exit if not directory
+[[ ! -d "${TEST_OUTPUT_DIR}" ]] && >&2 echo "Error: ${TEST_OUTPUT_DIR} is not a directory" && exit 1
+# Exit if not writable
+[[ ! -w "${TEST_OUTPUT_DIR}" ]] && >&2 echo "Error: ${TEST_OUTPUT_DIR} is not writable" && exit 1
 
 bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
 
@@ -58,13 +60,14 @@ shopt -s nullglob
 
 for project_dir in "${TEST_BASE_DIR}"/src/*/
 do
+  declare -a test_order
   if [[ -f "${project_dir}/test_order" ]]
   then
     # read test order from file
     echo "Using test order from file: ${project_dir}/test_order"
     while read -r line; do
-      # push line to test_order array
       echo " - ${line}"
+      # array push line to test_order
       test_order[${#test_order[@]}]="${project_dir}${line}/"
     done < "${project_dir}/test_order"
   else
