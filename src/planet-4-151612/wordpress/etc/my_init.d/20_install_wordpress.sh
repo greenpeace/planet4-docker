@@ -75,7 +75,7 @@ function create_source_directories() {
 function delete_source_directories() {
   # Force clean exit code in the event that these are bind-mounted
   rm -fr /app/www || true
-  rm -fr /app/source/public/* /app/source/public/.* /app/source/public || true
+  rm -fr /app/source/public /app/source/public/* /app/source/public/.*  || true
 }
 # ==============================================================================
 # touch_install_lock()
