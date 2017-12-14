@@ -37,22 +37,11 @@ function teardown {
   [[ $output =~ "ok" ]]
 }
 
-@test "service responds with PHP Version ${PHP_MAJOR_VERSION}" {
+@test "service responds with PHP Version 7.0" {
   run test_fastcgi_response "/app/www/index.php"
   [[ $status -eq 0 ]]
   [[ $output =~ "PHP Version ${PHP_MAJOR_VERSION}" ]]
-}
-
-@test "service responds with newrelic.enabled yes" {
-  run test_fastcgi_response "/app/www/index.php"
-  [[ $status -eq 0 ]]
-  [[ $output =~ newrelic.enabled.*yes ]]
-}
-
-@test "service responds with opcache.enable On" {
-  run test_fastcgi_response "/app/www/index.php"
-  [[ $status -eq 0 ]]
-  [[ $output =~ opcache.enable.*On ]]
+  echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.index.php"
 }
 
 @test "minimal service cleans up" {
