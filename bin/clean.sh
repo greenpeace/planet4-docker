@@ -22,6 +22,7 @@ test_containers=(
   "p4sampleapplication_openresty" \
   "openresty_app" \
   "p4sampleapplication_db" \
+  "p4sampleapplication_redis" \
   "p4sampleapplication_php-fpm" \
   "phpfpm_nginx" \
   "phpfpm_php-fpm" \
