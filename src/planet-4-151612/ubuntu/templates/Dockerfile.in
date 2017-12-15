@@ -22,8 +22,9 @@ FROM scratch
 COPY --from=base / /
 
 # Local time zone of application container
-ENV DEBIAN_FRONTEND="noninteractive" \
-    DEFAULT_APP_ENV="production" \
+ENV \
+    APP_ENV="production" \
+    DEBIAN_FRONTEND="noninteractive" \
     DEFAULT_APP_GID="1000" \
     DEFAULT_APP_GROUP="app" \
     DEFAULT_APP_HOSTNAME="example.com" \
