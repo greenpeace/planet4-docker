@@ -200,6 +200,7 @@ then
     envvars=(
       '${APP_ENV}' \
       '${BASEIMAGE_VERSION}' \
+      '${BRANCH_NAME}' \
       '${BUILD_NAMESPACE}' \
       '${CONTAINER_TIMEZONE}' \
       '${DOCKERIZE_VERSION}' \
