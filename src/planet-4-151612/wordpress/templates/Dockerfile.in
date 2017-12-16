@@ -46,6 +46,7 @@ ENV \
     WP_REWRITE_STRUCTURE="/%category%/%post_id%/%postname%/" \
     WP_SECURE_AUTH_KEY="" \
     WP_SECURE_AUTH_SALT="" \
+    WP_SET_OPTIONS_ON_BOOT="true" \
     WP_SITE_HOME="" \
     WP_SITE_PROTOCOL="https" \
     WP_SITE_URL="" \
