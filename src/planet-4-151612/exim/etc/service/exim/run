@@ -23,7 +23,7 @@ fi
 #   EXIM email redirect
 # -----------------------------------------------------------------------------
 
-if [[ "${APP_ENV:-$DEFAULT_APP_ENV}" =~ develop ]]
+if [[ "${APP_ENV}" =~ develop ]]
 then
 	_good "exim4:  re-routing all outgoing email to ${EXIM_ADMIN_EMAIL}"
 else
