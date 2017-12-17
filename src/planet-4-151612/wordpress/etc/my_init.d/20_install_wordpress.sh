@@ -84,7 +84,6 @@ touch_install_lock
 
 _good "Number of files in source folder: ${num_files}"
 
-
 # Check for test data files
 if [[ "${num_files}" -eq 1 ]]
 then
@@ -123,7 +122,7 @@ fi
 create_source_directories
 
 _good "Setting permissions of /app to ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP}..."
-chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app
+chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app || true
 
 # ==============================================================================
 # ENVIRONMENT VARIABLE CHECKS
