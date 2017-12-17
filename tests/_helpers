@@ -45,7 +45,7 @@ function store_output {
 function print_docker_env() {
   set -eu
   trap finish EXIT
-  docker run --rm -ti ${1} env | sort
+  docker run --rm -ti ${1} env | sort | tee "$ARTIFACT_LOGS_DIR/${BATS_IMAGE}.env"
 }
 
 function print_docker_compose_env() {
@@ -53,7 +53,7 @@ function print_docker_compose_env() {
   trap finish EXIT
   local container="${1}"
   local compose_file="${2:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
-  docker-compose -f "${2:-${BATS_TEST_DIRNAME}/../docker-compose.yml}" exec "${container}" env | sort
+  docker-compose -f "${2:-${BATS_TEST_DIRNAME}/../docker-compose.yml}" exec "${container}" env | sort | tee "$ARTIFACT_LOGS_DIR/${BATS_IMAGE}_${container}.env"
 }
 
 # Queries an endpoint and expects a response to match regular expression parameter
