@@ -225,7 +225,7 @@ composer --profile -vv core:initial-content
 
 # Install WP-Redis object cache file if exist
 # FIXME there must be a better way
-[[ -f /app/source/public/wp-content/plugins/wp-redis/object-cache.php ]] && cp /app/source/public/wp-content/plugins/wp-redis/object-cache.php /app/source/public/wp-content/object-cache.php
+[[ -f /app/source/public/wp-content/plugins/wp-redis/object-cache.php ]] && wp redis enable
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
