@@ -37,5 +37,8 @@ services:
     env_file:
       - db.env
 
+  redis:
+    image: redis:4-alpine
+
 volumes:
   data:
