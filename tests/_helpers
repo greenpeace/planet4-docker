@@ -156,3 +156,13 @@ function run_test_container_starts {
   local image=$2
   docker run --rm -d --name "$name" "$image"
 }
+
+function start_planet4_docker_compose() {
+  set -eu
+  trap finish EXIT
+  pushd "$BATS_TMPDIR"
+  git clone https://github.com/greenpeace/planet4-docker-compose
+  cd planet4-docker-compose
+  make
+  popd
+}
