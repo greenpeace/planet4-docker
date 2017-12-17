@@ -106,6 +106,7 @@ then
 elif [[ "${num_files}" -gt 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
 then
   _good "OVERWRITE_FILES is not 'true', cowardly refusing to reinstall Wordpress"
+  create_source_directories
   rm -f "${install_lock}"
   # Exit this script and continue container boot
   exit 0
