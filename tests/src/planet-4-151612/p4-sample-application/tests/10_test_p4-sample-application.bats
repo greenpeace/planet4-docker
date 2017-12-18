@@ -29,6 +29,7 @@ function teardown {
   [[ -z "${GITHUB_OAUTH_TOKEN}" ]] && >&2 echo "ERROR: GITHUB_OAUTH_TOKEN not set" && exit 1
   docker-compose -f "${compose_file}" stop || true
   docker-compose -f "${compose_file}" rm -f || true
+  docker-compose -f "${compose_file}" pull
   run docker-compose -f "${compose_file}" build --no-cache --force-rm php-fpm
   [[ $status -eq 0 ]]
 }
@@ -42,6 +43,16 @@ function teardown {
   # Wait up to 10 minutes for the build to complete!
   run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 p4sampleapplication_openresty_1 600
   [[ "$status" -eq 0 ]]
+}
+
+@test "print openresty environment" {
+  run print_docker_compose_env openresty
+  [[ $status -eq 0 ]]
+}
+
+@test "print php-fpm environment" {
+  run print_docker_compose_env php-fpm
+  [[ $status -eq 0 ]]
 }
 
 @test "container responds on port 80 with status 200" {

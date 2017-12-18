@@ -7,23 +7,26 @@ services:
     ports:
       - "80:80"
     environment:
-      - APP_ENVIRONMENT=develop
+      - APP_ENV=develop
       - APP_HOSTNAME=${APP_HOSTNAME:-test.planet4.dev}
       - PHP_ENABLED=true
       - SSL_ENABLED=false
     depends_on:
       - php-fpm
+
   php-fpm:
     build:
       context: .
       args:
-        - GIT_REF=feature/dockerized
+        - GIT_REF=${GIT_REF:-develop}
         - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
         - OVERWRITE_FILES=true
+    dns:
+      - ${DNS_RESOLVER:-8.8.8.8}
     ports:
       - "9000:9000"
     environment:
-      - APP_ENVIRONMENT=develop
+      - APP_ENV=develop
       - APP_HOSTNAME=${APP_HOSTNAME:-test.planet4.dev}
     env_file:
       - db.env
@@ -33,6 +36,9 @@ services:
     image: ${DB_IMAGE:-mysql:5.7}
     env_file:
       - db.env
+
+  redis:
+    image: redis:4-alpine
 
 volumes:
   data:

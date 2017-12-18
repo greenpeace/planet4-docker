@@ -18,7 +18,6 @@ done
 TEST_BASE_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
 export TEST_BASE_DIR
 
-
 # Include base project helper functions
 # shellcheck source=/dev/null
 . "${TEST_BASE_DIR}/_helpers"
@@ -36,7 +35,12 @@ then
   echo "Test output directory: $TEST_OUTPUT_DIR"
 fi
 
-mkdir -p "${TEST_OUTPUT_DIR}"
+# Make directory if not exist
+[[ ! -e "${TEST_OUTPUT_DIR}" ]] && mkdir -p "${TEST_OUTPUT_DIR}"
+# Exit if not directory
+[[ ! -d "${TEST_OUTPUT_DIR}" ]] && >&2 echo "Error: ${TEST_OUTPUT_DIR} is not a directory" && exit 1
+# Exit if not writable
+[[ ! -w "${TEST_OUTPUT_DIR}" ]] && >&2 echo "Error: ${TEST_OUTPUT_DIR} is not writable" && exit 1
 
 bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
 
@@ -50,19 +54,20 @@ then
 fi
 
 # Testing main project suite
-shopt -s nullglob
 # Iterate over all projects in src
+
+shopt -s nullglob
+
 for project_dir in "${TEST_BASE_DIR}"/src/*/
 do
-  project_name="$(basename "${project_dir}")"
-
+  declare -a test_order
   if [[ -f "${project_dir}/test_order" ]]
   then
     # read test order from file
     echo "Using test order from file: ${project_dir}/test_order"
     while read -r line; do
-      # push line to test_order array
       echo " - ${line}"
+      # array push line to test_order
       test_order[${#test_order[@]}]="${project_dir}${line}/"
     done < "${project_dir}/test_order"
   else
@@ -87,7 +92,7 @@ do
       continue
     fi
 
-    filename="${project_name}_$(basename "${image_dir}")"
+    filename="$(basename "${project_dir}")_$(basename "${image_dir}")"
 
     # Run bats tests, piping output to file
     bats "${bats_switches[@]}" "${image_dir}tests" | tee "${TEST_OUTPUT_DIR}/${filename}.tap"

@@ -18,32 +18,25 @@
  * @package WordPress
  */
 
-
 // ** MySQL settings ** //
 
-define('DB_NAME',     getenv('WP_DB_NAME'));
-define('DB_USER',     getenv('WP_DB_USER'));
-define('DB_PASSWORD', getenv('WP_DB_PASS'));
-define('DB_HOST',     getenv('WP_DB_HOST') . ':' . getenv('WP_DB_PORT'));
+define('DB_NAME',     '{{ .Env.WP_DB_NAME }}');
+define('DB_USER',     '{{ .Env.WP_DB_USER }}');
+define('DB_PASSWORD', '{{ .Env.WP_DB_PASS }}');
+define('DB_HOST',     '{{ .Env.WP_DB_HOST}}:{{ .Env.WP_DB_PORT }}');
 
-define('DB_CHARSET',  getenv('WP_DB_CHARSET'));
-define('DB_COLLATE',  getenv('WP_DB_COLLATION'));
+define('DB_CHARSET',  '{{ .Env.WP_DB_CHARSET }}');
+define('DB_COLLATE',  '{{ .Env.WP_DB_COLLATION }}');
 
 // ** Wordpress configuration settings ** //
-define('SITE_URL',    getenv('WP_SITE_URL'));
-define('SITE_HOME',   getenv('WP_SITE_HOME'));
+define('SITE_HOME',           '{{ .Env.WP_SITE_HOME }}');
+define('SITE_URL',            '{{ .Env.WP_SITE_URL }}');
+define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
-define( 'WP_AUTO_UPDATE_CORE', getenv('WP_AUTO_UPDATE_CORE') );
-
-if (stripos(getenv('APP_ENV'), 'develop') === true) {
-  define( 'WP_DEBUG', true );
-  define( 'WP_DEBUG_LOG', true );
-}
-
+{{ if eq .Env.WP_FORCE_SSL_ADMIN "true" }}
 # Force SSL in the administration section
-if (getenv('WP_FORCE_SSL_ADMIN') == 'true') {
-    define('FORCE_SSL_ADMIN', true);
-}
+define('FORCE_SSL_ADMIN', true);
+{{ end }}
 
 # Respect upstream SSL termination headers
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
@@ -59,24 +52,34 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARD
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         getenv('WP_AUTH_KEY'));
-define('SECURE_AUTH_KEY',  getenv('WP_SECURE_AUTH_KEY'));
-define('LOGGED_IN_KEY',    getenv('WP_LOGGED_IN_KEY'));
-define('NONCE_KEY',        getenv('WP_NONCE_KEY'));
-define('AUTH_SALT',        getenv('WP_AUTH_SALT'));
-define('SECURE_AUTH_SALT', getenv('WP_SECURE_AUTH_SALT'));
-define('LOGGED_IN_SALT',   getenv('WP_LOGGED_IN_SALT'));
-define('NONCE_SALT',       getenv('WP_NONCE_SALT'));
+define('AUTH_KEY',         '{{ .Env.WP_AUTH_KEY }}');
+define('SECURE_AUTH_KEY',  '{{ .Env.WP_SECURE_AUTH_KEY }}');
+define('LOGGED_IN_KEY',    '{{ .Env.WP_LOGGED_IN_KEY }}');
+define('NONCE_KEY',        '{{ .Env.WP_NONCE_KEY }}');
+define('AUTH_SALT',        '{{ .Env.WP_AUTH_SALT }}');
+define('SECURE_AUTH_SALT', '{{ .Env.WP_SECURE_AUTH_SALT }}');
+define('LOGGED_IN_SALT',   '{{ .Env.WP_LOGGED_IN_SALT }}');
+define('NONCE_SALT',       '{{ .Env.WP_NONCE_SALT }}');
 
-{{ default .Env.WP_CONFIG_EXTRA "" }}
+{{ if eq .Env.APP_ENV "develop" }}
+# APP_ENV {{ .Env.APP_ENV }}
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_LOG', true );
+{{ end }}
 
 {{ if eq .Env.WP_STATELESS_MEDIA_ENABLED "true" }}
+define( 'WP_STATELESS_MEDIA_BUCKET',            '{{ .Env.WP_STATELESS_MEDIA_BUCKET }}' );
+define( 'WP_STATELESS_MEDIA_MODE',              '{{ .Env.WP_STATELESS_MEDIA_MODE }}' );
+define( 'WP_STATELESS_MEDIA_KEY_FILE_PATH',     '{{ .Env.WP_STATELESS_MEDIA_KEY_FILE_PATH }}' );
+define( 'WP_STATELESS_MEDIA_SERVICE_ACCOUNT',   '{{ .Env.WP_STATELESS_MEDIA_SERVICE_ACCOUNT }}' );
+{{ end }}
 
-define( 'WP_STATELESS_MEDIA_BUCKET',            getenv('WP_STATELESS_MEDIA_BUCKET') );
-define( 'WP_STATELESS_MEDIA_MODE',              getenv('WP_STATELESS_MEDIA_MODE') );
-define( 'WP_STATELESS_MEDIA_KEY_FILE_PATH',     getenv('WP_STATELESS_MEDIA_KEY_FILE_PATH') );
-define( 'WP_STATELESS_MEDIA_SERVICE_ACCOUNT',   getenv('WP_STATELESS_MEDIA_SERVICE_ACCOUNT') );
-
+{{ if eq .Env.WP_REDIS_ENABLED "true" }}
+$redis_server = array(
+  'host'=>'{{ .Env.WP_REDIS_HOST }}',
+  'port'=> {{ .Env.WP_REDIS_PORT }},
+  'database' => {{ .Env.WP_REDIS_DB }}
+);
 {{ end }}
 
 /**
@@ -85,7 +88,7 @@ define( 'WP_STATELESS_MEDIA_SERVICE_ACCOUNT',   getenv('WP_STATELESS_MEDIA_SERVI
  * You can have multiple installations in one database if you give each
  * a unique prefix. Only numbers, letters, and underscores please!
  */
-$table_prefix = getenv('WP_DB_PREFIX');
+$table_prefix = '{{ .Env.WP_DB_PREFIX }}';
 
 /* That's all, stop editing! Happy blogging. */
 

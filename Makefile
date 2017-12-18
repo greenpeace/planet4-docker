@@ -10,9 +10,13 @@ all : clean build test
 clean :
 		bin/clean.sh
 
+.PHONY : pull
+pull :
+		pushd bin >/dev/null; ./build.sh -p; popd > /dev/null
+
 .PHONY : build
 build :
-		pushd bin; ./build.sh $(BUILD_FLAGS) $(BUILD_LIST); popd
+		pushd bin >/dev/null; ./build.sh $(BUILD_FLAGS) $(BUILD_LIST); popd >/dev/null
 
 .PHONY : test
 test :
