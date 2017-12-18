@@ -9,7 +9,7 @@ if [[ ${WP_REDIS_ENABLED} = "true" ]]
 then
   [[ -f /app/source/public/wp-content/plugins/wp-redis/object-cache.php ]] && wp redis enable
 else
-  [[ -f /app/source/public/wp-content/object-cache.php ]] && wp redis disable
+  [[ -f /app/source/public/wp-content/object-cache.php ]] && rm -f /app/source/public/wp-content/object-cache.php
 fi
 
 /app/bin/generate_wp_config.sh
