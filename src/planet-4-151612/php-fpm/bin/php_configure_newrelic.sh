@@ -12,7 +12,7 @@ then
   else
     _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "newrelic.enabled:")" "${NEWRELIC_ENABLED}"
     _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "newrelic.appname:")" "${NEWRELIC_APPNAME}"
-    _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "newrelic.license:")" "${NEWRELIC_LICENSE}"
+    _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "newrelic.license:")" "${NEWRELIC_LICENSE//[[:alnum:]]/*}"
   fi
 fi
 
