@@ -75,7 +75,7 @@ function sendBuildRequest() {
 
   # Rewrite cloudbuild variables
   local sub_array=(
-    "_BUILD_NUM=${BUILD_NUM}"
+    "_BUILD_NUM=${BUILD_NUM}" \
     "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
     "_BUILD_TAG=${BUILD_TAG}" \
     "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
@@ -187,12 +187,10 @@ then
   for image in "${build_list[@]}"
   do
 
-
     # Check the source directory exists and contains a Dockerfile template
     if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
       _fatal "Directory not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/"
     fi
-
 
     build_dir="${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
 
