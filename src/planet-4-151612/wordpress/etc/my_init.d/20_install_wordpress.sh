@@ -121,8 +121,8 @@ fi
 
 create_source_directories
 
-_good "Setting permissions of /app to ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP}..."
-chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app || true
+_good "Setting permissions of /app to ${APP_USER}..."
+chown -R ${APP_USER} /app || true
 
 # ==============================================================================
 # ENVIRONMENT VARIABLE CHECKS
@@ -195,7 +195,7 @@ composer --profile -vv copy:themes
 composer --profile -vv copy:assets
 composer --profile -vv copy:plugins
 
-setuser ${APP_USER:-$DEFAULT_APP_USER} dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
+setuser ${APP_USER} dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
 
 # Wait up to two minutes for the database to become ready
 timeout=2

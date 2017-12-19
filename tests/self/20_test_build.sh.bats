@@ -43,7 +43,7 @@ function teardown {
 #
 @test "${PROJECT_ID} :: build.sh : \$CONTAINER_TIMEZONE : ubuntu/Dockerfile : 1 line" {
   container_timezone="$(grep "CONTAINER_TIMEZONE=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run grep "DEFAULT_CONTAINER_TIMEZONE=\"${container_timezone}\"" "${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/ubuntu/Dockerfile"
+  run grep "CONTAINER_TIMEZONE=\"${container_timezone}\"" "${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/ubuntu/Dockerfile"
   [[ ${status} -eq 0 ]]
   [[ $(wc -l <<<"$output") -eq 1 ]]
 }

@@ -12,7 +12,7 @@ dockerize \
 
 _good "exim4:  ${EXIM_DELIVERY_MODE}"
 _good "exim4:  relay: ${EXIM_SMARTHOST}"
-_good "exim4:  from:  ${EXIM_MAIL_FROM:-$DEFAULT_EXIM_MAIL_FROM}"
+_good "exim4:  from:  ${EXIM_MAIL_FROM}"
 
 if [[ ! -z ${EXIM_SMARTHOST_AUTH_USERNAME} ]] && [[ ! -z ${EXIM_SMARTHOST_AUTH_PASSWORD} ]]
 then

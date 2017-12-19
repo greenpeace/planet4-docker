@@ -20,8 +20,8 @@
 ; Unix user/group of processes
 ; Note: The user is mandatory. If the group is not set, the default user's group
 ;       will be used.
-user = {{ default .Env.APP_USER .Env.DEFAULT_APP_USER }}
-group = {{ default .Env.APP_GROUP .Env.DEFAULT_APP_GROUP }}
+user = {{ .Env.APP_USER }}
+group = {{ .Env.APP_GROUP }}
 
 ; The address on which to accept FastCGI requests.
 ; Valid syntaxes are:
@@ -44,8 +44,8 @@ listen = 9000
 ; BSD-derived systems allow connections regardless of permissions.
 ; Default Values: user and group are set as the running user
 ;                 mode is set to 0660
-listen.owner = {{ default .Env.APP_USER .Env.DEFAULT_APP_USER }}
-listen.group = {{ default .Env.APP_GROUP .Env.DEFAULT_APP_GROUP }}
+listen.owner = {{ .Env.APP_USER }}
+listen.group = {{ .Env.APP_GROUP }}
 listen.mode = 0750
 
 ; When POSIX Access Control Lists are supported you can set them using
@@ -94,7 +94,7 @@ listen.mode = 0750
 ;             pm.process_idle_timeout   - The number of seconds after which
 ;                                         an idle process will be killed.
 ; Note: This value is mandatory.
-pm = {{ default .Env.PHP_PROCESS_MANAGER .Env.DEFAULT_PHP_PROCESS_MANAGER }}
+pm = {{ .Env.PHP_PROCESS_MANAGER }}
 
 ; The number of child processes to be created when pm is set to 'static' and the
 ; maximum number of child processes when pm is set to 'dynamic' or 'ondemand'.
@@ -105,22 +105,22 @@ pm = {{ default .Env.PHP_PROCESS_MANAGER .Env.DEFAULT_PHP_PROCESS_MANAGER }}
 ; forget to tweak pm.* to fit your needs.
 ; Note: Used when pm is set to 'static', 'dynamic' or 'ondemand'
 ; Note: This value is mandatory.
-pm.max_children = {{ default .Env.PHP_PROCESS_MANAGER_MAX_CHILDREN .Env.DEFAULT_PHP_PROCESS_MANAGER_MAX_CHILDREN }}
+pm.max_children = {{ .Env.PHP_PROCESS_MANAGER_MAX_CHILDREN }}
 
 ; The number of child processes created on startup.
 ; Note: Used only when pm is set to 'dynamic'
 ; Default Value: min_spare_servers + (max_spare_servers - min_spare_servers) / 2
-pm.start_servers = {{ default .Env.PHP_PROCESS_MANAGER_START_SERVERS .Env.DEFAULT_PHP_PROCESS_MANAGER_START_SERVERS }}
+pm.start_servers = {{ .Env.PHP_PROCESS_MANAGER_START_SERVERS }}
 
 ; The desired minimum number of idle server processes.
 ; Note: Used only when pm is set to 'dynamic'
 ; Note: Mandatory when pm is set to 'dynamic'
-pm.min_spare_servers =  {{ default .Env.PHP_PROCESS_MANAGER_MIN_SPARE_SERVERS .Env.DEFAULT_PHP_PROCESS_MANAGER_MIN_SPARE_SERVERS }}
+pm.min_spare_servers =  {{ .Env.PHP_PROCESS_MANAGER_MIN_SPARE_SERVERS }}
 
 ; The desired maximum number of idle server processes.
 ; Note: Used only when pm is set to 'dynamic'
 ; Note: Mandatory when pm is set to 'dynamic'
-pm.max_spare_servers = {{ default .Env.PHP_PROCESS_MANAGER_MAX_SPARE_SERVERS .Env.DEFAULT_PHP_PROCESS_MANAGER_MAX_SPARE_SERVERS }}
+pm.max_spare_servers = {{ .Env.PHP_PROCESS_MANAGER_MAX_SPARE_SERVERS }}
 
 ; The number of seconds after which an idle process will be killed.
 ; Note: Used only when pm is set to 'ondemand'
@@ -131,7 +131,7 @@ pm.max_spare_servers = {{ default .Env.PHP_PROCESS_MANAGER_MAX_SPARE_SERVERS .En
 ; This can be useful to work around memory leaks in 3rd party libraries. For
 ; endless request processing specify '0'. Equivalent to PHP_FCGI_MAX_REQUESTS.
 ; Default Value: 0
-pm.max_requests = {{ default .Env.PHP_PROCESS_MANAGER_MAX_REQUESTS .Env.DEFAULT_PHP_PROCESS_MANAGER_MAX_REQUESTS }}
+pm.max_requests = {{ .Env.PHP_PROCESS_MANAGER_MAX_REQUESTS }}
 
 ; The URI to view the FPM status page. If this value is not set, no URI will be
 ; recognized as a status page. It shows the following informations:
@@ -242,12 +242,12 @@ pm.max_requests = {{ default .Env.PHP_PROCESS_MANAGER_MAX_REQUESTS .Env.DEFAULT_
 ;       anything, but it may not be a good idea to use the .php extension or it
 ;       may conflict with a real PHP file.
 ; Default Value: not set
-ping.path = {{ default .Env.PHP_HEALTH_CHECK_PATH .Env.DEFAULT_PHP_HEALTH_CHECK_PATH }}
+ping.path = {{ .Env.PHP_HEALTH_CHECK_PATH }}
 
 ; This directive may be used to customize the response of a ping request. The
 ; response is formatted as text/plain with a 200 response code.
 ; Default Value: pong
-ping.response = {{ default .Env.PHP_HEALTH_CHECK_RESPONSE .Env.DEFAULT_PHP_HEALTH_CHECK_RESPONSE }}
+ping.response = {{ .Env.PHP_HEALTH_CHECK_RESPONSE }}
 
 ; The access log file
 ; Default: not set
@@ -369,7 +369,7 @@ catch_workers_output = yes
 ; Setting to "no" will make all environment variables available to PHP code
 ; via getenv(), $_ENV and $_SERVER.
 ; Default Value: yes
-clear_env = {{ default .Env.PHP_CLEAR_ENV .Env.DEFAULT_PHP_CLEAR_ENV }}
+clear_env = {{ .Env.PHP_CLEAR_ENV }}
 
 ; Limits the extensions of the main script FPM will allow to parse. This can
 ; prevent configuration mistakes on the web server side. You should only limit
@@ -413,14 +413,14 @@ php_admin_flag[log_errors] = on
 php_admin_value[cgi.fix_pathinfo] = 0
 php_admin_value[disable_functions] = {{ .Env.PHP_DISABLE_FUNCTIONS }}
 php_admin_value[error_log] = /var/log/fpm-php.$pool.error.log
-php_admin_value[max_execution_time] = {{ default .Env.PHP_MAX_EXECUTION_TIME .Env.DEFAULT_PHP_MAX_EXECUTION_TIME }}
-php_admin_value[max_input_vars] = {{ default .Env.PHP_MAX_INPUT_VARS .Env.DEFAULT_PHP_MAX_INPUT_VARS }}
-php_admin_value[memory_limit] = {{ default .Env.PHP_MEMORY_LIMIT .Env.DEFAULT_PHP_MEMORY_LIMIT }}
+php_admin_value[max_execution_time] = {{ .Env.PHP_MAX_EXECUTION_TIME }}
+php_admin_value[max_input_vars] = {{ .Env.PHP_MAX_INPUT_VARS }}
+php_admin_value[memory_limit] = {{ .Env.PHP_MEMORY_LIMIT }}
 php_admin_value[sendmail_path] = /usr/sbin/ssmtp -t
-php_admin_value[session.save_handler] = {{ default .Env.PHP_SESSION_SAVE_HANDLER .Env.DEFAULT_PHP_SESSION_SAVE_HANDLER }}
-php_admin_value[session.save_path] = "{{ default .Env.PHP_SESSION_SAVE_PATH .Env.DEFAULT_PHP_SESSION_SAVE_PATH }}"
+php_admin_value[session.save_handler] = {{ .Env.PHP_SESSION_SAVE_HANDLER }}
+php_admin_value[session.save_path] = "{{ .Env.PHP_SESSION_SAVE_PATH }}"
 
 ; Soft values, can be overridden by ini_set
 php_flag[display_errors] = off
-php_value[post_max_size] = {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }}
-php_value[upload_max_filesize] = {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }}
+php_value[post_max_size] = {{ .Env.UPLOAD_MAX_SIZE }}
+php_value[upload_max_filesize] = {{ .Env.UPLOAD_MAX_SIZE }}

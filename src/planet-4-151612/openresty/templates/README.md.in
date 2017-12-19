@@ -40,8 +40,8 @@ variable                   | default | description
 -------------------------- | ------- | ------------------------------------------------------------------------------------
 APP_USER                   | nginx   | Service user name
 APP_GROUP                  | nginx   | Service group name
-UPLOAD_MAX_SIZE            | ${DEFAULT_UPLOAD_MAX_SIZE}     | Sets `nginx_client_max_body_size`
-OPENRESTY_MAX_WORKER_PROCESSES | ${DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES}       | Sets `worker_processes`, will not exceed number of logical cores
+UPLOAD_MAX_SIZE            | ${UPLOAD_MAX_SIZE}     | Sets `nginx_client_max_body_size`
+OPENRESTY_MAX_WORKER_PROCESSES | ${OPENRESTY_MAX_WORKER_PROCESSES}       | Sets `worker_processes`, will not exceed number of logical cores
 CHOWN_APP_DIR              | false   | If true `chown` `/app/www` as `APP_USER:APP_GROUP`
 
 ## Security
@@ -62,8 +62,8 @@ HTTPS2 is configured using modern sane defaults, including
 
 ## On service start
 
-- nginx user is set to `${APP_USER:-$DEFAULT_APP_USER}` (default is nginx)
-- creates user and group from `{APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP}`, some sanity checks for matching UID / GID in the event that user/group already exists
-- if `${CHOWN_APP_DIR:-$DEFAULT_CHOWN_APP_DIR}` is true, `chown -R ${APP_USER:-$DEFAULT_APP_USER}:${APP_GROUP:-$DEFAULT_APP_GROUP} /app/www` (default false)
-- `worker_processes` is set to the number of available processor cores and adjusts `/etc/nginx/nginx.conf` to match, up to a maximum number of cores `${OPENRESTY_MAX_WORKER_PROCESSES:-$DEFAULT_MAX_WORKER_PROCESSES}`
-- `client_max_body_size` is set to `${UPLOAD_MAX_SIZE:-$DEFAULT_UPLOAD_MAX_SIZE}`
+- nginx user is set to `${APP_USER}` (default is nginx)
+- creates user and group from `{APP_USER}`, some sanity checks for matching UID / GID in the event that user/group already exists
+- if `${CHOWN_APP_DIR} /app/www` (default false)
+- `worker_processes` is set to the number of available processor cores and adjusts `/etc/nginx/nginx.conf` to match, up to a maximum number of cores `${OPENRESTY_MAX_WORKER_PROCESSES}`
+- `client_max_body_size` is set to `${UPLOAD_MAX_SIZE}`

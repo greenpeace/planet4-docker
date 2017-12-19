@@ -25,12 +25,12 @@ COPY --from=base / /
 ENV \
     APP_ENV="production" \
     DEBIAN_FRONTEND="noninteractive" \
-    DEFAULT_APP_GID="1000" \
-    DEFAULT_APP_GROUP="app" \
-    DEFAULT_APP_HOSTNAME="example.com" \
-    DEFAULT_APP_UID="1000" \
-    DEFAULT_APP_USER="app" \
-    DEFAULT_CONTAINER_TIMEZONE="${CONTAINER_TIMEZONE}" \
+    APP_GID="1000" \
+    APP_GROUP="app" \
+    APP_HOSTNAME="example.com" \
+    APP_UID="1000" \
+    APP_USER="app" \
+    CONTAINER_TIMEZONE="${CONTAINER_TIMEZONE}" \
     PATH="/app/bin:$PATH"
 
 WORKDIR /app

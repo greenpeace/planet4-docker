@@ -1,5 +1,5 @@
-user {{ default .Env.APP_USER .Env.DEFAULT_APP_USER }};
-worker_processes {{ default .Env.WORKER_PROCESSES .Env.DEFAULT_OPENRESTY_MAX_WORKER_PROCESSES }};
+user {{ .Env.APP_USER }};
+worker_processes {{ .Env.WORKER_PROCESSES }};
 
 pid /var/run/nginx.pid;
 
@@ -20,9 +20,9 @@ http {
 
     access_log /var/log/nginx/access.log main;
 
-    sendfile {{ default .Env.OPENRESTY_SENDFILE .Env.DEFAULT_OPENRESTY_SENDFILE }};
+    sendfile {{ .Env.OPENRESTY_SENDFILE }};
 
-    client_max_body_size {{ default .Env.UPLOAD_MAX_SIZE .Env.DEFAULT_UPLOAD_MAX_SIZE }};
+    client_max_body_size {{ .Env.UPLOAD_MAX_SIZE }};
 
     gzip on;
     gzip_comp_level 6;
