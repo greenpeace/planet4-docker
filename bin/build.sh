@@ -37,6 +37,8 @@ Options:
 "
 }
 
+. "${GIT_ROOT_DIR}/bin/inc/main"
+
 # COMMAND LINE OPTIONS
 
 OPTIONS=':vc:lhpr'
@@ -58,8 +60,6 @@ do
     esac
 done
 shift $((OPTIND - 1))
-
-. "${GIT_ROOT_DIR}/bin/inc/main"
 
 # ----------------------------------------------------------------------------
 
