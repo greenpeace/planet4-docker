@@ -7,7 +7,7 @@ chmod +x /app/bin/*
 for env_file in /app/env/*
 do
   # shellcheck source=/dev/null
-  . ${env_file}
+  . "${env_file}"
 done
 
 # Add application user
