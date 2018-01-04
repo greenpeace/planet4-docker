@@ -197,6 +197,7 @@ then
     # Rewrite only the Dockerfile|README.md variables we want to change
     envvars=(
       '${APP_ENV}' \
+      '${APPLICATION_NAME}' \
       '${BASEIMAGE_VERSION}' \
       '${BRANCH_NAME}' \
       '${BUILD_NAMESPACE}' \
