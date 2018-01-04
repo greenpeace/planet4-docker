@@ -17,49 +17,7 @@ done
 GIT_ROOT_DIR="$( cd -P "$( dirname "$source" )/.." && pwd )"
 export GIT_ROOT_DIR
 
-
-# ----------------------------------------------------------------------------
-
-# UTILITY
-
-function usage {
-  echo "Usage: $(basename "$0") [OPTION|OPTION2] [<image build list>|all]...
-Build and test artifacts in this repository
-
-Options:
-  -c    Configuration file for build variables, eg:
-          $(basename "$0") -c config
-  -h    Help information (this text)
-  -l    Local docker build
-  -p    Pull images after build
-  -r    Remote docker build on Google Container Registry
-  -v    Verbose output
-"
-}
-
 . "${GIT_ROOT_DIR}/bin/inc/main"
-
-# COMMAND LINE OPTIONS
-
-OPTIONS=':vc:lhpr'
-while getopts $OPTIONS option
-do
-    case $option in
-        c  )    # shellcheck disable=SC2034
-                CONFIG_FILE=$OPTARG;;
-        l  )    BUILD_LOCALLY=true;;
-        h  )    usage
-                exit 0;;
-        p  )    PULL_IMAGES=true;;
-        r  )    BUILD_REMOTELY=true;;
-        v  )    verbosity=debug
-                _verbose_debug on;;
-        *  )    echo "Unkown option: ${OPTARG}"
-                usage
-                exit 1;;
-    esac
-done
-shift $((OPTIND - 1))
 
 # ----------------------------------------------------------------------------
 
@@ -194,7 +152,7 @@ then
 
     build_dir="${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
 
-    # Rewrite only the Dockerfile|README.md variables we want to change
+    # Specify which Dockerfile|README.md variables we want to change
     envvars=(
       '${APP_ENV}' \
       '${APPLICATION_NAME}' \
@@ -206,6 +164,7 @@ then
       '${GOOGLE_PROJECT_ID}' \
       '${NGX_PAGESPEED_RELEASE}' \
       '${NGX_PAGESPEED_VERSION}' \
+      '${OPENRESTY_SOURCE}' \
       '${OPENRESTY_VERSION}' \
       '${OPENSSL_VERSION}' \
       '${PHP_MAJOR_VERSION}' \
@@ -295,7 +254,6 @@ fi
 
 # ----------------------------------------------------------------------------
 # Send build requests to Google Container Builder
-
 if [[ "${BUILD_REMOTELY}" = "true" ]]
 then
   _build "Performing build on Google Container Builder:"
