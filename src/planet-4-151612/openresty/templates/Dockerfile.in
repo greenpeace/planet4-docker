@@ -41,7 +41,7 @@ ENV \
     PAGESPEED_REWRITE_LEVEL="CoreFilters" \
     REDIS_FASTCGI_CACHE_SERVER="redis:6379" \
     UPLOAD_MAX_SIZE="50M" \
-    PAGESPEED_ENABLED="true" \
+    PAGESPEED_ENABLED="false" \
     PHP_ENABLED="false" \
     REDIS_FASTCGI_CACHE_ENABLED="false" \
     SSL_ENABLED="false"
