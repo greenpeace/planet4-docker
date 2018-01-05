@@ -61,15 +61,15 @@ shopt -s nullglob
 for project_dir in "${TEST_BASE_DIR}"/src/*/
 do
   declare -a test_order
-  if [[ -f "${project_dir}/test_order" ]]
+  if [[ -f "${project_dir}test_order" ]]
   then
     # read test order from file
-    echo "Using test order from file: ${project_dir}/test_order"
+    echo "Using test order from file: ${project_dir}test_order"
     while read -r line; do
       echo " - ${line}"
       # array push line to test_order
       test_order[${#test_order[@]}]="${project_dir}${line}/"
-    done < "${project_dir}/test_order"
+    done < "${project_dir}test_order"
   else
     # alphanumeric
     test_order=( "${project_dir}"*/ )

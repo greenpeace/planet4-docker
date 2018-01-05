@@ -5,6 +5,11 @@ load env
 
 function setup {
   begin_output
+  # Perform the build once only
+  if [[ $BATS_TEST_NUMBER -eq 1 ]]
+  then
+    "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -c "${TEST_CONFIG_FILE}"
+  fi
 }
 
 function teardown {
@@ -52,7 +57,7 @@ function teardown {
   # We don't care bout failures here, just log them for future reference
   if [[ $status -ne 0 ]]
   then
-    echo "${output}" > "${ARTIFACT_LOGS_DIR:-/tmp/artifacts/logs}/shellcheck.txt"
+    echo "${output}" > "${ARTIFACT_LOGS_DIR:-/tmp/artifacts/logs}"/shellcheck.txt
   fi
 }
 
