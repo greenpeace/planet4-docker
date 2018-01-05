@@ -18,7 +18,7 @@ R_NUMBER='^[0-9]+$'
 
 # - Group sanity checks
 
-EXISTING_GROUP_GID="$(getent group "${APP_GROUP}\:x\:([[:digit:]]*):/\1/g")"
+EXISTING_GROUP_GID="$(getent group ${APP_GROUP} | sed -r "s/${APP_GROUP}\:x\:([[:digit:]]*):/\1/g")"
 
 if [[ $EXISTING_GROUP_GID =~ $R_NUMBER ]]
 then
@@ -43,7 +43,7 @@ else
 
 	# Create new group
 	_good "groupadd ${APP_GROUP}"
-	groupadd -r -g "${APP_GID}"
+	groupadd -r -g "${APP_GID}" "${APP_GROUP}"
 
 fi
 
@@ -51,9 +51,8 @@ fi
 # 	USER
 # =============================================================================
 
-
 # - User sanity checks
-EXISTING_USER_UID="$(getent passwd "${APP_USER}\:x\:([[:digit:]]*):.*/\1/g" )"
+EXISTING_USER_UID="$(getent passwd ${APP_USER} | sed -r "s/${APP_USER}\:x\:([[:digit:]]*):.*/\1/g" )"
 
 if [[ $EXISTING_USER_UID =~ $R_NUMBER ]]
 then
@@ -76,7 +75,7 @@ then
 else
 	# Create new user
  	_good "useradd ${APP_USER}"
-	useradd -r -s /usr/sbin/nologin -u ${APP_UID}
+	useradd -r -s /usr/sbin/nologin -u ${APP_UID} -g ${APP_GROUP} ${APP_USER}
 fi
 
 if [[ "${CHOWN_APP_DIR}" == "true" ]] && [ -d "/app/www" ]
