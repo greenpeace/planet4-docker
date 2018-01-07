@@ -56,7 +56,7 @@ function print_docker_compose_env() {
 }
 
 function simple_grep() {
-  set -eu
+  set -exu
   trap finish EXIT
   grep "$1" "$2"
 }
