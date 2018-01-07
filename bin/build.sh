@@ -80,8 +80,10 @@ declare -a build_order
 
 if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
 then
+  build_order=()
   _notice "Using build order from src/${GOOGLE_PROJECT_ID}/build_order"
-  while read -r image_order; do
+  while read -r image_order
+  do
     # push line to build_order array
     _verbose "Adding to build order: '${image_order}'"
     build_order[${#build_order[@]}]="${image_order}"
