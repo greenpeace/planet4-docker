@@ -79,16 +79,12 @@ This will update the local Dockerfile ENV variables such as `OPENRESTY_VERSION` 
 
 See `config.default` for optional build configuration parameters. The easiest way to overwrite default parameters is to add new entries to a bash key value file, eg `config.custom`, then re-run the build with command line parameter like so: `./build.sh -c config.custom`
 
-Note: to overwrite the default values, it's recommended to edit the short form of the variable without the leading `DEFAULT_`. For example, to change the application repository branch, use `GIT_REF`, not `DEFAULT_GIT_REF`. This ensures hierarchical resolution of variables from multiple sources, and enables the values to be configured at build and runtime, while falling back to sane default values.
-
 Also note that not all defined variables are configurable on container start, for example changing `OPENRESTY_VERSION` won't have any effect at container start as it's a variable used to install the infrastructure instead of control application behaviour.
 
 ### Variable resolution priority
 1.  Config file custom values (optional)
 2.  Environment variables (optional)
 3.  Config file default values
-
-Another valid use-case is to supply custom default values by editing, eg the `DEFAULT_MAX_UPLOAD_SIZE` and still allow runtime configuration by modifying the environment on container start.
 
 ### Specify build time parameters from a configuration file:
 ```

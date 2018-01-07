@@ -2,8 +2,8 @@
 
 pagespeed on;
 
-pagespeed RewriteLevel "{{ default .Env.PAGESPEED_REWRITE_LEVEL .Env.DEFAULT_PAGESPEED_REWRITE_LEVEL }}";
-pagespeed DisableFilters "{{ default .Env.PAGESPEED_DISABLE_FILTERS .Env.DEFAULT_PAGESPEED_DISABLE_FILTERS }}";
+pagespeed RewriteLevel "{{ .Env.PAGESPEED_REWRITE_LEVEL }}";
+pagespeed DisableFilters "{{ .Env.PAGESPEED_DISABLE_FILTERS }}";
 
 pagespeed RespectXForwardedProto on;
 
@@ -32,7 +32,7 @@ pagespeed Disallow "*.svg*";
 pagespeed MapOriginDomain "http://{{ .Env.APP_HOSTNAME }}" "https://{{ .Env.APP_HOSTNAME }}";
 pagespeed LoadFromFile "https://{{ .Env.APP_HOSTNAME }}" "/app/www/";
 
-pagespeed DownstreamCacheRebeaconingKey "{{ default .Env.PAGESPEED_REBEACON_KEY .Env.DEFAULT_PAGESPEED_REBEACON_KEY }}";
+pagespeed DownstreamCacheRebeaconingKey "{{ .Env.PAGESPEED_REBEACON_KEY }}";
 
 {{ else }}
 

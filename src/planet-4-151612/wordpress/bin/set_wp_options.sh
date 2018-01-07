@@ -2,7 +2,7 @@
 
 optionlock="/app/source/public/.optionlock"
 
-[[ -f $optionlock ]] && echo "$optionlock exists, not updating options." && exit 0
+[[ -f $optionlock ]] && exit 0
 
 touch $optionlock
 

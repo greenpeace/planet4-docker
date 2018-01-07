@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -ea
 
-PROJECT_GIT_ROOT_DIR="${BATS_TEST_DIRNAME}/../../"
+ARTIFACT_LOGS_DIR=${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}
+PROJECT_GIT_ROOT_DIR="${BATS_TEST_DIRNAME}/../.."
 PROJECT_ID="$(grep "PROJECT_ID=.*" "${PROJECT_GIT_ROOT_DIR}/tests/self/fixtures/config.test" | cut -d \" -f 2)"
 TEST_CONFIG_FILE="${PROJECT_GIT_ROOT_DIR}/tests/self/fixtures/config.test"
 
@@ -17,7 +18,7 @@ function shellcheck_all_bash_scripts {
   set -ex
   trap finish EXIT
 
-  files=( $(ack --shell -l "" "${PROJECT_GIT_ROOT_DIR}") )
+  files=( "$(ack --shell -l "" "${PROJECT_GIT_ROOT_DIR}")" )
 
   for i in "${files[@]}"
   do
@@ -25,6 +26,7 @@ function shellcheck_all_bash_scripts {
   done
 }
 
+export ARTIFACT_LOGS_DIR
 export BATS_IMAGE
 export PROJECT_GIT_ROOT_DIR
 export PROJECT_ID

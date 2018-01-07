@@ -40,6 +40,84 @@ rm "${BUILD_TMPDIR}/pretty_print.sh"
 
 # ----------------------------------------------------------------------------
 
+# VARIABLE ASSIGNMENT
+
+bash_version=$(bash --version | head -n 1| cut -d' ' -f4 | cut -d '.' -f 1)
+
+env_parameters=()
+config_pass=0
+
+function contains() {
+    local n=$#
+    local value=${!n}
+    for ((i=1;i < $#;i++)) {
+        if [ "${!i}" == "${value}" ]; then
+            echo "y"
+            return 0
+        fi
+    }
+    echo "n"
+    return 1
+}
+
+# Reads key-value file as function argument, assigns variable to environment
+function set_vars() {
+  local file
+  file="${1}"
+  _build "Config pass #$config_pass"
+  while read -r line
+  do
+    # Skip comments
+    [[ $line == \#* ]] && continue
+    # Skip lines that don't include an assignment =
+    [[ $line =~ = ]] || continue
+    # Fetch the key, whitespace trimmed
+    key="$(echo "$line" | cut -d'=' -f1 | xargs)"
+    # Fetch the value, whitespace trimmed
+    value="$(echo "$line" | cut -d'=' -f2- | xargs)"
+
+    # Current value
+    set +u
+    if [[ ${!key} ]]
+    then
+      current="${!key}"
+    else
+      current=
+    fi
+
+    if [[ -z "$current" ]] || [[ $config_pass -gt 0 ]]
+    then
+      # Skip any variables set in the environment
+      [[ $(contains "${env_parameters[@]}" $key) == "y" ]] && _build "[ENV] $key=${!key}" && continue
+      # This key is not set yet
+      if [[ $bash_version -lt 4 ]]
+      then
+        # Urgh, eval is evil
+        eval "${line}"
+      else
+        declare -g "$key=$value"
+      fi
+
+      if [[ $value != "${current}" ]]
+      then
+        _notice " ++ $key=$value"
+      else
+        _notice " -- $key=$value"
+      fi
+    else
+      _notice "[ENV] $key=${!key}"
+      env_parameters+=($key)
+    fi
+  done < "${file}"
+  let config_pass+=1
+  export config_pass
+  printf "\n"
+  set -u
+
+}
+
+# ----------------------------------------------------------------------------
+
 # LOAD DEFAULT CONFIGURATION
 
 # Read parameters from key=value configuration file
@@ -50,8 +128,50 @@ default_config="${GIT_ROOT_DIR}/config.default"
 if [[ -f "${default_config}" ]]
 then
   # shellcheck source=/dev/null
-  . "${default_config}"
+  set_vars "${default_config}"
 fi
+
+
+# ----------------------------------------------------------------------------
+
+# UTILITY
+
+function usage {
+  echo "Usage: $(basename "$0") [OPTION|OPTION2] [<image build list>|all]...
+Build and test artifacts in this repository
+
+Options:
+  -c    Configuration file for build variables, eg:
+          $(basename "$0") -c config
+  -h    Help information (this text)
+  -l    Local docker build
+  -p    Pull images after build
+  -r    Remote docker build on Google Container Registry
+  -v    Verbose output
+"
+}
+
+# COMMAND LINE OPTIONS
+
+OPTIONS=':vc:lhpr'
+while getopts $OPTIONS option
+do
+    case $option in
+        c  )    # shellcheck disable=SC2034
+                CONFIG_FILE=$OPTARG;;
+        l  )    echo "Build locally"; BUILD_LOCALLY=true;;
+        h  )    usage
+                exit 0;;
+        p  )    echo "Pulling images after build"; PULL_IMAGES=true;;
+        r  )    echo "Build on GCR"; BUILD_REMOTELY=true;;
+        v  )    verbosity=debug
+                _verbose_debug on;;
+        *  )    echo "Unkown option: ${OPTARG}"
+                usage
+                exit 1;;
+    esac
+done
+shift $((OPTIND - 1))
 
 # ----------------------------------------------------------------------------
 
@@ -67,17 +187,17 @@ then
   fi
   # https://github.com/koalaman/shellcheck/wiki/SC1090
   # shellcheck source=/dev/null
-  . "${CONFIG_FILE}"
+  set_vars "${CONFIG_FILE}"
 fi
 
 # ----------------------------------------------------------------------------
 # Configure build variables based on CircleCI environment vars
 
-if [[ "${CIRCLECI}" ]]
+if [[ "${CIRCLECI:-}" ]]
 then
-  if [[ -z "${BUILD_TAG}" ]]
+  if [[ -z "${BUILD_TAG:-}" ]]
   then
-    if [[ "${CIRCLE_TAG}" ]]
+    if [[ "${CIRCLE_TAG:-}" ]]
     then
       BUILD_TAG="${CIRCLE_TAG}"
     elif [[ "${CIRCLE_BRANCH}" ]]
@@ -91,29 +211,10 @@ fi
 BRANCH_NAME_RAW=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 BRANCH_NAME=${BRANCH_NAME_RAW//[^a-zA-Z0-9\._-]/-}
 
-APPLICATION_NAME=${APPLICATION_NAME:-${DEFAULT_APPLICATION_NAME}}
-BASEIMAGE_VERSION=${BASEIMAGE_VERSION:-${DEFAULT_BASEIMAGE_VERSION}}
-BUILD_LOCALLY=${BUILD_LOCALLY:-${DEFAULT_BUILD_LOCALLY}}
-BUILD_NAMESPACE=${BUILD_NAMESPACE:-${DEFAULT_BUILD_NAMESPACE}}
 BUILD_NUM=${BUILD_NUM:-"test-${USER}-$(hostname -s)"}
 BUILD_NUM=${BUILD_NUM//[^a-zA-Z0-9\._-]/-}
-BUILD_REMOTELY=${BUILD_REMOTELY:-${DEFAULT_BUILD_REMOTELY}}
 BUILD_TAG=${BUILD_TAG:-${BRANCH_NAME}}
 BUILD_TAG=${BUILD_TAG//[^a-zA-Z0-9\._-]/-}
-BUILD_TIMEOUT=${BUILD_TIMEOUT:-${DEFAULT_BUILD_TIMEOUT}}
-COMPOSER=${COMPOSER:-${DEFAULT_COMPOSER}}
-CONTAINER_TIMEZONE=${CONTAINER_TIMEZONE:-$DEFAULT_CONTAINER_TIMEZONE}
-DOCKERIZE_VERSION=${DOCKERIZE_VERSION:-$DEFAULT_DOCKERIZE_VERSION}
-GIT_REF=${GIT_REF:-${DEFAULT_GIT_REF}}
-GIT_SOURCE=${GIT_SOURCE:-${DEFAULT_GIT_SOURCE}}
-GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID:-${DEFAULT_GOOGLE_PROJECT_ID}}
-NGX_PAGESPEED_RELEASE=${NGX_PAGESPEED_RELEASE:-${DEFAULT_NGX_PAGESPEED_RELEASE}}
-NGX_PAGESPEED_VERSION=${NGX_PAGESPEED_VERSION:-${DEFAULT_NGX_PAGESPEED_VERSION}}
-OPENRESTY_VERSION=${OPENRESTY_VERSION:-${DEFAULT_OPENRESTY_VERSION}}
-OPENSSL_VERSION=${OPENSSL_VERSION:-${DEFAULT_OPENSSL_VERSION}}
-PHP_MAJOR_VERSION=${PHP_MAJOR_VERSION:-${DEFAULT_PHP_MAJOR_VERSION}}
-PULL_IMAGES=${PULL_IMAGES:-${DEFAULT_PULL_IMAGES}}
 REVISION_TAG=${REVISION_TAG:-$(git rev-parse --short HEAD)}
-REWRITE_LOCAL_DOCKERFILES=${REWRITE_LOCAL_DOCKERFILES:-${DEFAULT_REWRITE_LOCAL_DOCKERFILES}}
 SOURCE_VERSION=${SOURCE_VERSION:-${BRANCH_NAME}}
 SOURCE_VERSION=${SOURCE_VERSION//[^a-zA-Z0-9\._-]/-}

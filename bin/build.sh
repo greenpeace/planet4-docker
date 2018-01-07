@@ -17,48 +17,6 @@ done
 GIT_ROOT_DIR="$( cd -P "$( dirname "$source" )/.." && pwd )"
 export GIT_ROOT_DIR
 
-
-# ----------------------------------------------------------------------------
-
-# UTILITY
-
-function usage {
-  echo "Usage: $(basename "$0") [OPTION|OPTION2] [<image build list>|all]...
-Build and test artifacts in this repository
-
-Options:
-  -c    Configuration file for build variables, eg:
-          $(basename "$0") -c config
-  -h    Help information (this text)
-  -l    Local docker build
-  -p    Pull images after build
-  -r    Remote docker build on Google Container Registry
-  -v    Verbose output
-"
-}
-
-# COMMAND LINE OPTIONS
-
-OPTIONS=':vc:lhpr'
-while getopts $OPTIONS option
-do
-    case $option in
-        c  )    # shellcheck disable=SC2034
-                CONFIG_FILE=$OPTARG;;
-        l  )    BUILD_LOCALLY=true;;
-        h  )    usage
-                exit 0;;
-        p  )    PULL_IMAGES=true;;
-        r  )    BUILD_REMOTELY=true;;
-        v  )    verbosity=debug
-                _verbose_debug on;;
-        *  )    echo "Unkown option: ${OPTARG}"
-                usage
-                exit 1;;
-    esac
-done
-shift $((OPTIND - 1))
-
 . "${GIT_ROOT_DIR}/bin/inc/main"
 
 # ----------------------------------------------------------------------------
@@ -75,7 +33,7 @@ function sendBuildRequest() {
 
   # Rewrite cloudbuild variables
   local sub_array=(
-    "_BUILD_NUM=${BUILD_NUM}"
+    "_BUILD_NUM=${BUILD_NUM}" \
     "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
     "_BUILD_TAG=${BUILD_TAG}" \
     "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
@@ -122,8 +80,10 @@ declare -a build_order
 
 if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
 then
+  build_order=()
   _notice "Using build order from src/${GOOGLE_PROJECT_ID}/build_order"
-  while read -r image_order; do
+  while read -r image_order
+  do
     # push line to build_order array
     _verbose "Adding to build order: '${image_order}'"
     build_order[${#build_order[@]}]="${image_order}"
@@ -187,18 +147,17 @@ then
   for image in "${build_list[@]}"
   do
 
-
     # Check the source directory exists and contains a Dockerfile template
     if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
       _fatal "Directory not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/"
     fi
 
-
     build_dir="${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
 
-    # Rewrite only the Dockerfile|README.md variables we want to change
+    # Specify which Dockerfile|README.md variables we want to change
     envvars=(
       '${APP_ENV}' \
+      '${APPLICATION_NAME}' \
       '${BASEIMAGE_VERSION}' \
       '${BRANCH_NAME}' \
       '${BUILD_NAMESPACE}' \
@@ -207,6 +166,7 @@ then
       '${GOOGLE_PROJECT_ID}' \
       '${NGX_PAGESPEED_RELEASE}' \
       '${NGX_PAGESPEED_VERSION}' \
+      '${OPENRESTY_SOURCE}' \
       '${OPENRESTY_VERSION}' \
       '${OPENSSL_VERSION}' \
       '${PHP_MAJOR_VERSION}' \
@@ -296,7 +256,6 @@ fi
 
 # ----------------------------------------------------------------------------
 # Send build requests to Google Container Builder
-
 if [[ "${BUILD_REMOTELY}" = "true" ]]
 then
   _build "Performing build on Google Container Builder:"

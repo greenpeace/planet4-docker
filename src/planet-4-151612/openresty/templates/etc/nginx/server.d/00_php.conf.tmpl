@@ -38,7 +38,7 @@ if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no
 location /redis-fetch {
   internal;
   set $redis_key $args;
-  redis_pass {{ default .Env.REDIS_FASTCGI_CACHE_SERVER .Env.DEFAULT_REDIS_FASTCGI_CACHE_SERVER }};
+  redis_pass {{ .Env.REDIS_FASTCGI_CACHE_SERVER }};
 }
 
 location /redis-store {
@@ -46,7 +46,7 @@ location /redis-store {
   set_unescape_uri $key $arg_key ;
   redis2_query set $key $echo_request_body;
   redis2_query expire $key 14400;
-  redis2_pass {{ default .Env.REDIS_FASTCGI_CACHE_SERVER .Env.DEFAULT_REDIS_FASTCGI_CACHE_SERVER }};
+  redis2_pass {{ .Env.REDIS_FASTCGI_CACHE_SERVER }};
 }
 
 {{ end }}

@@ -17,4 +17,4 @@ ENV \
   EXIM_MAIL_FROM="greenpeace.org" \
   EXIM_SMARTHOST_AUTH_PASSWORD="" \
   EXIM_SMARTHOST_AUTH_USERNAME="" \
-  EXIM_SMARTHOST="smtp.gmail.com::587"
+  EXIM_SMARTHOST="smtp-relay.gmail.com::587"

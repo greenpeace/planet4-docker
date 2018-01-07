@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-OPENRESTY_FASTCGI_BACKEND=${OPENRESTY_FASTCGI_BACKEND:-${DEFAULT_OPENRESTY_FASTCGI_BACKEND}}
+OPENRESTY_FASTCGI_BACKEND=${OPENRESTY_FASTCGI_BACKEND}
 export OPENRESTY_FASTCGI_BACKEND
 
 dockerize -template /app/templates/etc/nginx/server.d/00_php.conf.tmpl:/etc/nginx/server.d/00_php.conf

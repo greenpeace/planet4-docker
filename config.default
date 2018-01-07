@@ -7,7 +7,7 @@ APPLICATION_NAME="Greenpeace P4 Docker application"
 GOOGLE_PROJECT_ID=planet-4-151612
 
 # application repository to build, expects a composer.json to be present,
-# or alternate file defined by COMPOSER | DEFAULT_COMPOSER
+# or alternate file defined by COMPOSER
 GIT_SOURCE=https://github.com/greenpeace/planet4-base
 
 # branch of application repository to build
@@ -26,32 +26,33 @@ COMPOSER=composer.json
 # BUILD_TAG=develop
 
 # Which timezone this container uses for logs etc
-DEFAULT_CONTAINER_TIMEZONE=UTC
+CONTAINER_TIMEZONE=UTC
 
 # ============================================================================
 
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases
-DEFAULT_BASEIMAGE_VERSION=0.9.22
+BASEIMAGE_VERSION=0.9.22
 # https://github.com/jwilder/dockerize/releases
-DEFAULT_DOCKERIZE_VERSION=0.6.0
+DOCKERIZE_VERSION=0.6.0
 # https://github.com/pagespeed/ngx_pagespeed/releases
-DEFAULT_NGX_PAGESPEED_RELEASE=stable
-DEFAULT_NGX_PAGESPEED_VERSION=latest
+NGX_PAGESPEED_RELEASE=stable
+NGX_PAGESPEED_VERSION=latest
 # https://openresty.org/en/download.html
-DEFAULT_OPENRESTY_VERSION=1.13.6.1
+OPENRESTY_VERSION=1.13.6.1
+OPENRESTY_SOURCE=source
 # https://www.openssl.org/source
-DEFAULT_OPENSSL_VERSION=1.0.2n
+OPENSSL_VERSION=1.0.2n
 
-DEFAULT_PHP_MAJOR_VERSION=7.0
+PHP_MAJOR_VERSION=7.0
 
 # ============================================================================
 
 # Cloud builder configuration
-DEFAULT_BUILD_LOCALLY=false
-DEFAULT_BUILD_NAMESPACE=gcr.io
-DEFAULT_BUILD_REMOTELY=false
-DEFAULT_BUILD_TIMEOUT=30m
-DEFAULT_PULL_IMAGES=false
-DEFAULT_REWRITE_LOCAL_DOCKERFILES=true
+BUILD_LOCALLY=false
+BUILD_NAMESPACE=gcr.io
+BUILD_REMOTELY=false
+BUILD_TIMEOUT=30m
+PULL_IMAGES=false
+REWRITE_LOCAL_DOCKERFILES=true
