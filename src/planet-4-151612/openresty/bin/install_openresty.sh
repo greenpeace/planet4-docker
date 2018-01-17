@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-set -e
+set -exo pipefail
+
+# Description:    Installs openresty from source with prerequisites
+#                  - OpenSSL
+#                  - ngx_pagespeed
 
 if [[ "${OPENRESTY_SOURCE}" = "apt" ]]
 then
@@ -33,17 +37,23 @@ else
     libxml2-dev \
     libxslt1-dev \
     zlib1g-dev \
-    & \
+    &
   wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" | tar xzf - -C /tmp & \
   wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz" | tar zxf - -C /tmp & \
-  wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/pagespeed/ngx_pagespeed/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz" | tar zxf - -C /tmp && \
-  PSOL_URL="$(cat "/tmp/ngx_pagespeed-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}/PSOL_BINARY_URL")" && \
-  if [ "$(uname -m)" = x86_64 ]; then PSOL_BIT_SIZE_NAME="x64"; else PSOL_BIT_SIZE_NAME="ia32"; fi && \
-  wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "$(echo $PSOL_URL | sed "s/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME/g")" | tar zxf - -C "/tmp/ngx_pagespeed-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}" & \
-  procs=$(cat /proc/cpuinfo |grep processor | wc -l) && \
-  mkdir -p /var/log/nginx /var/cache/nginx && \
-  wait && \
-  cd "/tmp/openresty-${OPENRESTY_VERSION}" && \
+  wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/pagespeed/ngx_pagespeed/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz" | tar zxf - -C /tmp
+  PSOL_URL="$(cat "/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}/PSOL_BINARY_URL")"
+  if [ "$(uname -m)" = x86_64 ]
+  then
+    PSOL_BIT_SIZE_NAME="x64"
+  else
+    PSOL_BIT_SIZE_NAME="ia32"
+  fi
+  wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "$(echo $PSOL_URL | sed "s/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME/g")" | tar zxf - -C "/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}" &
+  procs=$(cat /proc/cpuinfo |grep processor | wc -l)
+  mkdir -p /var/log/nginx /var/cache/nginx
+  wait
+
+  cd "/tmp/openresty-${OPENRESTY_VERSION}" || exit 1
   ./configure \
     -j${procs} \
     --prefix=/etc/nginx  \
@@ -86,8 +96,8 @@ else
     --with-ipv6 \
     --with-pcre-jit \
     --with-openssl=/tmp/openssl-${OPENSSL_VERSION} \
-    --add-module=/tmp/ngx_pagespeed-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}  && \
-  make -j${procs} install && \
+    --add-module=/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}
+  make -j${procs} install
   apt-get purge -yqq \
     autoconf \
     automake \
