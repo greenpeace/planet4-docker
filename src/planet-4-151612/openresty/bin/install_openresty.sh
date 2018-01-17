@@ -104,3 +104,5 @@ else
 fi
 
 apt-get autoremove -yqq
+
+[[ -x "/usr/sbin/nginx" ]] || exit 1
