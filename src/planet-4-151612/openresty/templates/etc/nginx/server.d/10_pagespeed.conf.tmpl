@@ -10,6 +10,10 @@ pagespeed RespectXForwardedProto on;
 # Needs to exist and be writable by nginx.  Use tmpfs for best performance.
 pagespeed FileCachePath /tmp/ngx_pagespeed_cache;
 
+{{ if .Env.PAGESPEED_REDIS_SERVER }}
+pagespeed RedisServer "{{ .Env.PAGESPEED_REDIS_SERVER }}";
+{{ end }}
+
 pagespeed XHeaderValue "";
 more_clear_headers X-Page-Speed;
 
@@ -33,6 +37,17 @@ pagespeed MapOriginDomain "http://{{ .Env.APP_HOSTNAME }}" "https://{{ .Env.APP_
 pagespeed LoadFromFile "https://{{ .Env.APP_HOSTNAME }}" "/app/www/";
 
 pagespeed DownstreamCacheRebeaconingKey "{{ .Env.PAGESPEED_REBEACON_KEY }}";
+
+pagespeed Statistics {{ .Env.PAGESPEED_STATISTICS_ENABLED }};
+pagespeed StatisticsLogging {{ .Env.PAGESPEED_STATISTICS_ENABLED }};
+pagespeed LogDir /var/log/pagespeed;
+pagespeed AdminPath "{{ .Env.PAGESPEED_ADMIN_PATH }}";
+
+{{ if eq .Env.PAGESPEED_STATISTICS_ENABLED "on" }}
+location ~ ^{{ .Env.PAGESPEED_ADMIN_PATH }} {
+  allow all;
+}
+{{ end }}
 
 {{ else }}
 
