@@ -1,3 +1,4 @@
+SHELL = /bin/bash
 BUILD_FLAGS?=-rp
 BUILD_LIST?=
 
