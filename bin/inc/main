@@ -7,7 +7,9 @@ set -euo pipefail
 # MAKE TEMPDIR AND CLEAN ON EXIT
 
 function clean_temp() {
+  echo "Removing temp files..."
   rm -fr "$BUILD_TMPDIR"
+  echo "Done"
 }
 trap clean_temp EXIT
 

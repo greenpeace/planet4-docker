@@ -33,7 +33,7 @@ CONTAINER_TIMEZONE=UTC
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases
-BASEIMAGE_VERSION=0.9.22
+BASEIMAGE_VERSION=0.10.0
 # https://github.com/jwilder/dockerize/releases
 DOCKERIZE_VERSION=0.6.0
 # https://github.com/pagespeed/ngx_pagespeed/releases

@@ -272,6 +272,11 @@ then
   fi
 fi
 
+if [[ "${BUILD_REMOTELY}" != "true" ]] && [[ "${BUILD_LOCALLY}" != "true" ]]
+then
+  _notice "No build option specified"
+fi
+
 # ----------------------------------------------------------------------------
 # Pull any newly built images, forking to background for parallel downloads
 
