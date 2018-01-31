@@ -62,7 +62,7 @@ function clear_install_lock() {
 # ==============================================================================
 
 # Random sleep from 0ms to 1000ms to avoid race conditions with multiple containers
-milliseconds="$[ ( $RANDOM % 1000 ) ]"
+milliseconds=$(( RANDOM % 1000 ))
 _good "Sleeping ${milliseconds}ms ..."
 sleep ".${milliseconds}"
 
@@ -222,6 +222,9 @@ composer --profile -vv plugin:activate
 composer --profile -vv theme:activate
 
 composer --profile -vv core:initial-content
+composer --profile -vv core:add-contributor-capabilities
+
+composer --profile -vv core:style
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'

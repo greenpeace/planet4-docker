@@ -8,7 +8,7 @@ set -eufo pipefail
 # Ubuntu xenial php for some reason doesn't create /run/php,
 # where it expects socket files to live
 mkdir -p /run/php
-chown -R ${APP_USER} /run/php
+chown -R "${APP_USER}" /run/php
 
 _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "clear_env:")" "${PHP_CLEAR_ENV}"
 _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "disable_functions:")" "${PHP_DISABLE_FUNCTIONS}"
