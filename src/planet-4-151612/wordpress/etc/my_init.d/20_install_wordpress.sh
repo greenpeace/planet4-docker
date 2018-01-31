@@ -222,6 +222,9 @@ composer --profile -vv plugin:activate
 composer --profile -vv theme:activate
 
 composer --profile -vv core:initial-content
+composer --profile -vv core:add-contributor-capabilities
+
+composer --profile -vv core:style
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
