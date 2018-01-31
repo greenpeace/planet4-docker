@@ -62,7 +62,7 @@ function clear_install_lock() {
 # ==============================================================================
 
 # Random sleep from 0ms to 1000ms to avoid race conditions with multiple containers
-milliseconds="$[ ( $RANDOM % 1000 ) ]"
+milliseconds=$(( RANDOM % 1000 ))
 _good "Sleeping ${milliseconds}ms ..."
 sleep ".${milliseconds}"
 
