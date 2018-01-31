@@ -18,3 +18,4 @@ time ( make clean & \
   beep 2 && \
   wait
 )
+date
