@@ -7,11 +7,8 @@ then
   exit 1
 fi
 
-# shellcheck source=/dev/null
 . "${BATS_TEST_DIRNAME}/../../../../../bin/inc/main"
-# shellcheck source=/dev/null
 . "${BATS_TEST_DIRNAME}/../../../../_env"
-# shellcheck source=/dev/null
 . "${BATS_TEST_DIRNAME}/../../../../_helpers"
 
 # bats test parameters
