@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+chown -R "$APP_USER:$APP_GROUP" /app/www
+
+/app/bin/generate_wp_config.sh
+
 # Resets database options to environment variable, such as:
 # siteurl, home, blogname etc
 [[ ${WP_SET_OPTIONS_ON_BOOT} = "true" ]] && /app/bin/set_wp_options.sh
@@ -12,5 +16,3 @@ then
 else
   [[ -f /app/source/public/wp-content/object-cache.php ]] && rm -f /app/source/public/wp-content/object-cache.php
 fi
-
-/app/bin/generate_wp_config.sh
