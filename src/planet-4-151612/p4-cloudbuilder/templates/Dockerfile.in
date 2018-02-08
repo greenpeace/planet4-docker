@@ -1,0 +1,4 @@
+FROM gcr.io/cloud-builders/docker
+
+RUN apt-get update \
+  && apt-get -y install wget git-core rsync

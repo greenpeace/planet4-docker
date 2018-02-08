@@ -12,6 +12,15 @@
 # Begin service image builds
 #
 steps:
+- id: 'p4-cloudbuilder'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-cloudbuilder:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-cloudbuilder:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-cloudbuilder:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/p4-cloudbuilder'
+
 - id: 'ubuntu'
   name: 'gcr.io/cloud-builders/docker'
   args:
@@ -20,6 +29,7 @@ steps:
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_REVISION_TAG}'
     - './src/${_GOOGLE_PROJECT_ID}/ubuntu'
+  waitFor: ['-']
 
 - id: 'openresty'
   name: 'gcr.io/cloud-builders/docker'
@@ -82,6 +92,9 @@ steps:
 # ============================================================================
 
 images:
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-cloudbuilder:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-cloudbuilder:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/$PROJECT_ID/p4-cloudbuilder:${_REVISION_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_BUILD_NUM}'
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/ubuntu:${_REVISION_TAG}'
