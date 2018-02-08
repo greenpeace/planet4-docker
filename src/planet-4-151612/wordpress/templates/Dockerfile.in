@@ -12,6 +12,7 @@ RUN apt-get update && \
 COPY . /app/
 
 ENV \
+    INSTALL_WORDPRESS="true" \
     OVERWRITE_FILES="false" \
     PHP_CLEAR_ENV="no" \
     WP_ADMIN_EMAIL="" \
@@ -21,6 +22,7 @@ ENV \
     WP_AUTH_KEY="" \
     WP_AUTH_SALT="" \
     WP_AUTO_UPDATE_CORE="minor" \
+    WP_BAKE="false" \
     WP_CLI_CACHE_DIR="/app/.wp-cli/cache" \
     WP_CLI_DISABLE_AUTO_CHECK_UPDATE="true" \
     WP_DB_CHARSET="utf8" \
@@ -31,6 +33,7 @@ ENV \
     WP_DB_PORT="3306" \
     WP_DB_PREFIX="wp_" \
     WP_DB_USER="" \
+    WP_DEFAULT_CONTENT="true" \
     WP_EXTRA_CONFIG="" \
     WP_FORCE_SSL_ADMIN="false" \
     WP_HOSTNAME="" \
