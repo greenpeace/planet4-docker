@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+[[ "${INSTALL_WORDPRESS}" = "true" ]] || exit 0
+
 install_lock="/app/source/public/.install"
 
 # ==============================================================================
@@ -68,6 +70,7 @@ sleep ".${milliseconds}"
 
 num_files="$(get_num_files_exist)"
 
+sync
 if [[ -f "${install_lock}" ]]
 then
   _good "Installation already underway, ${install_lock} exists. Sleeping..."
@@ -122,7 +125,7 @@ fi
 create_source_directories
 
 _good "Setting permissions of /app to ${APP_USER}..."
-chown -R ${APP_USER} /app || true
+chown -R "${APP_USER}" /app || true
 
 # ==============================================================================
 # ENVIRONMENT VARIABLE CHECKS
@@ -195,12 +198,12 @@ composer --profile -vv copy:themes
 composer --profile -vv copy:assets
 composer --profile -vv copy:plugins
 
-setuser ${APP_USER} dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
+setuser "${APP_USER}" dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
 
 # Wait up to two minutes for the database to become ready
 timeout=2
 i=0
-until dockerize -wait tcp://${WP_DB_HOST}:${WP_DB_PORT} -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
+until dockerize -wait "tcp://${WP_DB_HOST}:${WP_DB_PORT}" -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
 do
   let i=i+1
   if [[ $i -gt $timeout ]]
@@ -221,7 +224,8 @@ composer --profile -vv plugin:activate
 
 composer --profile -vv theme:activate
 
-composer --profile -vv core:initial-content
+[[ "${WP_DEFAULT_CONTENT}" = "true" ]] && composer --profile -vv core:initial-content
+
 composer --profile -vv core:add-contributor-capabilities
 
 composer --profile -vv core:style
