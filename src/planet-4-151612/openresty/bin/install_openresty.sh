@@ -36,6 +36,7 @@ else
     libtool \
     libxml2-dev \
     libxslt1-dev \
+    uuid-dev \
     zlib1g-dev \
     &
   wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" | tar xzf - -C /tmp & \
