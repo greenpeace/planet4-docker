@@ -15,10 +15,10 @@ uid=$(id -u)
 
 if [[ $uid = "0" ]]
 then
-  setuser ${APP_USER} php /app/wp-cli.phar --path="/app/source/public" "$@"
+  setuser ${APP_USER} php /app/wp-cli.phar --path="/app/www" "$@"
 elif [[ $uid = "${APP_UID}" ]]
 then
-  php /app/wp-cli.phar --path="/app/source/public" "$@"
+  php /app/wp-cli.phar --path="/app/www" "$@"
 else
   >&2 echo "ERROR incorrect user - ${APP_USER} - how did this happen? Please tell an admin!"
   >&2 echo "Expected ${APP_UID}"

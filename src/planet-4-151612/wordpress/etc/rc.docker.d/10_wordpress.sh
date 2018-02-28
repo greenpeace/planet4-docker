@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -ex
 
 chown -R "$APP_USER:$APP_GROUP" /app/www
 
@@ -12,7 +12,10 @@ chown -R "$APP_USER:$APP_GROUP" /app/www
 if [[ ${WP_REDIS_ENABLED} = "true" ]]
 then
   # Install WP-Redis object cache file if exist
-  [[ -f /app/source/public/wp-content/plugins/wp-redis/object-cache.php ]] && wp redis enable
+  [[ -f /app/www/wp-content/plugins/wp-redis/object-cache.php ]] && wp redis enable
 else
-  [[ -f /app/source/public/wp-content/object-cache.php ]] && rm -f /app/source/public/wp-content/object-cache.php
+  [[ -f /app/www/wp-content/object-cache.php ]] && rm -f /app/www/wp-content/object-cache.php
 fi
+
+echo "OK"
+exit 0
