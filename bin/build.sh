@@ -67,13 +67,18 @@ then
   # FIXME add the gcloud binary in planet4-base to PATH
   gcloud_binary=/home/circleci/google-cloud-sdk/bin/gcloud
 else
+  set +e
   gcloud_binary="$(type -P gcloud)"
 fi
 
 if [[ ! -x "${gcloud_binary}" ]]
 then
-  _fatal "gcloud executable not found"
+  _fatal "gcloud executable not found. Please install from https://cloud.google.com/sdk/downloads"
 fi
+set -e
+
+
+
 # ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
 
