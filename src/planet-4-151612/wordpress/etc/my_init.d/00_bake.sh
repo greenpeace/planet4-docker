@@ -5,10 +5,12 @@ set -ex
 
 rm -fr /app/source/public
 
-composer --profile -vv copy:wordpress
+composer --profile -vv download:wordpress
 
 composer --profile -vv reset:themes
 composer --profile -vv reset:plugins
+
+composer --profile -vv copy:health-check
 
 composer --profile -vv copy:themes
 composer --profile -vv copy:assets
