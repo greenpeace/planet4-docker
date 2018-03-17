@@ -77,7 +77,11 @@ then
 fi
 set -e
 
+# ----------------------------------------------------------------------------
+# Check the current gcloud project matches expectations
 
+# FIXME gcr pushes will probably fail if gcloud config PROJECT_ID doesn't match
+#       GOOGLE_PROJECT ID
 
 # ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
