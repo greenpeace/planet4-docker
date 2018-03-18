@@ -48,5 +48,4 @@ do
   docker rmi -f ${container} >/dev/null 2>&1
 done
 
-docker network rm p4sampleapplication_default >/dev/null 2>&1 || true
-docker volume rm -f p4sampleapplication_data >/dev/null 2>&1 || true
+docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/p4-sample-application/docker-compose.yml" down -v --remove-orphans || true
