@@ -57,7 +57,6 @@ function sendBuildRequest() {
     --config "$dir/cloudbuild.yaml" \
     --substitutions "${sub}" \
     "${BUILD_TMPDIR}/docker-source.tar.gz"
-
 }
 
 # ----------------------------------------------------------------------------
@@ -165,6 +164,7 @@ then
     build_dir="${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
 
     # Specify which Dockerfile|README.md variables we want to change
+    # shellcheck disable=SC2016
     envvars=(
       '${APP_ENV}' \
       '${APPLICATION_NAME}' \
@@ -199,8 +199,8 @@ then
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
   "
-
-      echo -e "$build_string\n$(cat "${build_dir}/Dockerfile")" > "${build_dir}/Dockerfile"
+      input=$(cat "${build_dir}/Dockerfile")
+      echo -e "$build_string\n$input" > "${build_dir}/Dockerfile"
     else
       _warning "Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in"
     fi
@@ -227,7 +227,7 @@ CIRCLE_BADGE_BRANCH=${BRANCH_NAME//\//%2F}
 CODACY_BRANCH_NAME=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//[^[:alnum:]\._\/-]/-}
 CODACY_BRANCH_NAME=${CODACY_BRANCH_NAME//\//%2F}
-
+# shellcheck disable=SC2016
 ENVVARS=(
   '${CIRCLE_BADGE_BRANCH}' \
   '${CODACY_BRANCH_NAME}' \
