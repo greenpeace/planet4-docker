@@ -41,7 +41,7 @@ function teardown {
 @test "image is recent" {
   run run_test_image_exists "p4sampleapplication_php-fpm"
   [[ $status -eq 0 ]]
-  [[ $output =~ "seconds" ]]
+  [[ $output =~ "second" ]]
 }
 
 @test "container starts" {
