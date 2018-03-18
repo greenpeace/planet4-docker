@@ -159,10 +159,8 @@ function clean_docker_compose {
   set -eu
   trap finish EXIT
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
-  # Stop all docker-compose containers
-  docker-compose --no-ansi -f "${compose_file}" stop
-  # Delete all containers
-  yes | docker-compose --no-ansi -f "${compose_file}" rm || true
+
+  docker-compose --no-ansi -f "${compose_file}" down -v
 }
 
 function run_test_image_exists {
