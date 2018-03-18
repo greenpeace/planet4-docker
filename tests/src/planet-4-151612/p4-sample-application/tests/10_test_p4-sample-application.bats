@@ -73,7 +73,7 @@ function teardown {
 }
 
 @test "container response does not contain string 'FNORDPTANGWIBBLE'" {
-  run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 p4sampleapplication_openresty_1
+  run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 p4sampleapplication_openresty_1 1
   [[ $status -ne 0 ]]
 }
 
