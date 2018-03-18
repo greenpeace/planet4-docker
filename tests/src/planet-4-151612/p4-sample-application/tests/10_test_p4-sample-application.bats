@@ -39,6 +39,12 @@ function teardown {
   [[ $status -eq 0 ]]
 }
 
+@test "image is recent" {
+  run run_test_image_exists "p4sampleapplication_php-fpm"
+  [[ $status -eq 0 ]]
+  [[ $output =~ "seconds" ]]
+}
+
 @test "container starts" {
   # Wait up to 10 minutes for the build to complete!
   run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 p4sampleapplication_openresty_1 600
