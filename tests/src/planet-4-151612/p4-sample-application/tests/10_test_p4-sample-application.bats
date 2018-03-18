@@ -64,6 +64,7 @@ function teardown {
 @test "container responds on port 80 with status 200" {
   run curl_check_status_code 200 http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -eq 0 ]]
+  [[ $output -eq "200" ]]
 }
 
 @test "container response contains string 'greenpeace'" {
