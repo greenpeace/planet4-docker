@@ -25,7 +25,7 @@ function teardown {
   store_output
 }
 
-@test "php-application builds successfully: ${image}" {
+@test "php-application builds successfully: $image" {
   [[ -z "${GITHUB_OAUTH_TOKEN}" ]] && >&2 echo "ERROR: GITHUB_OAUTH_TOKEN not set" && exit 1
   docker-compose -f "${compose_file}" stop || true
   docker-compose -f "${compose_file}" rm -f || true
