@@ -189,14 +189,18 @@ fi
 _good "Installing Wordpress for site ${WP_HOSTNAME:-$APP_HOSTNAME} ..."
 _good "From: ${GIT_SOURCE}:${GIT_REF}"
 
-composer --profile -vv copy:wordpress
+composer_exec="composer --profile -vv"
 
-composer --profile -vv reset:themes
-composer --profile -vv reset:plugins
+$composer_exec download:wordpress
 
-composer --profile -vv copy:themes
-composer --profile -vv copy:assets
-composer --profile -vv copy:plugins
+$composer_exec reset:themes
+$composer_exec reset:plugins
+
+$composer_exec copy:health-check
+
+$composer_exec copy:themes
+$composer_exec copy:assets
+$composer_exec copy:plugins
 
 setuser "${APP_USER}" dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
 
@@ -218,17 +222,22 @@ _good "Database ready: ${WP_DB_HOST}:${WP_DB_PORT}"
 # FIXME Run another check to test if wp is installed yet
 # FIXME If installed, perform site-update?
 
-composer --profile -vv core:install
+$composer_exec core:install
 
-composer --profile -vv plugin:activate
+$composer_exec plugin:activate
 
-composer --profile -vv theme:activate
+$composer_exec theme:activate
 
-[[ "${WP_DEFAULT_CONTENT}" = "true" ]] && composer --profile -vv core:initial-content
+[[ "${WP_DEFAULT_CONTENT}" = "true" ]] && $composer_exec core:initial-content
 
-composer --profile -vv core:add-contributor-capabilities
+$composer_exec core:add-contributor-capabilities
 
-composer --profile -vv core:style
+$composer_exec core:style
+
+$composer_exec core:js
+
+$composer_exec site:custom
+
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'

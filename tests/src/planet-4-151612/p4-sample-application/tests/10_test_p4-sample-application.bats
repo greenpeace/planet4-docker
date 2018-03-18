@@ -25,18 +25,23 @@ function teardown {
   store_output
 }
 
-@test "php-application builds successfully: ${image}" {
+@test "php-application builds successfully: $image" {
   [[ -z "${GITHUB_OAUTH_TOKEN}" ]] && >&2 echo "ERROR: GITHUB_OAUTH_TOKEN not set" && exit 1
-  docker-compose -f "${compose_file}" stop || true
-  docker-compose -f "${compose_file}" rm -f || true
+  docker-compose -f "${compose_file}" down -v
   docker-compose -f "${compose_file}" pull
-  run docker-compose -f "${compose_file}" build --no-cache --force-rm php-fpm
+  run docker-compose -f "${compose_file}" build php-fpm
   [[ $status -eq 0 ]]
 }
 
 @test "image exists" {
   run run_test_image_exists "p4sampleapplication_php-fpm"
   [[ $status -eq 0 ]]
+}
+
+@test "image is recent" {
+  run run_test_image_exists "p4sampleapplication_php-fpm"
+  [[ $status -eq 0 ]]
+  [[ $output =~ "second" ]]
 }
 
 @test "container starts" {
@@ -58,6 +63,7 @@ function teardown {
 @test "container responds on port 80 with status 200" {
   run curl_check_status_code 200 http://localhost:80 p4sampleapplication_openresty_1
   [[ $status -eq 0 ]]
+  [[ $output -eq "200" ]]
 }
 
 @test "container response contains string 'greenpeace'" {
@@ -66,7 +72,7 @@ function teardown {
 }
 
 @test "container response does not contain string 'FNORDPTANGWIBBLE'" {
-  run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 p4sampleapplication_openresty_1
+  run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 p4sampleapplication_openresty_1 1
   [[ $status -ne 0 ]]
 }
 

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-set -e
+set -ex
+
+chown -R "$APP_USER:$APP_GROUP" /app/www
+
+/app/bin/generate_wp_config.sh
 
 # Resets database options to environment variable, such as:
 # siteurl, home, blogname etc
@@ -8,9 +12,10 @@ set -e
 if [[ ${WP_REDIS_ENABLED} = "true" ]]
 then
   # Install WP-Redis object cache file if exist
-  [[ -f /app/source/public/wp-content/plugins/wp-redis/object-cache.php ]] && wp redis enable
+  [[ -f /app/www/wp-content/plugins/wp-redis/object-cache.php ]] && wp redis enable
 else
-  [[ -f /app/source/public/wp-content/object-cache.php ]] && rm -f /app/source/public/wp-content/object-cache.php
+  [[ -f /app/www/wp-content/object-cache.php ]] && rm -f /app/www/wp-content/object-cache.php
 fi
 
-/app/bin/generate_wp_config.sh
+echo "OK"
+exit 0
