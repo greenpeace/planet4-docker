@@ -24,6 +24,8 @@ export GIT_ROOT_DIR
 function sendBuildRequest() {
   local dir=${1:-${GIT_ROOT_DIR}}
 
+  gcloud config set project "${GOOGLE_PROJECT_ID}"
+
   if [[ -f "$dir/cloudbuild.yaml" ]]
   then
     _build "Building from $dir"
@@ -75,12 +77,6 @@ then
   _fatal "gcloud executable not found. Please install from https://cloud.google.com/sdk/downloads"
 fi
 set -e
-
-# ----------------------------------------------------------------------------
-# Check the current gcloud project matches expectations
-
-# FIXME gcr pushes will probably fail if gcloud config PROJECT_ID doesn't match
-#       GOOGLE_PROJECT ID
 
 # ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
