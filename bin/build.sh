@@ -60,21 +60,15 @@ function sendBuildRequest() {
 }
 
 # ----------------------------------------------------------------------------
-# Check if we're running on CircleCI
-if [[ ! -z "${CIRCLECI:-}" ]]
-then
-  # FIXME add the gcloud binary in planet4-base to PATH
-  gcloud_binary=/home/circleci/google-cloud-sdk/bin/gcloud
-else
-  set +e
-  gcloud_binary="$(type -P gcloud)"
-fi
+# Ensure gcloud binary exists
+set +e
+gcloud_binary="$(type -P gcloud)"
+set -e
 
 if [[ ! -x "${gcloud_binary}" ]]
 then
   _fatal "gcloud executable not found. Please install from https://cloud.google.com/sdk/downloads"
 fi
-set -e
 
 # ----------------------------------------------------------------------------
 # Check the current gcloud project matches expectations
