@@ -49,6 +49,8 @@ function sendBuildRequest() {
 
   tar --exclude='.git/' --exclude='.circleci/' -zcf "$BUILD_TMPDIR/docker-source.tar.gz" -C "$dir" .
 
+  gcloud config set project "${GOOGLE_PROJECT_ID}"
+
   # Submit the build
   time "${gcloud_binary}" container builds submit \
     --machine-type="${BUILD_MACHINE_TYPE:-n1-highcpu-8}" \
