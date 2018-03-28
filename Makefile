@@ -17,7 +17,7 @@ pull :
 
 .PHONY : build
 build :
-		pushd bin >/dev/null; ./build.sh $(BUILD_FLAGS) $(BUILD_LIST); popd >/dev/null
+		bin/build.sh $(BUILD_FLAGS) $(BUILD_LIST) || exit 1
 
 .PHONY : test
 test :
