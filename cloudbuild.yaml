@@ -8,9 +8,8 @@
 # See config.defaults for default substitution values
 #
 # ============================================================================
-#
 # Begin service image builds
-#
+
 steps:
 - id: 'p4-cloudbuilder'
   name: 'gcr.io/cloud-builders/docker'
@@ -31,10 +30,24 @@ steps:
     - './src/${_GOOGLE_PROJECT_ID}/ubuntu'
   waitFor: ['-']
 
+- id: 'exim'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--cache-from=${_BUILD_NAMESPACE}/{_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_REVISION_TAG}'
+    - './src/${_GOOGLE_PROJECT_ID}/exim'
+  waitFor:
+    - 'ubuntu'
+
+
 - id: 'openresty'
   name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
+    - '--cache-from=${_BUILD_NAMESPACE}/{_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_REVISION_TAG}'
@@ -46,6 +59,7 @@ steps:
   name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
+    - '--cache-from=${_BUILD_NAMESPACE}/{_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpm:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpm:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/php-fpm:${_REVISION_TAG}'
@@ -57,6 +71,7 @@ steps:
   name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
+    - '--cache-from=${_BUILD_NAMESPACE}/{_GOOGLE_PROJECT_ID}/php-fpm:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'
@@ -68,23 +83,13 @@ steps:
   name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
+    - '--cache-from=${_BUILD_NAMESPACE}/{_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_TAG}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_NUM}'
     - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_REVISION_TAG}'
     - './src/${_GOOGLE_PROJECT_ID}/p4-onbuild'
   waitFor:
     - 'wordpress'
-
-- id: 'exim'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_REVISION_TAG}'
-    - './src/${_GOOGLE_PROJECT_ID}/exim'
-  waitFor:
-    - 'ubuntu'
 
 #
 # End service image builds
