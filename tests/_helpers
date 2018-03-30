@@ -44,7 +44,7 @@ function store_output {
 function print_docker_env() {
   set -exu
   trap finish EXIT
-  docker run --rm -ti ${1} env | sort | tee "$ARTIFACT_LOGS_DIR/${BATS_IMAGE}.env"
+  docker run --rm -ti "${1}" env | sort | tee "$ARTIFACT_LOGS_DIR/${BATS_IMAGE}.env"
 }
 
 function print_docker_compose_env() {
@@ -131,7 +131,7 @@ function start_docker_compose {
   docker-compose --no-ansi -f "${compose_file}" up -d
 
   # Query the container until a 200 response is returned
-  until curl_check_status_code 200 ${endpoint} ${container}
+  until curl_check_status_code 200 "${endpoint}" "${container}"
   do
     sleep $interval
     loop=$((loop-1))
