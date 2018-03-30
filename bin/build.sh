@@ -53,7 +53,6 @@ function sendBuildRequest() {
 
   # Submit the build
   time "${gcloud_binary}" container builds submit \
-    --machine-type="${BUILD_MACHINE_TYPE:-n1-highcpu-8}" \
     --verbosity="${verbosity:-warning}" \
     --timeout="${BUILD_TIMEOUT}" \
     --config "$dir/cloudbuild.yaml" \
