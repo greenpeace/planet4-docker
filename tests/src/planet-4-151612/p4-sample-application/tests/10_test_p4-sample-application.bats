@@ -46,7 +46,7 @@ function teardown {
 
 @test "container starts" {
   # Wait up to 10 minutes for the build to complete!
-  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 p4sampleapplication_openresty_1 600
+  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 p4sampleapplication_openresty_1 10
   [[ "$status" -eq 0 ]]
 }
 
@@ -67,7 +67,7 @@ function teardown {
 }
 
 @test "container response contains string 'greenpeace'" {
-  run curl_check_response_regex "greenpeace" http://localhost:80 p4sampleapplication_openresty_1
+  run curl_check_response_regex "greenpeace" http://localhost:80 p4sampleapplication_openresty_1 5
   [[ $status -eq 0 ]]
 }
 

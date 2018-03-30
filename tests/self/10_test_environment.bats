@@ -19,14 +19,14 @@ function teardown {
 @test "ack exists and is executable" {
   if [[ ! -x "$(type -P ack)" ]]
   then
-    fatal "FATAL: ack not found.\nPlease download and install from https://beyondgrep.com/"
+    fatal "FATAL: ack not found.\nPlease install as per instructions at https://beyondgrep.com/"
   fi
 }
 
 @test "tap-xunit exists and is executable" {
   if [[ ! -x "$(type -P tap-xunit)" ]]
   then
-    fatal "FATAL: tap-xunit not found.\nPlease download and install from https://github.com/aghassemi/tap-xunit/releases"
+    fatal "FATAL: tap-xunit not found.\nPlease install as per instructions at https://github.com/aghassemi/tap-xunit/releases"
     exit 1
   fi
 }
@@ -34,7 +34,7 @@ function teardown {
 @test "shellcheck exists and is executable" {
   if [[ ! -x "$(type -P shellcheck)" ]]
   then
-    fatal "FATAL: shellcheck not found.\nPlease download and install from https://www.shellcheck.net/"
+    fatal "FATAL: shellcheck not found.\nPlease install as per instructions at https://www.shellcheck.net/"
     exit 1
   fi
 }
@@ -47,7 +47,7 @@ function teardown {
   fi
   if [[ ! -x "$(type -P cgi-fcgi)" ]]
   then
-    fatal "FATAL: cgi-fcgi not found.\nPlease install the 'fcgi' package from your operating system repository. See https://www.thatsgeeky.com/2012/02/directly-connecting-to-php-fpm/"
+    fatal "FATAL: cgi-fcgi not found.\nPlease install the 'fcgi' package from your operating system repository.\n E.g. brew install fcgi or apt-get install libfcgi0ldbl"
     exit 1
   fi
 }

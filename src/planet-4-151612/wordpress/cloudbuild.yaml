@@ -9,6 +9,6 @@ steps:
     - '.'
 
 images:
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_BUILD_TAG}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_BUILD_NUM}'
-  - '${_BUILD_NAMESPACE}/$PROJECT_ID/wordpress:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'

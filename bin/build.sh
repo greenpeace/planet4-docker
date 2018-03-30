@@ -51,9 +51,10 @@ function sendBuildRequest() {
 
   tar --exclude='.git/' --exclude='.circleci/' -zcf "$BUILD_TMPDIR/docker-source.tar.gz" -C "$dir" .
 
+  gcloud config set project "${GOOGLE_PROJECT_ID}"
+
   # Submit the build
   time "${gcloud_binary}" container builds submit \
-    --machine-type="${BUILD_MACHINE_TYPE:-n1-highcpu-8}" \
     --verbosity="${verbosity:-warning}" \
     --timeout="${BUILD_TIMEOUT}" \
     --config "$dir/cloudbuild.yaml" \
@@ -62,21 +63,15 @@ function sendBuildRequest() {
 }
 
 # ----------------------------------------------------------------------------
-# Check if we're running on CircleCI
-if [[ ! -z "${CIRCLECI:-}" ]]
-then
-  # FIXME add the gcloud binary in planet4-base to PATH
-  gcloud_binary=/home/circleci/google-cloud-sdk/bin/gcloud
-else
-  set +e
-  gcloud_binary="$(type -P gcloud)"
-fi
+# Ensure gcloud binary exists
+set +e
+gcloud_binary="$(type -P gcloud)"
+set -e
 
 if [[ ! -x "${gcloud_binary}" ]]
 then
   _fatal "gcloud executable not found. Please install from https://cloud.google.com/sdk/downloads"
 fi
-set -e
 
 # ----------------------------------------------------------------------------
 # If the project has a custom build order, use that

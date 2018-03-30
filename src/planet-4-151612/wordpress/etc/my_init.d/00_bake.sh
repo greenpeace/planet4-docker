@@ -22,7 +22,11 @@ $composer_exec core:js
 
 $composer_exec site:custom
 
-echo "Files baked, returning status 1 to exit container"
+ln -s /app/source/public /app/www 
 
+generate_wp_config.sh
+
+echo "Files baked, returning status 1 to exit container."
+echo "You'll see an error which can be happily ignored."
 # Don't panic!
 exit 1
