@@ -56,7 +56,7 @@ ENV \
     WP_STATELESS_MEDIA_BUCKET="docker.p4.greenpeace.org" \
     WP_STATELESS_MEDIA_ENABLED="false" \
     WP_STATELESS_MEDIA_JSON_KEY="" \
-    WP_STATELESS_MEDIA_KEY_FILE_PATH="/app/wp-stateless-media-key.json" \
+    WP_STATELESS_MEDIA_KEY_FILE_PATH="" \
     WP_STATELESS_MEDIA_MODE="stateless" \
     WP_STATELESS_MEDIA_ROOT_DIR="${BRANCH_NAME}" \
     WP_STATELESS_MEDIA_SERVICE_ACCOUNT="stateless-docker-p4-greenp-111@planet-4-151612.iam.gserviceaccount.com" \
