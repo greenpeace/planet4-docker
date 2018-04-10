@@ -20,9 +20,11 @@ $composer_exec core:style
 
 $composer_exec core:js
 
+$composer_exec core:js-minify
+
 $composer_exec site:custom
 
-ln -s /app/source/public /app/www 
+ln -s /app/source/public /app/www
 
 generate_wp_config.sh
 
