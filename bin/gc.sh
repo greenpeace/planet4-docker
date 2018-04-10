@@ -56,6 +56,7 @@ if  [[ ! -z "${TRIAL_RUN}" ]] && \
     [[ "${TRIAL_RUN}" != 'false' ]] && \
     [[ ${TRIAL_RUN} -ne 0 ]]
 then
+  TRIAL_RUN=1
   echo >&2 "Trial run only, no changes will be committed"
 fi
 
@@ -68,7 +69,7 @@ main() {
   do
     (
 
-      if [[ ${TRIAL_RUN} = "true" ]]
+      if [[ ${TRIAL_RUN} ]]
       then
         echo "gcloud container images delete -q --force-delete-tags ${IMAGE}@${digest}"
       else

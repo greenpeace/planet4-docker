@@ -236,6 +236,8 @@ $composer_exec core:style
 
 $composer_exec core:js
 
+$composer_exec core:js-minify
+
 $composer_exec site:custom
 
 
