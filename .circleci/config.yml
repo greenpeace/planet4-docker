@@ -80,7 +80,7 @@ jobs:
       - setup_remote_docker
 
       - deploy:
-          name: Deploy latest tag on master branch
+          name: Deploy tags on master branch
           command: |
             set -x
 
