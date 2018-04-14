@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 # ----------------------------------------------------------------------------
 
@@ -24,9 +23,9 @@ test_containers=(
   "p4sampleapplication_db" \
   "p4sampleapplication_redis" \
   "p4sampleapplication_php-fpm" \
-  "phpfpm_nginx" \
-  "phpfpm_php-fpm" \
-  "phpfpm-test" \
+  "php-fpm_nginx" \
+  "php-fpm_php-fpm" \
+  "php-fpm-test" \
 )
 
 for container in "${test_containers[@]}"
