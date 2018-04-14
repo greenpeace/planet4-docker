@@ -12,6 +12,8 @@ RUN apt-get update && \
 
 COPY . /app/
 
+WORKDIR /app/source
+
 ENV \
     INSTALL_WORDPRESS="true" \
     OVERWRITE_FILES="false" \
