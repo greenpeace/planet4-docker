@@ -18,7 +18,7 @@ function fatal {
 function get_container_name {
   # Removes any non-alphanumeric or '_' characters,
   # in an attempt to match docker-compose service naming convention
-  echo "${BATS_IMAGE//[^[:alnum:]_]/}_app_1"
+  echo "${BATS_IMAGE//[^[:alnum:]_]/-}_app_1"
 }
 
 # Used in setup function to log file, line number and function information in
