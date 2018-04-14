@@ -128,7 +128,7 @@ function start_docker_compose {
   docker-compose --no-ansi -f "${compose_file}" down
 
   # Start all containers in the compose file
-  docker-compose --no-ansi -f "${compose_file}" up -d
+  docker-compose --no-ansi -f "${compose_file}" up --remove-orphans -d
 
   # Query the container until a 200 response is returned
   until curl_check_status_code 200 "${endpoint}" "${container}"
