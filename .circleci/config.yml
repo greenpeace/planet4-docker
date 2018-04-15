@@ -31,13 +31,12 @@ jobs:
             chmod +x /tmp/circleci_update_build_numbers.sh
             /tmp/circleci_update_build_numbers.sh
 
-      - setup_remote_docker
-
       - run:
           name: Configure gcloud
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
 
+      - setup_remote_docker
 
       - run:
           name: Building platform containers on gcr.io
