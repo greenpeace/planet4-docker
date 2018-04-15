@@ -37,6 +37,7 @@ ENV \
     ADMIN_EMAIL="nobody@example.com" \
     CHOWN_APP_DIR="false" \
     COMPOSER_HOME="/app/.composer" \
+    COMPOSER_PROCESS_TIMEOUT="600" \
     NEWRELIC_APPNAME="${APPLICATION_NAME}" \
     NEWRELIC_ENABLED="true" \
     NEWRELIC_LICENSE="" \
