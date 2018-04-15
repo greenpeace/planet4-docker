@@ -1,7 +1,14 @@
-FROM ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/p4-onbuild:${IMAGE_TAG}
+FROM ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/wordpress:${IMAGE_TAG}
 
-MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
+ENV \
+  APP_HOSTNAME="${APP_HOSTNAME}" \
+  GIT_SOURCE="${GIT_SOURCE}" \
+  GIT_REF="${GIT_BRANCH}" \
+  WP_TITLE="${WP_TITLE}"
 
-ENV WP_TITLE="GPI - Testing Site"
-ENV APP_HOSTNAME "${APP_HOSTNAME}"
-ENV SSL_ENABLED "false"
+RUN cd .. && \
+  git clone "${GIT_SOURCE}" source && \
+  cd source && \
+  git checkout "${GIT_BRANCH}" && \
+  /app/bin/composer.phar --profile -vv install && \
+  /app/bin/composer.phar clearcache

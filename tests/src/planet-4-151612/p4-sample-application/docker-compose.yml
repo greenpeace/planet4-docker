@@ -3,7 +3,7 @@ services:
   openresty:
     image: gcr.io/planet-4-151612/openresty:${OPENRESTY_BUILD_TAG:-develop}
     volumes:
-      - data:/app/www:cached
+      - data:/app/www
     ports:
       - "80:80"
     environment:
@@ -15,12 +15,7 @@ services:
       - php-fpm
 
   php-fpm:
-    build:
-      context: .
-      args:
-        - GIT_REF=${GIT_REF:-develop}
-        - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
-        - OVERWRITE_FILES=true
+    image: gcr.io/planet-4-151612/p4-sample-application_php-fpm
     dns:
       - ${DNS_RESOLVER:-8.8.8.8}
     ports:
@@ -31,7 +26,8 @@ services:
     env_file:
       - db.env
     volumes:
-      - data:/app/source/public:cached
+      - data:/app/source/public
+
   db:
     image: ${DB_IMAGE:-mysql:5.7}
     env_file:
