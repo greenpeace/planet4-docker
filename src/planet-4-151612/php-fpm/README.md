@@ -1,7 +1,7 @@
 
 # PHP-FPM
 
-![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx test-K4GiwqC3znRL](https://img.shields.io/badge/nginx-test-K4GiwqC3znRL-brightgreen.svg) ![ngx_pagespeed test-38H1MCb5sJix-test-Bwv3ksGXM80r](https://img.shields.io/badge/ngx_pagespeed-test-38H1MCb5sJix--test-Bwv3ksGXM80r-brightgreen.svg) ![OpenSSL test-Q82dknjk3RHX](https://img.shields.io/badge/OpenSSL-test-Q82dknjk3RHX-brightgreen.svg)
+![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6.1](https://img.shields.io/badge/nginx-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2n](https://img.shields.io/badge/OpenSSL-1.0.2n-brightgreen.svg)
 
 ---
 
@@ -25,7 +25,7 @@ APP_HOSTNAME | `hostname -f` |  hostname of application
 APP_UID | 1000 | user_id - useful when mounting volumes from host > guest to either share or delineate file access permission
 APP_USER | app | nginx and php5-fpm user
 CHOWN_APP_DIR | true | if true, `chown -R $APP_USER:$APP_GROUP /app/www`
-CONTAINER_TIMEZONE | Australia/Hobart | Server timezone
+CONTAINER_TIMEZONE | UTC | Server timezone
 EXIM_DELIVERY_MODE | local | smarthost, local :: set to smarthost to enable third party SMTP
 EXIM_MAIL_FROM | example.com | domain from which exim4 mail appears to originate
 EXIM_SMARTHOST_AUTH_PASSWORD | password_123 | SMTP password
