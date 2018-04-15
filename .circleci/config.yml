@@ -33,6 +33,12 @@ jobs:
             ${HOME}/scripts/activate-gcloud-account.sh
 
       - run:
+          name: Version
+          command: |
+            docker --version
+            docker-compose --version
+
+      - run:
           name: Building platform containers on gcr.io
           command: |
             ./bin/build.sh -r
