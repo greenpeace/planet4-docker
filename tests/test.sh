@@ -41,6 +41,8 @@ fi
 # Exit if not writable
 [[ ! -w "${TEST_OUTPUT_DIR}" ]] && >&2 echo "Error: ${TEST_OUTPUT_DIR} is not writable" && exit 1
 
+echo "Test output directory: $TEST_OUTPUT_DIR"
+
 # Run self tests
 bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
 
