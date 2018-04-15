@@ -17,7 +17,7 @@ services:
   php-fpm:
     image: gcr.io/planet-4-151612/p4-sample-application_php-fpm
     dns:
-      - ${DNS_RESOLVER:-8.8.8.8}
+      - ${DNS_RESOLVER:-1.1.1.1}
     ports:
       - "9000:9000"
     environment:
