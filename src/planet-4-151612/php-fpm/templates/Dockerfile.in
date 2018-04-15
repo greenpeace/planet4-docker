@@ -1,6 +1,6 @@
 FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/ubuntu:${SOURCE_VERSION}
 
-MAINTAINER Ray Walker <hello@raywalker.it>
+LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
 
 RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.com/548C16BF.gpg | apt-key add - && \
     echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list && \

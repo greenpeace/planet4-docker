@@ -169,6 +169,8 @@ then
       '${CONTAINER_TIMEZONE}' \
       '${DOCKERIZE_VERSION}' \
       '${GOOGLE_PROJECT_ID}' \
+      '${MAINTAINER_NAME}' \
+      '${MAINTAINER_EMAIL}' \
       '${NGX_PAGESPEED_RELEASE}' \
       '${NGX_PAGESPEED_VERSION}' \
       '${OPENRESTY_SOURCE}' \

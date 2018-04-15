@@ -5,6 +5,8 @@
 
 APPLICATION_NAME="Greenpeace P4 Docker application"
 GOOGLE_PROJECT_ID=planet-4-151612
+MAINTAINER_NAME="Raymond Walker"
+MAINTAINER_EMAIL="raymond.walker@greenpeace.org"
 
 # application repository to build, expects a composer.json to be present,
 # or alternate file defined by COMPOSER
