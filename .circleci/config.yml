@@ -12,6 +12,12 @@ jobs:
   build:
     <<: *defaults
     steps:
+      - run:
+          name: Version
+          command: |
+            docker --version
+            docker-compose --version
+
       - checkout
 
       - run:
@@ -32,11 +38,6 @@ jobs:
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
 
-      - run:
-          name: Version
-          command: |
-            docker --version
-            docker-compose --version
 
       - run:
           name: Building platform containers on gcr.io
