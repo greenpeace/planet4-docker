@@ -11,43 +11,6 @@ function teardown {
   store_output
 }
 
-@test "pull image: ${image}" {
-  run pull_image "${image}"
-  [[ $status -eq 0 ]]
-}
-
-@test "image exists ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}:${IMAGE_TAG}" {
-  run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
-  [[ $status -eq 0 ]]
-}
-
-@test "service starts with minimal config" {
-  run test_minimal_startup
-  [[ $status -eq 0 ]]
-}
-
-@test "print service environment" {
-  run print_docker_env "${image}"
-  [[ $status -eq 0 ]]
-}
-
-@test "service responds 'ok' to health checks" {
-  run test_fastcgi_response
-  [[ $status -eq 0 ]]
-  [[ $output =~ "ok" ]]
-}
-
-@test "service responds with PHP Version 7.0" {
-  run test_fastcgi_response "/app/www/index.php"
-  [[ $status -eq 0 ]]
-  [[ $output =~ "PHP Version ${PHP_MAJOR_VERSION}" ]]
-  echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.index.php"
-}
-
-@test "minimal service cleans up" {
-  run test_minimal_cleanup
-  [[ $status -eq 0 ]]
-}
 
 @test "docker-compose nginx/php-fpm application starts" {
   run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" ${ENDPOINT_HTTP}
@@ -78,10 +41,5 @@ function teardown {
   run curl_check_response_regex "upload_max_filesize.*${UPLOAD_MAX_SIZE}" "http://localhost/index.php"
   [[ $status -eq 0 ]]
   run curl_check_response_regex "post_max_size.*${UPLOAD_MAX_SIZE}" "http://localhost/index.php"
-  [[ $status -eq 0 ]]
-}
-
-@test "docker-compose nginx/php-fpm application container cleans up" {
-  run clean_docker_compose
   [[ $status -eq 0 ]]
 }
