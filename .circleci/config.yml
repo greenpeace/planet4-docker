@@ -1,9 +1,9 @@
 defaults: &defaults
   environment:
     GOOGLE_PROJECT_ID: planet-4-151612
-    TEST_OUTPUT_DIR: /tmp/test-results
+    TEST_OUTPUT_DIR: /tmp/planet4-docker
   docker:
-    - image: gcr.io/planet-4-151612/circleci-base:0.3.7
+    - image: gcr.io/planet-4-151612/circleci-base:v0.3.12
   working_directory:  /home/circleci/app
 
 version: 2
@@ -12,6 +12,12 @@ jobs:
   build:
     <<: *defaults
     steps:
+      - run:
+          name: Version
+          command: |
+            docker --version
+            docker-compose --version
+
       - checkout
 
       - run:
@@ -20,17 +26,14 @@ jobs:
             # Store current build number for future jobs
             mkdir -p /tmp/workspace/var
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
-            # Fetch build number script from gist
-            curl -sSL https://gist.githubusercontent.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/d5675017a496f0cc966a9fc5f86266eccff3643f/circleci_update_build_numbers.sh -o /tmp/circleci_update_build_numbers.sh
-            chmod +x /tmp/circleci_update_build_numbers.sh
-            /tmp/circleci_update_build_numbers.sh || true
-
-      - setup_remote_docker
+            ${HOME}/scripts/update-build-numbers.sh
 
       - run:
           name: Configure gcloud
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
+
+      - setup_remote_docker
 
       - run:
           name: Building platform containers on gcr.io
@@ -54,13 +57,18 @@ jobs:
       - setup_remote_docker
 
       - run:
+          name: Authenticate with gcloud
+          command: |
+            ${HOME}/scripts/activate-gcloud-account.sh
+
+      - run:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh
 
       - store_test_results:
-          path: /tmp/test-results/merged
+          path: /tmp/planet4-docker/merged
 
       - store_artifacts:
           path: /tmp/artifacts
@@ -80,7 +88,7 @@ jobs:
       - setup_remote_docker
 
       - deploy:
-          name: Deploy latest tag on master branch
+          name: Deploy tags on master branch
           command: |
             set -x
 

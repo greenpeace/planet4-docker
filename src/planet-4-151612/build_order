@@ -4,4 +4,3 @@ exim
 openresty
 php-fpm
 wordpress
-p4-onbuild

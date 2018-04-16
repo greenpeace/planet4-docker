@@ -1,4 +1,6 @@
 FROM gcr.io/cloud-builders/docker
 
+LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
+
 RUN apt-get update \
   && apt-get -y install wget git-core rsync

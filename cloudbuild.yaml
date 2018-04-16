@@ -79,18 +79,6 @@ steps:
   waitFor:
     - 'php-fpm'
 
-- id: 'p4-onbuild'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--cache-from=${_BUILD_NAMESPACE}/{_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_REVISION_TAG}'
-    - './src/${_GOOGLE_PROJECT_ID}/p4-onbuild'
-  waitFor:
-    - 'wordpress'
-
 #
 # End service image builds
 #
@@ -112,9 +100,6 @@ images:
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'
-  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_TAG}'
-  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_BUILD_NUM}'
-  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-onbuild:${_REVISION_TAG}'
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_BUILD_NUM}'
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/exim:${_REVISION_TAG}'

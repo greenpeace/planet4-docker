@@ -9,25 +9,27 @@ This is a work in progress at creating a modular, re-usable Docker application a
 # Quickstart
 
 ```
-./build.sh -r
+./bin/build.sh -rp
+# or via Make
+make
 ```
 
-This triggers a Google Container Registry (GCR) build using the settings from `config.default`
+This triggers a Google Container Registry (GCR) build using the settings from `config.default` and pulls the resultant images.
 
 ## Building locally versus remotely
 ```
 # Build the Docker platform suite on your local machine
-./build.sh -l
+./bin/build.sh -l
 
 # Build the Docker platform suite on gcr.io
-./build.sh -r
+./bin/build.sh -r
 ```
 
 ```
 # Perform a remote build, pull new images once complete, and show verbose build output
-./build.sh -r -p -v
+./bin/build.sh -r -p -v
 # or
-./build.sh -rpv
+./bin/build.sh -rpv
 ```
 
 ## Subset builds
@@ -49,14 +51,14 @@ p4-onbuild
 1. Specifically stating which containers to build:
 ```
 # Perform a remote build of a small subset
-./build.sh -r openresty wordpress
+./bin/build.sh -r openresty wordpress
 ```
 In this example, only the openresty and wordpress images are built.
 
 2. Building the dependency chain from a given start point:
 ```
 # Performs a remote build of all images in the build_order file, starting at php-fpm:
-./build.sh -r php-fpm+
+./bin/build.sh -r php-fpm+
 ```
 In this example, the `php-fpm wordpress p4-onbuild` images are all built due to the trailing `+` on php-fpm
 
@@ -70,14 +72,14 @@ To build containers with custom values, or to specify different default values, 
 To rewrite platform variables without triggering a build, run `build.sh` without the `-l` or `-r` command line arguments:
 
 ```
-./build.sh
+./bin/build.sh
 ```
 
 This will update the local Dockerfile ENV variables such as `OPENRESTY_VERSION` or `OPENSSL_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically in the CI pipeline.
 
 ## Customising the container build
 
-See `config.default` for optional build configuration parameters. The easiest way to overwrite default parameters is to add new entries to a bash key value file, eg `config.custom`, then re-run the build with command line parameter like so: `./build.sh -c config.custom`
+See `config.default` for optional build configuration parameters. The easiest way to overwrite default parameters is to add new entries to a bash key value file, eg `config.custom`, then re-run the build with command line parameter like so: `./bin/build.sh -c config.custom`
 
 Also note that not all defined variables are configurable on container start, for example changing `OPENRESTY_VERSION` won't have any effect at container start as it's a variable used to install the infrastructure instead of control application behaviour.
 
@@ -89,17 +91,17 @@ Also note that not all defined variables are configurable on container start, fo
 ### Specify build time parameters from a configuration file:
 ```
 echo "GOOGLE_PROJECT_ID=greenpeace-testing" >> config.custom
-./build -c config.custom
+./bin/build -c config.custom
 
 ```
 ### Using environment variables
 ```
 # Build the whole docker suite on GCB:
-./build.sh -r
+./bin/build.sh -r
 
 # Build only a subset of the project, with a custom source branch,
 # starting from wordpress and continuing down the dependency chain
-GIT_REF=dev-feature/example ./build.sh -r wordpress+
+GIT_REF=feature/example ./bin/build.sh -r wordpress+
 ```
 
 ## Cleaning old images
@@ -109,18 +111,18 @@ A garbage collection script `gcrgc.sh` is available which can automatically dele
 ### Trial run
 You can test which images it would delete, without performing any changes to the registry, by setting the envionrment varible `TRIAL_RUN` to any truthy value, eg:
 ```
-TRIAL_RUN=true ./gcrgc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+TRIAL_RUN=true ./bin/gc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
 ```
 
 ### Delete all ubuntu images in the planet-4-151612 project older than 1st October 2017
 ```
-./gcrgc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+./bin/gc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
 ```
 
 ### Iterate over all images in a build order, deleting older than 1st March 2017
 ```
 for i in $(cat src/planet-4-151612/build_order)
 do
-  ./gcrgc.sh gcr.io/planet-4-151612/${i} 2017-04-01
+  ./bin/gc.sh gcr.io/planet-4-151612/${i} 2017-04-01
 done
 ```

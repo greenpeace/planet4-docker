@@ -1,21 +1,24 @@
 FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/php-fpm:${SOURCE_VERSION}
 
-MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
+LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends rsync git mysql-client && \
     apt-get clean && \
     rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     curl --retry 5 -o /app/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
-    ln -s /app/bin/wp.sh /app/bin/wp
+    ln -s /app/bin/wp.sh /app/bin/wp && \
+    mkdir -p /app/source
 
 COPY . /app/
+
+WORKDIR /app/source
 
 ENV \
     INSTALL_WORDPRESS="true" \
     OVERWRITE_FILES="false" \
-    PHP_CLEAR_ENV="no" \
-    WP_ADMIN_EMAIL="" \
+    PHP_CLEAR_ENV="yes" \
+    WP_ADMIN_EMAIL="${MAINTAINER_EMAIL}" \
     WP_ADMIN_NAME="" \
     WP_ADMIN_PASS="" \
     WP_ADMIN_USER="" \
@@ -46,19 +49,20 @@ ENV \
     WP_REDIS_HOST="redis" \
     WP_REDIS_PORT="6379" \
     WP_REDIS_DB="0" \
-    WP_REWRITE_STRUCTURE="/%category%/%post_id%/%postname%/" \
+    WP_REWRITE_STRUCTURE="" \
     WP_SECURE_AUTH_KEY="" \
     WP_SECURE_AUTH_SALT="" \
     WP_SET_OPTIONS_ON_BOOT="true" \
     WP_SITE_HOME="" \
     WP_SITE_PROTOCOL="https" \
     WP_SITE_URL="" \
-    WP_STATELESS_MEDIA_BUCKET="docker.p4.greenpeace.org" \
-    WP_STATELESS_MEDIA_ENABLED="false" \
+    WP_STATELESS_MEDIA_BUCKET="" \
+    WP_STATELESS_MEDIA_ENABLED="" \
     WP_STATELESS_MEDIA_JSON_KEY="" \
     WP_STATELESS_MEDIA_KEY_FILE_PATH="" \
     WP_STATELESS_MEDIA_MODE="stateless" \
-    WP_STATELESS_MEDIA_ROOT_DIR="${BRANCH_NAME}" \
-    WP_STATELESS_MEDIA_SERVICE_ACCOUNT="stateless-docker-p4-greenp-111@planet-4-151612.iam.gserviceaccount.com" \
-    WP_TITLE="${APPLICATION_NAME}" \
+    WP_STATELESS_MEDIA_ROOT_DIR="" \
+    WP_STATELESS_MEDIA_SERVICE_ACCOUNT="" \
+    WP_THEME="planet4-master-theme" \
+    WP_TITLE="Greenpeace" \
     WP_VERSION="latest"

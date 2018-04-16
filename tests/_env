@@ -6,9 +6,12 @@ set -a
 
 CURL_CONTAINER="${CURL_CONTAINER:-"appropriate/curl"}"
 IMAGE_NAMESPACE=${IMAGE_NAMESPACE:-"gcr.io"}
+# Gets the name of the parent directory as image name, ala docker-compose naming convention
 BATS_IMAGE=$(basename "$(realpath "${BATS_TEST_DIRNAME}/../")")
 BATS_PROJECT_ID=${BATS_PROJECT_ID:-"planet-4-151612"}
+# BUILD_TAG > CIRCLE_TAG > CIRCLE_BRANCH > git branch
 IMAGE_TAG=${BUILD_TAG:-${CIRCLE_TAG:-${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}}}
+# Removes non-docker characters from tag name
 IMAGE_TAG=${IMAGE_TAG//[^[:alnum:]_]/-}
 
 export CURL_CONTAINER

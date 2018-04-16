@@ -31,8 +31,7 @@ bats_switches=("$@")
 if [[ -z "${TEST_OUTPUT_DIR}" ]]
 then
   TEST_TMPDIR="$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")"
-  TEST_OUTPUT_DIR="${TEST_TMPDIR}/test-results"
-  echo "Test output directory: $TEST_OUTPUT_DIR"
+  TEST_OUTPUT_DIR="${TEST_TMPDIR}/planet4-docker-output"
 fi
 
 # Make directory if not exist
@@ -42,6 +41,9 @@ fi
 # Exit if not writable
 [[ ! -w "${TEST_OUTPUT_DIR}" ]] && >&2 echo "Error: ${TEST_OUTPUT_DIR} is not writable" && exit 1
 
+echo "Test output directory: $TEST_OUTPUT_DIR"
+
+# Run self tests
 bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
 
 # Ensure tap-xunit exists in path
@@ -118,3 +120,5 @@ do
 
 done
 shopt -u nullglob
+
+echo "Test output directory: $TEST_OUTPUT_DIR"

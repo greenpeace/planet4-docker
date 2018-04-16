@@ -1,6 +1,6 @@
 FROM phusion/baseimage:${BASEIMAGE_VERSION} as base
 
-MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
+LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
 
 COPY . /app/
 

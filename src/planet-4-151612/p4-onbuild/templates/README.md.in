@@ -1,4 +1,0 @@
-
-# Planet 4 Onbuild Container
-
--   Creates a new container based on `${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/wordpress`

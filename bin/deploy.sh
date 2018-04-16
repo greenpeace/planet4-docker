@@ -80,6 +80,7 @@ shopt -u nullglob
 # Check if we're running on CircleCI
 if [ ! -z "${CIRCLECI}" ]
 then
+  # Wrap with gcloud authenticated docker in container image
   DOCKER="${HOME}/google-cloud-sdk/bin/gcloud docker --"
 else
   DOCKER="docker"

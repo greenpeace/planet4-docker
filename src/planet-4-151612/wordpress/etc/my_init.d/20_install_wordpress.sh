@@ -63,6 +63,8 @@ function clear_install_lock() {
 # FILE SYSTEM CHECKS
 # ==============================================================================
 
+# FIXME Race conditions still exist! Best to init shared file systems once with
+# a single container before scaling.
 # Random sleep from 0ms to 1000ms to avoid race conditions with multiple containers
 milliseconds=$(( RANDOM % 1000 ))
 _good "Sleeping ${milliseconds}ms ..."
@@ -171,16 +173,8 @@ if [[ ${GIT_REF} != "${actual_git_ref}" ]]
 then
   _warning "Expected branch/tag: ${GIT_REF}"
   _warning "Found branch/tag:    ${actual_git_ref}"
-else
-  _good "COMPOSER           ${COMPOSER}"
 fi
 
-# Ensure the expected composer.json file is found
-if [[ ! -f "/app/source/${COMPOSER}" ]]
-then
-  ls -al /app/source/
-  _error "File not found: $PWD/$COMPOSER"
-fi
 
 # ==============================================================================
 # WORDPRESS INSTALLATION
@@ -189,7 +183,30 @@ fi
 _good "Installing Wordpress for site ${WP_HOSTNAME:-$APP_HOSTNAME} ..."
 _good "From: ${GIT_SOURCE}:${GIT_REF}"
 
+# Ensure the expected composer.json file is found
+if [[ ! -f "/app/source/composer.json" ]]
+then
+  rm -fr /app/source /app/source/* || true
+  git clone ${GIT_SOURCE} /app/source
+  cd /app/source
+  git checkout ${GIT_REF}
+fi
+
 composer_exec="composer --profile -vv"
+
+# # Ensure the expected composer.json file is found
+# if [[ ! -d "/app/source/composer.lock" ]]
+# then
+#   _good "Performing composer update..."
+#   $composer_exec update
+# fi
+
+# Ensure the expected composer.json file is found
+if [[ ! -d "/app/source/vendor" ]]
+then
+  _good "Performing composer install..."
+  $composer_exec install
+fi
 
 $composer_exec download:wordpress
 
@@ -222,11 +239,11 @@ _good "Database ready: ${WP_DB_HOST}:${WP_DB_PORT}"
 # FIXME Run another check to test if wp is installed yet
 # FIXME If installed, perform site-update?
 
-$composer_exec core:install
+wp core install --url=${WP_HOSTNAME} --title="$WP_TITLE" --admin_user="${WP_ADMIN_USER:-admin}" --admin_email="${WP_ADMIN_EMAIL:-$MAINTAINER_EMAIL}"
 
-$composer_exec plugin:activate
+wp plugin activate --all
 
-$composer_exec theme:activate
+wp theme activate "${WP_THEME}"
 
 [[ "${WP_DEFAULT_CONTENT}" = "true" ]] && $composer_exec core:initial-content
 
@@ -236,8 +253,9 @@ $composer_exec core:style
 
 $composer_exec core:js
 
-$composer_exec site:custom
+$composer_exec core:js-minify
 
+$composer_exec site:custom
 
 # Links the source directory to expected path
 # FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
