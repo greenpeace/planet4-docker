@@ -3,7 +3,7 @@ defaults: &defaults
     GOOGLE_PROJECT_ID: planet-4-151612
     TEST_OUTPUT_DIR: /tmp/planet4-docker
   docker:
-    - image: gcr.io/planet-4-151612/circleci-base:v0.3.11
+    - image: gcr.io/planet-4-151612/circleci-base:v0.3.12
   working_directory:  /home/circleci/app
 
 version: 2
