@@ -26,10 +26,7 @@ jobs:
             # Store current build number for future jobs
             mkdir -p /tmp/workspace/var
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
-            # Fetch build number script from gist
-            curl -sSL -o /tmp/circleci_update_build_numbers.sh https://gist.github.com/27Bslash6/b124df87ac2c5ce44f6736b1d4af124a/raw/d9873cdadeadaf4c6181fe3c0c335882b96d547c/circleci_update_build_numbers.sh
-            chmod +x /tmp/circleci_update_build_numbers.sh
-            /tmp/circleci_update_build_numbers.sh
+            ${HOME}/scripts/update-build-numbers.sh
 
       - run:
           name: Configure gcloud
