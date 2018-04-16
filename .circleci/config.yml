@@ -57,6 +57,11 @@ jobs:
       - setup_remote_docker
 
       - run:
+          name: Authenticate with gcloud
+          command: |
+            ${HOME}/scripts/activate-gcloud-account.sh
+
+      - run:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
