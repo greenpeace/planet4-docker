@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -eao pipefail
 
-# Generates keys and salts for wp-config.php
-generate_wp_keys.sh
-
 # WP base configuration
 # FIXME should these variables ship with default values?
 WP_DB_NAME="${WP_DB_NAME:-${MYSQL_DATABASE:-}}"

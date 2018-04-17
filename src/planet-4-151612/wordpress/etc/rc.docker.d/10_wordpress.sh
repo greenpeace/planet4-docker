@@ -5,6 +5,8 @@ set -ex
 
 chown -R "$APP_USER:$APP_GROUP" "${PUBLIC_PATH}"
 
+# Generates keys and salts for wp-config.php
+/app/bin/generate_wp_keys.sh
 /app/bin/generate_wp_config.sh
 
 # Resets database options to environment variable, such as:
@@ -18,3 +20,5 @@ then
 else
   [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]] && rm -f "${PUBLIC_PATH}/wp-content/object-cache.php"
 fi
+
+exit 0
