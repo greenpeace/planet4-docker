@@ -1,23 +1,4 @@
 <?php
-/**
- * The base configuration for WordPress
- *
- * The wp-config.php creation script uses this file during the
- * installation. You don't have to use the web site, you can
- * copy this file to "wp-config.php" and fill in the values.
- *
- * This file contains the following configurations:
- *
- * * MySQL settings
- * * Secret keys
- * * Database table prefix
- * * ABSPATH
- *
- * @link https://codex.wordpress.org/Editing_wp-config.php
- *
- * @package WordPress
- */
-
 // ** MySQL settings ** //
 
 define('DB_NAME',     '{{ .Env.WP_DB_NAME }}');
@@ -34,28 +15,22 @@ define('SITE_URL',            '{{ .Env.WP_SITE_URL }}');
 define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
 {{ if eq .Env.AUTOMATIC_UPDATER_DISABLED "true" }}
-# Disable all automated updates
+/* Disable all automated updates */
 define( 'AUTOMATIC_UPDATER_DISABLED', true );
 {{ end }}
 
 {{ if eq .Env.WP_FORCE_SSL_ADMIN "true" }}
-# Force SSL in the administration section
+/* Force SSL in the administration section */
 define('FORCE_SSL_ADMIN', true);
 {{ end }}
 
-# Respect upstream SSL termination headers
+/* Respect upstream SSL termination headers */
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
     $_SERVER['HTTPS']='on';
 }
 
 /**
  * Authentication Unique Keys and Salts.
- *
- * Change these to different unique phrases!
- * You can generate these using the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}
- * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
- *
- * @since 2.6.0
  */
 define('AUTH_KEY',         '{{ .Env.WP_AUTH_KEY }}');
 define('SECURE_AUTH_KEY',  '{{ .Env.WP_SECURE_AUTH_KEY }}');
@@ -67,7 +42,6 @@ define('LOGGED_IN_SALT',   '{{ .Env.WP_LOGGED_IN_SALT }}');
 define('NONCE_SALT',       '{{ .Env.WP_NONCE_SALT }}');
 
 {{ if eq .Env.APP_ENV "develop" }}
-# APP_ENV {{ .Env.APP_ENV }}
 define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 {{ end }}
