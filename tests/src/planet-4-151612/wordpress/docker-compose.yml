@@ -1,6 +1,40 @@
 version: '3'
 services:
   app:
-    image: ${IMAGE_NAMESPACE:-gcr.io}/${BATS_PROJECT_ID:-planet-4-151612}/wordpress:${IMAGE_TAG:-develop}
+    image: gcr.io/planet-4-151612/openresty:${OPENRESTY_BUILD_TAG:-develop}
+    volumes:
+      - data:/app/source
     ports:
       - "80:80"
+    environment:
+      - APP_ENV=develop
+      - APP_HOSTNAME=${APP_HOSTNAME:-test.planet4.dev}
+      - PHP_ENABLED=true
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    image: gcr.io/planet-4-151612/wordpress:${WORDPRESS_BUILD_TAG:-develop}
+    dns:
+      - ${DNS_RESOLVER:-1.1.1.1}
+    environment:
+      - APP_ENV=develop
+      - APP_HOSTNAME=${APP_HOSTNAME}
+      - GIT_SOURCE=${GIT_SOURCE}
+      - GIT_REF=${GIT_BRANCH}
+      - WP_TITLE=${WP_TITLE}
+    env_file:
+      - db.env
+    volumes:
+      - data:/app/source
+
+  db:
+    image: ${DB_IMAGE:-mysql:5.7}
+    env_file:
+      - db.env
+
+  redis:
+    image: redis:4-alpine
+
+volumes:
+  data:
