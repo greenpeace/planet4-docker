@@ -43,7 +43,7 @@ function create_source_directories() {
 #
 function delete_source_directories() {
   # Force clean exit code in the event that these are bind-mounted
-  rm -fr "${PUBLIC_PATH}:?}/*" "${PUBLIC_PATH}/.*" || true
+  rm -fr "${PUBLIC_PATH}:?}/*" "${PUBLIC_PATH}/.*" >/dev/null 2>&1  || true
 }
 # ==============================================================================
 # touch_install_lock()
