@@ -18,7 +18,7 @@ then
   # Install WP-Redis object cache file if exist
   [[ -f "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" ]] && wp redis enable
 else
-  [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]] && rm -f "${PUBLIC_PATH}/wp-content/object-cache.php"
+  [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]] && rm -f "${PUBLIC_PATH}/wp-content/object-cache.php" || true
 fi
 
 exit 0
