@@ -19,9 +19,9 @@ function teardown {
   docker-compose -f "${compose_file}" pull --parallel
 }
 
-@test "container starts" {
+@test "container starts (20min wait)" {
   # Wait up to 10 minutes for the build to complete!
-  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 $(get_container_name) 10
+  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 $(get_container_name) 20
   [[ "$status" -eq 0 ]]
 }
 
@@ -35,8 +35,8 @@ function teardown {
   [[ $status -eq 0 ]]
 }
 
-@test "responds on port 80 with status 200 (20min wait)" {
-  run curl_check_status_code 200 http://localhost:80 $(get_container_name) 1200
+@test "responds on port 80 with status 200" {
+  run curl_check_status_code 200 http://localhost:80 $(get_container_name) 10
   [[ $status -eq 0 ]]
   [[ $output -eq "200" ]]
 }
