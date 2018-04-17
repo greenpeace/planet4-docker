@@ -33,6 +33,11 @@ define('SITE_HOME',           '{{ .Env.WP_SITE_HOME }}');
 define('SITE_URL',            '{{ .Env.WP_SITE_URL }}');
 define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
+{{ if eq .Env.AUTOMATIC_UPDATER_DISABLED "true" }}
+# Disable all automated updates
+define( 'AUTOMATIC_UPDATER_DISABLED', true );
+{{ end }}
+
 {{ if eq .Env.WP_FORCE_SSL_ADMIN "true" }}
 # Force SSL in the administration section
 define('FORCE_SSL_ADMIN', true);

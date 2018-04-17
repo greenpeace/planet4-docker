@@ -26,7 +26,8 @@ ENV \
     WP_ADMIN_USER="" \
     WP_AUTH_KEY="" \
     WP_AUTH_SALT="" \
-    WP_AUTO_UPDATE_CORE="minor" \
+    WP_AUTOMATIC_UPDATER_DISABLED="true" \
+    WP_AUTO_UPDATE_CORE="false" \
     WP_BAKE="false" \
     WP_CLI_CACHE_DIR="/app/.wp-cli/cache" \
     WP_CLI_DISABLE_AUTO_CHECK_UPDATE="true" \
