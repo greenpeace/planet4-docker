@@ -162,6 +162,23 @@ then
 fi
 _good "WP_DB_PREFIX           ${WP_DB_PREFIX}"
 
+# ==============================================================================
+# WORDPRESS INSTALLATION
+# ==============================================================================
+
+_good "Installing Wordpress for site ${WP_HOSTNAME:-$APP_HOSTNAME} ..."
+_good "From: ${GIT_SOURCE}:${GIT_REF}"
+
+# Ensure the expected composer.json file is found
+if [[ ! -f "${SOURCE_PATH}/composer.json" ]]
+then
+  echo "Composer not found: ${SOURCE_PATH}/composer.json"
+  rm -fr "${SOURCE_PATH}" "${SOURCE_PATH:?}/*" || true
+  git clone "${GIT_SOURCE}" "${SOURCE_PATH}"
+  cd "${SOURCE_PATH}"
+  git checkout "${GIT_REF}"
+fi
+
 # FIXME this is a terribly hacky way of checking upstream
 actual_source="https://github.com/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f4)/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f5 | cut -d' ' -f1)"
 if [[ ${GIT_SOURCE} != "${actual_source}" ]]
@@ -177,33 +194,14 @@ then
   _warning "Found branch/tag:    ${actual_git_ref}"
 fi
 
-
-# ==============================================================================
-# WORDPRESS INSTALLATION
-# ==============================================================================
-
-_good "Installing Wordpress for site ${WP_HOSTNAME:-$APP_HOSTNAME} ..."
-_good "From: ${GIT_SOURCE}:${GIT_REF}"
-
-# Ensure the expected composer.json file is found
-if [[ ! -f "/app/source/composer.json" ]]
-then
-  rm -fr /app/source /app/source/* || true
-  git clone ${GIT_SOURCE} /app/source
-  cd /app/source
-  git checkout ${GIT_REF}
-fi
-
 composer_exec="composer --profile -vv"
 
-# # Ensure the expected composer.json file is found
 # if [[ ! -d "${SOURCE_PATH}/composer.lock" ]]
 # then
 #   _good "Performing composer update..."
 #   $composer_exec update
 # fi
 
-# Ensure the expected composer.json file is found
 if [[ ! -d "${SOURCE_PATH}/vendor" ]]
 then
   _good "Performing composer install..."
