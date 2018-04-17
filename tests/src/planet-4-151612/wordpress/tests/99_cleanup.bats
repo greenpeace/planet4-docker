@@ -12,7 +12,6 @@ function teardown {
 }
 
 @test "container cleans up" {
-  skip "testing"
   run clean_docker_compose "${compose_file}"
   [[ "$status" -eq 0 ]]
 }
