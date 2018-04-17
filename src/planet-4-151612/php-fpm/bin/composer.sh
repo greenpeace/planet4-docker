@@ -11,7 +11,7 @@ then
   if [[ $(ls -ldn . | awk '{print $3}') != "${APP_USER}" ]]
   then
     chown -R ${APP_USER} /app/.composer
-    chown -R ${APP_USER} /app/source
+    [[ -e "${SOURCE_PATH}" ]] && chown -R ${APP_USER} "${SOURCE_PATH}"
   fi
   exec setuser ${APP_USER} php /app/bin/composer.phar "$@"
 elif [[ $uid = "${APP_UID}" ]]

@@ -38,7 +38,7 @@ function teardown {
 }
 
 @test "service responds with PHP Version ${PHP_MAJOR_VERSION}" {
-  run test_fastcgi_response "/app/www/index.php"
+  run test_fastcgi_response "/app/source/public/index.php"
   [[ $status -eq 0 ]]
   [[ $output =~ "PHP Version ${PHP_MAJOR_VERSION}" ]]
   echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.index.php"

@@ -8,12 +8,12 @@ Docker Hub: [greenpeace/wordpress](https://hub.docker.com/r/greenpeace/wordpress
 
 ---
 
-`docker run -p "80:80" -p "443:443" -e "APP_HOSTNAME=some.example.com" -v /some/dir/www:/app/www greenpeace/wordpress`
+`docker run -p "80:80" -p "443:443" -e "APP_HOSTNAME=some.example.com" -v /some/dir/www:${PUBLIC_PATH} greenpeace/wordpress`
 
 ---
 
 Included in this image:
-- [wp-cli](http://wp-cli.org/), executes as `$APP_USER` and is preconfigured with --path="/app/www"
+- [wp-cli](http://wp-cli.org/), executes as `$APP_USER` and is preconfigured with --path="${PUBLIC_PATH}"
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed)
 - [NewRelic](https://newrelic.com) PHP application monitoring - just add license
 - exim4, ready for smarthost delivery to [sendgrid](https://sendgrid.net) or [mailgun](http://mailgun.net/)
@@ -28,7 +28,7 @@ This container is configurable via a plethora of environment variables, which ar
 
 var | default | description
 --- | ------- | -----------
-OVERWRITE_FILES | false | Set true to force install Wordpress and overwrite the contents of /app/www
+OVERWRITE_FILES | false | Set true to force install Wordpress and overwrite the contents of ${PUBLIC_PATH}
 WP_TITLE | greenpeace/wordpress | The title of the Wordpress install
 WP_HOSTNAME |  | Wordpress URL. Tries to fallback to `$APP_HOSTNAME` if blank
 WP_DB_HOST | db | Database hostname

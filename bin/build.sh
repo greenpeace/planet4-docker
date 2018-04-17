@@ -177,6 +177,8 @@ then
       '${OPENRESTY_VERSION}' \
       '${OPENSSL_VERSION}' \
       '${PHP_MAJOR_VERSION}' \
+      '${SOURCE_PATH}' \
+      '${PUBLIC_PATH}' \
       '${SOURCE_VERSION}' \
     )
 

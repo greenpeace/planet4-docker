@@ -3,7 +3,7 @@ set -e
 
 [[ "${INSTALL_WORDPRESS}" = "true" ]] || exit 0
 
-install_lock="/app/source/public/.install"
+install_lock="${SOURCE_PATH}/.install"
 
 # ==============================================================================
 # UTILITY FUNCTIONS
@@ -18,15 +18,15 @@ install_lock="/app/source/public/.install"
 function get_num_files_exist() {
   local -a files
   local dir
-  dir="${1:-/app/source/public}"
+  dir="${1:-${PUBLIC_PATH}}"
 
   if [[ ! -d "$dir" ]]
   then
     echo 0
-    exit 0
+    return 0
   fi
   shopt -s nullglob dotglob
-  files=(/app/source/public/*)
+  files=(${PUBLIC_PATH}/*)
   shopt -u nullglob dotglob
   echo "${#files[@]}"
 }
@@ -34,28 +34,30 @@ function get_num_files_exist() {
 # create_source_directories()
 #
 function create_source_directories() {
-  [[ ! -e /app/source/public ]] && mkdir -p /app/source/public
-  [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
+  [[ -e "${PUBLIC_PATH}" ]] && return 0
+  echo "Creating source directory: ${PUBLIC_PATH}"
+  mkdir -p "${PUBLIC_PATH}"
 }
 # ==============================================================================
 # delete_source_directories()
 #
 function delete_source_directories() {
   # Force clean exit code in the event that these are bind-mounted
-  rm -fr /app/www || true
-  rm -fr /app/source/public /app/source/public/* /app/source/public/.*  || true
+  rm -fr "${PUBLIC_PATH}:?}/*" "${PUBLIC_PATH}/.*" || true
 }
 # ==============================================================================
 # touch_install_lock()
 #
 function touch_install_lock() {
-  mkdir -p /app/source/public
+  [[ ! -e "${SOURCE_PATH}" ]] && echo "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
+  echo "Creating install lock file: ${install_lock}"
   true > "${install_lock}"
 }
 # ==============================================================================
 # clear_install_lock()
 #
 function clear_install_lock() {
+  echo "Removing install lock file: ${install_lock}"
   rm -fr "${install_lock}"
 }
 
@@ -92,18 +94,18 @@ _good "Number of files in source folder: ${num_files}"
 # Check for test data files
 if [[ "${num_files}" -eq 1 ]]
 then
-  if [[ -f "/app/source/public/index.php" ]] && [[ "$(grep TEST-DATA-ONLY /app/source/public/index.php)" ]]
+  if [[ -f "${PUBLIC_PATH}/index.php" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.php")" ]]
   then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
-  elif [[ -f "/app/source/public/index.html" ]] && [[ "$(grep TEST-DATA-ONLY /app/source/public/index.html)" ]]
+  elif [[ -f "${PUBLIC_PATH}/index.html" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.html")" ]]
   then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
   fi
 elif [[ "${num_files}" -eq 2 ]] && \
-  [[ -f "/app/source/public/index.php" ]] && [[ "$(grep TEST-DATA-ONLY /app/source/public/index.php)" ]] && \
-  [[ -f "/app/source/public/index.html" ]] && [[ "$(grep TEST-DATA-ONLY /app/source/public/index.html)" ]]
+  [[ -f "${PUBLIC_PATH}/index.php" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.php")" ]] && \
+  [[ -f "${PUBLIC_PATH}/index.html" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.html")" ]]
 then
   _good "Test data detected, deleting source directories..."
   delete_source_directories
@@ -195,14 +197,14 @@ fi
 composer_exec="composer --profile -vv"
 
 # # Ensure the expected composer.json file is found
-# if [[ ! -d "/app/source/composer.lock" ]]
+# if [[ ! -d "${SOURCE_PATH}/composer.lock" ]]
 # then
 #   _good "Performing composer update..."
 #   $composer_exec update
 # fi
 
 # Ensure the expected composer.json file is found
-if [[ ! -d "/app/source/vendor" ]]
+if [[ ! -d "${SOURCE_PATH}/vendor" ]]
 then
   _good "Performing composer install..."
   $composer_exec install
@@ -219,7 +221,7 @@ $composer_exec copy:themes
 $composer_exec copy:assets
 $composer_exec copy:plugins
 
-setuser "${APP_USER}" dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
+setuser "${APP_USER}" dockerize -template "/app/wp-config.php.tmpl:${PUBLIC_PATH}/wp-config.php"
 
 # Wait up to two minutes for the database to become ready
 timeout=2
@@ -256,9 +258,5 @@ $composer_exec core:js
 $composer_exec core:js-minify
 
 $composer_exec site:custom
-
-# Links the source directory to expected path
-# FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
-[[ ! -e /app/www ]] && ln -s /app/source/public /app/www || true
 
 clear_install_lock

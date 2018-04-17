@@ -3,7 +3,7 @@ services:
   openresty:
     image: gcr.io/planet-4-151612/openresty:${OPENRESTY_BUILD_TAG:-develop}
     volumes:
-      - data:/app/www
+      - data:/app/source
     ports:
       - "80:80"
     environment:
@@ -26,7 +26,7 @@ services:
     env_file:
       - db.env
     volumes:
-      - data:/app/source/public
+      - data:/app/source
 
   db:
     image: ${DB_IMAGE:-mysql:5.7}

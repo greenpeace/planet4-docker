@@ -3,7 +3,7 @@ set -ex
 
 [[ "$WP_BAKE" = "true" ]] || exit 0
 
-rm -fr /app/source/public
+rm -fr "${PUBLIC_PATH}/public"
 composer_exec="composer --profile -vv"
 $composer_exec download:wordpress
 
@@ -23,8 +23,6 @@ $composer_exec core:js
 $composer_exec core:js-minify
 
 $composer_exec site:custom
-
-ln -s /app/source/public /app/www
 
 generate_wp_config.sh
 
