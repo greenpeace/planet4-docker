@@ -3,7 +3,7 @@ defaults: &defaults
     GOOGLE_PROJECT_ID: planet-4-151612
     TEST_OUTPUT_DIR: /tmp/planet4-docker
   docker:
-    - image: gcr.io/planet-4-151612/circleci-base:v0.3.12
+    - image: gcr.io/planet-4-151612/circleci-base:v0.4.2
   working_directory:  /home/circleci/app
 
 version: 2
@@ -55,6 +55,12 @@ jobs:
           at: /tmp/workspace
 
       - setup_remote_docker
+
+      - run:
+          name: Version
+          command: |
+            docker --version
+            docker-compose --version
 
       - run:
           name: Authenticate with gcloud
