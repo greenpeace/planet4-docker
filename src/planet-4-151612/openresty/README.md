@@ -5,10 +5,10 @@
 Built on [gcr.io/planet-4-151612/ubuntu](https://registry.hub.docker.com/u/greenpeace/ubuntu/), a lightly modified Ubuntu Xenial [Phusion Base Image](https://phusion.github.io/baseimage-docker/).
 
 ```bash
-docker run -v "/path/to/www:/app/www" -p "80:80" -p "443:443" greenpeace/openresty
+docker run -v "/path/to/www:/app/source/public" -p "80:80" -p "443:443" greenpeace/openresty
 ```
 
-Files are served from `/app/www/`, SSL certificates are generated in `/etc/nginx/ssl`, `/etc/nginx/sites-enabled/*` is searched for virtual hosts.
+Files are served from `/app/source/public/`, SSL certificates are generated in `/etc/nginx/ssl`, `/etc/nginx/sites-enabled/*` is searched for virtual hosts.
 
 Nginx is configured with sane security defaults for out-of-the-box webservice, highly configurable by environment variables and is compiled from mainline source.
 
@@ -31,7 +31,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /path/to/www:/app/www
+      - /path/to/www:/app/source/public
 ```
 
 ### Variables
@@ -42,7 +42,7 @@ APP_USER                   | nginx   | Service user name
 APP_GROUP                  | nginx   | Service group name
 UPLOAD_MAX_SIZE            | ${UPLOAD_MAX_SIZE}     | Sets `nginx_client_max_body_size`
 OPENRESTY_MAX_WORKER_PROCESSES | ${OPENRESTY_MAX_WORKER_PROCESSES}       | Sets `worker_processes`, will not exceed number of logical cores
-CHOWN_APP_DIR              | false   | If true `chown` `/app/www` as `APP_USER:APP_GROUP`
+CHOWN_APP_DIR              | false   | If true `chown` `/app/source/public` as `APP_USER:APP_GROUP`
 
 ## Security
 
@@ -64,6 +64,6 @@ HTTPS2 is configured using modern sane defaults, including
 
 - nginx user is set to `${APP_USER}` (default is nginx)
 - creates user and group from `{APP_USER}`, some sanity checks for matching UID / GID in the event that user/group already exists
-- if `${CHOWN_APP_DIR} /app/www` (default false)
+- if `${CHOWN_APP_DIR} /app/source/public` (default false)
 - `worker_processes` is set to the number of available processor cores and adjusts `/etc/nginx/nginx.conf` to match, up to a maximum number of cores `${OPENRESTY_MAX_WORKER_PROCESSES}`
 - `client_max_body_size` is set to `${UPLOAD_MAX_SIZE}`

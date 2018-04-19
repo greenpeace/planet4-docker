@@ -165,14 +165,16 @@ then
       '${CONTAINER_TIMEZONE}' \
       '${DOCKERIZE_VERSION}' \
       '${GOOGLE_PROJECT_ID}' \
-      '${MAINTAINER_NAME}' \
       '${MAINTAINER_EMAIL}' \
+      '${MAINTAINER_NAME}' \
       '${NGX_PAGESPEED_RELEASE}' \
       '${NGX_PAGESPEED_VERSION}' \
       '${OPENRESTY_SOURCE}' \
       '${OPENRESTY_VERSION}' \
       '${OPENSSL_VERSION}' \
       '${PHP_MAJOR_VERSION}' \
+      '${SOURCE_PATH}' \
+      '${PUBLIC_PATH}' \
       '${SOURCE_VERSION}' \
     )
 

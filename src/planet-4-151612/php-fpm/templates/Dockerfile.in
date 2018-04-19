@@ -57,6 +57,8 @@ ENV \
     PHP_PROCESS_MANAGER="dynamic" \
     PHP_SESSION_SAVE_HANDLER="files" \
     PHP_SESSION_SAVE_PATH="/var/lib/php/sessions" \
+    SOURCE_PATH="${SOURCE_PATH}" \
+    PUBLIC_PATH="${PUBLIC_PATH}" \
     SSMTP_MAIL_RELAY="smtp" \
     UPLOAD_MAX_SIZE="50M"
 

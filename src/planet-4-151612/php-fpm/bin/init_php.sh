@@ -16,6 +16,6 @@ rm -f /etc/php/${PHP_MAJOR_VERSION}/cli/conf.d/newrelic.ini
 sed -i -r "s/;daemonize = yes/daemonize = no/g" /etc/php/${PHP_MAJOR_VERSION}/fpm/php-fpm.conf
 
 # Clear upstream data
-rm -fr /app/www
-mkdir -p /app/www
-echo "<?php phpinfo(); " > /app/www/index.php
+rm -fr "${PUBLIC_PATH}" || true
+mkdir -p "${PUBLIC_PATH}"
+echo "<?php phpinfo(); " > "${PUBLIC_PATH}/index.php"

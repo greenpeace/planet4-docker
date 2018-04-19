@@ -3,7 +3,7 @@ set -e
 
 [[ "${INSTALL_WORDPRESS}" = "true" ]] || exit 0
 
-install_lock="/app/source/public/.install"
+install_lock="${SOURCE_PATH}/.install"
 
 # ==============================================================================
 # UTILITY FUNCTIONS
@@ -18,15 +18,15 @@ install_lock="/app/source/public/.install"
 function get_num_files_exist() {
   local -a files
   local dir
-  dir="${1:-/app/source/public}"
+  dir="${1:-${PUBLIC_PATH}}"
 
   if [[ ! -d "$dir" ]]
   then
     echo 0
-    exit 0
+    return 0
   fi
   shopt -s nullglob dotglob
-  files=(/app/source/public/*)
+  files=(${PUBLIC_PATH}/*)
   shopt -u nullglob dotglob
   echo "${#files[@]}"
 }
@@ -34,28 +34,31 @@ function get_num_files_exist() {
 # create_source_directories()
 #
 function create_source_directories() {
-  [[ ! -e /app/source/public ]] && mkdir -p /app/source/public
-  [[ ! -e /app/www ]] && ln -s /app/source/public /app/www
+  [[ -e "${PUBLIC_PATH}" ]] && return 0
+  echo "Creating source directory: ${PUBLIC_PATH}"
+  mkdir -p "${PUBLIC_PATH}"
 }
 # ==============================================================================
 # delete_source_directories()
 #
 function delete_source_directories() {
   # Force clean exit code in the event that these are bind-mounted
-  rm -fr /app/www || true
-  rm -fr /app/source/public /app/source/public/* /app/source/public/.*  || true
+  echo "Deleting source directory: ${PUBLIC_PATH}"
+  rm -fr "${PUBLIC_PATH}:?}/*" "${PUBLIC_PATH}/.*" >/dev/null 2>&1  || true
 }
 # ==============================================================================
 # touch_install_lock()
 #
 function touch_install_lock() {
-  mkdir -p /app/source/public
+  [[ ! -e "${SOURCE_PATH}" ]] && echo "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
+  echo "Creating install lock file: ${install_lock}"
   true > "${install_lock}"
 }
 # ==============================================================================
 # clear_install_lock()
 #
 function clear_install_lock() {
+  echo "Removing install lock file: ${install_lock}"
   rm -fr "${install_lock}"
 }
 
@@ -92,18 +95,18 @@ _good "Number of files in source folder: ${num_files}"
 # Check for test data files
 if [[ "${num_files}" -eq 1 ]]
 then
-  if [[ -f "/app/source/public/index.php" ]] && [[ "$(grep TEST-DATA-ONLY /app/source/public/index.php)" ]]
+  if [[ -f "${PUBLIC_PATH}/index.php" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.php")" ]]
   then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
-  elif [[ -f "/app/source/public/index.html" ]] && [[ "$(grep TEST-DATA-ONLY /app/source/public/index.html)" ]]
+  elif [[ -f "${PUBLIC_PATH}/index.html" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.html")" ]]
   then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
   fi
 elif [[ "${num_files}" -eq 2 ]] && \
-  [[ -f "/app/source/public/index.php" ]] && [[ "$(grep TEST-DATA-ONLY /app/source/public/index.php)" ]] && \
-  [[ -f "/app/source/public/index.html" ]] && [[ "$(grep TEST-DATA-ONLY /app/source/public/index.html)" ]]
+  [[ -f "${PUBLIC_PATH}/index.php" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.php")" ]] && \
+  [[ -f "${PUBLIC_PATH}/index.html" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.html")" ]]
 then
   _good "Test data detected, deleting source directories..."
   delete_source_directories
@@ -160,22 +163,6 @@ then
 fi
 _good "WP_DB_PREFIX           ${WP_DB_PREFIX}"
 
-# FIXME this is a terribly hacky way of checking upstream
-actual_source="https://github.com/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f4)/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f5 | cut -d' ' -f1)"
-if [[ ${GIT_SOURCE} != "${actual_source}" ]]
-then
-  _warning "Expected source:     ${GIT_SOURCE}"
-  _warning "Found source:        ${actual_source}"
-fi
-
-actual_git_ref=$(git rev-parse --abbrev-ref HEAD)
-if [[ ${GIT_REF} != "${actual_git_ref}" ]]
-then
-  _warning "Expected branch/tag: ${GIT_REF}"
-  _warning "Found branch/tag:    ${actual_git_ref}"
-fi
-
-
 # ==============================================================================
 # WORDPRESS INSTALLATION
 # ==============================================================================
@@ -184,25 +171,39 @@ _good "Installing Wordpress for site ${WP_HOSTNAME:-$APP_HOSTNAME} ..."
 _good "From: ${GIT_SOURCE}:${GIT_REF}"
 
 # Ensure the expected composer.json file is found
-if [[ ! -f "/app/source/composer.json" ]]
+if [[ ! -f "${SOURCE_PATH}/composer.json" ]]
 then
-  rm -fr /app/source /app/source/* || true
-  git clone ${GIT_SOURCE} /app/source
-  cd /app/source
-  git checkout ${GIT_REF}
+  echo "Composer not found: ${SOURCE_PATH}/composer.json"
+  rm -fr "${SOURCE_PATH}" "${SOURCE_PATH:?}/*" || true
+  git clone "${GIT_SOURCE}" "${SOURCE_PATH}"
+  cd "${SOURCE_PATH}"
+  git checkout "${GIT_REF}"
 fi
+
+# FIXME this is a terribly hacky way of checking upstream
+# actual_source="https://github.com/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f4)/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f5 | cut -d' ' -f1)"
+# if [[ ${GIT_SOURCE} != "${actual_source}" ]]
+# then
+#   _warning "Expected source:     ${GIT_SOURCE}"
+#   _warning "Found source:        ${actual_source}"
+# fi
+#
+# actual_git_ref=$(git rev-parse --abbrev-ref HEAD)
+# if [[ ${GIT_REF} != "${actual_git_ref}" ]]
+# then
+#   _warning "Expected branch/tag: ${GIT_REF}"
+#   _warning "Found branch/tag:    ${actual_git_ref}"
+# fi
 
 composer_exec="composer --profile -vv"
 
-# # Ensure the expected composer.json file is found
-# if [[ ! -d "/app/source/composer.lock" ]]
+# if [[ ! -d "${SOURCE_PATH}/composer.lock" ]]
 # then
 #   _good "Performing composer update..."
 #   $composer_exec update
 # fi
 
-# Ensure the expected composer.json file is found
-if [[ ! -d "/app/source/vendor" ]]
+if [[ ! -d "${SOURCE_PATH}/vendor" ]]
 then
   _good "Performing composer install..."
   $composer_exec install
@@ -219,7 +220,7 @@ $composer_exec copy:themes
 $composer_exec copy:assets
 $composer_exec copy:plugins
 
-setuser "${APP_USER}" dockerize -template /app/wp-config.php.tmpl:/app/source/public/wp-config.php
+setuser "${APP_USER}" dockerize -template "/app/wp-config.php.tmpl:${PUBLIC_PATH}/wp-config.php"
 
 # Wait up to two minutes for the database to become ready
 timeout=2
@@ -239,10 +240,12 @@ _good "Database ready: ${WP_DB_HOST}:${WP_DB_PORT}"
 # FIXME Run another check to test if wp is installed yet
 # FIXME If installed, perform site-update?
 
-wp core install --url=${WP_HOSTNAME} --title="$WP_TITLE" --admin_user="${WP_ADMIN_USER:-admin}" --admin_email="${WP_ADMIN_EMAIL:-$MAINTAINER_EMAIL}"
+wp core install --url="${WP_HOSTNAME}" --title="$WP_TITLE" --admin_user="${WP_ADMIN_USER:-admin}" --admin_email="${WP_ADMIN_EMAIL:-$MAINTAINER_EMAIL}"
 
 wp plugin activate --all
 
+# FIXME Determine which theme to activate
+# FIXME Why does the composer theme install script fail?
 wp theme activate "${WP_THEME}"
 
 [[ "${WP_DEFAULT_CONTENT}" = "true" ]] && $composer_exec core:initial-content
@@ -257,8 +260,6 @@ $composer_exec core:js-minify
 
 $composer_exec site:custom
 
-# Links the source directory to expected path
-# FIXME create APP_SOURCE_DIRECTORY var for '/app/www' '/app/source'
-[[ ! -e /app/www ]] && ln -s /app/source/public /app/www || true
-
 clear_install_lock
+
+date > "${PUBLIC_PATH}/.installed"

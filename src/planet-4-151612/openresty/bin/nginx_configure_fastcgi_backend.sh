@@ -14,9 +14,9 @@ then
   _good "$(printf "%-10s " "openresty:")" "fastcgi_backend=${OPENRESTY_FASTCGI_BACKEND}"
 
   # Mostly used for testing
-  if [[ ! -f "/app/www/index.php" ]]
+  if [[ ! -f "${PUBLIC_PATH}/index.php" ]]
   then
-    echo -e "<?php //TEST-DATA-ONLY\nphpinfo();" > /app/www/index.php
+    echo -e "<?php //TEST-DATA-ONLY\nphpinfo();" > "${PUBLIC_PATH}/index.php"
   fi
 
 fi

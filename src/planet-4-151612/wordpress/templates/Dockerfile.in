@@ -8,13 +8,15 @@ RUN apt-get update && \
     rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     curl --retry 5 -o /app/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     ln -s /app/bin/wp.sh /app/bin/wp && \
-    mkdir -p /app/source
+    mkdir -p "${SOURCE_PATH}"
 
 COPY . /app/
 
-WORKDIR /app/source
+WORKDIR ${SOURCE_PATH}
 
 ENV \
+    GIT_REF="master" \
+    GIT_SOURCE="https://github.com/greenpeace/planet4-base" \
     INSTALL_WORDPRESS="true" \
     OVERWRITE_FILES="false" \
     PHP_CLEAR_ENV="yes" \
@@ -24,7 +26,8 @@ ENV \
     WP_ADMIN_USER="" \
     WP_AUTH_KEY="" \
     WP_AUTH_SALT="" \
-    WP_AUTO_UPDATE_CORE="minor" \
+    WP_AUTOMATIC_UPDATER_DISABLED="true" \
+    WP_AUTO_UPDATE_CORE="false" \
     WP_BAKE="false" \
     WP_CLI_CACHE_DIR="/app/.wp-cli/cache" \
     WP_CLI_DISABLE_AUTO_CHECK_UPDATE="true" \
@@ -49,7 +52,7 @@ ENV \
     WP_REDIS_HOST="redis" \
     WP_REDIS_PORT="6379" \
     WP_REDIS_DB="0" \
-    WP_REWRITE_STRUCTURE="" \
+    WP_REWRITE_STRUCTURE="/%category%/%post_id%/%postname%/" \
     WP_SECURE_AUTH_KEY="" \
     WP_SECURE_AUTH_SALT="" \
     WP_SET_OPTIONS_ON_BOOT="true" \

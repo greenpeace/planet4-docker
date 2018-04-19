@@ -6,7 +6,7 @@ location @handler {
 }
 
 location / {
-  index index.html index.php;
+  index index.php index.html;
   # First attempt to serve request as file, then
   # as directory, then fall back to handler
   try_files $uri $uri/ @handler;

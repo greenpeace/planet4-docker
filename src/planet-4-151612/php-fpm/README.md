@@ -24,7 +24,7 @@ APP_GROUP | app | nginx and php5-fpm group
 APP_HOSTNAME | `hostname -f` |  hostname of application
 APP_UID | 1000 | user_id - useful when mounting volumes from host > guest to either share or delineate file access permission
 APP_USER | app | nginx and php5-fpm user
-CHOWN_APP_DIR | true | if true, `chown -R $APP_USER:$APP_GROUP /app/www`
+CHOWN_APP_DIR | true | if true, `chown -R $APP_USER:$APP_GROUP /app/source/public`
 CONTAINER_TIMEZONE | UTC | Server timezone
 EXIM_DELIVERY_MODE | local | smarthost, local :: set to smarthost to enable third party SMTP
 EXIM_MAIL_FROM | example.com | domain from which exim4 mail appears to originate

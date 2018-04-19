@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-optionlock="/app/source/public/.optionlock"
+optionlock="${PUBLIC_PATH}/.optionlock"
 
-[[ -f $optionlock ]] && exit 0
+[[ -f "$optionlock" ]] && exit 0
 
-touch $optionlock
+touch "$optionlock"
 
 # Wordpress configuration startup
 # FIXME Set blogdescription to something useful

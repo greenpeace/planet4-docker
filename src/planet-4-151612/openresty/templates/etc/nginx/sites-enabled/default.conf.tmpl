@@ -4,12 +4,12 @@ server {
 
     server_name {{ .Env.APP_HOSTNAME }} www.{{ .Env.APP_HOSTNAME }} -;
 
-    root /app/www;
+    root {{ .Env.PUBLIC_PATH }};
 
     {{ if eq .Env.PHP_ENABLED "true" }}
-    index index.html;
+    index index.php;
     {{ else }}
-    index index.html index.php;
+    index index.html;
     {{ end }}
 
     include server.d/*.conf;

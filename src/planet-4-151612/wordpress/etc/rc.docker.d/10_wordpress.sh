@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 set -ex
 
-chown -R "$APP_USER:$APP_GROUP" /app/www
+# Executed after my_init.d
 
+chown -R "$APP_USER:$APP_GROUP" "${PUBLIC_PATH}"
+
+# Generates keys and salts for wp-config.php
+/app/bin/generate_wp_keys.sh
 /app/bin/generate_wp_config.sh
 
 # Resets database options to environment variable, such as:
@@ -12,10 +16,9 @@ chown -R "$APP_USER:$APP_GROUP" /app/www
 if [[ ${WP_REDIS_ENABLED} = "true" ]]
 then
   # Install WP-Redis object cache file if exist
-  [[ -f /app/www/wp-content/plugins/wp-redis/object-cache.php ]] && wp redis enable
+  [[ -f "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" ]] && wp redis enable
 else
-  [[ -f /app/www/wp-content/object-cache.php ]] && rm -f /app/www/wp-content/object-cache.php
+  [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]] && rm -f "${PUBLIC_PATH}/wp-content/object-cache.php" || true
 fi
 
-echo "OK"
 exit 0
