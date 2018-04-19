@@ -261,3 +261,5 @@ $composer_exec core:js-minify
 $composer_exec site:custom
 
 clear_install_lock
+
+date > "${PUBLIC_PATH}/.installed"
