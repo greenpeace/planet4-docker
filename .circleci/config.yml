@@ -104,6 +104,9 @@ jobs:
             then
               cd /tmp/workspace/src
               ./bin/deploy.sh
+            else
+              >&2 echo "Error: deploy should only occur on master branch"
+              exit 1
             fi
 
 
@@ -126,5 +129,7 @@ workflows:
           requires:
             - test
           filters:
+            branches:
+              only: master
             tags:
-              only: /.*/
+              only: /v.*/
