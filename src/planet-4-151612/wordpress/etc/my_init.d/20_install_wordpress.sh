@@ -195,7 +195,7 @@ fi
 #   _warning "Found branch/tag:    ${actual_git_ref}"
 # fi
 
-composer_exec="composer --profile -vv"
+composer_exec="composer --profile -vv --no-ansi"
 
 # if [[ ! -d "${SOURCE_PATH}/composer.lock" ]]
 # then
