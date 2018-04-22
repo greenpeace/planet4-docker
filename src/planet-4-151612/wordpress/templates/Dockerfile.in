@@ -18,6 +18,8 @@ ENV \
     GIT_REF="master" \
     GIT_SOURCE="https://github.com/greenpeace/planet4-base" \
     INSTALL_WORDPRESS="true" \
+    MERGE_REF="" \
+    MERGE_SOURCE="" \
     OVERWRITE_FILES="false" \
     PHP_CLEAR_ENV="yes" \
     WP_ADMIN_EMAIL="${MAINTAINER_EMAIL}" \
@@ -26,8 +28,8 @@ ENV \
     WP_ADMIN_USER="" \
     WP_AUTH_KEY="" \
     WP_AUTH_SALT="" \
-    WP_AUTOMATIC_UPDATER_DISABLED="true" \
     WP_AUTO_UPDATE_CORE="false" \
+    WP_AUTOMATIC_UPDATER_DISABLED="true" \
     WP_BAKE="false" \
     WP_CLI_CACHE_DIR="/app/.wp-cli/cache" \
     WP_CLI_DISABLE_AUTO_CHECK_UPDATE="true" \
