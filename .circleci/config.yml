@@ -94,20 +94,13 @@ jobs:
       - setup_remote_docker
 
       - deploy:
-          name: Deploy tags on master branch
+          name: Deploy tagged release
           command: |
             set -x
 
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
-            if [[ "${CIRCLE_BRANCH}" = "master" ]] ||
-               [[ "$(cat /tmp/workspace/var/circle-branch-name)" = "master" ]]
-            then
-              cd /tmp/workspace/src
-              ./bin/deploy.sh
-            else
-              >&2 echo "Error: deploy should only occur on master branch"
-              exit 1
-            fi
+            cd /tmp/workspace/src
+            ./bin/deploy.sh
 
 
 workflows:
@@ -129,7 +122,5 @@ workflows:
           requires:
             - test
           filters:
-            branches:
-              only: master
             tags:
               only: /v.*/
