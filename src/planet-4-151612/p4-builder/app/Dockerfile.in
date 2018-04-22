@@ -1,0 +1,9 @@
+FROM p4-build:latest
+
+LABEL authors="${MAINTAINER}"
+
+ENV APP_ENV="production"
+
+COPY --chown=app:app . /app/
+
+RUN rm -f /app/etc/my_init.d/20_install_wordpress.sh
