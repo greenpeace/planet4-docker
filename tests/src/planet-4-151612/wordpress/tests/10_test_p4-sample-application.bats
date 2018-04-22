@@ -14,10 +14,10 @@ function teardown {
 @test "shutdown existing containers" {
   docker-compose -f "${compose_file}" down -v
 }
-
-@test "pull new container versions" {
-  docker-compose -f "${compose_file}" pull --parallel
-}
+# 
+# @test "pull new container versions" {
+#   docker-compose -f "${compose_file}" pull --parallel
+# }
 
 @test "container starts (20min wait)" {
   # Wait up to 10 minutes for the build to complete!
