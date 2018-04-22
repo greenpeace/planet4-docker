@@ -15,5 +15,8 @@
 #
 # =============================================================================
 
-# Example - changing container timezone
+# Change container timezone
 CONTAINER_TIMEZONE=Australia/Hobart
+
+# Change PHP process limits
+PHP_MEMORY_LIMIT=256M
