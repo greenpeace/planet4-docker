@@ -15,7 +15,7 @@ i=0
 until dockerize -wait "tcp://${WP_DB_HOST}:${WP_DB_PORT}" -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
 do
   let i=i+1
-  if [[ $i -gt $timeout ]]
+  if [[ $i -ge $timeout ]]
   then
     _error "Timeout waiting for database to become ready"
     exit 1
