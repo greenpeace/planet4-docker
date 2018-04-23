@@ -6,12 +6,11 @@ chmod +x /app/bin/*
 # Configure environment
 for env_file in /app/env/*
 do
-  # shellcheck source=/dev/null
   . "${env_file}"
 done
 
 # Add application user
-/app/bin/add_user.sh
+[[ -x /app/bin/add_user.sh ]] && /app/bin/add_user.sh
 
 # Install configuration overrides
 [[ -d "/app/etc" ]] && cp -R /app/etc/* /etc/

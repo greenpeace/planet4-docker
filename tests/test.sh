@@ -60,7 +60,9 @@ fi
 
 shopt -s nullglob
 
-for project_dir in "${TEST_BASE_DIR}"/src/*/
+test_folders=${TEST_FOLDERS:-"${TEST_BASE_DIR}"/src/*/}
+
+for project_dir in $test_folders
 do
   declare -a test_order
   if [[ -f "${project_dir}test_order" ]]

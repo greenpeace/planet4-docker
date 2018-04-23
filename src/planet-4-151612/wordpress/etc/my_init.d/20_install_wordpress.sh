@@ -43,7 +43,7 @@ function create_source_directories() {
 #
 function delete_source_directories() {
   # Force clean exit code in the event that these are bind-mounted
-  echo "Deleting source directory: ${PUBLIC_PATH}"
+  _good "Deleting source directory: ${PUBLIC_PATH}"
   rm -fr "${PUBLIC_PATH}:?}/*" "${PUBLIC_PATH}/.*" >/dev/null 2>&1  || true
 }
 # ==============================================================================
@@ -51,14 +51,14 @@ function delete_source_directories() {
 #
 function touch_install_lock() {
   [[ ! -e "${SOURCE_PATH}" ]] && echo "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
-  echo "Creating install lock file: ${install_lock}"
+  _good "Creating install lock file: ${install_lock}"
   true > "${install_lock}"
 }
 # ==============================================================================
 # clear_install_lock()
 #
 function clear_install_lock() {
-  echo "Removing install lock file: ${install_lock}"
+  _good "Removing install lock file: ${install_lock}"
   rm -fr "${install_lock}"
 }
 
@@ -110,13 +110,10 @@ elif [[ "${num_files}" -eq 2 ]] && \
 then
   _good "Test data detected, deleting source directories..."
   delete_source_directories
-elif [[ "${num_files}" -gt 0 ]] && [[ "${OVERWRITE_FILES,,}" != "true" ]]
+elif [[ "${num_files}" -gt 0 ]]
 then
-  _good "OVERWRITE_FILES is not 'true', cowardly refusing to reinstall Wordpress"
-  create_source_directories
-  rm -f "${install_lock}"
-  # Exit this script and continue container boot
-  exit 0
+  _good "${num_files} files found in ${PUBLIC_PATH} folder:"
+  ls -al ${PUBLIC_PATH}
 fi
 
 # Clean up if we're starting fresh
@@ -180,20 +177,14 @@ then
   git checkout "${GIT_REF}"
 fi
 
-# FIXME this is a terribly hacky way of checking upstream
-# actual_source="https://github.com/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f4)/$(git remote -v | grep fetch | cut -d':' -f2 | cut -d'/' -f5 | cut -d' ' -f1)"
-# if [[ ${GIT_SOURCE} != "${actual_source}" ]]
-# then
-#   _warning "Expected source:     ${GIT_SOURCE}"
-#   _warning "Found source:        ${actual_source}"
-# fi
-#
-# actual_git_ref=$(git rev-parse --abbrev-ref HEAD)
-# if [[ ${GIT_REF} != "${actual_git_ref}" ]]
-# then
-#   _warning "Expected branch/tag: ${GIT_REF}"
-#   _warning "Found branch/tag:    ${actual_git_ref}"
-# fi
+if [[ ! -z "${MERGE_SOURCE}" ]] && [[ ! -f "${SOURCE_PATH}/composer-local.json" ]]
+then
+  _good "Merge: ${MERGE_SOURCE}:${MERGE_REF}"
+  git clone ${MERGE_SOURCE} /app/merge
+  cd /app/merge
+  git checkout "${MERGE_REF}"
+  rsync -avz . "${SOURCE_PATH}"
+fi
 
 composer_exec="composer --profile -vv --no-ansi"
 
@@ -213,8 +204,6 @@ $composer_exec download:wordpress
 
 $composer_exec reset:themes
 $composer_exec reset:plugins
-
-$composer_exec copy:health-check
 
 $composer_exec copy:themes
 $composer_exec copy:assets

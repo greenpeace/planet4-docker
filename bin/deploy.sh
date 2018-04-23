@@ -78,27 +78,22 @@ shopt -u nullglob
 
 
 # Check if we're running on CircleCI
-if [ ! -z "${CIRCLECI}" ]
-then
-  # Wrap with gcloud authenticated docker in container image
-  DOCKER="${HOME}/google-cloud-sdk/bin/gcloud docker --"
-else
-  DOCKER="docker"
-fi
+
+gcloud auth configure-docker
 
 for IMAGE in "${SOURCE_DIRECTORY[@]}"
 do
   IMAGE=${IMAGE%/}
 
-  ${DOCKER} pull ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}
+  docker pull ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG}
 
-  ${DOCKER} tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
-  ${DOCKER} push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
+  docker tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
+  docker push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:latest
 
   if [ ! -z "${CIRCLE_TAG}" ]
   then
-    ${DOCKER} tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${CIRCLE_TAG}
-    ${DOCKER} push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${CIRCLE_TAG}
+    docker tag ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${BUILD_TAG} ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${CIRCLE_TAG}
+    docker push ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${IMAGE}:${CIRCLE_TAG}
   fi
 
 done

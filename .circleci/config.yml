@@ -47,7 +47,7 @@ jobs:
             - var
             - src
 
-  test:
+  test-ubuntu:
     <<: *defaults
     steps:
 
@@ -55,12 +55,6 @@ jobs:
           at: /tmp/workspace
 
       - setup_remote_docker
-
-      - run:
-          name: Version
-          command: |
-            docker --version
-            docker-compose --version
 
       - run:
           name: Authenticate with gcloud
@@ -71,13 +65,96 @@ jobs:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
-            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" ./tests/test.sh
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
+            TEST_FOLDERS=tests/src/planet-4-151612/ubuntu ./tests/test.sh
 
       - store_test_results:
           path: /tmp/planet4-docker/merged
 
       - store_artifacts:
           path: /tmp/artifacts
+
+  test-php-fpm:
+    <<: *defaults
+    steps:
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Authenticate with gcloud
+          command: |
+            ${HOME}/scripts/activate-gcloud-account.sh
+
+      - run:
+          name: Run bats unit tests
+          command: |
+            cd /tmp/workspace/src
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
+            TEST_FOLDERS=tests/src/planet-4-151612/php-fpm ./tests/test.sh
+
+      - store_test_results:
+          path: /tmp/planet4-docker/merged
+
+      - store_artifacts:
+          path: /tmp/artifacts
+
+  test-openresty:
+    <<: *defaults
+    steps:
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Authenticate with gcloud
+          command: |
+            ${HOME}/scripts/activate-gcloud-account.sh
+
+      - run:
+          name: Run bats unit tests
+          command: |
+            cd /tmp/workspace/src
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
+            TEST_FOLDERS=tests/src/planet-4-151612/openresty ./tests/test.sh
+
+      - store_test_results:
+          path: /tmp/planet4-docker/merged
+
+      - store_artifacts:
+          path: /tmp/artifacts
+
+  test-wordpress:
+    <<: *defaults
+    steps:
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Authenticate with gcloud
+          command: |
+            ${HOME}/scripts/activate-gcloud-account.sh
+
+      - run:
+          name: Run bats unit tests
+          command: |
+            cd /tmp/workspace/src
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
+            TEST_FOLDERS=tests/src/planet-4-151612/wordpress ./tests/test.sh
+
+      - store_test_results:
+          path: /tmp/planet4-docker/merged
+
+      - store_artifacts:
+          path: /tmp/artifacts
+
 
   deploy:
     <<: *defaults
@@ -94,20 +171,13 @@ jobs:
       - setup_remote_docker
 
       - deploy:
-          name: Deploy tags on master branch
+          name: Deploy tagged release
           command: |
             set -x
 
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
-            if [[ "${CIRCLE_BRANCH}" = "master" ]] ||
-               [[ "$(cat /tmp/workspace/var/circle-branch-name)" = "master" ]]
-            then
-              cd /tmp/workspace/src
-              ./bin/deploy.sh
-            else
-              >&2 echo "Error: deploy should only occur on master branch"
-              exit 1
-            fi
+            cd /tmp/workspace/src
+            ./bin/deploy.sh
 
 
 workflows:
@@ -118,18 +188,34 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test:
+
+      - test-openresty:
           requires:
             - build
           filters:
             tags:
               only: /.*/
+
+      - test-php-fpm:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+
+      - test-wordpress:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+              
       # Only run deploy job for tagged releases, any branch
       - deploy:
           requires:
-            - test
+            - test-openresty
+            - test-php-fpm
+            - test-wordpress
           filters:
-            branches:
-              only: master
             tags:
               only: /v.*/

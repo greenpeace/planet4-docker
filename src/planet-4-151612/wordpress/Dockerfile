@@ -1,6 +1,15 @@
-FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/php-fpm:${SOURCE_VERSION}
+# Greenpeace P4 Docker application
+# Image: gcr.io/planet-4-151612/wordpress:develop
+# Build: build-481
+# Date:  Mon Apr 23 00:20:37 UTC 2018
+# ------------------------------------------------------------------------
+# DO NOT MAKE CHANGES HERE
+# This file is built automatically from ./templates/Dockerfile.in
+# ------------------------------------------------------------------------
+  
+FROM gcr.io/planet-4-151612/php-fpm:develop
 
-LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
+LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends rsync git mysql-client && \
@@ -8,11 +17,11 @@ RUN apt-get update && \
     rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     curl --retry 5 -o /app/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     ln -s /app/bin/wp.sh /app/bin/wp && \
-    mkdir -p "${SOURCE_PATH}"
+    mkdir -p "/app/source"
 
 COPY . /app/
 
-WORKDIR ${SOURCE_PATH}
+WORKDIR /app/source
 
 ENV \
     GIT_REF="master" \
@@ -22,7 +31,7 @@ ENV \
     MERGE_SOURCE="" \
     OVERWRITE_FILES="false" \
     PHP_CLEAR_ENV="yes" \
-    WP_ADMIN_EMAIL="${MAINTAINER_EMAIL}" \
+    WP_ADMIN_EMAIL="raymond.walker@greenpeace.org" \
     WP_ADMIN_NAME="" \
     WP_ADMIN_PASS="" \
     WP_ADMIN_USER="" \
