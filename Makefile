@@ -1,6 +1,8 @@
-SHELL = /bin/bash
-BUILD_FLAGS?=-rp
-BUILD_LIST?=
+SHELL := /bin/bash
+BUILD_FLAGS ?=-rp
+BUILD_LIST ?=
+
+TEST_FOLDERS ?=
 
 .DEFAULT_GOAL := all
 
@@ -21,4 +23,4 @@ build :
 
 .PHONY : test
 test :
-		tests/test.sh
+		TEST_FOLDERS=$(TEST_FOLDERS) tests/test.sh
