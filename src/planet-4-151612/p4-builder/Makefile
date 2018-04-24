@@ -206,4 +206,5 @@ deploy:
 		--set sqlproxy.cloudsql.instances[0].project="$(GOOGLE_PROJECT_ID)" \
 		--set sqlproxy.cloudsql.instances[0].region="$(GCLOUD_REGION)" \
 		--set sqlproxy.cloudsql.instances[0].port="3306" \
+		--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
 		p4-helm-charts/wordpress
