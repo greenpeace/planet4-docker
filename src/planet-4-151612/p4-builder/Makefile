@@ -4,9 +4,10 @@ SHELL := /bin/bash
 MAINTAINER 				?= Raymond Walker <raymond.walker@greenpeace.org>
 
 # https://github.com/greenpeace/planet4-docker
-INFRA_VERSION			?= v0.6.1
+INFRA_VERSION			?= v0.7.1
 
 # Base composer project repository
+# FIXME change this to greenpeace/planet4-base once things are settled
 GIT_SOURCE 			  ?= https://github.com/27bslash6/planet4-base
 # The branch to checkout of GIT_SOURCE, eg:
 # Use local branch name if not set
@@ -36,28 +37,34 @@ endif
 #
 # Helm deploy configuration
 #
-# Default values
+# Default and derived values
 
-APP_HOSTNAME 				?= test.k8s.p4.greenpeace.org
-APP_HOSTPATH 				?= international
+APP_HOSTNAME 				?= k8s.p4.greenpeace.org
+APP_HOSTPATH 				?= test
 BUILD_NAMESPACE 		?= gcr.io
 GOOGLE_PROJECT_ID 	?= planet-4-151612
-HELM_RELEASE 				?= $(CONTAINER_PREFIX)
 HELM_NAMESPACE			?= $(GIT_REF)
+HELM_RELEASE 				?= $(CONTAINER_PREFIX)
 NEWRELIC_APPNAME 		?= Greenpeace Planet4 Wordpress Test
 OPENRESTY_IMAGE 		?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty
-PHP_IMAGE 					?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-php-fpm
+PHP_IMAGE 					?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app
 WP_DB_NAME 					?= $(CONTAINER_PREFIX)_wordpress
-WP_STATELESS_BUCKET	?= $(CONTAINER_PREFIX)-$(APP_HOSTNAME)
+WP_DB_USERNAME 			:= $(CONTAINER_PREFIX)
+WP_STATELESS_BUCKET	?= $(CONTAINER_PREFIX)-stateless
+
+CLOUDSQL_INSTANCE   ?= p4-develop-k8s
+
+GCLOUD_CLUSTER			?= p4-development
+GCLOUD_REGION				?= us-central1
+GCLOUD_ZONE         ?= us-central1-a
 
 # Secrets - add via environment
-# Values stored in CI context $(CONTAINER_PREFIX)-<environment>
+# Values are stored in CI context $(CONTAINER_PREFIX)-<environment>
 NEWRELIC_LICENSE 		:= $(NEWRELIC_LICENSE)
 SQLPROXY_KEY 				:= $(SQLPROXY_KEY)
 WP_AUTH_KEY 				:= $(WP_AUTH_KEY)
 WP_AUTH_SALT 				:= $(WP_AUTH_SALT)
 WP_DB_PASSWORD 			:= $(WP_DB_PASSWORD)
-WP_DB_USERNAME 			:= $(CONTAINER_PREFIX)
 WP_LOGGED_IN_KEY		:= $(WP_LOGGED_IN_KEY)
 WP_LOGGED_IN_SALT 	:= $(WP_LOGGED_IN_SALT)
 WP_NONCE_KEY 				:= $(WP_NONCE_KEY)
@@ -82,9 +89,9 @@ endif
 
 ################################################################################
 
-.PHONY: clean test rewrite bake build build-app build-openresty pull push save
+.PHONY: clean test rewrite checkout bake build build-app build-openresty pull push save
 
-all: clean test rewrite checkout bake build save push
+all: clean test rewrite checkout bake build push save
 
 dev: clean rewrite checkout bake build
 
@@ -132,7 +139,10 @@ build-app:
 		mkdir -p app/source/public
 		rsync -a --delete source/public/ app/source/public
 		pushd app && \
-		docker build -t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG) . && \
+		docker build \
+		-t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG) \
+		-t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:build-$(CIRCLE_BUILD_NUM) \
+		. && \
 		popd
 
 build-openresty:
@@ -146,13 +156,18 @@ build-openresty:
 		mkdir -p openresty/source/public
 		rsync -a --delete source/public/ openresty/source/public
 		pushd openresty && \
-		docker build -t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG) . && \
+		docker build \
+		-t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG) \
+		-t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:build-$(CIRCLE_BUILD_NUM) \
+		. && \
 		popd
 
 push:
 		gcloud auth configure-docker
 		docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG)
 		docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG)
+		docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:build-$(CIRCLE_BUILD_NUM)
+		docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:build-$(CIRCLE_BUILD_NUM)
 
 save:
 		gsutil ls gs://$(GS_BUCKET)/$(GS_PATH) || gsutil mb gs://$(GS_BUCKET)
@@ -165,30 +180,45 @@ pull:
 		wait
 
 deploy:
-	helm upgrade --install "$(HELM_RELEASE)" \
-		--namespace "$(HELM_NAMESPACE)" \
-		--set dbDatabase="$(WP_DB_NAME)" \
-		--set dbPassword="$(WP_DB_PASSWORD)" \
-		--set dbUsername="$(WP_DB_USERNAME)" \
-		--set exim.image.tag="$(INFRA_VERSION)" \
-		--set hostname="$(APP_HOSTNAME)" \
-		--set newrelic.appname="$(NEWRELIC_APPNAME)" \
-		--set newrelic.license="$(NEWRELIC_LICENSE)" \
-		--set openresty.image.repository="$(OPENRESTY_IMAGE)" \
-		--set openresty.image.tag="$(BUILD_TAG)" \
-		--set php.image.repository="$(PHP_IMAGE)" \
-		--set php.image.tag="$(BUILD_TAG)" \
-		--set sqlproxy.serviceAccountKey="$(SQLPROXY_KEY)" \
-		--set wp.authKey="$(WP_AUTH_KEY)" \
-		--set wp.authSalt="$(WP_AUTH_SALT)" \
-		--set wp.loggedInKey="$(WP_LOGGED_IN_KEY)" \
-		--set wp.loggedInSalt="$(WP_LOGGED_IN_SALT)" \
-		--set wp.nonceKey="$(WP_NONCE_KEY)" \
-		--set wp.nonceSalt="$(WP_NONCE_SALT)" \
-		--set wp.secureAuthKey="$(WP_SECURE_AUTH_KEY)" \
-		--set wp.secureAuthSalt="$(WP_SECURE_AUTH_SALT)" \
-		--set hostpath="$(APP_HOSTPATH)"
-		--set wp.siteHome="https://$(APP_HOSTNAME)/$(APP_HOSTPATH)" \
-		--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
-		--set wp.stateless.serviceAccountKey="$(WP_STATELESS_KEY)" \
-		p4-helm-charts/wordpress
+		# Update Helm repositories
+		helm repo update
+
+		# Create WP-Stateless bucket if it doesn't exist
+		gsutil ls gs://$(WP_STATELESS_BUCKET) || gsutil mb gs://$(WP_STATELESS_BUCKET)
+
+		# Connect to cluster
+		gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
+			--zone $(GCLOUD_ZONE) \
+			--project $(GOOGLE_PROJECT_ID)
+
+		# Create Helm deploy secrets file from environment
+		envsubst < secrets.yaml.in > secrets.yaml
+		# cat secrets.yaml
+
+		# Upgrade or install deployment to cluster
+		helm upgrade --install $(HELM_RELEASE) \
+			--namespace $(HELM_NAMESPACE) \
+			-f secrets.yaml \
+			--set dbDatabase="$(WP_DB_NAME)" \
+			--set dbUsername="$(WP_DB_USERNAME)" \
+			--set exim.image.tag="$(INFRA_VERSION)" \
+			--set hostname="$(APP_HOSTNAME)" \
+			--set hostpath="$(APP_HOSTPATH)" \
+			--set newrelic.appname="$(NEWRELIC_APPNAME)" \
+			--set openresty.image.repository="$(OPENRESTY_IMAGE)" \
+			--set openresty.image.tag="$(BUILD_TAG)" \
+			--set php.image.repository="$(PHP_IMAGE)" \
+			--set php.image.tag="$(BUILD_TAG)" \
+			--set sqlproxy.cloudsql.instances[0].instance="$(CLOUDSQL_INSTANCE)" \
+			--set sqlproxy.cloudsql.instances[0].project="$(GOOGLE_PROJECT_ID)" \
+			--set sqlproxy.cloudsql.instances[0].region="$(GCLOUD_REGION)" \
+			--set sqlproxy.cloudsql.instances[0].port="3306" \
+			--set wp.siteUrl="$(APP_HOSTNAME)/$(APP_HOSTPATH)" \
+			--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
+			p4-helm-charts/wordpress
+
+		rm -f secrets.yaml
+
+		HELM_NAMESPACE=$(HELM_NAMESPACE) \
+		HELM_RELEASE=$(HELM_RELEASE) \
+		./flush_redis.sh

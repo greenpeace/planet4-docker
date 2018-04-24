@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/p4-builder:v0.7.1
-# Build: build-517
-# Date:  Tue Apr 24 01:30:13 UTC 2018
+# Image: gcr.io/planet-4-151612/p4-builder:develop
+# Build: build-536
+# Date:  Tue Apr 24 09:15:47 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -13,4 +13,6 @@ LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 
 COPY --chown=circleci:circleci . /home/circleci/
 
-RUN chmod 755 /home/circleci/*.sh
+RUN chmod 755 /home/circleci/*.sh && \
+    helm init --client-only && \
+    helm repo add p4-helm-charts https://p4-helm-charts.storage.googleapis.com

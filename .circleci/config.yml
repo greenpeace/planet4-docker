@@ -6,7 +6,9 @@ defaults: &defaults
     - image: gcr.io/planet-4-151612/circleci-base:v0.4.2
   working_directory:  /home/circleci/app
 
+
 version: 2
+
 
 jobs:
   build:
@@ -47,6 +49,7 @@ jobs:
             - var
             - src
 
+
   test-ubuntu:
     <<: *defaults
     steps:
@@ -73,6 +76,7 @@ jobs:
 
       - store_artifacts:
           path: /tmp/artifacts
+
 
   test-php-fpm:
     <<: *defaults
@@ -101,6 +105,7 @@ jobs:
       - store_artifacts:
           path: /tmp/artifacts
 
+
   test-openresty:
     <<: *defaults
     steps:
@@ -127,6 +132,7 @@ jobs:
 
       - store_artifacts:
           path: /tmp/artifacts
+
 
   test-wordpress:
     <<: *defaults
@@ -209,7 +215,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-              
+
       # Only run deploy job for tagged releases, any branch
       - deploy:
           requires:
