@@ -82,9 +82,9 @@ endif
 
 ################################################################################
 
-.PHONY: clean test rewrite bake build build-app build-openresty pull push save
+.PHONY: clean test rewrite checkout bake build build-app build-openresty pull push save
 
-all: clean test rewrite checkout bake build save push
+all: clean test rewrite checkout bake build push save
 
 dev: clean rewrite checkout bake build
 
