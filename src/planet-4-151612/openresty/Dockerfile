@@ -19,6 +19,7 @@ ENV \
     APP_GROUP="nginx" \
     APP_UID="1000" \
     APP_USER="nginx" \
+    APP_HOSTPATH="international" \
     CHOWN_APP_DIR="false" \
     CLOUDFLARE_ENABLED="false" \
     NGX_PAGESPEED_RELEASE="stable" \

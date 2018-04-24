@@ -45,9 +45,9 @@ GOOGLE_PROJECT_ID 	?= planet-4-151612
 HELM_RELEASE 				?= $(CONTAINER_PREFIX)
 HELM_NAMESPACE			?= $(GIT_REF)
 NEWRELIC_APPNAME 		?= Greenpeace Planet4 Wordpress Test
-OPENRESTY_IMAGE 		?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/openresty
-PHP_IMAGE 					?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/wordpress
-WP_DB_NAME 					?= $(CONTAINER_PREFIX)_db
+OPENRESTY_IMAGE 		?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty
+PHP_IMAGE 					?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-php-fpm
+WP_DB_NAME 					?= $(CONTAINER_PREFIX)_wordpress
 WP_STATELESS_BUCKET	?= $(CONTAINER_PREFIX)-$(APP_HOSTNAME)
 
 # Secrets - add via environment
@@ -187,6 +187,7 @@ deploy:
 		--set wp.nonceSalt="$(WP_NONCE_SALT)" \
 		--set wp.secureAuthKey="$(WP_SECURE_AUTH_KEY)" \
 		--set wp.secureAuthSalt="$(WP_SECURE_AUTH_SALT)" \
+		--set hostpath="$(APP_HOSTPATH)"
 		--set wp.siteHome="https://$(APP_HOSTNAME)/$(APP_HOSTPATH)" \
 		--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
 		--set wp.stateless.serviceAccountKey="$(WP_STATELESS_KEY)" \
