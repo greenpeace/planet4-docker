@@ -187,6 +187,7 @@ deploy:
 		--set wp.nonceSalt="$(WP_NONCE_SALT)" \
 		--set wp.secureAuthKey="$(WP_SECURE_AUTH_KEY)" \
 		--set wp.secureAuthSalt="$(WP_SECURE_AUTH_SALT)" \
+		--set hostpath="$(APP_HOSTPATH)"
 		--set wp.siteHome="https://$(APP_HOSTNAME)/$(APP_HOSTPATH)" \
 		--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
 		--set wp.stateless.serviceAccountKey="$(WP_STATELESS_KEY)" \

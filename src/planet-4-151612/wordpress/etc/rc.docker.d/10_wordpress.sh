@@ -21,10 +21,12 @@ do
     exit 1
   fi
 done
+
 set +e
 wp core is-installed
 is_installed=$?
 set -e
+
 if [[ $is_installed -ne 0 ]]
 then
   _good "Installing Wordpress..."

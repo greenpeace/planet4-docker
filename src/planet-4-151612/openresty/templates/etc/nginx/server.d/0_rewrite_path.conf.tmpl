@@ -1,0 +1,7 @@
+location ~ ^(\/{{ .Env.APP_HOSTPATH }})$ {
+    rewrite ^\/({{ .Env.APP_HOSTPATH }}) / last;
+}
+
+location ~ ^(\/{{ .Env.APP_HOSTPATH }}\/)(.*) {
+    rewrite ^\/({{ .Env.APP_HOSTPATH }}\/)(.*) /$2 last;
+}
