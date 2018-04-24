@@ -166,30 +166,30 @@ pull:
 		wait
 
 deploy:
-	helm upgrade --install "$(HELM_RELEASE)" \
-		--namespace "$(HELM_NAMESPACE)" \
-		--set dbDatabase="$(WP_DB_NAME)" \
-		--set dbPassword="$(WP_DB_PASSWORD)" \
-		--set dbUsername="$(WP_DB_USERNAME)" \
-		--set exim.image.tag="$(INFRA_VERSION)" \
-		--set hostname="$(APP_HOSTNAME)" \
-		--set newrelic.appname="$(NEWRELIC_APPNAME)" \
-		--set newrelic.license="$(NEWRELIC_LICENSE)" \
-		--set openresty.image.repository="$(OPENRESTY_IMAGE)" \
-		--set openresty.image.tag="$(BUILD_TAG)" \
-		--set php.image.repository="$(PHP_IMAGE)" \
-		--set php.image.tag="$(BUILD_TAG)" \
-		--set sqlproxy.serviceAccountKey="$(SQLPROXY_KEY)" \
-		--set wp.authKey="$(WP_AUTH_KEY)" \
-		--set wp.authSalt="$(WP_AUTH_SALT)" \
-		--set wp.loggedInKey="$(WP_LOGGED_IN_KEY)" \
-		--set wp.loggedInSalt="$(WP_LOGGED_IN_SALT)" \
-		--set wp.nonceKey="$(WP_NONCE_KEY)" \
-		--set wp.nonceSalt="$(WP_NONCE_SALT)" \
-		--set wp.secureAuthKey="$(WP_SECURE_AUTH_KEY)" \
-		--set wp.secureAuthSalt="$(WP_SECURE_AUTH_SALT)" \
-		--set hostpath="$(APP_HOSTPATH)" \
-		--set wp.siteHome="https://$(APP_HOSTNAME)/$(APP_HOSTPATH)" \
-		--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
-		--set wp.stateless.serviceAccountKey="$(WP_STATELESS_KEY)" \
+	helm upgrade --install '$(HELM_RELEASE)' \
+		--namespace '$(HELM_NAMESPACE)' \
+		--set dbDatabase='$(WP_DB_NAME)' \
+		--set dbPassword='$(WP_DB_PASSWORD)' \
+		--set dbUsername='$(WP_DB_USERNAME)' \
+		--set exim.image.tag='$(INFRA_VERSION)' \
+		--set hostname='$(APP_HOSTNAME)' \
+		--set newrelic.appname='$(NEWRELIC_APPNAME)' \
+		--set newrelic.license='$(NEWRELIC_LICENSE)' \
+		--set openresty.image.repository='$(OPENRESTY_IMAGE)' \
+		--set openresty.image.tag='$(BUILD_TAG)' \
+		--set php.image.repository='$(PHP_IMAGE)' \
+		--set php.image.tag='$(BUILD_TAG)' \
+		--set sqlproxy.serviceAccountKey='$(SQLPROXY_KEY)' \
+		--set wp.authKey='$(WP_AUTH_KEY)' \
+		--set wp.authSalt='$(WP_AUTH_SALT)' \
+		--set wp.loggedInKey='$(WP_LOGGED_IN_KEY)' \
+		--set wp.loggedInSalt='$(WP_LOGGED_IN_SALT)' \
+		--set wp.nonceKey='$(WP_NONCE_KEY)' \
+		--set wp.nonceSalt='$(WP_NONCE_SALT)' \
+		--set wp.secureAuthKey='$(WP_SECURE_AUTH_KEY)' \
+		--set wp.secureAuthSalt='$(WP_SECURE_AUTH_SALT)' \
+		--set hostpath='$(APP_HOSTPATH)' \
+		--set wp.siteHome='https://$(APP_HOSTNAME)/$(APP_HOSTPATH)' \
+		--set wp.stateless.bucket='$(WP_STATELESS_BUCKET)' \
+		--set wp.stateless.serviceAccountKey='$(WP_STATELESS_KEY)' \
 		p4-helm-charts/wordpress
