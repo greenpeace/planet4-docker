@@ -180,38 +180,45 @@ pull:
 		wait
 
 deploy:
-	# Update Helm repositories
-	helm repo update
+		# Update Helm repositories
+		helm repo update
 
-	# Connect to cluster
-	gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
-		--zone $(GCLOUD_ZONE) \
-		--project $(GOOGLE_PROJECT_ID)
+		# Create WP-Stateless bucket if it doesn't exist
+		gsutil ls gs://$(WP_STATELESS_BUCKET) || gsutil mb gs://$(WP_STATELESS_BUCKET)
 
-	# Create Helm deploy secrets file from environment
-	envsubst < secrets.yaml.in > secrets.yaml
-	# cat secrets.yaml
+		# Connect to cluster
+		gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
+			--zone $(GCLOUD_ZONE) \
+			--project $(GOOGLE_PROJECT_ID)
 
-	# Create WP-Stateless bucket if it doesn't exist
-	gsutil ls gs://$(WP_STATELESS_BUCKET) || gsutil mb gs://$(WP_STATELESS_BUCKET)
+		# Create Helm deploy secrets file from environment
+		envsubst < secrets.yaml.in > secrets.yaml
+		# cat secrets.yaml
 
-	# Upgrade or install deployment to cluster
-	helm upgrade --install $(HELM_RELEASE) \
-		--namespace $(HELM_NAMESPACE) \
-		-f secrets.yaml \
-		--set dbDatabase="$(WP_DB_NAME)" \
-		--set dbUsername="$(WP_DB_USERNAME)" \
-		--set exim.image.tag="$(INFRA_VERSION)" \
-		--set hostname="$(APP_HOSTNAME)" \
-		--set hostpath="$(APP_HOSTPATH)" \
-		--set newrelic.appname="$(NEWRELIC_APPNAME)" \
-		--set openresty.image.repository="$(OPENRESTY_IMAGE)" \
-		--set openresty.image.tag="$(BUILD_TAG)" \
-		--set php.image.repository="$(PHP_IMAGE)" \
-		--set php.image.tag="$(BUILD_TAG)" \
-		--set sqlproxy.cloudsql.instances[0].instance="$(CLOUDSQL_INSTANCE)" \
-		--set sqlproxy.cloudsql.instances[0].project="$(GOOGLE_PROJECT_ID)" \
-		--set sqlproxy.cloudsql.instances[0].region="$(GCLOUD_REGION)" \
-		--set sqlproxy.cloudsql.instances[0].port="3306" \
-		--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
-		p4-helm-charts/wordpress
+		# Upgrade or install deployment to cluster
+		helm upgrade --install $(HELM_RELEASE) \
+			--namespace $(HELM_NAMESPACE) \
+			-f secrets.yaml \
+			--set dbDatabase="$(WP_DB_NAME)" \
+			--set dbUsername="$(WP_DB_USERNAME)" \
+			--set exim.image.tag="$(INFRA_VERSION)" \
+			--set hostname="$(APP_HOSTNAME)" \
+			--set hostpath="$(APP_HOSTPATH)" \
+			--set newrelic.appname="$(NEWRELIC_APPNAME)" \
+			--set openresty.image.repository="$(OPENRESTY_IMAGE)" \
+			--set openresty.image.tag="$(BUILD_TAG)" \
+			--set php.image.repository="$(PHP_IMAGE)" \
+			--set php.image.tag="$(BUILD_TAG)" \
+			--set sqlproxy.cloudsql.instances[0].instance="$(CLOUDSQL_INSTANCE)" \
+			--set sqlproxy.cloudsql.instances[0].project="$(GOOGLE_PROJECT_ID)" \
+			--set sqlproxy.cloudsql.instances[0].region="$(GCLOUD_REGION)" \
+			--set sqlproxy.cloudsql.instances[0].port="3306" \
+			--set wp.siteUrl="$(APP_HOSTNAME)/$(APP_HOSTPATH)" \
+			--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
+			p4-helm-charts/wordpress
+
+		rm -f secrets.yaml
+
+		HELM_NAMESPACE=$(HELM_NAMESPACE) \
+		HELM_RELEASE=$(HELM_RELEASE) \
+		./flush_redis.sh
