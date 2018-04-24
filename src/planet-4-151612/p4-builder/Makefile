@@ -7,6 +7,7 @@ MAINTAINER 				?= Raymond Walker <raymond.walker@greenpeace.org>
 INFRA_VERSION			?= v0.7.1
 
 # Base composer project repository
+# FIXME change this to greenpeace/planet4-base once things are settled
 GIT_SOURCE 			  ?= https://github.com/27bslash6/planet4-base
 # The branch to checkout of GIT_SOURCE, eg:
 # Use local branch name if not set
