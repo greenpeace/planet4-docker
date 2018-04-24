@@ -4,7 +4,7 @@ SHELL := /bin/bash
 MAINTAINER 				?= Raymond Walker <raymond.walker@greenpeace.org>
 
 # https://github.com/greenpeace/planet4-docker
-INFRA_VERSION			?= v0.6.1
+INFRA_VERSION			?= v0.7.1
 
 # Base composer project repository
 GIT_SOURCE 			  ?= https://github.com/27bslash6/planet4-base
