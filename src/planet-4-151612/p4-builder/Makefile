@@ -37,28 +37,28 @@ endif
 #
 # Helm deploy configuration
 #
-# Default values
+# Default and derived values
 
-APP_HOSTNAME 				?= test.k8s.p4.greenpeace.org
-APP_HOSTPATH 				?= international
+APP_HOSTNAME 				?= k8s.p4.greenpeace.org
+APP_HOSTPATH 				?= test
 BUILD_NAMESPACE 		?= gcr.io
 GOOGLE_PROJECT_ID 	?= planet-4-151612
-HELM_RELEASE 				?= $(CONTAINER_PREFIX)
 HELM_NAMESPACE			?= $(GIT_REF)
+HELM_RELEASE 				?= $(CONTAINER_PREFIX)
 NEWRELIC_APPNAME 		?= Greenpeace Planet4 Wordpress Test
 OPENRESTY_IMAGE 		?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty
 PHP_IMAGE 					?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-php-fpm
 WP_DB_NAME 					?= $(CONTAINER_PREFIX)_wordpress
+WP_DB_USERNAME 			:= $(CONTAINER_PREFIX)
 WP_STATELESS_BUCKET	?= $(CONTAINER_PREFIX)-$(APP_HOSTNAME)
 
 # Secrets - add via environment
-# Values stored in CI context $(CONTAINER_PREFIX)-<environment>
+# Values are stored in CI context $(CONTAINER_PREFIX)-<environment>
 NEWRELIC_LICENSE 		:= $(NEWRELIC_LICENSE)
 SQLPROXY_KEY 				:= $(SQLPROXY_KEY)
 WP_AUTH_KEY 				:= $(WP_AUTH_KEY)
 WP_AUTH_SALT 				:= $(WP_AUTH_SALT)
 WP_DB_PASSWORD 			:= $(WP_DB_PASSWORD)
-WP_DB_USERNAME 			:= $(CONTAINER_PREFIX)
 WP_LOGGED_IN_KEY		:= $(WP_LOGGED_IN_KEY)
 WP_LOGGED_IN_SALT 	:= $(WP_LOGGED_IN_SALT)
 WP_NONCE_KEY 				:= $(WP_NONCE_KEY)
@@ -188,7 +188,7 @@ deploy:
 		--set wp.nonceSalt="$(WP_NONCE_SALT)" \
 		--set wp.secureAuthKey="$(WP_SECURE_AUTH_KEY)" \
 		--set wp.secureAuthSalt="$(WP_SECURE_AUTH_SALT)" \
-		--set hostpath="$(APP_HOSTPATH)"
+		--set hostpath="$(APP_HOSTPATH)" \
 		--set wp.siteHome="https://$(APP_HOSTNAME)/$(APP_HOSTPATH)" \
 		--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
 		--set wp.stateless.serviceAccountKey="$(WP_STATELESS_KEY)" \
