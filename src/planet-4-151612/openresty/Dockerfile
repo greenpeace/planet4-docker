@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/openresty:develop
-# Build: build-499
-# Date:  Mon Apr 23 01:42:53 UTC 2018
+# Build: build-505
+# Date:  Tue Apr 24 00:35:56 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -19,6 +19,7 @@ ENV \
     APP_GROUP="nginx" \
     APP_UID="1000" \
     APP_USER="nginx" \
+    APP_HOSTPATH="international" \
     CHOWN_APP_DIR="false" \
     CLOUDFLARE_ENABLED="false" \
     NGX_PAGESPEED_RELEASE="stable" \
