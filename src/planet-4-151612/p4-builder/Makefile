@@ -198,7 +198,6 @@ deploy:
 
 		# Create Helm deploy secrets file from environment
 		envsubst < secrets.yaml.in > secrets.yaml
-		# cat secrets.yaml
 
 		# Upgrade or install deployment to cluster
 		helm upgrade --install $(HELM_RELEASE) \
