@@ -42,6 +42,7 @@ ENV \
     WP_DB_PREFIX="wp_" \
     WP_DB_USER="" \
     WP_DEFAULT_CONTENT="true" \
+    WP_DESCRIPTION="Greenpeace" \
     WP_EXTRA_CONFIG="" \
     WP_FORCE_SSL_ADMIN="false" \
     WP_HOSTNAME="" \
