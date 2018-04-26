@@ -57,7 +57,11 @@ define( 'WP_STATELESS_MEDIA_KEY_FILE_PATH',     '{{ .Env.WP_STATELESS_MEDIA_KEY_
 define( 'WP_STATELESS_MEDIA_JSON_KEY',          '{{ .Env.WP_STATELESS_MEDIA_JSON_KEY }}' );
 {{ end }}
 
+{{ if .Env.WP_STATELESS_MEDIA_SERVICE_ACCOUNT }}
 define( 'WP_STATELESS_MEDIA_SERVICE_ACCOUNT',   '{{ .Env.WP_STATELESS_MEDIA_SERVICE_ACCOUNT }}' );
+{{ end }}
+
+define( 'WP_STATELESS_MEDIA_ROOT_DIR',   '{{ .Env.WP_STATELESS_MEDIA_ROOT_DIR }}' );
 {{ end }}
 
 {{ if eq .Env.WP_REDIS_ENABLED "true" }}

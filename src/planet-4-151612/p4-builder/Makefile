@@ -50,7 +50,8 @@ OPENRESTY_IMAGE 		?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)
 PHP_IMAGE 					?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app
 WP_DB_NAME 					?= $(CONTAINER_PREFIX)_wordpress
 WP_DB_USERNAME 			:= $(CONTAINER_PREFIX)
-WP_STATELESS_BUCKET	?= $(CONTAINER_PREFIX)-stateless
+WP_STATELESS_BUCKET	?= $(CONTAINER_PREFIX)-stateless-$(HELM_NAMESPACE)
+WP_STATELESS_OWNER  ?= cloudstorage@planet-4-151612.iam.gserviceaccount.com
 
 CLOUDSQL_INSTANCE   ?= p4-develop-k8s
 
@@ -184,7 +185,11 @@ deploy:
 		helm repo update
 
 		# Create WP-Stateless bucket if it doesn't exist
-		gsutil ls gs://$(WP_STATELESS_BUCKET) || gsutil mb gs://$(WP_STATELESS_BUCKET)
+		gsutil ls gs://$(WP_STATELESS_BUCKET) || \
+			WP_STATELESS_OWNER=$(WP_STATELESS_OWNER) \
+			WP_STATLESS_BUCKET=$(WP_STATELESS_BUCKET) \
+			./make_bucket.sh
+
 
 		# Connect to cluster
 		gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
@@ -193,7 +198,6 @@ deploy:
 
 		# Create Helm deploy secrets file from environment
 		envsubst < secrets.yaml.in > secrets.yaml
-		# cat secrets.yaml
 
 		# Upgrade or install deployment to cluster
 		helm upgrade --install $(HELM_RELEASE) \

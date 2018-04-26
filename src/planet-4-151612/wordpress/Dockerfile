@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/wordpress:v0.7.2
-# Build: build-544
-# Date:  Tue Apr 24 10:42:17 UTC 2018
+# Image: gcr.io/planet-4-151612/wordpress:develop
+# Build: build-556
+# Date:  Thu Apr 26 05:54:42 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -51,6 +51,7 @@ ENV \
     WP_DB_PREFIX="wp_" \
     WP_DB_USER="" \
     WP_DEFAULT_CONTENT="true" \
+    WP_DESCRIPTION="Greenpeace" \
     WP_EXTRA_CONFIG="" \
     WP_FORCE_SSL_ADMIN="false" \
     WP_HOSTNAME="" \
