@@ -236,50 +236,50 @@ workflows:
             tags:
               ignore: /v.*/
 
-    # Only run deploy job for tagged releases, any branch
-    build-tag:
-      jobs:
-        - build:
-            filters:
-              branches:
-                ignore: /.*/
-              tags:
-                only: /v.*/
+  # Only run deploy job for tagged releases, any branch
+  build-tag:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
 
-        - test-openresty:
-            requires:
-              - build
-            filters:
-              branches:
-                ignore: /.*/
-              tags:
-                only: /v.*/
+      - test-openresty:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
 
-        - test-php-fpm:
-            requires:
-              - build
-            filters:
-              branches:
-                ignore: /.*/
-              tags:
-                only: /v.*/
+      - test-php-fpm:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
 
-        - test-wordpress:
-            requires:
-              - build
-            filters:
-              branches:
-                ignore: /.*/
-              tags:
-                only: /v.*/
+      - test-wordpress:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
 
-        - deploy:
-            requires:
-              - test-openresty
-              - test-php-fpm
-              - test-wordpress
-            filters:
-              branches:
-                ignore: /.*/
-              tags:
-                only: /v.*/
+      - deploy:
+          requires:
+            - test-openresty
+            - test-php-fpm
+            - test-wordpress
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
