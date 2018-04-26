@@ -188,33 +188,41 @@ jobs:
 
 workflows:
   version: 2
-  build-test-and-deploy:
+  build-develop:
     jobs:
       - build:
           filters:
+            branches:
+              ignore: master
             tags:
-              only: /.*/
+              ignore: /v.*/
 
       - test-openresty:
           requires:
             - build
           filters:
+            branches:
+              ignore: master
             tags:
-              only: /.*/
+              ignore: /v.*/
 
       - test-php-fpm:
           requires:
             - build
           filters:
+            branches:
+              ignore: master
             tags:
-              only: /.*/
+              ignore: /v.*/
 
       - test-wordpress:
           requires:
             - build
           filters:
+            branches:
+              ignore: master
             tags:
-              only: /.*/
+              ignore: /v.*/
 
       # Only run deploy job for tagged releases, any branch
       - deploy:
@@ -223,5 +231,55 @@ workflows:
             - test-php-fpm
             - test-wordpress
           filters:
+            branches:
+              ignore: master
             tags:
-              only: /v.*/
+              ignore: /v.*/
+
+    # Only run deploy job for tagged releases, any branch
+    build-tag:
+      jobs:
+        - build:
+            filters:
+              branches:
+                ignore: /.*/
+              tags:
+                only: /v.*/
+
+        - test-openresty:
+            requires:
+              - build
+            filters:
+              branches:
+                ignore: /.*/
+              tags:
+                only: /v.*/
+
+        - test-php-fpm:
+            requires:
+              - build
+            filters:
+              branches:
+                ignore: /.*/
+              tags:
+                only: /v.*/
+
+        - test-wordpress:
+            requires:
+              - build
+            filters:
+              branches:
+                ignore: /.*/
+              tags:
+                only: /v.*/
+
+        - deploy:
+            requires:
+              - test-openresty
+              - test-php-fpm
+              - test-wordpress
+            filters:
+              branches:
+                ignore: /.*/
+              tags:
+                only: /v.*/
