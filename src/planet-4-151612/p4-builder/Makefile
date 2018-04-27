@@ -185,11 +185,9 @@ deploy:
 		helm repo update
 
 		# Create WP-Stateless bucket if it doesn't exist
-		gsutil ls gs://$(WP_STATELESS_BUCKET) || \
-			WP_STATELESS_OWNER=$(WP_STATELESS_OWNER) \
-			WP_STATLESS_BUCKET=$(WP_STATELESS_BUCKET) \
-			./make_bucket.sh
-
+		WP_STATELESS_OWNER=$(WP_STATELESS_OWNER) \
+		WP_STATELESS_BUCKET=$(WP_STATELESS_BUCKET) \
+		./make_bucket.sh
 
 		# Connect to cluster
 		gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
