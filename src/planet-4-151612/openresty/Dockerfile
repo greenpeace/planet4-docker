@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/openresty:develop
-# Build: build-579
-# Date:  Wed May  2 02:46:42 UTC 2018
+# Build: build-585
+# Date:  Wed May  2 05:48:10 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -30,7 +30,7 @@ ENV \
     OPENRESTY_SENDFILE="on" \
     OPENRESTY_SOURCE="source" \
     OPENRESTY_VERSION="1.13.6.1" \
-    OPENSSL_VERSION="1.0.2n" \
+    OPENSSL_VERSION="1.0.2o" \
     PAGESPEED_ADMIN_PATH="/_pagespeed_admin" \
     PAGESPEED_DISABLE_FILTERS="" \
     PAGESPEED_ENABLED="false" \
