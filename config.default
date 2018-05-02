@@ -37,7 +37,7 @@ CONTAINER_TIMEZONE=UTC
 # https://github.com/phusion/baseimage-docker/releases
 BASEIMAGE_VERSION=0.10.1
 # https://github.com/jwilder/dockerize/releases
-DOCKERIZE_VERSION=0.6.0
+DOCKERIZE_VERSION=0.6.1
 # https://github.com/pagespeed/ngx_pagespeed/releases
 NGX_PAGESPEED_RELEASE=stable
 NGX_PAGESPEED_VERSION=latest
