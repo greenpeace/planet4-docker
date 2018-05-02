@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -exu
 
-gsutil mb gs://${WP_STATELESS_BUCKET}
+# Exit if bucket exists, doing nothing
+gsutil ls gs://${WP_STATELESS_BUCKET} || gsutil mb gs://${WP_STATELESS_BUCKET}
 
 gsutil iam ch allUsers:objectViewer gs://${WP_STATELESS_BUCKET}
 

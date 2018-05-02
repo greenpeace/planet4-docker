@@ -1,6 +1,6 @@
 # OpenResty + Pagespeed + OpenSSL
 
-![OpenResty 1.13.6.1](https://img.shields.io/badge/openresty-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2n](https://img.shields.io/badge/OpenSSL-1.0.2n-brightgreen.svg)
+![OpenResty 1.13.6.1](https://img.shields.io/badge/openresty-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2o](https://img.shields.io/badge/OpenSSL-1.0.2o-brightgreen.svg)
 
 Built on [gcr.io/planet-4-151612/ubuntu](https://registry.hub.docker.com/u/greenpeace/ubuntu/), a lightly modified Ubuntu Xenial [Phusion Base Image](https://phusion.github.io/baseimage-docker/).
 
@@ -48,7 +48,7 @@ CHOWN_APP_DIR              | false   | If true `chown` `/app/source/public` as `
 
 OpenResty is compiled from mainline source according to Ubuntu configuration and compile flags, with the following modifications:
 
-- OpenSSL v1.0.2n from source - <https://www.openssl.org/source/>
+- OpenSSL v1.0.2o from source - <https://www.openssl.org/source/>
 - Google Pagespeed nginx latest stable from source - <https://github.com/pagespeed/ngx_pagespeed/releases>
 - The `http_autoindex_module` disabled
 

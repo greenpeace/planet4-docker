@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/ubuntu:v0.7.3
-# Build: build-562
-# Date:  Thu Apr 26 06:44:27 UTC 2018
+# Image: gcr.io/planet-4-151612/ubuntu:develop
+# Build: build-585
+# Date:  Wed May  2 05:48:10 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -21,9 +21,9 @@ RUN rm -fr /etc/apt/sources.list && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     chmod 755 /app/bin/* && \
     ln -s /app/bin/set_timezone.sh /etc/my_init.d/00_set_timezone.sh && \
-    wget https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-linux-amd64-v0.6.0.tar.gz && \
-    tar -C /app/bin -xzvf dockerize-linux-amd64-v0.6.0.tar.gz && \
-    rm dockerize-linux-amd64-v0.6.0.tar.gz && \
+    wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
+    tar -C /app/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
+    rm dockerize-linux-amd64-v0.6.1.tar.gz && \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
 
 FROM scratch
