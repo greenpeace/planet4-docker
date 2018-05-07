@@ -201,8 +201,6 @@ deploy:
 		helm upgrade --install $(HELM_RELEASE) \
 			--namespace $(HELM_NAMESPACE) \
 			-f secrets.yaml \
-			--set dbDatabase="$(WP_DB_NAME)" \
-			--set dbUsername="$(WP_DB_USERNAME)" \
 			--set exim.image.tag="$(INFRA_VERSION)" \
 			--set hostname="$(APP_HOSTNAME)" \
 			--set hostpath="$(APP_HOSTPATH)" \
