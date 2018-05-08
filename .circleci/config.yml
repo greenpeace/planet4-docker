@@ -201,6 +201,7 @@ workflows:
   build-develop:
     jobs:
       - build:
+          context: org-global
           filters:
             branches:
               ignore: master
@@ -208,6 +209,7 @@ workflows:
               ignore: /v.*/
 
       - test-openresty:
+          context: org-global
           requires:
             - build
           filters:
@@ -217,6 +219,7 @@ workflows:
               ignore: /v.*/
 
       - test-php-fpm:
+          context: org-global
           requires:
             - build
           filters:
@@ -226,6 +229,7 @@ workflows:
               ignore: /v.*/
 
       - test-wordpress:
+          context: org-global
           requires:
             - build
           filters:
@@ -236,6 +240,7 @@ workflows:
 
       # Only run deploy job for tagged releases, any branch
       - deploy:
+          context: org-global
           requires:
             - test-openresty
             - test-php-fpm
@@ -250,6 +255,7 @@ workflows:
   build-tag:
     jobs:
       - build:
+          context: org-global
           filters:
             branches:
               ignore: /.*/
@@ -257,6 +263,7 @@ workflows:
               only: /v.*/
 
       - test-openresty:
+          context: org-global
           requires:
             - build
           filters:
@@ -266,6 +273,7 @@ workflows:
               only: /v.*/
 
       - test-php-fpm:
+          context: org-global
           requires:
             - build
           filters:
@@ -275,6 +283,7 @@ workflows:
               only: /v.*/
 
       - test-wordpress:
+          context: org-global
           requires:
             - build
           filters:
@@ -284,6 +293,7 @@ workflows:
               only: /v.*/
 
       - deploy:
+          context: org-global
           requires:
             - test-openresty
             - test-php-fpm
