@@ -10,6 +10,12 @@ set -eu
 mkdir -p /run/php
 chown -R "${APP_USER}" /run/php
 
+touch "/var/log/php${PHP_MAJOR_VERSION}-fpm.log"
+touch "/var/log/php${PHP_MAJOR_VERSION}-fpm.${PHP_POOL_NAME}.error.log"
+
+chown -R "${APP_USER}" "/var/log/php${PHP_MAJOR_VERSION}-fpm.log"
+chown -R "${APP_USER}" "/var/log/php${PHP_MAJOR_VERSION}-fpm.${PHP_POOL_NAME}.error.log"
+
 _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "clear_env:")" "${PHP_CLEAR_ENV}"
 _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "disable_functions:")" "${PHP_DISABLE_FUNCTIONS}"
 _good "$(printf "%-10s " "php:")" "$(printf "%-22s" "group:")" "${APP_GROUP}"
@@ -34,10 +40,12 @@ php_configure_newrelic.sh
 _title "Starting service: php-fpm $(php --version | head -n 1 | cut -d " " -f 2)"
 
 # start PHP
+dockerize \
+  -template "/app/templates/etc/php/fpm/pool.d/www.conf.tmpl:/etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf" \
+  -template "/app/templates/etc/php/fpm/conf.d/20-newrelic.ini.tmpl:/etc/php/${PHP_MAJOR_VERSION}/fpm/conf.d/20-newrelic.ini" \
+  -template /app/templates/etc/ssmtp/ssmtp.conf.tmpl:/etc/ssmtp/ssmtp.conf
+
 exec dockerize \
-  -template /app/templates/etc/php/fpm/pool.d/www.conf.tmpl:/etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf \
-  -template /app/templates/etc/php/fpm/conf.d/20-newrelic.ini.tmpl:/etc/php/${PHP_MAJOR_VERSION}/fpm/conf.d/20-newrelic.ini \
-  -template /app/templates/etc/ssmtp/ssmtp.conf.tmpl:/etc/ssmtp/ssmtp.conf \
-  -stdout /var/log/php${PHP_MAJOR_VERSION}-fpm.log \
-  -stderr /var/log/php${PHP_MAJOR_VERSION}-fpm.${PHP_POOL_NAME}.error.log \
-  php-fpm${PHP_MAJOR_VERSION} -c /etc/php/${PHP_MAJOR_VERSION}/fpm
+  -stdout "/var/log/php${PHP_MAJOR_VERSION}-fpm.log" \
+  -stderr "/var/log/php${PHP_MAJOR_VERSION}-fpm.${PHP_POOL_NAME}.error.log" \
+  "php-fpm${PHP_MAJOR_VERSION}" -c "/etc/php/${PHP_MAJOR_VERSION}/fpm"

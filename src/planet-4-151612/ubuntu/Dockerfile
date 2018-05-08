@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/ubuntu:v0.7.4
-# Build: build-591
-# Date:  Wed May  2 06:28:10 UTC 2018
+# Image: gcr.io/planet-4-151612/ubuntu:develop
+# Build: build-608
+# Date:  Mon May  7 13:10:29 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -24,7 +24,7 @@ RUN rm -fr /etc/apt/sources.list && \
     wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
     tar -C /app/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
     rm dockerize-linux-amd64-v0.6.1.tar.gz && \
-    rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
+    rm -fr /usr/share/man/* /usr/share/doc/*
 
 FROM scratch
 
@@ -40,7 +40,10 @@ ENV \
     APP_UID="1000" \
     APP_USER="app" \
     CONTAINER_TIMEZONE="UTC" \
-    PATH="/app/bin:$PATH"
+    PATH="/app/bin:$PATH" \
+    LANG="en_US.UTF-8" \
+    LANGUAGE="en_US:en" \
+    LC_ALL="en_US.UTF-8"
 
 WORKDIR /app
 

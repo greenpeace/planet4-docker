@@ -4,7 +4,7 @@ SHELL := /bin/bash
 MAINTAINER 				?= Raymond Walker <raymond.walker@greenpeace.org>
 
 # https://github.com/greenpeace/planet4-docker
-INFRA_VERSION			?= v0.7.1
+INFRA_VERSION			?= v0.7.4
 
 # Base composer project repository
 # FIXME change this to greenpeace/planet4-base once things are settled
@@ -43,15 +43,15 @@ APP_HOSTNAME 				?= k8s.p4.greenpeace.org
 APP_HOSTPATH 				?= test
 BUILD_NAMESPACE 		?= gcr.io
 GOOGLE_PROJECT_ID 	?= planet-4-151612
-HELM_NAMESPACE			?= $(GIT_REF)
-HELM_RELEASE 				?= $(CONTAINER_PREFIX)
 NEWRELIC_APPNAME 		?= Greenpeace Planet4 Wordpress Test
 OPENRESTY_IMAGE 		?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty
 PHP_IMAGE 					?= $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app
-WP_DB_USERNAME 			:= $(CONTAINER_PREFIX)
-WP_DB_NAME 					?= $(WP_DB_USERNAME)_wordpress
+
 WP_STATELESS_BUCKET	?= $(CONTAINER_PREFIX)-stateless-$(HELM_NAMESPACE)
 WP_STATELESS_OWNER  ?= cloudstorage@planet-4-151612.iam.gserviceaccount.com
+
+HELM_NAMESPACE			?= $(GIT_REF)
+HELM_RELEASE 				?= $(CONTAINER_PREFIX)
 
 CLOUDSQL_INSTANCE   ?= p4-develop-k8s
 
@@ -65,6 +65,8 @@ NEWRELIC_LICENSE 		:= $(NEWRELIC_LICENSE)
 SQLPROXY_KEY 				:= $(SQLPROXY_KEY)
 WP_AUTH_KEY 				:= $(WP_AUTH_KEY)
 WP_AUTH_SALT 				:= $(WP_AUTH_SALT)
+WP_DB_USERNAME 			?= $(CONTAINER_PREFIX)
+WP_DB_NAME 					?= $(WP_DB_USERNAME)_wordpress
 WP_DB_PASSWORD 			:= $(WP_DB_PASSWORD)
 WP_LOGGED_IN_KEY		:= $(WP_LOGGED_IN_KEY)
 WP_LOGGED_IN_SALT 	:= $(WP_LOGGED_IN_SALT)
@@ -89,6 +91,7 @@ GS_PATH := testing
 endif
 
 ################################################################################
+
 
 .PHONY: clean test rewrite checkout bake build build-app build-openresty pull push save
 
@@ -197,12 +200,14 @@ deploy:
 		# Create Helm deploy secrets file from environment
 		envsubst < secrets.yaml.in > secrets.yaml
 
+		# Ensure Helm release is in a usable state
+		# See: https://github.com/kubernetes/helm/issues/4004
+		HELM_RELEASE=$(HELM_RELEASE) ./helm_prepare.sh
+
 		# Upgrade or install deployment to cluster
-		helm upgrade --install $(HELM_RELEASE) \
+		helm upgrade --install --force --wait --timeout 300 $(HELM_RELEASE) \
 			--namespace $(HELM_NAMESPACE) \
 			-f secrets.yaml \
-			--set dbDatabase="$(WP_DB_NAME)" \
-			--set dbUsername="$(WP_DB_USERNAME)" \
 			--set exim.image.tag="$(INFRA_VERSION)" \
 			--set hostname="$(APP_HOSTNAME)" \
 			--set hostpath="$(APP_HOSTPATH)" \
@@ -221,6 +226,4 @@ deploy:
 
 		rm -f secrets.yaml
 
-		HELM_NAMESPACE=$(HELM_NAMESPACE) \
-		HELM_RELEASE=$(HELM_RELEASE) \
-		./flush_redis.sh
+		HELM_NAMESPACE=$(HELM_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) ./helm_confirm.sh
