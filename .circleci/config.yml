@@ -2,6 +2,7 @@ defaults: &defaults
   environment:
     GOOGLE_PROJECT_ID: planet-4-151612
     TEST_OUTPUT_DIR: /tmp/planet4-docker
+    BUILD_FLAGS: -r
   docker:
     - image: gcr.io/planet-4-151612/circleci-base:latest
   working_directory:  /home/circleci/app
@@ -30,7 +31,7 @@ jobs:
       - run:
           name: Building platform containers on gcr.io
           command: |
-            if [[ $(BUILD_FLAGS="-r" make build) ]]
+            if make build
             then
               TYPE="Build" ${HOME}/scripts/notify-job-success.sh
             else
@@ -187,7 +188,7 @@ jobs:
 
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
             cd /tmp/workspace/src
-            if [[ $(./bin/deploy.sh) ]]
+            if make deploy
             then
               TYPE="Deployment" ${HOME}/scripts/notify-job-success.sh
             else

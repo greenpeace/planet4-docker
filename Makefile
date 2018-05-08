@@ -24,3 +24,6 @@ build :
 .PHONY : test
 test :
 		TEST_FOLDERS=$(TEST_FOLDERS) tests/test.sh
+
+deploy:
+	  ./bin/deploy.sh
