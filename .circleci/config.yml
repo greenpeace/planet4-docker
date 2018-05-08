@@ -22,9 +22,10 @@ jobs:
       - checkout
 
       - run:
-          name: Configure gcloud
+          name: Configure
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
+            mkdir -p /tmp/workspace/var
 
       - setup_remote_docker
 
@@ -44,7 +45,6 @@ jobs:
           name: Update build numbers
           command: |
             # Store current build number for future jobs
-            mkdir -p /tmp/workspace/var
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
             ${HOME}/scripts/update-build-numbers.sh
 
