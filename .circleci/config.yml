@@ -6,9 +6,7 @@ defaults: &defaults
     - image: gcr.io/planet-4-151612/circleci-base:latest
   working_directory:  /home/circleci/app
 
-
 version: 2
-
 
 jobs:
   build:
@@ -23,14 +21,6 @@ jobs:
       - checkout
 
       - run:
-          name: Update build numbers
-          command: |
-            # Store current build number for future jobs
-            mkdir -p /tmp/workspace/var
-            echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
-            ${HOME}/scripts/update-build-numbers.sh
-
-      - run:
           name: Configure gcloud
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
@@ -40,8 +30,22 @@ jobs:
       - run:
           name: Building platform containers on gcr.io
           command: |
-            ./bin/build.sh -r
+            if [[ $(BUILD_FLAGS="-r" make build) ]]
+            then
+              TYPE="Build" ${HOME}/scripts/notify-job-success.sh
+            else
+              TYPE="Build" ${HOME}/scripts/notify-job-failure.sh
+              exit 1
+            fi
             rsync -avz . /tmp/workspace/src
+
+      - run:
+          name: Update build numbers
+          command: |
+            # Store current build number for future jobs
+            mkdir -p /tmp/workspace/var
+            echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
+            ${HOME}/scripts/update-build-numbers.sh
 
       - persist_to_workspace:
           root: /tmp/workspace
@@ -183,7 +187,13 @@ jobs:
 
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
             cd /tmp/workspace/src
-            ./bin/deploy.sh
+            if [[ $(./bin/deploy.sh) ]]
+            then
+              TYPE="Deployment" ${HOME}/scripts/notify-job-success.sh
+            else
+              TYPE="Deployment" ${HOME}/scripts/notify-job-failure.sh
+              exit 1
+            fi
 
 
 workflows:
