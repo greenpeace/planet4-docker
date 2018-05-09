@@ -1,0 +1,8 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: {{ .Env.HELM_NAMESPACE }}
+  labels:
+    name: {{ .Env.HELM_NAMESPACE }}
+    nro: {{ .Env.APP_HOSTPATH }}
+    environment: {{ .Env.APP_ENVIRONMENT }}
