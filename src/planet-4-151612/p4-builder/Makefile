@@ -118,7 +118,8 @@ test:
 	  @echo "NEWRELIC_APPNAME:  $(NEWRELIC_APPNAME)"
 	  @echo "INFRA_VERSION:     $(INFRA_VERSION)"
 	  @echo "BUILD_TAG:         $(BUILD_TAG)"
-	  @echo "GIT_REF:        		$(GIT_REF)"
+		@echo "MERGE_REF:         $(MERGE_REF)"
+	  @echo "GIT_REF:           $(GIT_REF)"
 		@echo ""
 
 clean:
@@ -131,7 +132,9 @@ checkout:
 		MERGE_SOURCE=$(MERGE_SOURCE) \
 		MERGE_REF=$(MERGE_REF) \
 		./checkout.sh
+		@echo "Source directory:"
 		ls -al source
+		@echo "Merge directory:"
 		ls -al merge
 
 rewrite:
