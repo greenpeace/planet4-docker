@@ -2,13 +2,12 @@ defaults: &defaults
   environment:
     GOOGLE_PROJECT_ID: planet-4-151612
     TEST_OUTPUT_DIR: /tmp/planet4-docker
+    BUILD_FLAGS: -r
   docker:
-    - image: gcr.io/planet-4-151612/circleci-base:v0.4.2
+    - image: gcr.io/planet-4-151612/circleci-base:latest
   working_directory:  /home/circleci/app
 
-
 version: 2
-
 
 jobs:
   build:
@@ -23,25 +22,31 @@ jobs:
       - checkout
 
       - run:
-          name: Update build numbers
-          command: |
-            # Store current build number for future jobs
-            mkdir -p /tmp/workspace/var
-            echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
-            ${HOME}/scripts/update-build-numbers.sh
-
-      - run:
-          name: Configure gcloud
+          name: Configure
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
+            mkdir -p /tmp/workspace/var
 
       - setup_remote_docker
 
       - run:
           name: Building platform containers on gcr.io
           command: |
-            ./bin/build.sh -r
+            if make build
+            then
+              TYPE="Build" ${HOME}/scripts/notify-job-success.sh
+            else
+              TYPE="Build" ${HOME}/scripts/notify-job-failure.sh
+              exit 1
+            fi
             rsync -avz . /tmp/workspace/src
+
+      - run:
+          name: Update build numbers
+          command: |
+            # Store current build number for future jobs
+            echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
+            ${HOME}/scripts/update-build-numbers.sh
 
       - persist_to_workspace:
           root: /tmp/workspace
@@ -183,7 +188,13 @@ jobs:
 
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
             cd /tmp/workspace/src
-            ./bin/deploy.sh
+            if make deploy
+            then
+              TYPE="Deployment" ${HOME}/scripts/notify-job-success.sh
+            else
+              TYPE="Deployment" ${HOME}/scripts/notify-job-failure.sh
+              exit 1
+            fi
 
 
 workflows:
@@ -191,6 +202,7 @@ workflows:
   build-develop:
     jobs:
       - build:
+          context: org-global
           filters:
             branches:
               ignore: master
@@ -198,6 +210,7 @@ workflows:
               ignore: /v.*/
 
       - test-openresty:
+          context: org-global
           requires:
             - build
           filters:
@@ -207,6 +220,7 @@ workflows:
               ignore: /v.*/
 
       - test-php-fpm:
+          context: org-global
           requires:
             - build
           filters:
@@ -216,6 +230,7 @@ workflows:
               ignore: /v.*/
 
       - test-wordpress:
+          context: org-global
           requires:
             - build
           filters:
@@ -226,6 +241,7 @@ workflows:
 
       # Only run deploy job for tagged releases, any branch
       - deploy:
+          context: org-global
           requires:
             - test-openresty
             - test-php-fpm
@@ -240,6 +256,7 @@ workflows:
   build-tag:
     jobs:
       - build:
+          context: org-global
           filters:
             branches:
               ignore: /.*/
@@ -247,6 +264,7 @@ workflows:
               only: /v.*/
 
       - test-openresty:
+          context: org-global
           requires:
             - build
           filters:
@@ -256,6 +274,7 @@ workflows:
               only: /v.*/
 
       - test-php-fpm:
+          context: org-global
           requires:
             - build
           filters:
@@ -265,6 +284,7 @@ workflows:
               only: /v.*/
 
       - test-wordpress:
+          context: org-global
           requires:
             - build
           filters:
@@ -274,6 +294,7 @@ workflows:
               only: /v.*/
 
       - deploy:
+          context: org-global
           requires:
             - test-openresty
             - test-php-fpm
