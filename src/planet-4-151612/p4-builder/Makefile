@@ -203,16 +203,16 @@ deploy:
 		WP_STATELESS_BUCKET=$(WP_STATELESS_BUCKET) \
 		./make_bucket.sh
 
+		# Connect to cluster
+		gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
+			--zone $(GCLOUD_ZONE) \
+			--project $(GOOGLE_PROJECT_ID)
+
     # Make Kubernetes namespace for the release if not exist
 		APP_ENVIRONMENT=$(APP_ENVIRONMENT) \
 		HELM_NAMESPACE=$(HELM_NAMESPACE) \
 		APP_HOSTPATH=$(APP_HOSTPATH) \
 		./make_namespace.sh
-
-		# Connect to cluster
-		gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
-			--zone $(GCLOUD_ZONE) \
-			--project $(GOOGLE_PROJECT_ID)
 
 		# Create Helm deploy secrets file from environment
 		envsubst < secrets.yaml.in > secrets.yaml
