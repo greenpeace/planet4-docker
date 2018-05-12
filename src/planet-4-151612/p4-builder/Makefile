@@ -222,24 +222,20 @@ deploy:
 		HELM_RELEASE=$(HELM_RELEASE) ./helm_prepare.sh
 
 		# Upgrade or install deployment to cluster
-		helm upgrade --install --force --wait --timeout 300 $(HELM_RELEASE) \
-			--namespace $(HELM_NAMESPACE) \
-			-f secrets.yaml \
-			--set exim.image.tag="$(INFRA_VERSION)" \
-			--set hostname="$(APP_HOSTNAME)" \
-			--set hostpath="$(APP_HOSTPATH)" \
-			--set newrelic.appname="$(NEWRELIC_APPNAME)" \
-			--set openresty.image.repository="$(OPENRESTY_IMAGE)" \
-			--set openresty.image.tag="$(BUILD_TAG)" \
-			--set php.image.repository="$(PHP_IMAGE)" \
-			--set php.image.tag="$(BUILD_TAG)" \
-			--set sqlproxy.cloudsql.instances[0].instance="$(CLOUDSQL_INSTANCE)" \
-			--set sqlproxy.cloudsql.instances[0].project="$(GOOGLE_PROJECT_ID)" \
-			--set sqlproxy.cloudsql.instances[0].region="$(GCLOUD_REGION)" \
-			--set sqlproxy.cloudsql.instances[0].port="3306" \
-			--set wp.siteUrl="$(APP_HOSTNAME)/$(APP_HOSTPATH)" \
-			--set wp.stateless.bucket="$(WP_STATELESS_BUCKET)" \
-			p4-helm-charts/wordpress
+		APP_HOSTNAME="$(APP_HOSTNAME)" \
+		APP_HOSTPATH="$(APP_HOSTPATH)" \
+		BUILD_TAG="$(BUILD_TAG)" \
+		CLOUDSQL_INSTANCE="$(CLOUDSQL_INSTANCE)" \
+		GCLOUD_REGION="$(GCLOUD_REGION)" \
+		GOOGLE_PROJECT_ID="$(GOOGLE_PROJECT_ID)" \
+		HELM_NAMESPACE="$(HELM_NAMESPACE)" \
+		HELM_RELEASE="$(HELM_RELEASE)" \
+		INFRA_VERSION="$(INFRA_VERSION)" \
+		NEWRELIC_APPNAME="$(NEWRELIC_APPNAME)" \
+		OPENRESTY_IMAGE="$(OPENRESTY_IMAGE)" \
+		PHP_IMAGE="$(PHP_IMAGE)" \
+		WP_STATELESS_BUCKET="$(WP_STATELESS_BUCKET)" \
+		./helm_deploy.sh
 
 		rm -f secrets.yaml
 
