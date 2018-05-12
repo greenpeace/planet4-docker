@@ -4,6 +4,7 @@ set -uo pipefail
 helm upgrade --install --force --wait --timeout 300 "${HELM_RELEASE}" \
   --namespace "${HELM_NAMESPACE}" \
   -f secrets.yaml \
+  --set dbDatabase="${WP_DB_NAME}" \
   --set exim.image.tag="${INFRA_VERSION}" \
   --set hostname="${APP_HOSTNAME}" \
   --set hostpath="${APP_HOSTPATH}" \
