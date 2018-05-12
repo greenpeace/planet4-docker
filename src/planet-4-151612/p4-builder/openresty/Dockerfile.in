@@ -1,4 +1,4 @@
-FROM gcr.io/${GOOGLE_PROJECT_ID}/openresty:${INFRA_VERSION}
+FROM gcr.io/planet-4-151612/openresty:${INFRA_VERSION}
 
 LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 
