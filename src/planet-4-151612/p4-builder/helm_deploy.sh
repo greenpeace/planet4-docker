@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
+env | sort
+
 helm upgrade --install --force --wait --timeout 300 "${HELM_RELEASE}" \
   --namespace "${HELM_NAMESPACE}" \
   -f secrets.yaml \
@@ -25,6 +27,8 @@ if [[ $? -ne 0 ]]
 then
   echo "ERROR: Helm release ${HELM_RELEASE} failed to deploy"
   TYPE="Helm Deployment" EXTRA_TEXT="\`\`\`
+Environment:
+$(env | sort)
 History:
 $(helm history "${HELM_RELEASE}" --max=5)
 Build:
