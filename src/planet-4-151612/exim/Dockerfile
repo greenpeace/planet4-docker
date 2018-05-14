@@ -1,13 +1,13 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/exim:develop
-# Build: build-650
-# Date:  Mon May 14 02:10:33 UTC 2018
+# Image: gcr.io/planet-4-151612/exim:v0.8.2
+# Build: build-656
+# Date:  Mon May 14 02:28:57 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
   
-FROM gcr.io/planet-4-151612/ubuntu:master
+FROM gcr.io/planet-4-151612/ubuntu:v0.8.2
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
