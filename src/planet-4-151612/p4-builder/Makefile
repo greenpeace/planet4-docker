@@ -245,9 +245,5 @@ deploy:
 
 	rm -f secrets.yaml
 
-	HELM_NAMESPACE=$(HELM_NAMESPACE) \
 	HELM_RELEASE=$(HELM_RELEASE) \
-	BUILD_TAG=$(BUILD_TAG) \
-	OPENRESTY_IMAGE=$(OPENRESTY_IMAGE) \
-	PHP_IMAGE=$(PHP_IMAGE) \
 	./helm_confirm.sh
