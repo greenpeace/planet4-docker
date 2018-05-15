@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-set -uo pipefail
+set -uxo pipefail
 
 # env | sort
 
-helm upgrade --install --force --wait --timeout 300 "${HELM_RELEASE}" \
+helm upgrade --install --force --wait --recreate-pods --timeout 300 "${HELM_RELEASE}" \
   --namespace "${HELM_NAMESPACE}" \
   --values secrets.yaml \
   --set dbDatabase="${WP_DB_NAME}" \
@@ -11,8 +11,10 @@ helm upgrade --install --force --wait --timeout 300 "${HELM_RELEASE}" \
   --set hostname="${APP_HOSTNAME}" \
   --set hostpath="${APP_HOSTPATH}" \
   --set newrelic.appname="${NEWRELIC_APPNAME}" \
+  --set openresty.image.pullPolicy="${PULL_POLICY}" \
   --set openresty.image.repository="${OPENRESTY_IMAGE}" \
   --set openresty.image.tag="${BUILD_TAG}" \
+  --set php.image.pullPolicy="${PULL_POLICY}" \
   --set php.image.repository="${PHP_IMAGE}" \
   --set php.image.tag="${BUILD_TAG}" \
   --set sqlproxy.cloudsql.instances[0].instance="${CLOUDSQL_INSTANCE}" \

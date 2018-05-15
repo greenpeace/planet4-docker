@@ -295,3 +295,5 @@ then
 fi
 
 wait # Until any docker pull requests have completed
+
+date

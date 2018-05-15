@@ -45,7 +45,7 @@ endif
 # Tag to use on built containers
 
 # Stips away unwanted characters from current branch or tag
-BUILD_TAG          := $(shell echo $(MERGE_REF) | tr -c '[[:alnum:]]._-' '-' | sed 's/-$$//')
+BUILD_TAG          ?= $(shell echo $(MERGE_REF) | tr -c '[[:alnum:]]._-' '-' | sed 's/-$$//')
 
 ################################################################################
 #
@@ -67,6 +67,8 @@ WP_STATELESS_OWNER  ?= cloudstorage@planet-4-151612.iam.gserviceaccount.com
 
 HELM_NAMESPACE      ?= $(APP_HOSTPATH)
 HELM_RELEASE        ?= $(CONTAINER_PREFIX)
+
+PULL_POLICY					?= IfNotPresent
 
 CLOUDSQL_INSTANCE   ?= p4-develop-k8s
 
@@ -240,14 +242,11 @@ deploy:
 	NEWRELIC_APPNAME="$(NEWRELIC_APPNAME)" \
 	OPENRESTY_IMAGE="$(OPENRESTY_IMAGE)" \
 	PHP_IMAGE="$(PHP_IMAGE)" \
+	PULL_POLICY="$(PULL_POLICY)" \
 	WP_STATELESS_BUCKET="$(WP_STATELESS_BUCKET)" \
 	./helm_deploy.sh
 
 	rm -f secrets.yaml
 
-	HELM_NAMESPACE=$(HELM_NAMESPACE) \
 	HELM_RELEASE=$(HELM_RELEASE) \
-	BUILD_TAG=$(BUILD_TAG) \
-	OPENRESTY_IMAGE=$(OPENRESTY_IMAGE) \
-	PHP_IMAGE=$(PHP_IMAGE) \
 	./helm_confirm.sh
