@@ -45,7 +45,7 @@ endif
 # Tag to use on built containers
 
 # Stips away unwanted characters from current branch or tag
-BUILD_TAG          := $(shell echo $(MERGE_REF) | tr -c '[[:alnum:]]._-' '-' | sed 's/-$$//')
+BUILD_TAG          ?= $(shell echo $(MERGE_REF) | tr -c '[[:alnum:]]._-' '-' | sed 's/-$$//')
 
 ################################################################################
 #
