@@ -77,20 +77,20 @@ GCLOUD_ZONE         ?= us-central1-a
 # Secrets
 # Values are expected to be stored in Circle build environment
 
-NEWRELIC_LICENSE    := $(NEWRELIC_LICENSE)
-SQLPROXY_KEY        := $(SQLPROXY_KEY)
-WP_AUTH_KEY         := $(WP_AUTH_KEY)
-WP_AUTH_SALT        := $(WP_AUTH_SALT)
+# NEWRELIC_LICENSE    := $(NEWRELIC_LICENSE)
+# SQLPROXY_KEY        := $(SQLPROXY_KEY)
+# WP_AUTH_KEY         := $(WP_AUTH_KEY)
+# WP_AUTH_SALT        := $(WP_AUTH_SALT)
 WP_DB_USERNAME      ?= $(CONTAINER_PREFIX)
 WP_DB_NAME          ?= $(WP_DB_USERNAME)_wordpress
-WP_DB_PASSWORD      := $(WP_DB_PASSWORD)
-WP_LOGGED_IN_KEY    := $(WP_LOGGED_IN_KEY)
-WP_LOGGED_IN_SALT   := $(WP_LOGGED_IN_SALT)
-WP_NONCE_KEY        := $(WP_NONCE_KEY)
-WP_NONCE_SALT       := $(WP_NONCE_SALT)
-WP_SECURE_AUTH_KEY  := $(WP_SECURE_AUTH_KEY)
-WP_SECURE_AUTH_SALT := $(WP_SECURE_AUTH_SALT)
-WP_STATELESS_KEY    := $(WP_STATELESS_KEY)
+# WP_DB_PASSWORD      := $(WP_DB_PASSWORD)
+# WP_LOGGED_IN_KEY    := $(WP_LOGGED_IN_KEY)
+# WP_LOGGED_IN_SALT   := $(WP_LOGGED_IN_SALT)
+# WP_NONCE_KEY        := $(WP_NONCE_KEY)
+# WP_NONCE_SALT       := $(WP_NONCE_SALT)
+# WP_SECURE_AUTH_KEY  := $(WP_SECURE_AUTH_KEY)
+# WP_SECURE_AUTH_SALT := $(WP_SECURE_AUTH_SALT)
+# WP_STATELESS_KEY    := $(WP_STATELESS_KEY)
 
 ################################################################################
 #
