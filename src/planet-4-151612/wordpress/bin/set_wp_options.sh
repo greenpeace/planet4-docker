@@ -2,7 +2,7 @@
 
 optionlock="${PUBLIC_PATH}/.optionlock"
 
-[[ -f "$optionlock" ]] && exit 0
+[[ -f "$optionlock" ]] && echo "$optionlock exists, will not overwrite wp options..." && exit 0
 
 touch "$optionlock"
 

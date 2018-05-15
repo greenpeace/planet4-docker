@@ -4,7 +4,7 @@ SHELL := /bin/bash
 MAINTAINER        ?= Raymond Walker <raymond.walker@greenpeace.org>
 
 # https://github.com/greenpeace/planet4-docker
-INFRA_VERSION     ?= v0.8.0
+INFRA_VERSION     ?= v0.8.3
 
 # Use current folder name as prefix for built containers,
 # eg planet4-gpi-app planet4-gpi-openresty
@@ -77,20 +77,20 @@ GCLOUD_ZONE         ?= us-central1-a
 # Secrets
 # Values are expected to be stored in Circle build environment
 
-NEWRELIC_LICENSE    := $(NEWRELIC_LICENSE)
-SQLPROXY_KEY        := $(SQLPROXY_KEY)
-WP_AUTH_KEY         := $(WP_AUTH_KEY)
-WP_AUTH_SALT        := $(WP_AUTH_SALT)
+# NEWRELIC_LICENSE    := $(NEWRELIC_LICENSE)
+# SQLPROXY_KEY        := $(SQLPROXY_KEY)
+# WP_AUTH_KEY         := $(WP_AUTH_KEY)
+# WP_AUTH_SALT        := $(WP_AUTH_SALT)
 WP_DB_USERNAME      ?= $(CONTAINER_PREFIX)
 WP_DB_NAME          ?= $(WP_DB_USERNAME)_wordpress
-WP_DB_PASSWORD      := $(WP_DB_PASSWORD)
-WP_LOGGED_IN_KEY    := $(WP_LOGGED_IN_KEY)
-WP_LOGGED_IN_SALT   := $(WP_LOGGED_IN_SALT)
-WP_NONCE_KEY        := $(WP_NONCE_KEY)
-WP_NONCE_SALT       := $(WP_NONCE_SALT)
-WP_SECURE_AUTH_KEY  := $(WP_SECURE_AUTH_KEY)
-WP_SECURE_AUTH_SALT := $(WP_SECURE_AUTH_SALT)
-WP_STATELESS_KEY    := $(WP_STATELESS_KEY)
+# WP_DB_PASSWORD      := $(WP_DB_PASSWORD)
+# WP_LOGGED_IN_KEY    := $(WP_LOGGED_IN_KEY)
+# WP_LOGGED_IN_SALT   := $(WP_LOGGED_IN_SALT)
+# WP_NONCE_KEY        := $(WP_NONCE_KEY)
+# WP_NONCE_SALT       := $(WP_NONCE_SALT)
+# WP_SECURE_AUTH_KEY  := $(WP_SECURE_AUTH_KEY)
+# WP_SECURE_AUTH_SALT := $(WP_SECURE_AUTH_SALT)
+# WP_STATELESS_KEY    := $(WP_STATELESS_KEY)
 
 ################################################################################
 #
@@ -111,143 +111,143 @@ all: clean test rewrite checkout bake build push save
 dev: clean rewrite checkout bake build
 
 test:
-  set -eu
-  @echo "Building $(CONTAINER_PREFIX) containers..."
-    @echo "APP_HOSTNAME:      $(APP_HOSTNAME)"
-    @echo "APP_HOSTPATH:      $(APP_HOSTPATH)"
-    @echo "NEWRELIC_APPNAME:  $(NEWRELIC_APPNAME)"
-    @echo "INFRA_VERSION:     $(INFRA_VERSION)"
-    @echo "BUILD_TAG:         $(BUILD_TAG)"
-    @echo "MERGE_REF:         $(MERGE_REF)"
-    @echo "GIT_REF:           $(GIT_REF)"
-  @echo ""
+	set -eu
+	@echo "Building $(CONTAINER_PREFIX) containers..."
+		@echo "APP_HOSTNAME:      $(APP_HOSTNAME)"
+		@echo "APP_HOSTPATH:      $(APP_HOSTPATH)"
+		@echo "NEWRELIC_APPNAME:  $(NEWRELIC_APPNAME)"
+		@echo "INFRA_VERSION:     $(INFRA_VERSION)"
+		@echo "BUILD_TAG:         $(BUILD_TAG)"
+		@echo "MERGE_REF:         $(MERGE_REF)"
+		@echo "GIT_REF:           $(GIT_REF)"
+	@echo ""
 
 clean:
-  rm -fr source
-  docker-compose -p build down -v
+	rm -fr source
+	docker-compose -p build down -v
 
 checkout:
-  GIT_SOURCE=$(GIT_SOURCE) \
-  GIT_REF=$(GIT_REF) \
-  MERGE_SOURCE=$(MERGE_SOURCE) \
-  MERGE_REF=$(MERGE_REF) \
-  ./checkout.sh
-  @echo "Source directory:"
-  ls -al source
-  @echo "Merge directory:"
-  ls -al merge
+	GIT_SOURCE=$(GIT_SOURCE) \
+	GIT_REF=$(GIT_REF) \
+	MERGE_SOURCE=$(MERGE_SOURCE) \
+	MERGE_REF=$(MERGE_REF) \
+	./checkout.sh
+	@echo "Source directory:"
+	ls -al source
+	@echo "Merge directory:"
+	ls -al merge
 
 rewrite:
-  GIT_REF=$(GIT_REF) \
-  GIT_SOURCE=$(GIT_SOURCE) \
-  GOOGLE_PROJECT_ID=$(GOOGLE_PROJECT_ID) \
-  INFRA_VERSION=$(INFRA_VERSION) \
-  MAINTAINER="$(MAINTAINER)" \
-  MERGE_REF=$(MERGE_REF) \
-  MERGE_SOURCE=$(MERGE_SOURCE) \
-  ./rewrite_dockerfiles.sh
+	GIT_REF=$(GIT_REF) \
+	GIT_SOURCE=$(GIT_SOURCE) \
+	GOOGLE_PROJECT_ID=$(GOOGLE_PROJECT_ID) \
+	INFRA_VERSION=$(INFRA_VERSION) \
+	MAINTAINER="$(MAINTAINER)" \
+	MERGE_REF=$(MERGE_REF) \
+	MERGE_SOURCE=$(MERGE_SOURCE) \
+	./rewrite_dockerfiles.sh
 
 bake:
-  mkdir -p source/public
-  ./bake.sh | tee source/bake.log
+	mkdir -p source/public
+	./bake.sh | tee source/bake.log
 
 build: rewrite build-app build-openresty
 
 build-app:
-  mkdir -p app/source/public
-  rsync -a --delete source/public/ app/source/public
-  pushd app && \
-  docker build \
-  -t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG) \
-  -t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:build-$(CIRCLE_BUILD_NUM) \
-  . && \
-  popd
+	mkdir -p app/source/public
+	rsync -a --delete source/public/ app/source/public
+	pushd app && \
+	docker build \
+	-t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG) \
+	-t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:build-$(CIRCLE_BUILD_NUM) \
+	. && \
+	popd
 
 build-openresty:
-  INFRA_VERSION=$(INFRA_VERSION) \
-  GIT_REF=$(GIT_REF) \
-  MAINTAINER="$(MAINTAINER)" \
-  GIT_SOURCE=$(GIT_SOURCE) \
-  GIT_REF=$(GIT_REF) \
-  GOOGLE_PROJECT_ID=$(GOOGLE_PROJECT_ID) \
-  ./rewrite_dockerfiles.sh
-  mkdir -p openresty/source/public
-  rsync -a --delete source/public/ openresty/source/public
-  pushd openresty && \
-  docker build \
-  -t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG) \
-  -t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:build-$(CIRCLE_BUILD_NUM) \
-  . && \
-  popd
+	INFRA_VERSION=$(INFRA_VERSION) \
+	GIT_REF=$(GIT_REF) \
+	MAINTAINER="$(MAINTAINER)" \
+	GIT_SOURCE=$(GIT_SOURCE) \
+	GIT_REF=$(GIT_REF) \
+	GOOGLE_PROJECT_ID=$(GOOGLE_PROJECT_ID) \
+	./rewrite_dockerfiles.sh
+	mkdir -p openresty/source/public
+	rsync -a --delete source/public/ openresty/source/public
+	pushd openresty && \
+	docker build \
+	-t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG) \
+	-t $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:build-$(CIRCLE_BUILD_NUM) \
+	. && \
+	popd
 
 push:
-  gcloud auth configure-docker
-  docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG)
-  docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG)
-  docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:build-$(CIRCLE_BUILD_NUM)
-  docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:build-$(CIRCLE_BUILD_NUM)
+	gcloud auth configure-docker
+	docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG)
+	docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG)
+	docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:build-$(CIRCLE_BUILD_NUM)
+	docker push $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:build-$(CIRCLE_BUILD_NUM)
 
 save:
-  gsutil ls gs://$(SOURCE_BUCKET) || gsutil mb gs://$(SOURCE_BUCKET)
-  gsutil -m rsync -d -r source gs://$(SOURCE_BUCKET)/$(SOURCE_BUCKET_PATH)
-  @echo "Source files available at:"
-  @echo "- gs://$(SOURCE_BUCKET)/$(SOURCE_BUCKET_PATH)"
-  @echo "- https://console.cloud.google.com/storage/browser/$(SOURCE_BUCKET)/$(SOURCE_BUCKET_PATH)?project=planet-4-151612"
-  TYPE="Source Build" EXTRA_TEXT="View built source files: https://console.cloud.google.com/storage/browser/$(SOURCE_BUCKET)/$(SOURCE_BUCKET_PATH)?project=planet-4-151612" "${HOME}/scripts/notify-job-success.sh"
+	gsutil ls gs://$(SOURCE_BUCKET) || gsutil mb gs://$(SOURCE_BUCKET)
+	gsutil -m rsync -d -r source gs://$(SOURCE_BUCKET)/$(SOURCE_BUCKET_PATH)
+	@echo "Source files available at:"
+	@echo "- gs://$(SOURCE_BUCKET)/$(SOURCE_BUCKET_PATH)"
+	@echo "- https://console.cloud.google.com/storage/browser/$(SOURCE_BUCKET)/$(SOURCE_BUCKET_PATH)?project=planet-4-151612"
+	TYPE="Source Build" EXTRA_TEXT="View built source files: https://console.cloud.google.com/storage/browser/$(SOURCE_BUCKET)/$(SOURCE_BUCKET_PATH)?project=planet-4-151612" "${HOME}/scripts/notify-job-success.sh"
 
 pull:
-    docker pull $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG) &
-    docker pull $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG) &
-  wait
+	docker pull $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-app:$(BUILD_TAG) &
+	docker pull $(BUILD_NAMESPACE)/$(GOOGLE_PROJECT_ID)/$(CONTAINER_PREFIX)-openresty:$(BUILD_TAG) &
+	wait
 
 deploy:
-  # Update Helm repositories
-  helm repo update
+	# Update Helm repositories
+	helm repo update
 
-  # Create WP-Stateless bucket if it doesn't exist
-  WP_STATELESS_OWNER=$(WP_STATELESS_OWNER) \
-  WP_STATELESS_BUCKET=$(WP_STATELESS_BUCKET) \
-  ./make_bucket.sh
+	# Create WP-Stateless bucket if it doesn't exist
+	WP_STATELESS_OWNER=$(WP_STATELESS_OWNER) \
+	WP_STATELESS_BUCKET=$(WP_STATELESS_BUCKET) \
+	./make_bucket.sh
 
-  # Connect to cluster
-  gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
-  --zone $(GCLOUD_ZONE) \
-  --project $(GOOGLE_PROJECT_ID)
+	# Connect to cluster
+	gcloud container clusters get-credentials $(GCLOUD_CLUSTER) \
+	--zone $(GCLOUD_ZONE) \
+	--project $(GOOGLE_PROJECT_ID)
 
-    # Make Kubernetes namespace for the release if not exist
-  APP_ENVIRONMENT=$(APP_ENVIRONMENT) \
-  HELM_NAMESPACE=$(HELM_NAMESPACE) \
-  APP_HOSTPATH=$(APP_HOSTPATH) \
-  ./make_namespace.sh
+		# Make Kubernetes namespace for the release if not exist
+	APP_ENVIRONMENT=$(APP_ENVIRONMENT) \
+	HELM_NAMESPACE=$(HELM_NAMESPACE) \
+	APP_HOSTPATH=$(APP_HOSTPATH) \
+	./make_namespace.sh
 
-  # Create Helm deploy secrets file from environment
-  envsubst < secrets.yaml.in > secrets.yaml
+	# Create Helm deploy secrets file from environment
+	envsubst < secrets.yaml.in > secrets.yaml
 
-  # Ensure Helm release is in a usable state
-  # See: https://github.com/kubernetes/helm/issues/4004
-  HELM_RELEASE=$(HELM_RELEASE) ./helm_prepare.sh
+	# Ensure Helm release is in a usable state
+	# See: https://github.com/kubernetes/helm/issues/4004
+	HELM_RELEASE=$(HELM_RELEASE) ./helm_prepare.sh
 
-  # Upgrade or install deployment to cluster
-  APP_HOSTNAME="$(APP_HOSTNAME)" \
-  APP_HOSTPATH="$(APP_HOSTPATH)" \
-  BUILD_TAG="$(BUILD_TAG)" \
-  CLOUDSQL_INSTANCE="$(CLOUDSQL_INSTANCE)" \
-  GCLOUD_REGION="$(GCLOUD_REGION)" \
-  GOOGLE_PROJECT_ID="$(GOOGLE_PROJECT_ID)" \
-  HELM_NAMESPACE="$(HELM_NAMESPACE)" \
-  HELM_RELEASE="$(HELM_RELEASE)" \
-  INFRA_VERSION="$(INFRA_VERSION)" \
-  NEWRELIC_APPNAME="$(NEWRELIC_APPNAME)" \
-  OPENRESTY_IMAGE="$(OPENRESTY_IMAGE)" \
-  PHP_IMAGE="$(PHP_IMAGE)" \
-  WP_STATELESS_BUCKET="$(WP_STATELESS_BUCKET)" \
-  ./helm_deploy.sh
+	# Upgrade or install deployment to cluster
+	APP_HOSTNAME="$(APP_HOSTNAME)" \
+	APP_HOSTPATH="$(APP_HOSTPATH)" \
+	BUILD_TAG="$(BUILD_TAG)" \
+	CLOUDSQL_INSTANCE="$(CLOUDSQL_INSTANCE)" \
+	GCLOUD_REGION="$(GCLOUD_REGION)" \
+	GOOGLE_PROJECT_ID="$(GOOGLE_PROJECT_ID)" \
+	HELM_NAMESPACE="$(HELM_NAMESPACE)" \
+	HELM_RELEASE="$(HELM_RELEASE)" \
+	INFRA_VERSION="$(INFRA_VERSION)" \
+	NEWRELIC_APPNAME="$(NEWRELIC_APPNAME)" \
+	OPENRESTY_IMAGE="$(OPENRESTY_IMAGE)" \
+	PHP_IMAGE="$(PHP_IMAGE)" \
+	WP_STATELESS_BUCKET="$(WP_STATELESS_BUCKET)" \
+	./helm_deploy.sh
 
-  rm -f secrets.yaml
+	rm -f secrets.yaml
 
-  HELM_NAMESPACE=$(HELM_NAMESPACE) \
-  HELM_RELEASE=$(HELM_RELEASE) \
-  BUILD_TAG=$(BUILD_TAG) \
-  OPENRESTY_IMAGE=$(OPENRESTY_IMAGE) \
-  PHP_IMAGE=$(PHP_IMAGE) \
-  ./helm_confirm.sh
+	HELM_NAMESPACE=$(HELM_NAMESPACE) \
+	HELM_RELEASE=$(HELM_RELEASE) \
+	BUILD_TAG=$(BUILD_TAG) \
+	OPENRESTY_IMAGE=$(OPENRESTY_IMAGE) \
+	PHP_IMAGE=$(PHP_IMAGE) \
+	./helm_confirm.sh

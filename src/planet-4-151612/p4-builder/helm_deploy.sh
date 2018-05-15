@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-env | sort
+# env | sort
 
 helm upgrade --install --force --wait --timeout 300 "${HELM_RELEASE}" \
   --namespace "${HELM_NAMESPACE}" \
-  -f secrets.yaml \
+  --values secrets.yaml \
   --set dbDatabase="${WP_DB_NAME}" \
   --set exim.image.tag="${INFRA_VERSION}" \
   --set hostname="${APP_HOSTNAME}" \
@@ -29,8 +29,10 @@ then
   TYPE="Helm Deployment" EXTRA_TEXT="\`\`\`
 Environment:
 $(env | sort)
+
 History:
 $(helm history "${HELM_RELEASE}" --max=5)
+
 Build:
 $(cat helm_output.txt)
 \`\`\`" "${HOME}/scripts/notify-job-failure.sh"
