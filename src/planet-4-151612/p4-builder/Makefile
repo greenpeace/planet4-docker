@@ -68,6 +68,8 @@ WP_STATELESS_OWNER  ?= cloudstorage@planet-4-151612.iam.gserviceaccount.com
 HELM_NAMESPACE      ?= $(APP_HOSTPATH)
 HELM_RELEASE        ?= $(CONTAINER_PREFIX)
 
+PULL_POLICY					?= IfNotPresent
+
 CLOUDSQL_INSTANCE   ?= p4-develop-k8s
 
 GCLOUD_CLUSTER      ?= p4-development
@@ -240,6 +242,7 @@ deploy:
 	NEWRELIC_APPNAME="$(NEWRELIC_APPNAME)" \
 	OPENRESTY_IMAGE="$(OPENRESTY_IMAGE)" \
 	PHP_IMAGE="$(PHP_IMAGE)" \
+	PULL_POLICY="$(PULL_POLICY)" \
 	WP_STATELESS_BUCKET="$(WP_STATELESS_BUCKET)" \
 	./helm_deploy.sh
 
