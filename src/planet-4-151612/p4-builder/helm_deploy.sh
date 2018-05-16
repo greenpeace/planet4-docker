@@ -3,7 +3,7 @@ set -uxo pipefail
 
 # env | sort
 
-helm upgrade --install --force --wait --recreate-pods --timeout 300 "${HELM_RELEASE}" \
+helm upgrade --install --force --wait --timeout 300 "${HELM_RELEASE}" \
   --namespace "${HELM_NAMESPACE}" \
   --values secrets.yaml \
   --set dbDatabase="${WP_DB_NAME}" \
