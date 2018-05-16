@@ -16,8 +16,10 @@ define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
 {{ if eq .Env.WP_AUTOMATIC_UPDATER_DISABLED "true" }}
 /* Disable all automated updates */
-define( 'AUTOMATIC_UPDATER_DISABLED', true );
+define('AUTOMATIC_UPDATER_DISABLED', true );
 {{ end }}
+
+define('DISALLOW_FILE_MODS', true );
 
 {{ if eq .Env.WP_FORCE_SSL_ADMIN "true" }}
 /* Force SSL in the administration section */
