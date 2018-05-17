@@ -99,7 +99,12 @@ jobs:
       - run:
           name: Microscanner
           command: |
-            docker run --rm -ti "gcr.io/$GOOGLE_PROJECT_ID}/openresty:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/openresty:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+            then
+              echo "@todo: list vulnerabilities"
+            else
+              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+            fi
 
   scan-php-fpm:
     <<: *defaults
@@ -110,7 +115,12 @@ jobs:
       - run:
           name: Microscanner
           command: |
-            docker run --rm -ti "gcr.io/$GOOGLE_PROJECT_ID}/php-fpm:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/php-fpm:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+            then
+              echo "@todo: list vulnerabilities"
+            else
+              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+            fi
 
   scan-wordpress:
     <<: *defaults
@@ -121,7 +131,12 @@ jobs:
       - run:
           name: Microscanner
           command: |
-            docker run --rm -ti "gcr.io/$GOOGLE_PROJECT_ID}/wordpress:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/wordpress:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+            then
+              echo "@todo: list vulnerabilities"
+            else
+              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+            fi
 
   test-openresty:
     <<: *defaults
