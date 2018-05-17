@@ -18,17 +18,13 @@ jobs:
           command: |
             docker --version
             docker-compose --version
-
       - checkout
-
       - run:
           name: Configure
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
             mkdir -p /tmp/workspace/var
-
       - setup_remote_docker
-
       - run:
           name: Building platform containers on gcr.io
           command: |
@@ -40,85 +36,66 @@ jobs:
               exit 1
             fi
             rsync -avz . /tmp/workspace/src
-
       - run:
           name: Update build numbers
           command: |
             # Store current build number for future jobs
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
             ${HOME}/scripts/update-build-numbers.sh
-
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
             - var
             - src
 
-
   test-ubuntu:
     <<: *defaults
     steps:
-
       - attach_workspace:
           at: /tmp/workspace
-
       - setup_remote_docker
-
       - run:
           name: Authenticate with gcloud
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
-
       - run:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/ubuntu ./tests/test.sh
-
       - store_test_results:
           path: /tmp/planet4-docker/merged
-
       - store_artifacts:
           path: /tmp/artifacts
-
 
   test-php-fpm:
     <<: *defaults
     steps:
-
       - attach_workspace:
           at: /tmp/workspace
-
       - setup_remote_docker
-
       - run:
           name: Authenticate with gcloud
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
-
       - run:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/php-fpm ./tests/test.sh
-
       - store_test_results:
           path: /tmp/planet4-docker/merged
-
       - store_artifacts:
           path: /tmp/artifacts
 
   scan-openresty:
     <<: *defaults
     steps:
-
-      - attach_workspace
+      - attach_workspace:
           at: /tmp/workspace
-
       - setup_remote_docker
-
       - run:
           name: Microscanner
           command: |
@@ -127,12 +104,9 @@ jobs:
   scan-php-fpm:
     <<: *defaults
     steps:
-
-      - attach_workspace
+      - attach_workspace:
           at: /tmp/workspace
-
       - setup_remote_docker
-
       - run:
           name: Microscanner
           command: |
@@ -141,12 +115,9 @@ jobs:
   scan-wordpress:
     <<: *defaults
     steps:
-
-      - attach_workspace
+      - attach_workspace:
           at: /tmp/workspace
-
       - setup_remote_docker
-
       - run:
           name: Microscanner
           command: |
@@ -155,27 +126,21 @@ jobs:
   test-openresty:
     <<: *defaults
     steps:
-
       - attach_workspace:
           at: /tmp/workspace
-
       - setup_remote_docker
-
       - run:
           name: Authenticate with gcloud
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
-
       - run:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/openresty ./tests/test.sh
-
       - store_test_results:
           path: /tmp/planet4-docker/merged
-
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -183,27 +148,21 @@ jobs:
   test-wordpress:
     <<: *defaults
     steps:
-
       - attach_workspace:
           at: /tmp/workspace
-
       - setup_remote_docker
-
       - run:
           name: Authenticate with gcloud
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
-
       - run:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/wordpress ./tests/test.sh
-
       - store_test_results:
           path: /tmp/planet4-docker/merged
-
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -211,22 +170,17 @@ jobs:
   deploy:
     <<: *defaults
     steps:
-
       - attach_workspace:
           at: /tmp/workspace
-
       - run:
           name: Configure gcloud
           command: |
             ${HOME}/scripts/activate-gcloud-account.sh
-
       - setup_remote_docker
-
       - deploy:
           name: Deploy tagged release
           command: |
             set -x
-
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
             cd /tmp/workspace/src
             if make deploy
@@ -236,7 +190,6 @@ jobs:
               TYPE="Deployment" ${HOME}/scripts/notify-job-failure.sh
               exit 1
             fi
-
 
 workflows:
   version: 2
@@ -249,7 +202,6 @@ workflows:
               ignore: master
             tags:
               ignore: /v.*/
-
       - test-openresty:
           context: org-global
           requires:
@@ -259,7 +211,6 @@ workflows:
               ignore: master
             tags:
               ignore: /v.*/
-
       - test-php-fpm:
           context: org-global
           requires:
@@ -269,7 +220,6 @@ workflows:
               ignore: master
             tags:
               ignore: /v.*/
-
       - test-wordpress:
           context: org-global
           requires:
@@ -279,7 +229,6 @@ workflows:
               ignore: master
             tags:
               ignore: /v.*/
-
       - scan-openresty:
           context: org-global
           requires:
@@ -289,7 +238,6 @@ workflows:
               ignore: master
             tags:
               ignore: /v.*/
-
       - scan-php-fpm:
           context: org-global
           requires:
@@ -299,7 +247,6 @@ workflows:
               ignore: master
             tags:
               ignore: /v.*/
-
       - scan-wordpress:
           context: org-global
           requires:
@@ -309,8 +256,6 @@ workflows:
               ignore: master
             tags:
               ignore: /v.*/
-
-      # Only run deploy job for tagged releases, any branch
       - deploy:
           context: org-global
           requires:
@@ -326,7 +271,7 @@ workflows:
             tags:
               ignore: /v.*/
 
-  # Only run deploy job for tagged releases, any branch
+  # Builds releases tagged with /v*/ on any branch
   build-tag:
     jobs:
       - build:
@@ -336,7 +281,6 @@ workflows:
               ignore: /.*/
             tags:
               only: /v.*/
-
       - test-openresty:
           context: org-global
           requires:
@@ -346,7 +290,6 @@ workflows:
               ignore: /.*/
             tags:
               only: /v.*/
-
       - test-php-fpm:
           context: org-global
           requires:
@@ -356,7 +299,6 @@ workflows:
               ignore: /.*/
             tags:
               only: /v.*/
-
       - test-wordpress:
           context: org-global
           requires:
@@ -366,7 +308,6 @@ workflows:
               ignore: /.*/
             tags:
               only: /v.*/
-
       - scan-openresty:
           context: org-global
           requires:
@@ -376,7 +317,6 @@ workflows:
               ignore: /.*/
             tags:
               only: /v.*/
-
       - scan-php-fpm:
           context: org-global
           requires:
@@ -386,7 +326,6 @@ workflows:
               ignore: /.*/
             tags:
               only: /v.*/
-
       - scan-wordpress:
           context: org-global
           requires:
@@ -396,7 +335,6 @@ workflows:
               ignore: /.*/
             tags:
               only: /v.*/
-
       - deploy:
           context: org-global
           requires:
