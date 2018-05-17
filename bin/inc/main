@@ -208,6 +208,14 @@ then
     fi
   fi
   BUILD_NUM="build-${CIRCLE_BUILD_NUM}"
+
+if [[ -z "${MICROSCANNER_TOKEN:-}" ]]
+then
+  echo ""
+  >&2 echo "ERROR: Environment variable MIRCOSCANNER_TOKEN not set."
+  >&2 echo "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
+  >&2 echo ""
+  exit 1
 fi
 
 BRANCH_NAME_RAW=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}

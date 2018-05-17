@@ -110,6 +110,47 @@ jobs:
       - store_artifacts:
           path: /tmp/artifacts
 
+  scan-openresty:
+    <<: *defaults
+    steps:
+
+      - attach_workspace
+          at: /tmp/workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Microscanner
+          command: |
+            docker run --rm -ti "gcr.io/$GOOGLE_PROJECT_ID}/openresty:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+
+  scan-php-fpm:
+    <<: *defaults
+    steps:
+
+      - attach_workspace
+          at: /tmp/workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Microscanner
+          command: |
+            docker run --rm -ti "gcr.io/$GOOGLE_PROJECT_ID}/php-fpm:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+
+  scan-wordpress:
+    <<: *defaults
+    steps:
+
+      - attach_workspace
+          at: /tmp/workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Microscanner
+          command: |
+            docker run --rm -ti "gcr.io/$GOOGLE_PROJECT_ID}/wordpress:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
 
   test-openresty:
     <<: *defaults
@@ -239,6 +280,36 @@ workflows:
             tags:
               ignore: /v.*/
 
+      - scan-openresty:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+            tags:
+              ignore: /v.*/
+
+      - scan-php-fpm:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+            tags:
+              ignore: /v.*/
+
+      - scan-wordpress:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+            tags:
+              ignore: /v.*/
+
       # Only run deploy job for tagged releases, any branch
       - deploy:
           context: org-global
@@ -246,6 +317,9 @@ workflows:
             - test-openresty
             - test-php-fpm
             - test-wordpress
+            - scan-openresty
+            - scan-php-fpm
+            - scan-wordpress
           filters:
             branches:
               ignore: master
@@ -293,12 +367,45 @@ workflows:
             tags:
               only: /v.*/
 
+      - scan-openresty:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
+
+      - scan-php-fpm:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
+
+      - scan-wordpress:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
+
       - deploy:
           context: org-global
           requires:
             - test-openresty
             - test-php-fpm
             - test-wordpress
+            - scan-openresty
+            - scan-php-fpm
+            - scan-wordpress
           filters:
             branches:
               ignore: /.*/
