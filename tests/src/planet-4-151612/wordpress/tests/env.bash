@@ -17,10 +17,10 @@ export image
 # docker-compose.yml environment variables
 APP_HOSTNAME="test.planet4.dev"
 DB_IMAGE="mysql:5.7"
-GIT_SOURCE="https://github.com/greenpeace/planet4-base"
-GIT_BRANCH="master"
+GIT_SOURCE="https://github.com/greenpeace/planet4-base-fork"
+GIT_BRANCH="develop"
 RANDOM_TITLE="Test-mcBkUCqAO3yCvAjy"
-WP_TITLE="GPI - Testing Site"
+WP_TITLE="Greenpeace - Testing"
 export APP_HOSTNAME
 export DB_IMAGE
 export GIT_SOURCE
