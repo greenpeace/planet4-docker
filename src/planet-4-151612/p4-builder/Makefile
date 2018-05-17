@@ -250,3 +250,6 @@ deploy:
 
 	HELM_RELEASE=$(HELM_RELEASE) \
 	./helm_confirm.sh
+
+	HELM_RELEASE=$(HELM_RELEASE) \
+	./newrelic_deployment.sh
