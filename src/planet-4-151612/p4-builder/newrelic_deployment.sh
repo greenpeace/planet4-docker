@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eu
+set -exu
 
 NEWRELIC_APPLICATION_ID="${NEWRELIC_APPLICATION_ID:-$(newrelic-get-application-id.sh)}"
 
@@ -8,6 +8,7 @@ changelog=${CIRCLE_COMPARE_URL}
 description="${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} @${CIRCLE_BRANCH:-${CIRCLE_TAG}}"
 user=${CIRCLE_USERNAME}
 
+# shellcheck disable=SC2016
 json=$(jq -n \
   --arg REVISION "$revision" \
   --arg CHANGELOG "$changelog" \
