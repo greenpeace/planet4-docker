@@ -38,10 +38,23 @@ function sendBuildRequest() {
     "_BUILD_NUM=${BUILD_NUM}" \
     "_BUILD_NAMESPACE=${BUILD_NAMESPACE}" \
     "_BUILD_TAG=${BUILD_TAG}" \
+    "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" \
     "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
     "_REVISION_TAG=${REVISION_TAG}" \
-    "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}"
   )
+
+  # _MICROSCANNER_TOKEN is not present in all build as an ARG
+  # Remove fromo substitution data to prevent Google Container Builder error
+  if grep -v -q "_MICROSCANNER_TOKEN" "$dir/cloudbuild.yaml"
+  then
+    for i in "${!sub_array[@]}"
+    do # iterate over array indexes
+      if [[ "${sub_array[$i]}" = "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" ]]
+      then # if it's the value you want to delete
+        unset sub_array[$i] # set the string as empty at this specific index
+      fi
+    done
+  fi
 
   sub="$(printf "%s," "${sub_array[@]}")"
   sub="${sub%,}"
@@ -52,7 +65,7 @@ function sendBuildRequest() {
 
   gcloud config set project "${GOOGLE_PROJECT_ID}"
 
-  pushd $dir && \
+  pushd "$dir" && \
   # Submit the build
   time "${gcloud_binary}" container builds submit \
     --verbosity="${verbosity:-warning}" \
