@@ -43,18 +43,25 @@ function sendBuildRequest() {
     "_REVISION_TAG=${REVISION_TAG}"
   )
 
-  # _MICROSCANNER_TOKEN is not present in all build as an ARG
-  # Remove fromo substitution data to prevent Google Container Builder error
-  if grep -v -q "_MICROSCANNER_TOKEN" "$dir/cloudbuild.yaml"
-  then
-    for i in "${!sub_array[@]}"
-    do # iterate over array indexes
-      if [[ "${sub_array[$i]}" = "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" ]]
-      then # if it's the value you want to delete
-        unset sub_array[$i] # set the string as empty at this specific index
-      fi
-    done
-  fi
+
+
+  for i in "${!sub_array[@]}"
+  do
+    # _MICROSCANNER_TOKEN is not present in all build as an ARG
+    # Remove fromo substitution data to prevent Google Container Builder error
+    if ! grep -q "$(echo "${sub_array[$i]}" | cut -d'=' -f1)" "$dir/cloudbuild.yaml"
+    then
+      _notice "Removing _MICROSCANNER_TOKEN from substring replacement array"
+      for j in "${!sub_array[@]}"
+      do # iterate over array indexes
+        if [[ "${sub_array[$j]}" = "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" ]]
+        then # if it's the value you want to delete
+          unset sub_array[$j] # set the string as empty at this specific index
+        fi
+      done
+    fi
+  done
+
 
   sub="$(printf "%s," "${sub_array[@]}")"
   sub="${sub%,}"
