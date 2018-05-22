@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/exim:develop
-# Build: build-746
-# Date:  Sun May 20 07:35:44 UTC 2018
+# Build: build-755
+# Date:  Tue May 22 04:52:04 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -14,7 +14,9 @@ MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 RUN apt-get update \
  && apt-get install -y --no-install-recommends exim4-daemon-light \
  && rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* \
- && rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
+ && rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/* \
+ && touch /var/log/exim4/mainlog \
+ && chown 106:108 /var/log/exim4/mainlog
 
 EXPOSE 25
 
