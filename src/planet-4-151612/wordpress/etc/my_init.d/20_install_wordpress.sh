@@ -171,6 +171,7 @@ _good "From: ${GIT_SOURCE}:${GIT_REF}"
 if [[ ! -f "${SOURCE_PATH}/composer.json" ]]
 then
   echo "Composer not found: ${SOURCE_PATH}/composer.json"
+  cd /app
   rm -fr "${SOURCE_PATH}" "${SOURCE_PATH:?}/*" || true
   git clone "${GIT_SOURCE}" "${SOURCE_PATH}"
   cd "${SOURCE_PATH}"
