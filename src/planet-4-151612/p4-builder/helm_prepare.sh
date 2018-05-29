@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
-release_exists=$(helm list -q | grep "${HELM_RELEASE}" | xargs)
+release_exists=$(helm list -q | grep -w "${HELM_RELEASE}" | xargs)
 
 if [[ -z "$release_exists" ]]
 then

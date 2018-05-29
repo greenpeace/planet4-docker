@@ -129,7 +129,6 @@ function set_vars() {
 default_config="${GIT_ROOT_DIR}/config.default"
 if [[ -f "${default_config}" ]]
 then
-  # shellcheck source=/dev/null
   set_vars "${default_config}"
 fi
 
@@ -188,7 +187,6 @@ then
     _fatal "File not found: ${CONFIG_FILE}"
   fi
   # https://github.com/koalaman/shellcheck/wiki/SC1090
-  # shellcheck source=/dev/null
   set_vars "${CONFIG_FILE}"
 fi
 
@@ -197,17 +195,22 @@ fi
 
 if [[ "${CIRCLECI:-}" ]]
 then
+  BUILD_NUM=${BUILD_NUM:-"build-${CIRCLE_BUILD_NUM}"}
+
   if [[ -z "${BUILD_TAG:-}" ]]
   then
-    if [[ "${CIRCLE_TAG:-}" ]]
-    then
-      BUILD_TAG="${CIRCLE_TAG}"
-    elif [[ "${CIRCLE_BRANCH}" ]]
-    then
-      BUILD_TAG="${CIRCLE_BRANCH}"
-    fi
+    BUILD_TAG="${CIRCLE_TAG:-$CIRCLE_BRANCH}"
   fi
-  BUILD_NUM="build-${CIRCLE_BUILD_NUM}"
+
+fi
+
+if [[ -z "${MICROSCANNER_TOKEN:-}" ]]
+then
+  echo ""
+  >&2 echo "ERROR: Environment variable MIRCOSCANNER_TOKEN not set."
+  >&2 echo "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
+  >&2 echo ""
+  exit 1
 fi
 
 BRANCH_NAME_RAW=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}

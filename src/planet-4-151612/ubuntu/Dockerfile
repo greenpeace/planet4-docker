@@ -13,7 +13,14 @@ LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 
 COPY . /app/
 
-RUN rm -fr /etc/apt/sources.list && \
+ARG MICROSCANNER_TOKEN
+
+ENV MICROSCANNER_TOKEN="${MICROSCANNER_TOKEN}"
+
+ADD https://get.aquasec.com/microscanner .
+
+RUN chmod 755 microscanner && \
+    rm -fr /etc/apt/sources.list && \
     ln -s /app/sources.list /etc/apt/sources.list && \
     apt-get update && \
     apt-get -y upgrade && \
@@ -26,6 +33,8 @@ RUN rm -fr /etc/apt/sources.list && \
     rm dockerize-linux-amd64-v0.6.1.tar.gz && \
     rm -fr /usr/share/man/* /usr/share/doc/*
 
+RUN ./microscanner "${MICROSCANNER_TOKEN}"
+
 FROM scratch
 
 COPY --from=base / /
@@ -33,17 +42,18 @@ COPY --from=base / /
 # Local time zone of application container
 ENV \
     APP_ENV="production" \
-    DEBIAN_FRONTEND="noninteractive" \
     APP_GID="1000" \
     APP_GROUP="app" \
     APP_HOSTNAME="example.com" \
     APP_UID="1000" \
     APP_USER="app" \
     CONTAINER_TIMEZONE="UTC" \
-    PATH="/app/bin:$PATH" \
+    DEBIAN_FRONTEND="noninteractive" \
     LANG="en_US.UTF-8" \
     LANGUAGE="en_US:en" \
-    LC_ALL="en_US.UTF-8"
+    LC_ALL="en_US.UTF-8" \
+    MICROSCANNER_TOKEN="" \
+    PATH="/app/bin:$PATH"
 
 WORKDIR /app
 

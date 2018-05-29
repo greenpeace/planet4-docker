@@ -7,7 +7,7 @@
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
   
-FROM gcr.io/planet-4-151612/circleci-base:latest
+FROM gcr.io/planet-4-151612/circleci-base:develop
 
 LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 

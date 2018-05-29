@@ -4,7 +4,7 @@ SHELL := /bin/bash
 MAINTAINER        ?= Raymond Walker <raymond.walker@greenpeace.org>
 
 # https://github.com/greenpeace/planet4-docker
-INFRA_VERSION     ?= v0.9.1
+INFRA_VERSION     ?= v0.9.2
 
 # Use current folder name as prefix for built containers,
 # eg planet4-gpi-app planet4-gpi-openresty
@@ -250,3 +250,6 @@ deploy:
 
 	HELM_RELEASE=$(HELM_RELEASE) \
 	./helm_confirm.sh
+
+	HELM_RELEASE=$(HELM_RELEASE) \
+	./newrelic_deployment.sh
