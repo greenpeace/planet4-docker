@@ -92,6 +92,13 @@ fi
 # FIXME volume: nocopy not working in the docker-compse.yml file
 rm -f source/public/index.html
 
+# Tagged releases are production, remove the robots.txt
+# FIXME Find a better way to handle robots.txt
+if [[ ! -z "${CIRCLE_TAG:-}" ]]
+then
+  rm -f source/public/robots.txt
+fi
+
 wait # for docker-compose down to finish
 
 echo "Done"
