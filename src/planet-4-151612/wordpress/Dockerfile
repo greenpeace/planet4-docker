@@ -1,13 +1,13 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/wordpress:v0.9.1
-# Build: build-689
-# Date:  Wed May 16 02:41:05 UTC 2018
+# Image: gcr.io/planet-4-151612/wordpress:v0.9.2
+# Build: build-773
+# Date:  Tue May 29 04:10:12 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
   
-FROM gcr.io/planet-4-151612/php-fpm:v0.9.1
+FROM gcr.io/planet-4-151612/php-fpm:v0.9.2
 
 LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 
