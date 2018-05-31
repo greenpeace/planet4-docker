@@ -8,7 +8,7 @@ ARG MICROSCANNER_TOKEN
 
 ENV MICROSCANNER_TOKEN="${MICROSCANNER_TOKEN}"
 
-ADD https://get.aquasec.com/microscanner .
+# ADD https://get.aquasec.com/microscanner .
 
 RUN chmod 755 microscanner && \
     rm -fr /etc/apt/sources.list && \
@@ -24,7 +24,7 @@ RUN chmod 755 microscanner && \
     rm dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
     rm -fr /usr/share/man/* /usr/share/doc/*
 
-RUN ./microscanner "${MICROSCANNER_TOKEN}"
+# RUN ./microscanner "${MICROSCANNER_TOKEN}"
 
 FROM scratch
 
