@@ -10,8 +10,9 @@ define('DB_CHARSET',  '{{ .Env.WP_DB_CHARSET }}');
 define('DB_COLLATE',  '{{ .Env.WP_DB_COLLATION }}');
 
 // ** Wordpress configuration settings ** //
-define('SITE_HOME',           '{{ .Env.WP_SITE_HOME }}');
-define('SITE_URL',            '{{ .Env.WP_SITE_URL }}');
+define('WP_SITEURL',  'https://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
+define('WP_HOME',     'https://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
+
 define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
 {{ if eq .Env.WP_AUTOMATIC_UPDATER_DISABLED "true" }}

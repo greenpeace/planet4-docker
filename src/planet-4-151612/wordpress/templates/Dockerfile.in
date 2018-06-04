@@ -15,6 +15,7 @@ COPY . /app/
 WORKDIR ${SOURCE_PATH}
 
 ENV \
+    APP_HOSTPATH="" \
     GIT_REF="master" \
     GIT_SOURCE="https://github.com/greenpeace/planet4-base" \
     INSTALL_WORDPRESS="true" \
