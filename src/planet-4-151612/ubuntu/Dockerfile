@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/ubuntu:v0.9.2
-# Build: build-773
-# Date:  Tue May 29 04:10:12 UTC 2018
+# Image: gcr.io/planet-4-151612/ubuntu:develop
+# Build: build-799
+# Date:  Mon Jun  4 11:57:41 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -17,10 +17,9 @@ ARG MICROSCANNER_TOKEN
 
 ENV MICROSCANNER_TOKEN="${MICROSCANNER_TOKEN}"
 
-ADD https://get.aquasec.com/microscanner .
+# ADD https://get.aquasec.com/microscanner .
 
-RUN chmod 755 microscanner && \
-    rm -fr /etc/apt/sources.list && \
+RUN rm -fr /etc/apt/sources.list && \
     ln -s /app/sources.list /etc/apt/sources.list && \
     apt-get update && \
     apt-get -y upgrade && \
@@ -33,7 +32,7 @@ RUN chmod 755 microscanner && \
     rm dockerize-linux-amd64-v0.6.1.tar.gz && \
     rm -fr /usr/share/man/* /usr/share/doc/*
 
-RUN ./microscanner "${MICROSCANNER_TOKEN}"
+# RUN ./microscanner "${MICROSCANNER_TOKEN}"
 
 FROM scratch
 
