@@ -10,8 +10,9 @@ define('DB_CHARSET',  '{{ .Env.WP_DB_CHARSET }}');
 define('DB_COLLATE',  '{{ .Env.WP_DB_COLLATION }}');
 
 // ** Wordpress configuration settings ** //
-define('SITE_HOME',           '{{ .Env.WP_SITE_HOME }}');
-define('SITE_URL',            '{{ .Env.WP_SITE_URL }}');
+define('WP_SITEURL',  'https://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
+define('WP_HOME',     'https://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
+
 define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
 {{ if eq .Env.WP_AUTOMATIC_UPDATER_DISABLED "true" }}
@@ -51,6 +52,7 @@ define( 'WP_DEBUG_LOG', true );
 {{ if eq .Env.WP_STATELESS_MEDIA_ENABLED "true" }}
 define( 'WP_STATELESS_MEDIA_BUCKET',            '{{ .Env.WP_STATELESS_MEDIA_BUCKET }}' );
 define( 'WP_STATELESS_MEDIA_MODE',              '{{ .Env.WP_STATELESS_MEDIA_MODE }}' );
+define( 'WP_STATELESS_MEDIA_ROOT_DIR',          '{{ .Env.WP_STATELESS_MEDIA_ROOT_DIR }}' );
 
 {{ if .Env.WP_STATELESS_MEDIA_KEY_FILE_PATH }}
 define( 'WP_STATELESS_MEDIA_KEY_FILE_PATH',     '{{ .Env.WP_STATELESS_MEDIA_KEY_FILE_PATH }}' );
@@ -63,7 +65,6 @@ define( 'WP_STATELESS_MEDIA_JSON_KEY',          '{{ .Env.WP_STATELESS_MEDIA_JSON
 define( 'WP_STATELESS_MEDIA_SERVICE_ACCOUNT',   '{{ .Env.WP_STATELESS_MEDIA_SERVICE_ACCOUNT }}' );
 {{ end }}
 
-define( 'WP_STATELESS_MEDIA_ROOT_DIR',   '{{ .Env.WP_STATELESS_MEDIA_ROOT_DIR }}' );
 {{ end }}
 
 {{ if eq .Env.WP_REDIS_ENABLED "true" }}
