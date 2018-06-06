@@ -4,7 +4,7 @@ server {
     listen  443 deferred http2 ssl;
     listen  [::]:443 deferred http2 ssl default ipv6only=on;
 
-    server_name {{ .Env.APP_HOSTNAME }} www.{{ .Env.APP_HOSTNAME }} -;
+    server_name {{ .Env.APP_HOSTNAME }} -;
 
     root {{ .Env.PUBLIC_PATH }};
 
