@@ -7,6 +7,7 @@ helm upgrade --install --force --wait --timeout 300 "${HELM_RELEASE}" \
   --namespace "${HELM_NAMESPACE}" \
   --values secrets.yaml \
   --set dbDatabase="${WP_DB_NAME}" \
+  --set environment="${APP_ENVIRONMENT}" \
   --set exim.image.tag="${INFRA_VERSION}" \
   --set hostname="${APP_HOSTNAME}" \
   --set hostpath="${APP_HOSTPATH}" \
