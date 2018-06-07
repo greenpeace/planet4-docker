@@ -1,13 +1,13 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/openresty:develop
-# Build: build-816
-# Date:  Wed Jun  6 03:47:58 UTC 2018
+# Image: gcr.io/planet-4-151612/openresty:v0.9.4
+# Build: build-806
+# Date:  Tue Jun  5 01:32:06 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
   
-FROM gcr.io/planet-4-151612/ubuntu:develop
+FROM gcr.io/planet-4-151612/ubuntu:v0.9.4
 
 LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 
