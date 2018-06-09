@@ -15,6 +15,7 @@ helm upgrade --install --force --wait --timeout 300 "${HELM_RELEASE}" \
   --set openresty.image.pullPolicy="${PULL_POLICY}" \
   --set openresty.image.repository="${OPENRESTY_IMAGE}" \
   --set openresty.image.tag="${BUILD_TAG}" \
+  --set pagespeed.enabled="${PAGESPEED_ENABLED}" \
   --set php.image.pullPolicy="${PULL_POLICY}" \
   --set php.image.repository="${PHP_IMAGE}" \
   --set php.image.tag="${BUILD_TAG}" \
