@@ -2,6 +2,18 @@
 upstream fastcgi_backend {
 {{ range $upstream := split .Env.OPENRESTY_FASTCGI_BACKEND "," }}
     server {{ $upstream }};
+
+    keepalive 32;
+{{ end }}
+}
+{{ end }}
+
+{{ if eq .Env.REDIS_FASTCGI_CACHE_ENABLED "true" }}
+upstream redis_backend {
+{{ range $upstream := split .Env.REDIS_FASTCGI_CACHE_SERVER "," }}
+    server {{ $upstream }};
+
+    keepalive 32;
 {{ end }}
 }
 {{ end }}
