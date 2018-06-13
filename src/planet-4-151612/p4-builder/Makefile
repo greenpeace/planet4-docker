@@ -4,7 +4,7 @@ SHELL := /bin/bash
 MAINTAINER        ?= Raymond Walker <raymond.walker@greenpeace.org>
 
 # https://github.com/greenpeace/planet4-docker
-INFRA_VERSION     ?= v0.9.5
+INFRA_VERSION     ?= v0.9.6
 
 # Use current folder name as prefix for built containers,
 # eg planet4-gpi-app planet4-gpi-openresty
@@ -75,6 +75,8 @@ CLOUDSQL_INSTANCE   ?= p4-develop-k8s
 GCLOUD_CLUSTER      ?= p4-development
 GCLOUD_REGION       ?= us-central1
 GCLOUD_ZONE         ?= us-central1-a
+
+PAGESPEED_ENABLED   ?= false
 
 # Secrets
 # Values are expected to be stored in Circle build environment
@@ -242,6 +244,7 @@ deploy:
 	INFRA_VERSION="$(INFRA_VERSION)" \
 	NEWRELIC_APPNAME="$(NEWRELIC_APPNAME)" \
 	OPENRESTY_IMAGE="$(OPENRESTY_IMAGE)" \
+	PAGESPEED_ENABLED="$(PAGESPEED_ENABLED)" \
 	PHP_IMAGE="$(PHP_IMAGE)" \
 	PULL_POLICY="$(PULL_POLICY)" \
 	WP_STATELESS_BUCKET="$(WP_STATELESS_BUCKET)" \

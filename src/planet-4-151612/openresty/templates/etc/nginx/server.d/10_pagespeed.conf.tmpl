@@ -34,11 +34,12 @@ pagespeed Disallow "*/wp-admin/*";
 pagespeed Disallow "*.svg*";
 
 pagespeed Domain {{ .Env.APP_HOSTNAME }};
-pagespeed Domain storage.googleapis.com;
 
-pagespeed MapOriginDomain "http://{{ .Env.APP_HOSTNAME }}" "https://{{ .Env.APP_HOSTNAME }}";
-pagespeed MapRewriteDomain "https://{{ .Env.APP_HOSTNAME }}/cdn" "https://storage.googleapis.com";
-pagespeed MapProxyDomain "https://{{ .Env.APP_HOSTNAME }}/cdn" "https://storage.googleapis.com" "https://{{ .Env.APP_HOSTNAME }}/cdn";
+# pagespeed Domain storage.googleapis.com;
+#
+# pagespeed MapOriginDomain "http://{{ .Env.APP_HOSTNAME }}" "https://{{ .Env.APP_HOSTNAME }}";
+# pagespeed MapRewriteDomain "https://{{ .Env.APP_HOSTNAME }}/cdn" "https://storage.googleapis.com";
+# pagespeed MapProxyDomain "https://{{ .Env.APP_HOSTNAME }}/cdn" "https://storage.googleapis.com" "https://{{ .Env.APP_HOSTNAME }}/cdn";
 
 pagespeed DownstreamCacheRebeaconingKey "{{ .Env.PAGESPEED_REBEACON_KEY }}";
 
