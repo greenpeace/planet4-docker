@@ -1,6 +1,6 @@
 # OpenResty + Pagespeed + OpenSSL
 
-![OpenResty 1.13.6.1](https://img.shields.io/badge/openresty-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2o](https://img.shields.io/badge/OpenSSL-1.0.2o-brightgreen.svg)
+![OpenResty 1.13.6.2](https://img.shields.io/badge/openresty-1.13.6.2-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2o](https://img.shields.io/badge/OpenSSL-1.0.2o-brightgreen.svg)
 
 Built on [gcr.io/planet-4-151612/ubuntu](https://registry.hub.docker.com/u/greenpeace/ubuntu/), a lightly modified Ubuntu Xenial [Phusion Base Image](https://phusion.github.io/baseimage-docker/).
 

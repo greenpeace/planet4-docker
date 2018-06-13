@@ -1,7 +1,7 @@
 
 # PHP-FPM
 
-![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6.1](https://img.shields.io/badge/nginx-1.13.6.1-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2o](https://img.shields.io/badge/OpenSSL-1.0.2o-brightgreen.svg)
+![PHP 7.0](https://img.shields.io/badge/php-7.0-brightgreen.svg) ![Nginx 1.13.6.2](https://img.shields.io/badge/nginx-1.13.6.2-brightgreen.svg) ![ngx_pagespeed latest-stable](https://img.shields.io/badge/ngx_pagespeed-latest--stable-brightgreen.svg) ![OpenSSL 1.0.2o](https://img.shields.io/badge/OpenSSL-1.0.2o-brightgreen.svg)
 
 ---
 
