@@ -42,7 +42,7 @@ DOCKERIZE_VERSION=0.6.1
 NGX_PAGESPEED_RELEASE=stable
 NGX_PAGESPEED_VERSION=latest
 # https://openresty.org/en/download.html
-OPENRESTY_VERSION=1.13.6.1
+OPENRESTY_VERSION=1.13.6.2
 OPENRESTY_SOURCE=source
 # https://www.openssl.org/source
 OPENSSL_VERSION=1.0.2o
