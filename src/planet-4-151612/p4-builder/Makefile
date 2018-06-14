@@ -4,7 +4,7 @@ SHELL := /bin/bash
 MAINTAINER        ?= Raymond Walker <raymond.walker@greenpeace.org>
 
 # https://github.com/greenpeace/planet4-docker
-INFRA_VERSION     ?= v0.9.6
+INFRA_VERSION     ?= v0.9.7
 
 # Use current folder name as prefix for built containers,
 # eg planet4-gpi-app planet4-gpi-openresty
@@ -83,6 +83,8 @@ PAGESPEED_ENABLED   ?= false
 
 # NEWRELIC_LICENSE    := $(NEWRELIC_LICENSE)
 # SQLPROXY_KEY        := $(SQLPROXY_KEY)
+# EXIM_USERNAME       := $(EXIM_USERNAME)
+# EXIM_PASSWORD       := $(EXIM_PASSWORD)
 # WP_AUTH_KEY         := $(WP_AUTH_KEY)
 # WP_AUTH_SALT        := $(WP_AUTH_SALT)
 WP_DB_USERNAME      ?= $(CONTAINER_PREFIX)
