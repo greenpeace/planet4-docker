@@ -240,15 +240,11 @@ wp theme activate "${WP_THEME}"
 
 [[ "${WP_DEFAULT_CONTENT}" = "true" ]] && $composer_exec core:initial-content
 
+$composer_exec core:add-author-capabilities
+
 $composer_exec core:add-contributor-capabilities
 
-$composer_exec core:style
-
-$composer_exec core:js
-
-$composer_exec core:js-minify
-
-$composer_exec site:custom
+$composer_exec site:global
 
 clear_install_lock
 
