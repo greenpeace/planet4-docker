@@ -216,7 +216,7 @@ workflows:
             branches:
               ignore: master
             tags:
-              ignore: /v.*/
+              ignore: /^v.*/
       - test-openresty:
           context: org-global
           requires:
@@ -225,7 +225,7 @@ workflows:
             branches:
               ignore: master
             tags:
-              ignore: /v.*/
+              ignore: /^v.*/
       - test-php-fpm:
           context: org-global
           requires:
@@ -234,7 +234,7 @@ workflows:
             branches:
               ignore: master
             tags:
-              ignore: /v.*/
+              ignore: /^v.*/
       - test-wordpress:
           context: org-global
           requires:
@@ -243,7 +243,7 @@ workflows:
             branches:
               ignore: master
             tags:
-              ignore: /v.*/
+              ignore: /^v.*/
       # - scan-openresty:
       #     context: org-global
       #     requires:
@@ -284,7 +284,7 @@ workflows:
             branches:
               ignore: master
             tags:
-              ignore: /v.*/
+              ignore: /^v.*/
 
   # Builds releases tagged with /v*/ on any branch
   build-tag:
@@ -295,7 +295,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /v.*/
+              only: /^v.*/
       - test-openresty:
           context: org-global
           requires:
@@ -304,7 +304,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /v.*/
+              only: /^v.*/
       - test-php-fpm:
           context: org-global
           requires:
@@ -313,7 +313,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /v.*/
+              only: /^v.*/
       - test-wordpress:
           context: org-global
           requires:
@@ -322,7 +322,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /v.*/
+              only: /^v.*/
       # - scan-openresty:
       #     context: org-global
       #     requires:
