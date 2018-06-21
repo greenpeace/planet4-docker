@@ -18,7 +18,7 @@
 
 MAIN_HARDCODE_PRIMARY_HOSTNAME='{{ default .Env.APP_HOSTNAME }}'
 dc_eximconfig_configtype='{{ .Env.EXIM_DELIVERY_MODE }}'
-dc_other_hostnames='{{ default .Env.EXIM_MAIL_FROM .Env.APP_HOSTNAME }}'
+dc_other_hostnames=''
 dc_local_interfaces=''
 dc_readhost='{{ default .Env.EXIM_MAIL_FROM .Env.APP_HOSTNAME }}'
 dc_relay_domains=''
