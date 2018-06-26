@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
-# Image: gcr.io/planet-4-151612/p4-builder:v0.9.8
-# Build: build-900
-# Date:  Mon Jun 18 09:43:34 UTC 2018
+# Image: gcr.io/planet-4-151612/p4-builder:develop
+# Build: build-916
+# Date:  Wed Jun 20 05:43:52 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
