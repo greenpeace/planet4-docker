@@ -10,12 +10,12 @@ define('DB_CHARSET',  '{{ .Env.WP_DB_CHARSET }}');
 define('DB_COLLATE',  '{{ .Env.WP_DB_COLLATION }}');
 
 // ** Wordpress configuration settings ** //
-if (isset($_SERVER['HTTP_X_AKAMAI_HOST'])) {
-  define('WP_SITEURL',  'https://'.$_SERVER['HTTP_X_AKAMAI_HOST'].'/{{ .Env.APP_HOSTPATH }}');
-  define('WP_HOME',     'https://'.$_SERVER['HTTP_X_AKAMAI_HOST'].'/{{ .Env.APP_HOSTPATH }}');
+if (!isset($_SERVER['HTTP_VIA']) || strpos($_SERVER['HTTP_VIA'], 'akamai' === false)) {
+  define('WP_SITEURL',  'https://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
+  define('WP_HOME',     'https://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
 } else {
-  define('WP_SITEURL',  'https://{{ .Env.APP_HOSTNAME }}/{{ .Env.APP_HOSTPATH }}');
-  define('WP_HOME',     'https://{{ .Env.APP_HOSTNAME }}/{{ .Env.APP_HOSTPATH }}');
+  define('WP_SITEURL',  'https://www.greenpeace.org/{{ .Env.APP_HOSTPATH }}');
+  define('WP_HOME',     'https://www.greenpeace.org/{{ .Env.APP_HOSTPATH }}');
 }
 
 define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
