@@ -13,16 +13,11 @@ jobs:
   build:
     <<: *defaults
     steps:
-      - run:
-          name: Version
-          command: |
-            docker --version
-            docker-compose --version
       - checkout
       - run:
           name: Configure
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
             mkdir -p /tmp/workspace/var
       - setup_remote_docker
       - run:
@@ -30,18 +25,18 @@ jobs:
           command: |
             if ! make build
             then
-              TYPE="Build" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Build" notify-job-failure.sh
               exit 1
             fi
       - run:
           name: Store build src
-            rsync -av . /tmp/workspace/src            
+          command: rsync -av . /tmp/workspace/src
       - run:
           name: Update build numbers
           command: |
             # Store current build number for future jobs
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
-            ${HOME}/scripts/update-build-numbers.sh
+            update-build-numbers.sh
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -57,7 +52,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
@@ -78,7 +73,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
@@ -103,7 +98,7 @@ jobs:
             then
               echo "@todo: list vulnerabilities"
             else
-              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Vulnerability Scan" notify-job-failure.sh
             fi
 
   scan-php-fpm:
@@ -119,7 +114,7 @@ jobs:
             then
               echo "@todo: list vulnerabilities"
             else
-              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Vulnerability Scan" notify-job-failure.sh
             fi
 
   scan-wordpress:
@@ -135,7 +130,7 @@ jobs:
             then
               echo "@todo: list vulnerabilities"
             else
-              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Vulnerability Scan" notify-job-failure.sh
             fi
 
   test-openresty:
@@ -147,7 +142,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
@@ -169,7 +164,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
@@ -190,14 +185,14 @@ jobs:
       - run:
           name: Configure gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - setup_remote_docker
       - deploy:
           name: Deploy tagged release
           command: |
             if [[ -z "$CIRCLE_TAG" ]]
             then
-              TYPE="Tests" ${HOME}/scripts/notify-job-success.sh
+              TYPE="Tests" notify-job-success.sh
               exit 0
             fi
 
@@ -205,9 +200,9 @@ jobs:
             cd /tmp/workspace/src
             if make deploy
             then
-              TYPE="Deployment" ${HOME}/scripts/notify-job-success.sh
+              TYPE="Deployment" notify-job-success.sh
             else
-              TYPE="Deployment" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Deployment" notify-job-failure.sh
               exit 1
             fi
 
