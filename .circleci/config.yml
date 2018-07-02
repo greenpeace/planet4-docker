@@ -237,15 +237,13 @@ jobs:
 
 workflows:
   version: 2
-  build-develop:
+  build-branch:
     jobs:
       - build:
           context: org-global
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
       - test-openresty:
           context: org-global
           requires:
@@ -253,8 +251,6 @@ workflows:
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
       - test-php-fpm:
           context: org-global
           requires:
@@ -262,8 +258,6 @@ workflows:
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
       - test-wordpress:
           context: org-global
           requires:
@@ -271,8 +265,6 @@ workflows:
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
       # - scan-openresty:
       #     context: org-global
       #     requires:
@@ -312,8 +304,6 @@ workflows:
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
 
   # Builds releases tagged with /v*/ on any branch
   build-tag:
