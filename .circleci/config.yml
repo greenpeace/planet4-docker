@@ -211,6 +211,30 @@ jobs:
               exit 1
             fi
 
+  trigger-planet4:
+    docker:
+      - image: gcr.io/planet-4-151612/circleci-base:latest
+    working_directory:  /tmp/workspace
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - deploy:
+          name: Trigger build: planet4-base-fork
+          environment:
+            repo: git@github.com:greenpeace/planet4-base-fork.git
+            branch: develop
+          command: trigger-build.sh $repo $branch
+
+      - deploy:
+          name: Trigger build: planet4-circleci
+          environment:
+            repo: git@github.com:greenpeace/planet4-circleci.git
+            branch: develop
+          command: trigger-build.sh $repo $branch
+
 workflows:
   version: 2
   build-develop:
@@ -364,6 +388,16 @@ workflows:
             # - scan-openresty
             # - scan-php-fpm
             # - scan-wordpress
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - trigger-planet4:
+          context: org-global
+          requires:
+            - deploy
           filters:
             branches:
               ignore: /.*/
