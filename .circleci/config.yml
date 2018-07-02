@@ -33,7 +33,9 @@ jobs:
               TYPE="Build" ${HOME}/scripts/notify-job-failure.sh
               exit 1
             fi
-            rsync -avz . /tmp/workspace/src
+      - run:
+          name: Store build src
+            rsync -av . /tmp/workspace/src            
       - run:
           name: Update build numbers
           command: |
