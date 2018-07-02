@@ -36,7 +36,6 @@ jobs:
           command: |
             # Store current build number for future jobs
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
-            update-build-numbers.sh
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -222,7 +221,7 @@ jobs:
 
       - checkout
 
-      - run:
+      - deploy:
           name: Start release
           command: |
             current_version=$(git-current-tag.sh)
@@ -233,6 +232,11 @@ jobs:
 
             release-start.sh $new_version
             release-finish.sh $new_version
+
+      - deploy:
+          name: Commit updated build numbers
+          command: |
+            update-build-numbers.sh
 
   trigger-planet4:
     docker:
