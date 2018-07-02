@@ -260,42 +260,12 @@ workflows:
           filters:
             branches:
               ignore: master
-      # - scan-openresty:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #       tags:
-      #         ignore: /v.*/
-      # - scan-php-fpm:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #       tags:
-      #         ignore: /v.*/
-      # - scan-wordpress:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #       tags:
-      #         ignore: /v.*/
       - deploy:
           context: org-global
           requires:
             - test-openresty
             - test-php-fpm
             - test-wordpress
-            # - scan-openresty
-            # - scan-php-fpm
-            # - scan-wordpress
           filters:
             branches:
               ignore: master
