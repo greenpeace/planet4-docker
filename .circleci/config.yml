@@ -28,10 +28,8 @@ jobs:
       - run:
           name: Building platform containers on gcr.io
           command: |
-            if make build
+            if ! make build
             then
-              TYPE="Build" ${HOME}/scripts/notify-job-success.sh
-            else
               TYPE="Build" ${HOME}/scripts/notify-job-failure.sh
               exit 1
             fi
