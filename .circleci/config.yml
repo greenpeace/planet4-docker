@@ -217,14 +217,14 @@ jobs:
           at: /tmp/workspace
 
       - deploy:
-          name: Trigger build: planet4-base-fork
+          name: "Trigger build: planet4-base-fork"
           environment:
             repo: git@github.com:greenpeace/planet4-base-fork.git
             branch: develop
           command: trigger-build.sh $repo $branch
 
       - deploy:
-          name: Trigger build: planet4-circleci
+          name: "Trigger build: planet4-circleci"
           environment:
             repo: git@github.com:greenpeace/planet4-circleci.git
             branch: develop
