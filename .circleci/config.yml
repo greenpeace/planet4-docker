@@ -206,6 +206,34 @@ jobs:
               exit 1
             fi
 
+
+  notify-promote:
+    <<: *defaults
+    steps:
+      - run:
+          name: Notify of held workflow
+          command: TYPE="Promotion" ${HOME}/scripts/notify-job-hold.sh
+
+  promote:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - checkout
+
+      - run:
+          name: Start release
+          command: |
+            current_version=$(git-current-tag.sh)
+            new_version=$(increment-version.sh $current_version)
+
+            echo "Old: $current_version"
+            echo "New: $new_version"
+
+            release-start.sh $new_version
+            release-finish.sh $new_version
+
   trigger-planet4:
     docker:
       - image: gcr.io/planet-4-151612/circleci-base:latest
@@ -229,6 +257,7 @@ jobs:
             repo: git@github.com:greenpeace/planet4-circleci.git
             branch: develop
           command: trigger-build.sh $repo $branch
+
 
 workflows:
   version: 2
@@ -260,12 +289,28 @@ workflows:
           filters:
             branches:
               ignore: master
-      - deploy:
+      - hold-promote:
+          type: approval
+          requires:
+            - test-openresty
+            - test-php-fpm
+            - test-wordpress
+          filters:
+            branches:
+              ignore: master
+      - notify-promote:
           context: org-global
           requires:
             - test-openresty
             - test-php-fpm
             - test-wordpress
+          filters:
+            branches:
+              ignore: master
+      - promote:
+          context: org-global
+          requires:
+            - hold-promote
           filters:
             branches:
               ignore: master
