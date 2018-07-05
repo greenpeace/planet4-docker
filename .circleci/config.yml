@@ -211,7 +211,7 @@ jobs:
     steps:
       - run:
           name: Notify of held workflow
-          command: TYPE="Promotion" ${HOME}/scripts/notify-job-hold.sh
+          command: TYPE="@rawalker Promotion" ${HOME}/scripts/notify-job-hold.sh
 
   promote:
     <<: *defaults
