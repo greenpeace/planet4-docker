@@ -11,15 +11,6 @@
 # Begin service image builds
 
 steps:
-- id: 'p4-builder'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-builder:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-builder:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-builder:${_REVISION_TAG}'
-    - './src/${_GOOGLE_PROJECT_ID}/p4-builder'
-
 - id: 'ubuntu'
   name: 'gcr.io/cloud-builders/docker'
   args:
@@ -86,9 +77,6 @@ steps:
 # ============================================================================
 
 images:
-  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-builder:${_BUILD_TAG}'
-  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-builder:${_BUILD_NUM}'
-  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/p4-builder:${_REVISION_TAG}'
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_TAG}'
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_REVISION_TAG}'

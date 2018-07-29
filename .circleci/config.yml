@@ -13,35 +13,29 @@ jobs:
   build:
     <<: *defaults
     steps:
-      - run:
-          name: Version
-          command: |
-            docker --version
-            docker-compose --version
       - checkout
       - run:
           name: Configure
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
             mkdir -p /tmp/workspace/var
       - setup_remote_docker
       - run:
           name: Building platform containers on gcr.io
           command: |
-            if make build
+            if ! make build
             then
-              TYPE="Build" ${HOME}/scripts/notify-job-success.sh
-            else
-              TYPE="Build" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Build" notify-job-failure.sh
               exit 1
             fi
-            rsync -avz . /tmp/workspace/src
+      - run:
+          name: Store build src
+          command: rsync -av . /tmp/workspace/src
       - run:
           name: Update build numbers
           command: |
             # Store current build number for future jobs
             echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
-            ${HOME}/scripts/update-build-numbers.sh
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -57,7 +51,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
@@ -78,7 +72,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
@@ -103,7 +97,7 @@ jobs:
             then
               echo "@todo: list vulnerabilities"
             else
-              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Vulnerability Scan" notify-job-failure.sh
             fi
 
   scan-php-fpm:
@@ -119,7 +113,7 @@ jobs:
             then
               echo "@todo: list vulnerabilities"
             else
-              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Vulnerability Scan" notify-job-failure.sh
             fi
 
   scan-wordpress:
@@ -135,7 +129,7 @@ jobs:
             then
               echo "@todo: list vulnerabilities"
             else
-              TYPE="Vulnerability Scan" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Vulnerability Scan" notify-job-failure.sh
             fi
 
   test-openresty:
@@ -147,7 +141,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
@@ -169,7 +163,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
@@ -190,14 +184,14 @@ jobs:
       - run:
           name: Configure gcloud
           command: |
-            ${HOME}/scripts/activate-gcloud-account.sh
+            activate-gcloud-account.sh
       - setup_remote_docker
       - deploy:
           name: Deploy tagged release
           command: |
             if [[ -z "$CIRCLE_TAG" ]]
             then
-              TYPE="Tests" ${HOME}/scripts/notify-job-success.sh
+              TYPE="Tests" notify-job-success.sh
               exit 0
             fi
 
@@ -205,23 +199,79 @@ jobs:
             cd /tmp/workspace/src
             if make deploy
             then
-              TYPE="Deployment" ${HOME}/scripts/notify-job-success.sh
+              TYPE="Deployment" notify-job-success.sh
             else
-              TYPE="Deployment" ${HOME}/scripts/notify-job-failure.sh
+              TYPE="Deployment" notify-job-failure.sh
               exit 1
             fi
 
+
+  notify-promote:
+    <<: *defaults
+    steps:
+      - run:
+          name: Notify of held workflow
+          command: TYPE="Promotion" ${HOME}/scripts/notify-job-hold.sh
+
+  promote:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - checkout
+
+      - deploy:
+          name: Start release
+          command: |
+            current_version=$(git-current-tag.sh)
+            new_version=$(increment-version.sh $current_version)
+
+            echo "Old: $current_version"
+            echo "New: $new_version"
+
+            release-start.sh $new_version
+            release-finish.sh $new_version
+
+      - deploy:
+          name: Commit updated build numbers
+          command: |
+            update-build-numbers.sh
+
+  trigger-planet4:
+    docker:
+      - image: gcr.io/planet-4-151612/circleci-base:latest
+    working_directory:  /tmp/workspace
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - deploy:
+          name: "Trigger build: planet4-base-fork"
+          environment:
+            repo: git@github.com:greenpeace/planet4-base-fork.git
+            branch: develop
+          command: trigger-build.sh $repo $branch
+
+      - deploy:
+          name: "Trigger build: planet4-circleci"
+          environment:
+            repo: git@github.com:greenpeace/planet4-circleci.git
+            branch: develop
+          command: trigger-build.sh $repo $branch
+
+
 workflows:
   version: 2
-  build-develop:
+  build-branch:
     jobs:
       - build:
           context: org-global
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
       - test-openresty:
           context: org-global
           requires:
@@ -229,8 +279,6 @@ workflows:
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
       - test-php-fpm:
           context: org-global
           requires:
@@ -238,8 +286,6 @@ workflows:
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
       - test-wordpress:
           context: org-global
           requires:
@@ -247,49 +293,31 @@ workflows:
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
-      # - scan-openresty:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #       tags:
-      #         ignore: /v.*/
-      # - scan-php-fpm:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #       tags:
-      #         ignore: /v.*/
-      # - scan-wordpress:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #       tags:
-      #         ignore: /v.*/
-      - deploy:
+      - hold-promote:
+          type: approval
+          requires:
+            - test-openresty
+            - test-php-fpm
+            - test-wordpress
+          filters:
+            branches:
+              ignore: master
+      - notify-promote:
           context: org-global
           requires:
             - test-openresty
             - test-php-fpm
             - test-wordpress
-            # - scan-openresty
-            # - scan-php-fpm
-            # - scan-wordpress
           filters:
             branches:
               ignore: master
-            tags:
-              ignore: /^v.*/
+      - promote:
+          context: org-global
+          requires:
+            - hold-promote
+          filters:
+            branches:
+              ignore: master
 
   # Builds releases tagged with /v*/ on any branch
   build-tag:
@@ -364,6 +392,16 @@ workflows:
             # - scan-openresty
             # - scan-php-fpm
             # - scan-wordpress
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - trigger-planet4:
+          context: org-global
+          requires:
+            - deploy
           filters:
             branches:
               ignore: /.*/
