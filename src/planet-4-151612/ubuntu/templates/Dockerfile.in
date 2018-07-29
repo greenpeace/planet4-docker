@@ -10,6 +10,8 @@ ENV MICROSCANNER_TOKEN="${MICROSCANNER_TOKEN}"
 
 ADD https://get.aquasec.com/microscanner .
 
+RUN chmod 755 microscanner
+
 RUN rm -fr /etc/apt/sources.list && \
     ln -s /app/sources.list /etc/apt/sources.list && \
     apt-get update && \
