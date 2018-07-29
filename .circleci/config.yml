@@ -98,6 +98,7 @@ jobs:
               echo "@todo: list vulnerabilities"
             else
               TYPE="Vulnerability Scan" notify-job-failure.sh
+              exit 1
             fi
 
   scan-php-fpm:
@@ -114,6 +115,7 @@ jobs:
               echo "@todo: list vulnerabilities"
             else
               TYPE="Vulnerability Scan" notify-job-failure.sh
+              exit 1
             fi
 
   scan-wordpress:
@@ -130,6 +132,7 @@ jobs:
               echo "@todo: list vulnerabilities"
             else
               TYPE="Vulnerability Scan" notify-job-failure.sh
+              exit 1
             fi
 
   test-openresty:
