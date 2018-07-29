@@ -7,7 +7,7 @@
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
   
-FROM gcr.io/planet-4-151612/php-fpm:develop
+FROM gcr.io/planet-4-151612/php-fpm:v0.10.4
 
 LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 
