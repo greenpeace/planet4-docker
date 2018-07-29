@@ -98,6 +98,7 @@ jobs:
               echo "@todo: list vulnerabilities"
             else
               TYPE="Vulnerability Scan" notify-job-failure.sh
+              exit 1
             fi
 
   scan-php-fpm:
@@ -114,6 +115,7 @@ jobs:
               echo "@todo: list vulnerabilities"
             else
               TYPE="Vulnerability Scan" notify-job-failure.sh
+              exit 1
             fi
 
   scan-wordpress:
@@ -130,6 +132,7 @@ jobs:
               echo "@todo: list vulnerabilities"
             else
               TYPE="Vulnerability Scan" notify-job-failure.sh
+              exit 1
             fi
 
   test-openresty:
@@ -211,7 +214,7 @@ jobs:
     steps:
       - run:
           name: Notify of held workflow
-          command: TYPE="Promotion" ${HOME}/scripts/notify-job-hold.sh
+          command: TYPE="@rawalker Promotion" ${HOME}/scripts/notify-job-hold.sh
 
   promote:
     <<: *defaults
@@ -293,12 +296,36 @@ workflows:
           filters:
             branches:
               ignore: master
+      - scan-openresty:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+      - scan-php-fpm:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+      - scan-wordpress:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
       - hold-promote:
           type: approval
           requires:
             - test-openresty
             - test-php-fpm
             - test-wordpress
+            - scan-openresty
+            - scan-php-fpm
+            - scan-wordpress
           filters:
             branches:
               ignore: master
@@ -308,6 +335,9 @@ workflows:
             - test-openresty
             - test-php-fpm
             - test-wordpress
+            - scan-openresty
+            - scan-php-fpm
+            - scan-wordpress
           filters:
             branches:
               ignore: master
@@ -315,6 +345,7 @@ workflows:
           context: org-global
           requires:
             - hold-promote
+            - notify-promote
           filters:
             branches:
               ignore: master
@@ -356,42 +387,42 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
-      # - scan-openresty:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: /.*/
-      #       tags:
-      #         only: /v.*/
-      # - scan-php-fpm:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: /.*/
-      #       tags:
-      #         only: /v.*/
-      # - scan-wordpress:
-      #     context: org-global
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: /.*/
-      #       tags:
-      #         only: /v.*/
+      - scan-openresty:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
+      - scan-php-fpm:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
+      - scan-wordpress:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v.*/
       - deploy:
           context: org-global
           requires:
             - test-openresty
             - test-php-fpm
             - test-wordpress
-            # - scan-openresty
-            # - scan-php-fpm
-            # - scan-wordpress
+            - scan-openresty
+            - scan-php-fpm
+            - scan-wordpress
           filters:
             branches:
               ignore: /.*/

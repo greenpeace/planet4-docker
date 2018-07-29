@@ -7,7 +7,7 @@
 # This file is built automatically from ./templates/Dockerfile.in
 # ------------------------------------------------------------------------
   
-FROM gcr.io/planet-4-151612/ubuntu:v0.10.4
+FROM gcr.io/planet-4-151612/ubuntu:develop
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
