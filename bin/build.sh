@@ -84,17 +84,6 @@ function sendBuildRequest() {
 }
 
 # ----------------------------------------------------------------------------
-# Ensure gcloud binary exists
-set +e
-gcloud_binary="$(type -P gcloud)"
-set -e
-
-if [[ ! -x "${gcloud_binary}" ]]
-then
-  _fatal "gcloud executable not found. Please install from https://cloud.google.com/sdk/downloads"
-fi
-
-# ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
 
 declare -a build_order
@@ -285,6 +274,17 @@ fi
 if [[ "${BUILD_REMOTELY}" = "true" ]]
 then
   _build "Performing build on Google Container Builder:"
+
+  # ----------------------------------------------------------------------------
+  # Ensure gcloud binary exists
+  set +e
+  gcloud_binary="$(type -P gcloud)"
+  set -e
+
+  if [[ ! -x "${gcloud_binary}" ]]
+  then
+    _fatal "gcloud executable not found. Please install from https://cloud.google.com/sdk/downloads"
+  fi
 
   if [[ "$build_type" = 'all' ]]
   then
