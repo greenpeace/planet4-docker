@@ -10,7 +10,7 @@ MAINTAINER_EMAIL="raymond.walker@greenpeace.org"
 
 # application repository to build, expects a composer.json to be present,
 # or alternate file defined by COMPOSER
-GIT_SOURCE=https://github.com/greenpeace/planet4-base
+GIT_SOURCE=https://github.com/greenpeace/planet4-base-fork
 
 # branch of application repository to build
 # note, composer requires prefixes with dev- for branch names
