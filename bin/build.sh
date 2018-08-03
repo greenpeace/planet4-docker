@@ -191,7 +191,7 @@ then
 
     if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in" ]]
     then
-      _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/Dockerfile"
+      _notice " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/Dockerfile"
       envsubst "${envvars_string}" < "${build_dir}/templates/Dockerfile.in" > "${build_dir}/Dockerfile"
       build_string="# ${APPLICATION_NAME}
 # Image: ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}
@@ -210,7 +210,7 @@ then
 
     if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in" ]]
     then
-      _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md"
+      _notice " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md"
       envsubst "${envvars_string}" < "${build_dir}/templates/README.md.in" > "${build_dir}/README.md"
     else
       _notice "README not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in"
