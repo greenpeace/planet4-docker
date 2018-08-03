@@ -288,7 +288,7 @@ then
 
   if [[ "$build_type" = 'all' ]]
   then
-    sendBuildRequest
+    sendBuildRequest "${GIT_ROOT_DIR}/src/$GOOGLE_PROJECT_ID"
   else
     for image in "${build_list[@]}"
     do
