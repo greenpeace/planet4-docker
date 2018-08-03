@@ -40,28 +40,25 @@ function sendBuildRequest() {
     "_BUILD_TAG=${BUILD_TAG}" \
     "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" \
     "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
-    "_REVISION_TAG=${REVISION_TAG}"
+    "_REVISION_TAG=${REVISION_TAG}" \
   )
-
-
 
   for i in "${!sub_array[@]}"
   do
-    # _MICROSCANNER_TOKEN is not present in all build as an ARG
-    # Remove fromo substitution data to prevent Google Container Builder error
+    # _MICROSCANNER_TOKEN is not present in all builds as an ARG
+    # Remove from the token from substitution data to prevent missing var error
     if ! grep -q "$(echo "${sub_array[$i]}" | cut -d'=' -f1)" "$dir/cloudbuild.yaml"
     then
       _notice "Removing _MICROSCANNER_TOKEN from substring replacement array"
       for j in "${!sub_array[@]}"
-      do # iterate over array indexes
+      do
         if [[ "${sub_array[$j]}" = "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" ]]
-        then # if it's the value you want to delete
-          unset sub_array[$j] # set the string as empty at this specific index
+        then
+          unset sub_array[$j]
         fi
       done
     fi
   done
-
 
   sub="$(printf "%s," "${sub_array[@]}")"
   sub="${sub%,}"
@@ -84,40 +81,24 @@ function sendBuildRequest() {
 }
 
 # ----------------------------------------------------------------------------
-# Ensure gcloud binary exists
-set +e
-gcloud_binary="$(type -P gcloud)"
-set -e
-
-if [[ ! -x "${gcloud_binary}" ]]
-then
-  _fatal "gcloud executable not found. Please install from https://cloud.google.com/sdk/downloads"
-fi
-
-# ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
 
 declare -a build_order
 
-if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
+if [[ ! -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
 then
-  build_order=()
-  _notice "Using build order from src/${GOOGLE_PROJECT_ID}/build_order"
-  while read -r image_order
-  do
-    # push line to build_order array
-    _verbose "Adding to build order: '${image_order}'"
-    build_order[${#build_order[@]}]="${image_order}"
-  done < "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order"
-else
-  build_order=(
-    "ubuntu"
-    "openresty"
-    "php-fpm"
-    "wordpress"
-    "p4-onbuild"
-  )
+  _fatal "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order not found"
 fi
+
+build_order=()
+_notice "Using build order from src/${GOOGLE_PROJECT_ID}/build_order"
+while read -r image_order
+do
+  # push line to build_order array
+  _verbose "Adding to build order: '${image_order}'"
+  build_order[${#build_order[@]}]="${image_order}"
+done < "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order"
+
 
 # ----------------------------------------------------------------------------
 # If there are command line arguments, these are treated as subset build items
@@ -164,9 +145,15 @@ fi
 
 if [[ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]]
 then
-  _build "Generating files from templates:"
-  for image in "${build_list[@]}"
+  _notice "Generating files from templates:"
+  for i in "${build_order[@]}"
   do
+    if [ ! -d ${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/$i ]
+    then
+      continue
+    fi
+
+    image=$(basename $i)
 
     # Check the source directory exists and contains a Dockerfile template
     if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
@@ -204,7 +191,7 @@ then
 
     if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in" ]]
     then
-      _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/Dockerfile"
+      _notice " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/Dockerfile"
       envsubst "${envvars_string}" < "${build_dir}/templates/Dockerfile.in" > "${build_dir}/Dockerfile"
       build_string="# ${APPLICATION_NAME}
 # Image: ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}
@@ -223,7 +210,7 @@ then
 
     if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in" ]]
     then
-      _build " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md"
+      _notice " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md"
       envsubst "${envvars_string}" < "${build_dir}/templates/README.md.in" > "${build_dir}/README.md"
     else
       _notice "README not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in"
@@ -286,9 +273,20 @@ if [[ "${BUILD_REMOTELY}" = "true" ]]
 then
   _build "Performing build on Google Container Builder:"
 
+  # ----------------------------------------------------------------------------
+  # Ensure gcloud binary exists
+  set +e
+  gcloud_binary="$(type -P gcloud)"
+  set -e
+
+  if [[ ! -x "${gcloud_binary}" ]]
+  then
+    _fatal "gcloud executable not found. Please install from https://cloud.google.com/sdk/downloads"
+  fi
+
   if [[ "$build_type" = 'all' ]]
   then
-    sendBuildRequest
+    sendBuildRequest "${GIT_ROOT_DIR}/src/$GOOGLE_PROJECT_ID"
   else
     for image in "${build_list[@]}"
     do

@@ -1,0 +1,7 @@
+catch_all_outgoing:
+  debug_print = "R: redirecting email for $local_part@$domain"
+  driver = redirect
+  domains = ! +local_domains
+  allow_fail
+  data = {{ .Env.EXIM_ADMIN_MAIL }}
+  no_more

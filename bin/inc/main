@@ -160,11 +160,11 @@ do
     case $option in
         c  )    # shellcheck disable=SC2034
                 CONFIG_FILE=$OPTARG;;
-        l  )    echo "Build locally"; BUILD_LOCALLY=true;;
+        l  )    BUILD_LOCALLY=true;;
         h  )    usage
                 exit 0;;
-        p  )    echo "Pulling images after build"; PULL_IMAGES=true;;
-        r  )    echo "Build on GCR"; BUILD_REMOTELY=true;;
+        p  )    PULL_IMAGES=true;;
+        r  )    BUILD_REMOTELY=true;;
         v  )    verbosity=debug
                 _verbose_debug on;;
         *  )    echo "Unkown option: ${OPTARG}"
@@ -180,7 +180,7 @@ shift $((OPTIND - 1))
 set +u
 if [[ ! -z "${CONFIG_FILE}" ]]
 then
-  echo "Reading custom configuration from ${CONFIG_FILE}"
+  echo "Reading configuration from ${CONFIG_FILE}"
 
   if [[ ! -f "${CONFIG_FILE}" ]]
   then

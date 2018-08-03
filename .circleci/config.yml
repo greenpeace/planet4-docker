@@ -14,28 +14,16 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run:
-          name: Configure
-          command: |
-            activate-gcloud-account.sh
-            mkdir -p /tmp/workspace/var
+      - run: activate-gcloud-account.sh
+      - run: mkdir -p /tmp/workspace/var
       - setup_remote_docker
+      - run: make build
+      - run: rsync -av . /tmp/workspace/src
+      - run: echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
       - run:
-          name: Building platform containers on gcr.io
-          command: |
-            if ! make build
-            then
-              TYPE="Build" notify-job-failure.sh
-              exit 1
-            fi
-      - run:
-          name: Store build src
-          command: rsync -av . /tmp/workspace/src
-      - run:
-          name: Update build numbers
-          command: |
-            # Store current build number for future jobs
-            echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
+          name: Notify failure
+          when: on_fail
+          command: TYPE="Build" notify-job-failure.sh
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -48,16 +36,18 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - setup_remote_docker
-      - run:
-          name: Authenticate with gcloud
-          command: |
-            activate-gcloud-account.sh
+      - run: activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
           command: |
             cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
-            TEST_FOLDERS=tests/src/planet-4-151612/ubuntu ./tests/test.sh
+            TEST_FOLDERS=tests/src/planet-4-151612/ubuntu \
+            ./tests/test.sh
+      - run:
+          name: Notify failure
+          when: on_fail
+          command: TYPE="Ubuntu tests" notify-job-failure.sh
       - store_test_results:
           path: /tmp/planet4-docker/merged
       - store_artifacts:
@@ -78,7 +68,64 @@ jobs:
           command: |
             cd /tmp/workspace/src
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
-            TEST_FOLDERS=tests/src/planet-4-151612/php-fpm ./tests/test.sh
+            TEST_FOLDERS=tests/src/planet-4-151612/php-fpm \
+            ./tests/test.sh
+      - run:
+          name: Notify failure
+          when: on_fail
+          command: TYPE="PHP tests" notify-job-failure.sh
+      - store_test_results:
+          path: /tmp/planet4-docker/merged
+      - store_artifacts:
+          path: /tmp/artifacts
+
+  test-openresty:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Authenticate with gcloud
+          command: |
+            activate-gcloud-account.sh
+      - run:
+          name: Run bats unit tests
+          command: |
+            cd /tmp/workspace/src
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
+            TEST_FOLDERS=tests/src/planet-4-151612/openresty \
+            ./tests/test.sh
+      - run:
+          name: Notify failure
+          when: on_fail
+          command: TYPE="Openresty tests" notify-job-failure.sh
+      - store_test_results:
+          path: /tmp/planet4-docker/merged
+      - store_artifacts:
+          path: /tmp/artifacts
+
+  test-wordpress:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Authenticate with gcloud
+          command: |
+            activate-gcloud-account.sh
+      - run:
+          name: Run bats unit tests
+          command: |
+            cd /tmp/workspace/src
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
+            TEST_FOLDERS=tests/src/planet-4-151612/wordpress \
+            ./tests/test.sh
+      - run:
+          name: Notify failure
+          when: on_fail
+          command: TYPE="Wordpress tests" notify-job-failure.sh
       - store_test_results:
           path: /tmp/planet4-docker/merged
       - store_artifacts:
@@ -135,59 +182,12 @@ jobs:
               exit 1
             fi
 
-  test-openresty:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - setup_remote_docker
-      - run:
-          name: Authenticate with gcloud
-          command: |
-            activate-gcloud-account.sh
-      - run:
-          name: Run bats unit tests
-          command: |
-            cd /tmp/workspace/src
-            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
-            TEST_FOLDERS=tests/src/planet-4-151612/openresty ./tests/test.sh
-      - store_test_results:
-          path: /tmp/planet4-docker/merged
-      - store_artifacts:
-          path: /tmp/artifacts
-
-
-  test-wordpress:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - setup_remote_docker
-      - run:
-          name: Authenticate with gcloud
-          command: |
-            activate-gcloud-account.sh
-      - run:
-          name: Run bats unit tests
-          command: |
-            cd /tmp/workspace/src
-            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
-            TEST_FOLDERS=tests/src/planet-4-151612/wordpress ./tests/test.sh
-      - store_test_results:
-          path: /tmp/planet4-docker/merged
-      - store_artifacts:
-          path: /tmp/artifacts
-
-
   deploy:
     <<: *defaults
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - run:
-          name: Configure gcloud
-          command: |
-            activate-gcloud-account.sh
+      - run: activate-gcloud-account.sh
       - setup_remote_docker
       - deploy:
           name: Deploy tagged release
@@ -257,14 +257,6 @@ jobs:
             repo: git@github.com:greenpeace/planet4-base-fork.git
             branch: develop
           command: trigger-build.sh $repo $branch
-
-      - deploy:
-          name: "Trigger build: planet4-circleci"
-          environment:
-            repo: git@github.com:greenpeace/planet4-circleci.git
-            branch: develop
-          command: trigger-build.sh $repo $branch
-
 
 workflows:
   version: 2
