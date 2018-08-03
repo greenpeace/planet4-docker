@@ -85,25 +85,20 @@ function sendBuildRequest() {
 
 declare -a build_order
 
-if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
+if [[ ! -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order" ]]
 then
-  build_order=()
-  _notice "Using build order from src/${GOOGLE_PROJECT_ID}/build_order"
-  while read -r image_order
-  do
-    # push line to build_order array
-    _verbose "Adding to build order: '${image_order}'"
-    build_order[${#build_order[@]}]="${image_order}"
-  done < "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order"
-else
-  build_order=(
-    "ubuntu"
-    "openresty"
-    "php-fpm"
-    "wordpress"
-    "p4-onbuild"
-  )
+  _fatal "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order not found"
 fi
+
+build_order=()
+_notice "Using build order from src/${GOOGLE_PROJECT_ID}/build_order"
+while read -r image_order
+do
+  # push line to build_order array
+  _verbose "Adding to build order: '${image_order}'"
+  build_order[${#build_order[@]}]="${image_order}"
+done < "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/build_order"
+
 
 # ----------------------------------------------------------------------------
 # If there are command line arguments, these are treated as subset build items
@@ -150,9 +145,15 @@ fi
 
 if [[ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]]
 then
-  _build "Generating files from templates:"
-  for image in "${build_list[@]}"
+  _notice "Generating files from templates:"
+  for i in "${build_order[@]}"
   do
+    if [ ! -d ${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/$i ]
+    then
+      continue
+    fi
+
+    image=$(basename $i)
 
     # Check the source directory exists and contains a Dockerfile template
     if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
