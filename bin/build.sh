@@ -40,7 +40,7 @@ function sendBuildRequest() {
     "_BUILD_TAG=${BUILD_TAG}" \
     "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" \
     "_GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}" \
-    "_REVISION_TAG=${REVISION_TAG}"
+    "_REVISION_TAG=${REVISION_TAG}" \
   )
 
 
