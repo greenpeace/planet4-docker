@@ -1,0 +1,49 @@
+#
+# Builds docker infrastucture via Google Container builder
+# Used in the build.sh script to generate projects with arbitrary substitutions
+# eg:
+#
+# $ GOOGLE_PROJECT_ID=greenpeace-testing ./build.sh -l -r
+#
+# See config.defaults for default substitution values
+#
+# ============================================================================
+# Begin service image builds
+
+steps:
+- id: 'ubuntu'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--build-arg'
+    - 'MICROSCANNER_TOKEN=${_MICROSCANNER_TOKEN}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_REVISION_TAG}'
+    - 'ubuntu'
+  waitFor: ['-']
+
+- id: 'exim'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '--cache-from=${_BUILD_NAMESPACE}/{_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_TAG}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_NUM}'
+    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_REVISION_TAG}'
+    - 'hello-world'
+  waitFor:
+    - 'ubuntu'
+
+#
+# End service image builds
+#
+# ============================================================================
+
+images:
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/ubuntu:${_REVISION_TAG}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_REVISION_TAG}'
