@@ -42,6 +42,6 @@ function teardown {
 }
 
 @test "SSL - container cleans up" {
-  run clean_docker_compose
+  run clean_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.ssl.yml"
   [[ $status -eq 0 ]]
 }
