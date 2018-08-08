@@ -9,12 +9,20 @@ define('DB_HOST',     '{{ .Env.WP_DB_HOST}}:{{ .Env.WP_DB_PORT }}');
 define('DB_CHARSET',  '{{ .Env.WP_DB_CHARSET }}');
 define('DB_COLLATE',  '{{ .Env.WP_DB_COLLATION }}');
 
+/* Respect upstream SSL termination headers */
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
+    $_SERVER['HTTPS']='on';
+    $protocol='https';
+} else {
+    $protocol='http';
+}
+
 if (isset($_SERVER['HTTP_VIA']) && strpos($_SERVER['HTTP_VIA'], 'akamai') !== false) {
   $_SERVER['HTTP_HOST']='www.greenpeace.org';
 }
 
-define('WP_SITEURL',  'https://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
-define('WP_HOME',     'https://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
+define('WP_SITEURL',  $protocol . '://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
+define('WP_HOME',     $protocol . '://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
 
 define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
@@ -30,10 +38,6 @@ define('DISALLOW_FILE_MODS', true );
 define('FORCE_SSL_ADMIN', true);
 {{ end }}
 
-/* Respect upstream SSL termination headers */
-if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
-    $_SERVER['HTTPS']='on';
-}
 
 /**
  * Authentication Unique Keys and Salts.
