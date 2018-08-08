@@ -125,8 +125,8 @@ function start_docker_compose {
   local endpoint="${2:-http://localhost:80}"
   local container="${3:-$(get_container_name)}"
 
-  # Wait (default: 1 = 1 minute, retrying every 1s
-  local loop=${4:-1}
+  # Wait (default: 5 = 5 minutes, retrying every 1s
+  local loop=${4:-5}
   local interval=1
 
   docker-compose --no-ansi -p "${BATS_IMAGE//[^[:alnum:]_]/}" -f "${compose_file}" down
