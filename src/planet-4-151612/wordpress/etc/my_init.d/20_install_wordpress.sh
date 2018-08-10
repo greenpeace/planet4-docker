@@ -35,7 +35,7 @@ function get_num_files_exist() {
 #
 function create_source_directories() {
   [[ -e "${PUBLIC_PATH}" ]] && return 0
-  echo "Creating source directory: ${PUBLIC_PATH}"
+  _good "Creating source directory: ${PUBLIC_PATH}"
   mkdir -p "${PUBLIC_PATH}"
 }
 # ==============================================================================
@@ -50,7 +50,7 @@ function delete_source_directories() {
 # touch_install_lock()
 #
 function touch_install_lock() {
-  [[ ! -e "${SOURCE_PATH}" ]] && echo "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
+  [[ ! -e "${SOURCE_PATH}" ]] && _good "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
   _good "Creating install lock file: ${install_lock}"
   true > "${install_lock}"
 }
