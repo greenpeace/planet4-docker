@@ -216,10 +216,19 @@ composer_exec="composer --profile -vv --no-ansi"
 #   $composer_exec update
 # fi
 
-if [[ ! -d "${SOURCE_PATH}/vendor" ]]
+if [[ $APP_ENV =~ develop ]]
+then
+  composer_install_flags=" --prefer-dist"
+else
+  composer_install_flags=" --prefer-dist --no-dev"
+fi
+
+cd "${SOURCE_PATH}"
+
+if [[ ! -d "vendor" ]]
 then
   _good "Performing composer install..."
-  $composer_exec install
+  $composer_exec install $composer_install_flags
 fi
 
 $composer_exec download:wordpress
