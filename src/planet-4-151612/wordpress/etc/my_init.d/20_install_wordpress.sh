@@ -165,26 +165,37 @@ _good "WP_DB_PREFIX           ${WP_DB_PREFIX}"
 # ==============================================================================
 
 _good "Installing Wordpress for site ${WP_HOSTNAME:-$APP_HOSTNAME} ..."
-_good "From: ${GIT_SOURCE}:${GIT_REF}"
+
+function checkout() {
+  set -x
+  git init
+  git remote add origin $1
+  git fetch --tags
+  # git reset $2
+  git checkout $2 -f
+  set +x
+  _good "git log -1"
+  git log -1
+  echo
+  ls -al .
+}
 
 # Ensure the expected composer.json file is found
 if [[ ! -f "${SOURCE_PATH}/composer.json" ]]
 then
-  echo "Composer not found: ${SOURCE_PATH}/composer.json"
-  cd /app
-  rm -fr "${SOURCE_PATH}" "${SOURCE_PATH:?}/*" || true
-  git clone "${GIT_SOURCE}" "${SOURCE_PATH}"
+  _good "Checkout: ${GIT_SOURCE}:${GIT_REF}"
+  mkdir -p "${SOURCE_PATH}"
   cd "${SOURCE_PATH}"
-  git checkout "${GIT_REF}"
+  checkout ${GIT_SOURCE} ${GIT_REF}
 fi
 
-if [[ ! -z "${MERGE_SOURCE}" ]] && [[ ! -f "${SOURCE_PATH}/composer-local.json" ]]
+if [[ ! -z "${MERGE_SOURCE}" ]]
 then
-  _good "Merge: ${MERGE_SOURCE}:${MERGE_REF}"
-  git clone ${MERGE_SOURCE} /app/merge
+  _good "Merge:   ${MERGE_SOURCE}:${MERGE_REF}"
+  mkdir -p /app/merge
   cd /app/merge
-  git checkout "${MERGE_REF}"
-  rsync -avz . "${SOURCE_PATH}"
+  checkout ${MERGE_SOURCE} ${MERGE_REF}
+  rsync -av --exclude=.* . "${SOURCE_PATH}"
 fi
 
 composer_exec="composer --profile -vv --no-ansi"
