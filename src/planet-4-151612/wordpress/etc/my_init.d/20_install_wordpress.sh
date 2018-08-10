@@ -112,8 +112,19 @@ then
   delete_source_directories
 elif [[ "${num_files}" -gt 0 ]]
 then
-  _good "${num_files} files found in ${PUBLIC_PATH} folder:"
-  ls -al ${PUBLIC_PATH}
+  _good "${num_files} files found in ${PUBLIC_PATH} folder"
+
+  if [[ "${OVERWRITE_EXISTING_FILES,,}" = "true" ]] || [[ "${DELETE_EXISTING_FILES,,}" = "true" ]]
+  then
+    _good "Continuing with installation ..."
+  else
+    _good "Non-default files found in directory, and OVERWRITE_EXISTING_FILES != true"
+    _good "Exiting installation script ..."
+    # FIXME this is a hack!
+    # But not worth exploring the fix at this point.
+    clear_install_lock
+    exit 0
+  fi
 fi
 
 # Clean up if we're starting fresh
