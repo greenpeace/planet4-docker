@@ -50,7 +50,6 @@ echo "Config file: $TEST_BASE_DIR/../${CONFIG_FILE:-config.default}"
 . "$TEST_BASE_DIR/../${CONFIG_FILE:-config.default}"
 
 # Include base project helper functions
-# shellcheck source=/dev/null
 . "${TEST_BASE_DIR}/_helpers"
 
 type -P bats >/dev/null 2>&1 || fatal "bats not found in path"
@@ -74,9 +73,10 @@ fi
 
 echo "Test output directory: $TEST_OUTPUT_DIR"
 
+echo "--- self.tap"
 # Run self tests
 set +u
-bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
+time bats "${bats_switches[@]}" "${TEST_BASE_DIR}/self" | tee "${TEST_OUTPUT_DIR}/self.tap"
 set -u
 
 # Ensure tap-xunit exists in path
@@ -94,7 +94,7 @@ fi
 shopt -s nullglob
 
 test_folders=${TEST_FOLDERS:-"${TEST_BASE_DIR}"/src/${GOOGLE_PROJECT_ID}/}
-echo "Test folders: $test_folders"
+echo "Test folders: ${test_folders//$(pwd)/}"
 
 for project_dir in $test_folders
 do
@@ -110,7 +110,7 @@ do
   if [[ -f "${project_dir}test_order" ]]
   then
     # read test order from file
-    echo "Using test order from file: ${project_dir}test_order"
+    echo "Using test order from file: ${project_dir//$(pwd)/}test_order"
     while read -r line; do
       echo " - ${line}"
       # array push line to test_order
@@ -122,14 +122,13 @@ do
     test_order=( "${project_dir}"*/ )
   fi
 
-  echo "${test_order[@]}"
-
   for image_dir in "${test_order[@]}"
   do
     # Ensure the directory contains a 'tests' subdirectory
     if [[ ! -d "${image_dir}tests" ]]
     then
-      warning "${image_dir}tests contains no tests!"
+      echo "--- $(basename "${image_dir}")"
+      warning "${image_dir}tests not found"
       continue
     fi
 
@@ -143,9 +142,10 @@ do
 
     filename="$(basename "${project_dir}")_$(basename "${image_dir}")"
 
+    echo "--- $(basename "${image_dir}").tap"
     # Run bats tests, piping output to file
     set +u
-    bats "${bats_switches[@]}" "${image_dir}tests" | tee "${TEST_OUTPUT_DIR}/${filename}.tap"
+    time bats "${bats_switches[@]}" "${image_dir}tests" | tee "${TEST_OUTPUT_DIR}/${filename}.tap"
     set -u
 
     # Ensure tap-xunit exists in path
@@ -159,6 +159,7 @@ do
 
     # Replace name attribute with something meaningful
     sed -i -e "s:name=\"Default\":name=\"${image}\":" "${TEST_OUTPUT_DIR}/${filename}.xml"
+
   done
 
   # Ensure junit-merge exists in path
