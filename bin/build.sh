@@ -175,7 +175,7 @@ then
     # Specify which Dockerfile|README.md variables we want to change
     # shellcheck disable=SC2016
     envvars=($(get_var_array "${GIT_ROOT_DIR}/config.default"))
-    [[ ! -z "${CONFIG_FILE}" ]] && envvars+=($(get_var_array "${GIT_ROOT_DIR}/${CONFIG_FILE}"))
+    [[ ! -z "${CONFIG_FILE}" ]] && envvars+=($(get_var_array "${CONFIG_FILE}"))
 
     envvars_string="$(printf "%s:" "${envvars[@]}")"
     envvars_string="${envvars_string%:}"
