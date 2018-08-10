@@ -128,11 +128,10 @@ then
 fi
 
 # Clean up if we're starting fresh
-if [[ "${OVERWRITE_FILES,,}" = "true" ]]
+if [[ "${DELETE_EXISTING_FILES,,}" = "true" ]]
 then
     _good "Deleting source directories..."
     delete_source_directories
-    touch_install_lock
 fi
 
 create_source_directories

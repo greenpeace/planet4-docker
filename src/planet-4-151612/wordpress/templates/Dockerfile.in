@@ -16,12 +16,13 @@ WORKDIR ${SOURCE_PATH}
 
 ENV \
     APP_HOSTPATH="" \
+    DELETE_EXISTING_FILES="false" \
     GIT_REF="master" \
     GIT_SOURCE="https://github.com/greenpeace/planet4-base" \
     INSTALL_WORDPRESS="true" \
     MERGE_REF="" \
     MERGE_SOURCE="" \
-    OVERWRITE_FILES="false" \
+    OVERWRITE_EXISTING_FILES="false" \
     PHP_CLEAR_ENV="yes" \
     WP_ADMIN_EMAIL="${MAINTAINER_EMAIL}" \
     WP_ADMIN_NAME="" \
