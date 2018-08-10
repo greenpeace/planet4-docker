@@ -22,12 +22,7 @@ do
   fi
 done
 
-set +e
-wp core is-installed
-is_installed=$?
-set -e
-
-if [[ $is_installed -ne 0 ]]
+if ! wp core is-installed
 then
   _good "Installing Wordpress..."
   wp core install --url="${WP_HOSTNAME}" --title="$WP_TITLE" --admin_user="${WP_ADMIN_USER:-admin}" --admin_email="${WP_ADMIN_EMAIL:-$MAINTAINER_EMAIL}"
