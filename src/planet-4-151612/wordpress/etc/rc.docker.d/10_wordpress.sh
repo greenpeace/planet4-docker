@@ -44,7 +44,12 @@ _good "Wordpress v$(wp core version) installed"
 
 # Resets database options to environment variable, such as:
 # siteurl, home, blogname etc
-# [[ ${WP_SET_OPTIONS_ON_BOOT} = "true" ]] && /app/bin/set_wp_options.sh
+if [[ ${WP_SET_OPTIONS_ON_BOOT} = "true" ]]
+then
+  /app/bin/set_wp_options.sh
+else
+  _good "WP_SET_OPTIONS_ON_BOOT is false, skip setting WP options on boot..."
+fi
 
 if [[ ${WP_REDIS_ENABLED} = "true" ]]
 then
