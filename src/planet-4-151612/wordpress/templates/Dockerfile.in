@@ -46,7 +46,7 @@ ENV \
     WP_DEFAULT_CONTENT="true" \
     WP_DESCRIPTION="Greenpeace" \
     WP_EXTRA_CONFIG="" \
-    WP_FORCE_SSL_ADMIN="false" \
+    WP_FORCE_SSL_ADMIN="true" \
     WP_HOSTNAME="" \
     WP_LOCALE="en_AU" \
     WP_LOGGED_IN_KEY="" \
