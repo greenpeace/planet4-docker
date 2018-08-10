@@ -80,6 +80,16 @@ function sendBuildRequest() {
   popd
 }
 
+# Reads key-value file as functionargument, extracts and wraps key with ${..} for use in envsubst
+function get_var_array() {
+  set -eu
+  local file
+  file="$1"
+  declare -a var_array
+  var_array=( $(grep '=' "${file}" | awk -F '=' '{if ($0!="" && $0 !~ /#/) print $1}' | sed -e "s/^/\"\${/" | sed -e "s/$/}\" \\\/" | tr -s '}') )
+  echo "${var_array[@]}"
+}
+
 # ----------------------------------------------------------------------------
 # If the project has a custom build order, use that
 
@@ -164,27 +174,8 @@ then
 
     # Specify which Dockerfile|README.md variables we want to change
     # shellcheck disable=SC2016
-    envvars=(
-      '${APP_ENV}' \
-      '${APPLICATION_NAME}' \
-      '${BASEIMAGE_VERSION}' \
-      '${BRANCH_NAME}' \
-      '${BUILD_NAMESPACE}' \
-      '${CONTAINER_TIMEZONE}' \
-      '${DOCKERIZE_VERSION}' \
-      '${GOOGLE_PROJECT_ID}' \
-      '${MAINTAINER_EMAIL}' \
-      '${MAINTAINER_NAME}' \
-      '${NGX_PAGESPEED_RELEASE}' \
-      '${NGX_PAGESPEED_VERSION}' \
-      '${OPENRESTY_SOURCE}' \
-      '${OPENRESTY_VERSION}' \
-      '${OPENSSL_VERSION}' \
-      '${PHP_MAJOR_VERSION}' \
-      '${SOURCE_PATH}' \
-      '${PUBLIC_PATH}' \
-      '${SOURCE_VERSION}' \
-    )
+    envvars=($(get_var_array "${GIT_ROOT_DIR}/config.default"))
+    [[ ! -z "${CONFIG_FILE}" ]] && envvars+=($(get_var_array "${GIT_ROOT_DIR}/${CONFIG_FILE}"))
 
     envvars_string="$(printf "%s:" "${envvars[@]}")"
     envvars_string="${envvars_string%:}"
