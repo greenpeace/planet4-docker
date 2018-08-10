@@ -18,7 +18,7 @@ This container is configurable via a plethora of environment variables, some of 
 
 var | default | description
 --- | ------- | -----------
-APP_ENV |  | production, develop
+APP_ENV | ${APP_ENV} | production, develop
 APP_GID | 1000 | group_id
 APP_GROUP | app | nginx and php5-fpm group
 APP_HOSTNAME | `hostname -f` |  hostname of application

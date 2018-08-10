@@ -1,7 +1,7 @@
 # Greenpeace P4 Docker application
 # Image: gcr.io/planet-4-151612/wordpress:develop
-# Build: build-1089
-# Date:  Wed Aug  8 04:22:16 UTC 2018
+# Build: build-1124
+# Date:  Fri Aug 10 07:35:18 UTC 2018
 # ------------------------------------------------------------------------
 # DO NOT MAKE CHANGES HERE
 # This file is built automatically from ./templates/Dockerfile.in
@@ -12,7 +12,7 @@ FROM gcr.io/planet-4-151612/php-fpm:develop
 LABEL authors="Raymond Walker <raymond.walker@greenpeace.org>"
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends rsync git mysql-client && \
+    apt-get install -y --no-install-recommends rsync git mysql-client unzip && \
     apt-get clean && \
     rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     curl --retry 5 -o /app/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
@@ -25,12 +25,13 @@ WORKDIR /app/source
 
 ENV \
     APP_HOSTPATH="" \
+    DELETE_EXISTING_FILES="false" \
     GIT_REF="master" \
-    GIT_SOURCE="https://github.com/greenpeace/planet4-base" \
+    GIT_SOURCE="https://github.com/greenpeace/planet4-base-fork" \
     INSTALL_WORDPRESS="true" \
     MERGE_REF="" \
     MERGE_SOURCE="" \
-    OVERWRITE_FILES="false" \
+    OVERWRITE_EXISTING_FILES="false" \
     PHP_CLEAR_ENV="yes" \
     WP_ADMIN_EMAIL="raymond.walker@greenpeace.org" \
     WP_ADMIN_NAME="" \
@@ -54,7 +55,7 @@ ENV \
     WP_DEFAULT_CONTENT="true" \
     WP_DESCRIPTION="Greenpeace" \
     WP_EXTRA_CONFIG="" \
-    WP_FORCE_SSL_ADMIN="false" \
+    WP_FORCE_SSL_ADMIN="true" \
     WP_HOSTNAME="" \
     WP_LOCALE="en_AU" \
     WP_LOGGED_IN_KEY="" \
