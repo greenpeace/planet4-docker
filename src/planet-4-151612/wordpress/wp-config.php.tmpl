@@ -21,6 +21,11 @@ if (isset($_SERVER['HTTP_VIA']) && strpos($_SERVER['HTTP_VIA'], 'akamai') !== fa
   $_SERVER['HTTP_HOST']='www.greenpeace.org';
 }
 
+if (!isset($_SERVER['HTTP_HOST'])) {
+  # Circumvent HTTP_HOST array key not set messages when using wp-cli
+  $_SERVER['HTTP_HOST']='';
+}
+
 define('WP_SITEURL',  $protocol . '://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
 define('WP_HOME',     $protocol . '://' . $_SERVER['HTTP_HOST'] . '/{{ .Env.APP_HOSTPATH }}');
 

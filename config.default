@@ -32,6 +32,10 @@ CONTAINER_TIMEZONE=UTC
 
 # ============================================================================
 
+# Current build tag (used in child images of the base image)
+# Value intentionally blank - computed
+SOURCE_VERSION=
+
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases

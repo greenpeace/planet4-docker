@@ -4,4 +4,6 @@ MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
 ENTRYPOINT echo $@
 
-CMD "World"
+ENV EXAMPLE_VAR="${EXAMPLE_VAR}"
+
+CMD "World: ${EXAMPLE_VAR}"

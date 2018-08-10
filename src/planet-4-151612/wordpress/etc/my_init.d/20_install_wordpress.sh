@@ -35,7 +35,7 @@ function get_num_files_exist() {
 #
 function create_source_directories() {
   [[ -e "${PUBLIC_PATH}" ]] && return 0
-  echo "Creating source directory: ${PUBLIC_PATH}"
+  _good "Creating source directory: ${PUBLIC_PATH}"
   mkdir -p "${PUBLIC_PATH}"
 }
 # ==============================================================================
@@ -50,7 +50,7 @@ function delete_source_directories() {
 # touch_install_lock()
 #
 function touch_install_lock() {
-  [[ ! -e "${SOURCE_PATH}" ]] && echo "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
+  [[ ! -e "${SOURCE_PATH}" ]] && _good "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
   _good "Creating install lock file: ${install_lock}"
   true > "${install_lock}"
 }
@@ -112,16 +112,26 @@ then
   delete_source_directories
 elif [[ "${num_files}" -gt 0 ]]
 then
-  _good "${num_files} files found in ${PUBLIC_PATH} folder:"
-  ls -al ${PUBLIC_PATH}
+  _good "${num_files} files found in ${PUBLIC_PATH} folder"
+
+  if [[ "${OVERWRITE_EXISTING_FILES,,}" = "true" ]] || [[ "${DELETE_EXISTING_FILES,,}" = "true" ]]
+  then
+    _good "Continuing with installation ..."
+  else
+    _good "Non-default files found in directory, and OVERWRITE_EXISTING_FILES != true"
+    _good "Exiting installation script ..."
+    # FIXME this is a hack!
+    # But not worth exploring the fix at this point.
+    clear_install_lock
+    exit 0
+  fi
 fi
 
 # Clean up if we're starting fresh
-if [[ "${OVERWRITE_FILES,,}" = "true" ]]
+if [[ "${DELETE_EXISTING_FILES,,}" = "true" ]]
 then
     _good "Deleting source directories..."
     delete_source_directories
-    touch_install_lock
 fi
 
 create_source_directories
@@ -165,26 +175,37 @@ _good "WP_DB_PREFIX           ${WP_DB_PREFIX}"
 # ==============================================================================
 
 _good "Installing Wordpress for site ${WP_HOSTNAME:-$APP_HOSTNAME} ..."
-_good "From: ${GIT_SOURCE}:${GIT_REF}"
+
+function checkout() {
+  set -x
+  git init
+  git remote add origin $1
+  git fetch --tags
+  # git reset $2
+  git checkout $2 -f
+  set +x
+  _good "git log -1"
+  git log -1
+  echo
+  ls -al .
+}
 
 # Ensure the expected composer.json file is found
 if [[ ! -f "${SOURCE_PATH}/composer.json" ]]
 then
-  echo "Composer not found: ${SOURCE_PATH}/composer.json"
-  cd /app
-  rm -fr "${SOURCE_PATH}" "${SOURCE_PATH:?}/*" || true
-  git clone "${GIT_SOURCE}" "${SOURCE_PATH}"
+  _good "Checkout: ${GIT_SOURCE}:${GIT_REF}"
+  mkdir -p "${SOURCE_PATH}"
   cd "${SOURCE_PATH}"
-  git checkout "${GIT_REF}"
+  checkout ${GIT_SOURCE} ${GIT_REF}
 fi
 
-if [[ ! -z "${MERGE_SOURCE}" ]] && [[ ! -f "${SOURCE_PATH}/composer-local.json" ]]
+if [[ ! -z "${MERGE_SOURCE}" ]]
 then
-  _good "Merge: ${MERGE_SOURCE}:${MERGE_REF}"
-  git clone ${MERGE_SOURCE} /app/merge
+  _good "Merge:   ${MERGE_SOURCE}:${MERGE_REF}"
+  mkdir -p /app/merge
   cd /app/merge
-  git checkout "${MERGE_REF}"
-  rsync -avz . "${SOURCE_PATH}"
+  checkout ${MERGE_SOURCE} ${MERGE_REF}
+  rsync -av --exclude=.* . "${SOURCE_PATH}"
 fi
 
 composer_exec="composer --profile -vv --no-ansi"
@@ -195,10 +216,19 @@ composer_exec="composer --profile -vv --no-ansi"
 #   $composer_exec update
 # fi
 
-if [[ ! -d "${SOURCE_PATH}/vendor" ]]
+if [[ $APP_ENV =~ develop ]]
+then
+  composer_install_flags=" --prefer-dist"
+else
+  composer_install_flags=" --prefer-dist --no-dev"
+fi
+
+cd "${SOURCE_PATH}"
+
+if [[ ! -d "vendor" ]]
 then
   _good "Performing composer install..."
-  $composer_exec install
+  $composer_exec install $composer_install_flags
 fi
 
 $composer_exec download:wordpress
