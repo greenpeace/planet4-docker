@@ -55,7 +55,8 @@ location /redis-store {
 # pass the PHP scripts to FastCGI
 location ~ \.php$ {
   {{ if eq .Env.REDIS_FASTCGI_CACHE_ENABLED "true" }}
-  set $key "nginx-cache:$scheme$request_method$host$request_uri";
+
+  set $key "nginx-cache:$real_scheme$request_method$host$request_uri";
 
   srcache_fetch_skip $skip_cache;
   srcache_store_skip $skip_cache;
