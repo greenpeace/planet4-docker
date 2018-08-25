@@ -258,9 +258,8 @@ jobs:
             branch: develop
           command: trigger-build.sh $repo $branch
 
-workflows:
-  version: 2
-  build-branch:
+workflow-references:
+  branch_jobs: &branch_jobs
     jobs:
       - build:
           context: org-global
@@ -309,41 +308,44 @@ workflows:
           filters:
             branches:
               ignore: master
-      - hold-promote:
-          type: approval
-          requires:
-            - test-openresty
-            - test-php-fpm
-            - test-wordpress
-            - scan-openresty
-            - scan-php-fpm
-            - scan-wordpress
-          filters:
-            branches:
-              ignore: master
-      - notify-promote:
-          context: org-global
-          requires:
-            - test-openresty
-            - test-php-fpm
-            - test-wordpress
-            - scan-openresty
-            - scan-php-fpm
-            - scan-wordpress
-          filters:
-            branches:
-              ignore: master
+      # - hold-promote:
+      #     type: approval
+      #     requires:
+      #       - test-openresty
+      #       - test-php-fpm
+      #       - test-wordpress
+      #       - scan-openresty
+      #       - scan-php-fpm
+      #       - scan-wordpress
+      #     filters:
+      #       branches:
+      #         ignore: master
+      # - notify-promote:
+      #     context: org-global
+      #     requires:
+      #       - test-openresty
+      #       - test-php-fpm
+      #       - test-wordpress
+      #       - scan-openresty
+      #       - scan-php-fpm
+      #       - scan-wordpress
+      #     filters:
+      #       branches:
+      #         ignore: master
       - promote:
           context: org-global
           requires:
-            - hold-promote
-            - notify-promote
+            - test-openresty
+            - test-php-fpm
+            - test-wordpress
+            - scan-openresty
+            - scan-php-fpm
+            - scan-wordpress
           filters:
             branches:
               ignore: master
 
-  # Builds releases tagged with /v*/ on any branch
-  build-tag:
+  tag_jobs: &tag_jobs
     jobs:
       - build:
           context: org-global
@@ -430,3 +432,21 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
+
+workflows:
+  version: 2
+  nightly-branch:
+    <<: *branch_jobs
+    triggers:
+     - schedule:
+         cron: "0 0 * * *"
+         filters:
+           branches:
+             only:
+               - develop
+
+  build-branch:
+    <<: *branch_jobs
+
+  build-tag:
+    <<: *tag_jobs
