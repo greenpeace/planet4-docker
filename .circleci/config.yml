@@ -308,35 +308,39 @@ workflow-references:
           filters:
             branches:
               ignore: master
-      - hold-promote:
-          type: approval
-          requires:
-            - test-openresty
-            - test-php-fpm
-            - test-wordpress
-            - scan-openresty
-            - scan-php-fpm
-            - scan-wordpress
-          filters:
-            branches:
-              ignore: master
-      - notify-promote:
-          context: org-global
-          requires:
-            - test-openresty
-            - test-php-fpm
-            - test-wordpress
-            - scan-openresty
-            - scan-php-fpm
-            - scan-wordpress
-          filters:
-            branches:
-              ignore: master
+      # - hold-promote:
+      #     type: approval
+      #     requires:
+      #       - test-openresty
+      #       - test-php-fpm
+      #       - test-wordpress
+      #       - scan-openresty
+      #       - scan-php-fpm
+      #       - scan-wordpress
+      #     filters:
+      #       branches:
+      #         ignore: master
+      # - notify-promote:
+      #     context: org-global
+      #     requires:
+      #       - test-openresty
+      #       - test-php-fpm
+      #       - test-wordpress
+      #       - scan-openresty
+      #       - scan-php-fpm
+      #       - scan-wordpress
+      #     filters:
+      #       branches:
+      #         ignore: master
       - promote:
           context: org-global
           requires:
-            - hold-promote
-            - notify-promote
+            - test-openresty
+            - test-php-fpm
+            - test-wordpress
+            - scan-openresty
+            - scan-php-fpm
+            - scan-wordpress
           filters:
             branches:
               ignore: master
