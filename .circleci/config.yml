@@ -439,7 +439,7 @@ workflows:
     <<: *branch_jobs
     triggers:
      - schedule:
-         cron: "0 0 * * *"
+         cron: "0 22 * * *"
          filters:
            branches:
              only:
