@@ -158,7 +158,7 @@ then
   _notice "Generating files from templates:"
   for i in "${build_order[@]}"
   do
-    if [ ! -d ${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/$i ]
+    if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/$i" ]
     then
       continue
     fi
