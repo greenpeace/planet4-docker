@@ -93,12 +93,12 @@ fi
 
 shopt -s nullglob
 
-test_folders=${TEST_FOLDERS:-"${TEST_BASE_DIR}"/src/${GOOGLE_PROJECT_ID}/}
-echo "Test folders: ${test_folders//$(pwd)/}"
+test_folders="${TEST_FOLDERS:-${TEST_BASE_DIR}/src/${GOOGLE_PROJECT_ID}/}"
+>&2 echo "Test folders: '${test_folders//"$(pwd)"/}'"
 
-for project_dir in $test_folders
+for project_dir in ./${test_folders//"$(pwd)"/}
 do
-  if [ ! -d $project_dir ]
+  if [ ! -d "$project_dir" ]
   then
     error "Test folder not found: $project_dir"
     exit 1
