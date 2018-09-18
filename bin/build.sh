@@ -71,7 +71,7 @@ function sendBuildRequest() {
 
   pushd "$dir" && \
   # Submit the build
-  time "${gcloud_binary}" container builds submit \
+  time "${gcloud_binary}" builds submit \
     --verbosity="${verbosity:-warning}" \
     --timeout="${BUILD_TIMEOUT}" \
     --config "$dir/cloudbuild.yaml" \

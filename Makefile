@@ -10,8 +10,12 @@ TEST_FOLDERS ?=
 
 .DEFAULT_GOAL := all
 
-all : clean build test
+all : pretest clean build test
 .PHONY : all
+
+.PHONY: pretest
+pretest:
+		find . -type f -name '*.yaml' | xargs yamllint
 
 .PHONY : clean
 clean :

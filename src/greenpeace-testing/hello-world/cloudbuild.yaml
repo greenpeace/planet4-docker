@@ -1,14 +1,15 @@
+---
 steps:
-- id: 'hello-world'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--build-arg'
-    - 'MICROSCANNER_TOKEN=${_MICROSCANNER_TOKEN}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_REVISION_TAG}'
-    - '.'
+  - id: 'hello-world'
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'MICROSCANNER_TOKEN=${_MICROSCANNER_TOKEN}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_TAG}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_BUILD_NUM}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/hello-world:${_REVISION_TAG}'
+      - '.'
 
 images:
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/hello-world:${_BUILD_TAG}'
