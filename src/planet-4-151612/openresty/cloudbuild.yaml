@@ -1,12 +1,13 @@
+---
 steps:
-- id: 'openresty'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_REVISION_TAG}'
-    - '.'
+  - id: 'openresty'
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_BUILD_TAG}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_BUILD_NUM}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/openresty:${_REVISION_TAG}'
+      - '.'
 
 images:
   - '${_BUILD_NAMESPACE}/$PROJECT_ID/openresty:${_BUILD_TAG}'

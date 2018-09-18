@@ -1,12 +1,13 @@
+---
 steps:
-- id: 'wordpress'
-  name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
-    - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'
-    - '.'
+  - id: 'wordpress'
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_NUM}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_REVISION_TAG}'
+      - '.'
 
 images:
   - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/wordpress:${_BUILD_TAG}'
