@@ -44,9 +44,9 @@ function teardown {
   echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.index.php"
 }
 
-@test "service errors rendering non-existent file" {
+@test "service errors 404 on non-existent file" {
   run test_fastcgi_response "/app/source/public/error.php"
-  [[ $status -ne 0 ]]
+  [[ $output =~ "Status: 404 Not Found" ]]
   echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.error.php"
 }
 
