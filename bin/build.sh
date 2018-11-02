@@ -249,9 +249,15 @@ then
     else
       _fatal "Dockerfile not found. Tried:\n - ./src/${GOOGLE_PROJECT_ID}/${image}/Dockerfile\n - ./sites/${GOOGLE_PROJECT_ID}/${image}/Dockerfile"
     fi
-
     _build "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG} ..."
-    time docker build \
+
+    docker="docker build"
+    if grep -q MICROSCANNER_TOKEN "$build_dir/Dockerfile"
+    then
+      docker="$docker --build-arg 'MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN'"
+    fi
+
+    time $docker \
       -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" \
       -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG}" \
       "${build_dir}"
