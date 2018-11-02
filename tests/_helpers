@@ -2,7 +2,7 @@
 set -ae
 
 function finish {
-  set +ex
+  { set +ex; } 2>/dev/null
 }
 trap finish EXIT
 
@@ -43,6 +43,15 @@ function store_output {
   echo "$output" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
   echo -e "=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
   PS4=''
+}
+
+run_docker_binary() {
+  trap finish EXIT
+  image=${1}
+  shift
+  args=$*
+  set -exu
+  docker run --rm -ti "${image}" "${args}"
 }
 
 function print_docker_env() {
