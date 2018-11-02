@@ -6,8 +6,8 @@ set -e
 # This simplifies editing on the host via volumes, or securing volumes from host
 
 
-_good "user:   ${APP_USER}"
-_good "group:  ${APP_GROUP}"
+# _good "user:   ${APP_USER}"
+# _good "group:  ${APP_GROUP}"
 
 # Regex to detect an integer
 R_NUMBER='^[0-9]+$'
@@ -42,7 +42,7 @@ then
 else
 
 	# Create new group
-	_good "groupadd ${APP_GROUP}"
+	# _good "groupadd ${APP_GROUP}"
 	groupadd -r -g "${APP_GID}" "${APP_GROUP}"
 
 fi
@@ -74,7 +74,7 @@ then
 
 else
 	# Create new user
- 	_good "useradd ${APP_USER}"
+ 	# _good "useradd ${APP_USER}"
 	useradd -r -s /usr/sbin/nologin -u ${APP_UID} -g ${APP_GROUP} ${APP_USER}
 fi
 
