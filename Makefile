@@ -10,7 +10,7 @@ TEST_FOLDERS ?=
 
 .DEFAULT_GOAL := all
 
-all : pretest clean build test
+all : build test
 .PHONY : all
 
 .PHONY: pretest
@@ -25,7 +25,7 @@ clean :
 pull :
 		pushd bin >/dev/null; ./build.sh -p; popd > /dev/null
 
-.PHONY : build
+.PHONY : pretest build
 build :
 		bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST) || exit 1
 
