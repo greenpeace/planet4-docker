@@ -24,9 +24,7 @@ chmod 755 /etc/service/*/run
 # 	BOOT
 # =============================================================================
 
-env | sort
-
-_good "$(date) -" "exec $*"
+# _good "$(date) -" "exec $*"
 
 # Default Docker CMD will be /sbin/my_init
 if [[ "$1" = "/sbin/my_init" ]]
