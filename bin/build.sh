@@ -54,7 +54,7 @@ function sendBuildRequest() {
       do
         if [[ "${sub_array[$j]}" = "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" ]]
         then
-          unset sub_array[$j]
+          unset "sub_array[$j]"
         fi
       done
     fi
