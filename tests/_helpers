@@ -19,6 +19,11 @@ function fatal {
   exit 1
 }
 
+function get_container_id {
+  # Guesses correct container name, returns associated container ID
+  docker ps | grep "${BATS_IMAGE//[^[:alnum:]_]/}" | head -n1 | cut -d' ' -f1
+}
+
 function get_container_name {
   # Removes any non-alphanumeric or '_' characters,
   # in an attempt to match docker-compose service naming convention
@@ -80,7 +85,7 @@ function curl_check_response_regex {
   trap finish EXIT
   local regex=${1:-"OK"}
   local endpoint=${2:-"http://localhost:80"}
-  local container=${3:-$(get_container_name)}
+  local container=${3:-$(get_container_id)}
 
 
   local interval=1
@@ -103,7 +108,7 @@ function curl_check_status_code {
   trap finish EXIT
   local status_code=${1:-200}
   local endpoint=${2:-"http://localhost:80"}
-  local container=${3:-$(get_container_name)}
+  local container=${3:-$(get_container_id)}
 
   local interval=1
   local loop=${4:-60}
@@ -132,7 +137,7 @@ function start_docker_compose {
   # [[ -z "$1" ]] && fatal "Container name not set"
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
   local endpoint="${2:-http://localhost:80}"
-  local container="${3:-$(get_container_name)}"
+  local container="${3:-$(get_container_id)}"
 
   # Wait (default: 5 = 5 minutes, retrying every 1s
   local loop=${4:-5}
