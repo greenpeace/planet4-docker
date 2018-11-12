@@ -251,16 +251,20 @@ then
     fi
     _build "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG} ..."
 
-    docker="docker build"
-    if grep -q MICROSCANNER_TOKEN "$build_dir/Dockerfile"
+    if grep -q '^ARG MICROSCANNER_TOKEN' "$build_dir/Dockerfile"
     then
-      docker="$docker --build-arg 'MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN'"
+      _notice "Microscanner detected"
+      time docker build \
+        --build-arg "MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN" \
+        -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" \
+        -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG}" \
+        "${build_dir}"
+    else
+      time docker build \
+        -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" \
+        -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG}" \
+        "${build_dir}"
     fi
-
-    time $docker \
-      -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" \
-      -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG}" \
-      "${build_dir}"
     echo
   done
 fi
