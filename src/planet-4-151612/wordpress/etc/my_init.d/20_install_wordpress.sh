@@ -183,7 +183,7 @@ function checkout() {
   git fetch --tags
   # git reset $2
   git checkout $2 -f
-  set +x
+  { set +x; } 2>/dev/null
   _good "git log -1"
   git log -1
   echo

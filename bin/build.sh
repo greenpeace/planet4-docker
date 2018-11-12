@@ -46,7 +46,7 @@ function sendBuildRequest() {
   for i in "${!sub_array[@]}"
   do
     # _MICROSCANNER_TOKEN is not present in all builds as an ARG
-    # Remove from the token from substitution data to prevent missing var error
+    # Remove the token from substitution data to prevent missing var error
     if ! grep -q "$(echo "${sub_array[$i]}" | cut -d'=' -f1)" "$dir/cloudbuild.yaml"
     then
       _notice "Removing _MICROSCANNER_TOKEN from substring replacement array"
@@ -54,7 +54,7 @@ function sendBuildRequest() {
       do
         if [[ "${sub_array[$j]}" = "_MICROSCANNER_TOKEN=${MICROSCANNER_TOKEN}" ]]
         then
-          unset sub_array[$j]
+          unset "sub_array[$j]"
         fi
       done
     fi
@@ -160,10 +160,11 @@ then
   do
     if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/$i" ]
     then
+      _warning "Directory not found: src/${GOOGLE_PROJECT_ID}/$i"
       continue
     fi
 
-    image=$(basename $i)
+    image=$(basename "$i")
 
     # Check the source directory exists and contains a Dockerfile template
     if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
@@ -251,16 +252,20 @@ then
     fi
     _build "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG} ..."
 
-    docker="docker build"
-    if grep -q MICROSCANNER_TOKEN "$build_dir/Dockerfile"
+    if grep -q '^ARG MICROSCANNER_TOKEN' "$build_dir/Dockerfile"
     then
-      docker="$docker --build-arg 'MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN'"
+      _notice "Microscanner detected"
+      time docker build \
+        --build-arg "MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN" \
+        -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" \
+        -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG}" \
+        "${build_dir}"
+    else
+      time docker build \
+        -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" \
+        -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG}" \
+        "${build_dir}"
     fi
-
-    time $docker \
-      -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${BUILD_TAG}" \
-      -t "${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}:${REVISION_TAG}" \
-      "${build_dir}"
     echo
   done
 fi

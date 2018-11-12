@@ -5,10 +5,11 @@ load env
 
 function setup {
   begin_output
+
   # Perform the build once only
   if [[ $BATS_TEST_NUMBER -eq 1 ]]
   then
-    "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -c "${TEST_CONFIG_FILE}"
+    "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -c "${TEST_CONFIG_FILE}" | tee -a "${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}/$BATS_IMAGE"
   fi
 }
 
