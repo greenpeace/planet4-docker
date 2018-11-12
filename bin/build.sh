@@ -46,7 +46,7 @@ function sendBuildRequest() {
   for i in "${!sub_array[@]}"
   do
     # _MICROSCANNER_TOKEN is not present in all builds as an ARG
-    # Remove from the token from substitution data to prevent missing var error
+    # Remove the token from substitution data to prevent missing var error
     if ! grep -q "$(echo "${sub_array[$i]}" | cut -d'=' -f1)" "$dir/cloudbuild.yaml"
     then
       _notice "Removing _MICROSCANNER_TOKEN from substring replacement array"
@@ -160,10 +160,11 @@ then
   do
     if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/$i" ]
     then
+      _warning "Directory not found: src/${GOOGLE_PROJECT_ID}/$i"
       continue
     fi
 
-    image=$(basename $i)
+    image=$(basename "$i")
 
     # Check the source directory exists and contains a Dockerfile template
     if [ ! -d "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates" ]; then
