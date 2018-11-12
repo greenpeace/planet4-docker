@@ -21,7 +21,7 @@ function teardown {
 
 @test "docker-compose start" {
   # Wait up to 10 minutes for the build to complete!
-  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 $(get_container_name) 20
+  run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 $(get_container_id) 20
   [[ "$status" -eq 0 ]]
 }
 
@@ -36,18 +36,18 @@ function teardown {
 }
 
 @test "responds on port 80 with status 200" {
-  run curl_check_status_code 200 http://localhost:80 $(get_container_name) 10
+  run curl_check_status_code 200 http://localhost:80 $(get_container_id) 10
   [[ $status -eq 0 ]]
   [[ $output -eq "200" ]]
 }
 
 @test "response contains string 'greenpeace'" {
-  run curl_check_response_regex "greenpeace" http://localhost:80 $(get_container_name) 5
+  run curl_check_response_regex "greenpeace" http://localhost:80 $(get_container_id) 5
   [[ $status -eq 0 ]]
 }
 
 @test "response does not contain string 'FNORDPTANGWIBBLE'" {
-  run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 $(get_container_name) 1
+  run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 $(get_container_id) 1
   [[ $status -ne 0 ]]
 }
 
