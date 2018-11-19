@@ -50,7 +50,7 @@ function store_output {
   PS4=''
 }
 
-run_docker_binary() {
+function run_docker_binary() {
   trap finish EXIT
   image=${1}
   shift
