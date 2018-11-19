@@ -251,7 +251,7 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
 
-      - run: trigger-build-api.sh git@github.com:greenpeace/planet4-base-fork.git develop
+      - run: trigger-build-api.sh planet4-base-fork develop
 
 workflow-references:
   branch_jobs: &branch_jobs
