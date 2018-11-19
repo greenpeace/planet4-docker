@@ -207,7 +207,7 @@ fi
 if [[ -z "${MICROSCANNER_TOKEN:-}" ]]
 then
   echo ""
-  >&2 echo "ERROR: Environment variable MIRCOSCANNER_TOKEN not set."
+  >&2 echo "ERROR: Environment variable MICROSCANNER_TOKEN not set."
   >&2 echo "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
   >&2 echo ""
   exit 1
