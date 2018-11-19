@@ -190,6 +190,7 @@ then
   set_vars "${CONFIG_FILE}"
 fi
 
+
 # ----------------------------------------------------------------------------
 # Configure build variables based on CircleCI environment vars
 
@@ -206,7 +207,7 @@ fi
 
 if [[ -z "${MICROSCANNER_TOKEN:-}" ]]
 then
-  echo ""
+  echo "ERROR: Environment variable MICROSCANNER_TOKEN not set."
   >&2 echo "ERROR: Environment variable MICROSCANNER_TOKEN not set."
   >&2 echo "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
   >&2 echo ""
