@@ -1,3 +1,4 @@
+---
 defaults: &defaults
   environment:
     GOOGLE_PROJECT_ID: planet-4-151612
@@ -5,7 +6,7 @@ defaults: &defaults
     BUILD_FLAGS: -r
   docker:
     - image: gcr.io/planet-4-151612/circleci-base:latest
-  working_directory:  /home/circleci/app
+  working_directory: /home/circleci/app
 
 version: 2
 
@@ -14,6 +15,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: make lint
       - run: activate-gcloud-account.sh
       - run: mkdir -p /tmp/workspace/var
       - setup_remote_docker
@@ -242,15 +244,8 @@ jobs:
             update-build-numbers.sh
 
   trigger-planet4:
-    docker:
-      - image: gcr.io/planet-4-151612/circleci-base:latest
-    working_directory:  /tmp/workspace
+    <<: *defaults
     steps:
-      - checkout
-
-      - attach_workspace:
-          at: /tmp/workspace
-
       - run: trigger-build-api.sh planet4-base-fork develop
 
 workflow-references:
@@ -338,7 +333,7 @@ workflow-references:
             - scan-wordpress
           filters:
             branches:
-              ignore: master
+              only: develop
 
   tag_jobs: &tag_jobs
     jobs:
@@ -433,12 +428,12 @@ workflows:
   nightly-branch:
     <<: *branch_jobs
     triggers:
-     - schedule:
-         cron: "0 21 * * *"
-         filters:
-           branches:
-             only:
-               - develop
+      - schedule:
+          cron: "0 21 * * *"
+          filters:
+            branches:
+              only:
+                - develop
 
   build-branch:
     <<: *branch_jobs

@@ -13,9 +13,10 @@ TEST_FOLDERS ?=
 all : build test
 .PHONY : all
 
-.PHONY: pretest
-pretest:
+.PHONY: lint
+lint:
 		find . -type f -name '*.yaml' | xargs yamllint
+		find . -type f -name '*.yml' | xargs yamllint
 
 .PHONY : clean
 clean :
@@ -25,9 +26,9 @@ clean :
 pull :
 		pushd bin >/dev/null; ./build.sh -p; popd > /dev/null
 
-.PHONY : pretest build
-build :
-		bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST) || exit 1
+.PHONY : build
+build : lint
+		bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
 
 .PHONY : test
 test :
