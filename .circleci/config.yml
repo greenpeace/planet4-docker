@@ -331,7 +331,7 @@ workflow-references:
             - scan-wordpress
           filters:
             branches:
-              ignore: master
+              only: develop
 
   tag_jobs: &tag_jobs
     jobs:
