@@ -26,9 +26,9 @@ clean :
 pull :
 		pushd bin >/dev/null; ./build.sh -p; popd > /dev/null
 
-build :
-		bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST) || exit 1
 .PHONY : build
+build : lint
+		bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
 
 .PHONY : test
 test :
