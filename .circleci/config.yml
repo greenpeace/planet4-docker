@@ -246,11 +246,6 @@ jobs:
       - image: gcr.io/planet-4-151612/circleci-base:latest
     working_directory:  /tmp/workspace
     steps:
-      - checkout
-
-      - attach_workspace:
-          at: /tmp/workspace
-
       - run: trigger-build-api.sh planet4-base-fork develop
 
 workflow-references:
