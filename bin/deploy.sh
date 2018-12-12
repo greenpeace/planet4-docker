@@ -46,7 +46,7 @@ shift $((OPTIND - 1))
 
 DEFAULT_CONFIG_FILE="./config.default"
 if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
- # shellcheck source=./config.default
+ # shellcheck disable=SC1090
  source ${DEFAULT_CONFIG_FILE}
 fi
 
@@ -75,9 +75,6 @@ shopt -s nullglob
 cd "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}" || exit 1
 SOURCE_DIRECTORY=(*/)
 shopt -u nullglob
-
-
-# Check if we're running on CircleCI
 
 gcloud auth configure-docker
 
