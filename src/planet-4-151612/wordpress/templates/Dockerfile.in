@@ -80,4 +80,4 @@ ENV \
     WP_STATELESS_MEDIA_SERVICE_ACCOUNT="" \
     WP_THEME="planet4-master-theme" \
     WP_TITLE="Greenpeace" \
-    WP_VERSION="latest"
+    WP_VERSION="4.9.8"
