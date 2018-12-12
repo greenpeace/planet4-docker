@@ -16,6 +16,7 @@ all : build test
 .PHONY: lint
 lint:
 		find . -type f -name '*.yaml' | xargs yamllint
+		find . -type f -name '*.yml' | xargs yamllint
 
 .PHONY : clean
 clean :
