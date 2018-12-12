@@ -242,9 +242,7 @@ jobs:
             update-build-numbers.sh
 
   trigger-planet4:
-    docker:
-      - image: gcr.io/planet-4-151612/circleci-base:latest
-    working_directory:  /tmp/workspace
+    <<: *defaults
     steps:
       - run: trigger-build-api.sh planet4-base-fork develop
 
