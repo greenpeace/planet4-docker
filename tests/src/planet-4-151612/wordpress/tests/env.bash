@@ -21,9 +21,15 @@ GIT_SOURCE="https://github.com/greenpeace/planet4-base-fork"
 GIT_BRANCH="develop"
 RANDOM_TITLE="Test-mcBkUCqAO3yCvAjy"
 WP_TITLE="Greenpeace - Testing"
+
+OPENRESTY_BUILD_TAG=${OPENRESTY_IMAGE_TAG:-$IMAGE_TAG}
+WORDPRESS_BUILD_TAG=${WORDPRESS_BUILD_TAG:-$IMAGE_TAG}
+
 export APP_HOSTNAME
 export DB_IMAGE
-export GIT_SOURCE
 export GIT_BRANCH
+export GIT_SOURCE
+export OPENRESTY_BUILD_TAG
 export RANDOM_TITLE
+export WORDPRESS_BUILD_TAG
 export WP_TITLE
