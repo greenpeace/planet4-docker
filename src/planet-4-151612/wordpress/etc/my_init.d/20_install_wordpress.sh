@@ -231,7 +231,7 @@ then
   $composer_exec install $composer_install_flags
 fi
 
-wp core download --version="${WP_VERSION}" --path="${PUBLIC_PATH}" "${WP_DOWNLOAD_FLAGS}"
+wp core download --version="${WP_VERSION}" --path="${PUBLIC_PATH}"  --force "${WP_DOWNLOAD_FLAGS}"
 
 $composer_exec copy:themes
 $composer_exec copy:assets
