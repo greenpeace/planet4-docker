@@ -205,7 +205,7 @@ then
   mkdir -p /app/merge
   cd /app/merge
   checkout ${MERGE_SOURCE} ${MERGE_REF}
-  rsync -av --exclude=.* . "${SOURCE_PATH}"
+  rsync -a --exclude=.* . "${SOURCE_PATH}"
 fi
 
 composer_exec="composer --profile -vv --no-ansi"
