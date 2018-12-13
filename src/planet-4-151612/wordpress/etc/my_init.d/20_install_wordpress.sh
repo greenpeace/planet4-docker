@@ -205,7 +205,7 @@ then
   mkdir -p /app/merge
   cd /app/merge
   checkout ${MERGE_SOURCE} ${MERGE_REF}
-  rsync -av --exclude=.* . "${SOURCE_PATH}"
+  rsync -a --exclude=.* . "${SOURCE_PATH}"
 fi
 
 composer_exec="composer --profile -vv --no-ansi"
@@ -231,7 +231,17 @@ then
   $composer_exec install $composer_install_flags
 fi
 
+set -x
+
+ls "$PUBLIC_PATH"
+
+[[ -e "$PUBLIC_PATH/index.php" ]] && rm -fr $PUBLIC_PATH/index.php
+
 chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
+
+ls -al "$PUBLIC_PATH"
+
+set +x
 
 wp core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
@@ -246,12 +256,8 @@ timeout=2
 i=0
 until dockerize -wait "tcp://${WP_DB_HOST}:${WP_DB_PORT}" -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
 do
-  let i=i+1
-  if [[ $i -gt $timeout ]]
-  then
-    _error "Timeout waiting for database to become ready"
-    exit 1
-  fi
+  i=$(( i + 1 ))
+  [[ $i -gt $timeout ]] && _error "Timeout waiting for database to become ready" && exit 1
 done
 
 _good "Database ready: ${WP_DB_HOST}:${WP_DB_PORT}"
