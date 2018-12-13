@@ -11,10 +11,10 @@ function teardown {
   store_output
 }
 
-@test "image exists" {
-  run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
-  [[ $status -eq 0 ]]
-}
+# @test "image exists" {
+#   run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
+#   [[ $status -eq 0 ]]
+# }
 
 @test "container starts" {
   run start_docker_compose
