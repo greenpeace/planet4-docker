@@ -51,6 +51,7 @@ ENV \
     WP_DB_USER="" \
     WP_DEFAULT_CONTENT="true" \
     WP_DESCRIPTION="Greenpeace" \
+    WP_DOWNLOAD_FLAGS="--skip-content" \
     WP_EXTRA_CONFIG="" \
     WP_FORCE_SSL_ADMIN="true" \
     WP_HOSTNAME="" \
@@ -79,4 +80,4 @@ ENV \
     WP_STATELESS_MEDIA_SERVICE_ACCOUNT="" \
     WP_THEME="planet4-master-theme" \
     WP_TITLE="Greenpeace" \
-    WP_VERSION="latest"
+    WP_VERSION="4.9.8"
