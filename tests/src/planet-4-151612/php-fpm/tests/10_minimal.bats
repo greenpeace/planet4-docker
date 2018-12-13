@@ -32,12 +32,11 @@ function teardown {
   printf '%s' "$output" | grep -Eq "ok"
 }
 
-@test "service responds with PHP Version ${PHP_MAJOR_VERSION}" {
+@test "service responds with PHP Version 7" {
   run test_fastcgi_response "/app/source/public/index.php"
   [ $status -eq 0 ]
   version_detect="[[:digit:]]+\\.[[:digit:]]+"
-  printf '%s' "$output" | grep -Eq "PHP Version ${version_detect}"
-  echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.index.php"
+  printf '%s' "$output" | grep -Eq "PHP Version 7"
 }
 
 @test "service errors 404 on non-existent file" {
