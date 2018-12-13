@@ -18,34 +18,35 @@ function teardown {
 
 @test "service starts with minimal config" {
   run test_minimal_startup
-  [[ $status -eq 0 ]]
+  [ $status -eq 0 ]
 }
 
 @test "print service environment" {
   run print_docker_env "${image}"
-  [[ $status -eq 0 ]]
+  [ $status -eq 0 ]
 }
 
 @test "service responds 'ok' to health checks" {
   run test_fastcgi_response
-  [[ $status -eq 0 ]]
-  [[ $output =~ "ok" ]]
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep -Eq "ok"
 }
 
 @test "service responds with PHP Version ${PHP_MAJOR_VERSION}" {
   run test_fastcgi_response "/app/source/public/index.php"
-  [[ $status -eq 0 ]]
-  [[ $output =~ "PHP Version ${PHP_MAJOR_VERSION}" ]]
+  [ $status -eq 0 ]
+  version_detect="[[:digit:]]+\\.[[:digit:]]+"
+  printf '%s' "$output" | grep -Eq "PHP Version ${version_detect}"
   echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.index.php"
 }
 
 @test "service errors 404 on non-existent file" {
   run test_fastcgi_response "/app/source/public/error.php"
-  [[ $output =~ "Status: 404 Not Found" ]]
+  printf '%s' "$output" | grep -Eq "Status: 404 Not Found"
   echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.error.php"
 }
 
 @test "minimal service cleans up" {
   run test_minimal_cleanup
-  [[ $status -eq 0 ]]
+  [ $status -eq 0 ]
 }
