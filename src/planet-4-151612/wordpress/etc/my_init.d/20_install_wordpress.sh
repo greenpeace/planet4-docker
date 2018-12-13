@@ -231,7 +231,17 @@ then
   $composer_exec install $composer_install_flags
 fi
 
+set -x
+
+ls "$PUBLIC_PATH"
+
+[[ -e "$PUBLIC_PATH/index.php" ]] && rm -fr $PUBLIC_PATH/index.php
+
 chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
+
+ls -al "$PUBLIC_PATH"
+
+set +x
 
 wp core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
