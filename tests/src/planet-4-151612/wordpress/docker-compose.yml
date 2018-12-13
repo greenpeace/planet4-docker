@@ -25,6 +25,7 @@ services:
       - GIT_REF=${GIT_BRANCH}
       - MERGE_SOURCE=
       - WP_TITLE=${WP_TITLE}
+      - WP_VERSION=${WP_VERSION:-latest}
     env_file:
       - db.env
     volumes:

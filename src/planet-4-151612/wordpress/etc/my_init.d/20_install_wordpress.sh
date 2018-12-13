@@ -231,10 +231,9 @@ then
   $composer_exec install $composer_install_flags
 fi
 
-$composer_exec download:wordpress
+chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
 
-$composer_exec reset:themes
-$composer_exec reset:plugins
+wp core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
 $composer_exec copy:themes
 $composer_exec copy:assets
