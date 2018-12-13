@@ -18,6 +18,13 @@ function teardown {
   [[ $status -eq 0 ]]
 }
 
+@test "wp-cli gets wordpress version" {
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec php-fpm wp core version
+  [ $status -eq 0 ]
+  version_detect="[[:digit:]]+\\.[[:digit:]]+"
+  printf '%s' "$output" | grep -Eq "$version_detect"
+}
+
 @test "wp-cli get blogname == ${WP_TITLE}" {
   run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec php-fpm wp option get blogname
   [[ $status -eq 0 ]]
