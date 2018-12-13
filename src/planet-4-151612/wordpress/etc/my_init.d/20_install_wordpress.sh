@@ -232,6 +232,8 @@ then
 fi
 
 wp core download --version="${WP_VERSION}" --path="${PUBLIC_PATH}"  --force "${WP_DOWNLOAD_FLAGS}"
+chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
+
 
 $composer_exec copy:themes
 $composer_exec copy:assets
