@@ -19,7 +19,7 @@ function teardown {
 #   docker-compose -f "${compose_file}" pull --parallel
 # }
 
-@test "docker-compose start" {
+@test "docker-compose start: $IMAGE_TAG" {
   # Wait up to 10 minutes for the build to complete!
   run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" http://localhost:80 proxy 20
   [[ "$status" -eq 0 ]]
