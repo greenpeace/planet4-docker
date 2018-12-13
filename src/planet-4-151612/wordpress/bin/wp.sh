@@ -17,7 +17,7 @@ then
   if [[ $1 = "--root" ]]
   then
     shift
-    php /app/wp-cli.phar --path="${PUBLIC_PATH}" "$@"
+    php /app/wp-cli.phar --allow-root --path="${PUBLIC_PATH}" "$@"
   else
     setuser "${APP_USER}" php /app/wp-cli.phar --path="${PUBLIC_PATH}" "$@"
   fi
