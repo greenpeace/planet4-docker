@@ -26,13 +26,13 @@ function teardown {
   [ $status -eq 0 ]
 }
 
-@test "service responds 'ok' to health checks" {
+@test "service responds ok to health checks" {
   run test_fastcgi_response
   [ $status -eq 0 ]
-  printf '%s' "$output" | grep -Eq "ok"
+  printf '%s' "$output" | grep "ok"
 }
 
-@test "service responds with PHP Version 7" {
+@test "service responds with PHP Version x.x.x" {
   run test_fastcgi_response "/app/source/public/index.php"
   [ $status -eq 0 ]
   version_detect="[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+"
