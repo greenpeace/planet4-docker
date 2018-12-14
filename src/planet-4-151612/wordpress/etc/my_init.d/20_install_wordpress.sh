@@ -247,7 +247,6 @@ set +x
 wp --root core download --debug --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
 $composer_exec copy:themes
-$composer_exec copy:assets
 $composer_exec copy:plugins
 
 setuser "${APP_USER}" dockerize -template "/app/wp-config.php.tmpl:${PUBLIC_PATH}/wp-config.php"
@@ -273,8 +272,6 @@ wp plugin activate --all
 # FIXME Determine which theme to activate
 # FIXME Why does the composer theme install script fail?
 wp theme activate "${WP_THEME}"
-
-[[ "${WP_DEFAULT_CONTENT}" = "true" ]] && $composer_exec core:initial-content
 
 $composer_exec core:add-author-capabilities
 
