@@ -35,8 +35,8 @@ function teardown {
 @test "service responds with PHP Version 7" {
   run test_fastcgi_response "/app/source/public/index.php"
   [ $status -eq 0 ]
-  version_detect="[[:digit:]]+\\.[[:digit:]]+"
-  printf '%s' "$output" | grep "PHP Version ${version_detect}"
+  version_detect="[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+"
+  printf '%s' "$output" | grep -E "PHP Version ${version_detect}"
 }
 
 @test "service errors 404 on non-existent file" {
