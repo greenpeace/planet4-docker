@@ -9,7 +9,7 @@ services:
     networks:
       - default
     environment:
-      - APP_HOSTNAME=${APP_HOSTNAME:-test.planet4.dev}
+      - APP_HOSTNAME=${APP_HOSTNAME:-www.planet4.test}
       - SSL_ENABLED=false
       - PHP_ENABLED=true
   php-fpm:
