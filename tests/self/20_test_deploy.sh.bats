@@ -12,12 +12,12 @@ function teardown {
 }
 
 @test "deploy.sh exists and is executable" {
-  [[ -f "${PROJECT_GIT_ROOT_DIR}/bin/deploy.sh" ]]
-  [[ -x "${PROJECT_GIT_ROOT_DIR}/bin/deploy.sh" ]]
+  [ -f "${PROJECT_GIT_ROOT_DIR}/bin/deploy.sh" ]
+  [ -x "${PROJECT_GIT_ROOT_DIR}/bin/deploy.sh" ]
 }
 
 @test "deploy.sh prints usage information with -h flag" {
   run "${PROJECT_GIT_ROOT_DIR}/bin/deploy.sh" -h
-  [[ $status -eq 0 ]]
-  [[ $output =~ "usage" ]]
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep -Eq "usage"
 }

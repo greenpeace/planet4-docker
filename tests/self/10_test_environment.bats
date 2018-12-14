@@ -18,14 +18,14 @@ function teardown {
 }
 
 @test "ack exists and is executable" {
-  if [[ ! -x "$(type -P ack)" ]]
+  if [ ! -x "$(type -P ack)" ]
   then
     fatal "FATAL: ack not found.\nPlease install as per instructions at https://beyondgrep.com/"
   fi
 }
 
 @test "tap-xunit exists and is executable" {
-  if [[ ! -x "$(type -P tap-xunit)" ]]
+  if [ ! -x "$(type -P tap-xunit)" ]
   then
     fatal "FATAL: tap-xunit not found.\nPlease install as per instructions at https://github.com/aghassemi/tap-xunit/releases"
     exit 1
@@ -34,7 +34,7 @@ function teardown {
 
 @test "shellcheck exists and is executable" {
   skip "Shellcheck tests not implemented"
-  if [[ ! -x "$(type -P shellcheck)" ]]
+  if [ ! -x "$(type -P shellcheck)" ]
   then
     fatal "FATAL: shellcheck not found.\nPlease install as per instructions at https://www.shellcheck.net/"
     exit 1
@@ -45,7 +45,7 @@ function teardown {
   skip "Shellcheck tests not implemented"
   run shellcheck_all_bash_scripts
   # We don't care bout failures here, just log them for future reference
-  if [[ $status -ne 0 ]]
+  if [ $status -ne 0 ]
   then
     echo "${output}" > "${ARTIFACT_LOGS_DIR:-/tmp/artifacts/logs}"/shellcheck.txt
   fi
@@ -53,7 +53,7 @@ function teardown {
 
 @test "cgi-fcgi exists and is executable" {
   # Circle doesn't need this, the test relies on docker
-  if [[ ${CIRCLECI} ]]
+  if [ ${CIRCLECI} ]
   then
     skip "CircleCI doesn't require cgi-fcgi binary"
   fi
@@ -65,12 +65,12 @@ function teardown {
 }
 
 @test "build.sh exists and is executable" {
-  [[ -f "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" ]]
-  [[ -x "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" ]]
+  [ -f "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" ]
+  [ -x "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" ]
 }
 
 @test "build.sh prints usage information with -h flag" {
   run "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -h
-  [[ $status -eq 0 ]]
-  [[ $output =~ Usage ]]
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep -Eq "Usage"
 }

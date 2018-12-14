@@ -15,7 +15,7 @@ export container_name
 export image
 
 # docker-compose.yml environment variables
-APP_HOSTNAME="test.planet4.dev"
+APP_HOSTNAME="www.planet4.test"
 DB_IMAGE="mysql:5.7"
 GIT_SOURCE="https://github.com/greenpeace/planet4-base-fork"
 GIT_BRANCH="develop"

@@ -14,7 +14,13 @@ uid=$(id -u)
 
 if [[ $uid = "0" ]]
 then
-  setuser "${APP_USER}" php /app/wp-cli.phar --path="${PUBLIC_PATH}" "$@"
+  if [[ $1 = "--root" ]]
+  then
+    shift
+    php /app/wp-cli.phar --allow-root --path="${PUBLIC_PATH}" "$@"
+  else
+    setuser "${APP_USER}" php /app/wp-cli.phar --path="${PUBLIC_PATH}" "$@"
+  fi
 elif [[ $uid = "${APP_UID}" ]]
 then
   php /app/wp-cli.phar --path="${PUBLIC_PATH}" "$@"

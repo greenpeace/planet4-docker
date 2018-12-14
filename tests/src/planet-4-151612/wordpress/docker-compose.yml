@@ -9,7 +9,7 @@ services:
       - "80:80"
     environment:
       - APP_ENV=develop
-      - APP_HOSTNAME=${APP_HOSTNAME:-test.planet4.dev}
+      - APP_HOSTNAME=${APP_HOSTNAME:-www.planet4.test}
       - PHP_ENABLED=true
     depends_on:
       - php-fpm

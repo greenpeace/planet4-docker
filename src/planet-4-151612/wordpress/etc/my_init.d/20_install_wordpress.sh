@@ -233,9 +233,10 @@ fi
 
 set -x
 
+ls .
 ls "$PUBLIC_PATH"
 
-[[ -e "$PUBLIC_PATH/index.php" ]] && rm -fr $PUBLIC_PATH/index.php
+[[ -e "$PUBLIC_PATH/index.php" ]] && rm -fr "$PUBLIC_PATH/index.php"
 
 chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
 
@@ -243,7 +244,7 @@ ls -al "$PUBLIC_PATH"
 
 set +x
 
-wp core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
+wp --root core download --debug --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
 $composer_exec copy:themes
 $composer_exec copy:assets
