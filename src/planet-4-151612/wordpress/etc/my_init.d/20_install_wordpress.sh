@@ -208,7 +208,7 @@ then
   rsync -a --exclude=.* . "${SOURCE_PATH}"
 fi
 
-composer_exec="composer --profile -vv --no-ansi"
+composer_exec="time composer -vv --no-ansi"
 
 # if [[ ! -d "${SOURCE_PATH}/composer.lock" ]]
 # then
