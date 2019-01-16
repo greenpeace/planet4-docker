@@ -11,6 +11,10 @@ WP_HOSTNAME="${WP_HOSTNAME:-${APP_HOSTNAME}}"
 WP_SITE_URL="${WP_SITE_URL:-${WP_HOSTNAME:-}}"
 WP_SITE_HOME="${WP_SITE_HOME:-${WP_SITE_URL:-}}"
 
+# If the site is installed in a subdirectory, ensure it has a leading /
+[[ -z $APP_HOSTPATH ]] || APP_HOSTPATH="/${APP_HOSTPATH#/}"
+export APP_HOSTPATH
+
 export WP_DB_NAME
 export WP_DB_PASS
 export WP_DB_USER
