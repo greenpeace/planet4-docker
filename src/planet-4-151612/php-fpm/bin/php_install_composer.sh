@@ -17,13 +17,13 @@ ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', 'composer-setup.php');")
 
 if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]
 then
-    >&2 echo 'ERROR: Invalid installer signature'
-    exit 1
+  >&2 echo 'ERROR: Invalid installer signature'
+  exit 1
 fi
 
 # Installs composer.phar to /app/bin/composer.phar
 # Available on path, wrapped by /app/bin/composer.sh, symlinked to /app/bin/composer
-php composer-setup.php --install-dir=/app/bin
+php composer-setup.php --version="$COMPOSER_VERSION" --install-dir=/app/bin
 rm composer-setup.php
 
 ln -s /app/bin/composer.sh /app/bin/composer
