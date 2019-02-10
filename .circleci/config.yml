@@ -429,7 +429,8 @@ workflows:
     <<: *branch_jobs
     triggers:
       - schedule:
-          cron: "0 21 * * *"
+          # Weekly 2100UTC Sunday night = 0700 AEST Monday
+          cron: "0 21 * * 0"
           filters:
             branches:
               only:
