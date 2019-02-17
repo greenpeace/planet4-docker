@@ -41,7 +41,7 @@ SOURCE_VERSION=
 # https://github.com/phusion/baseimage-docker/releases
 BASEIMAGE_VERSION=0.10.2
 # https://getcomposer.org/download/
-COMPOSER_VERSION=1.8.0
+COMPOSER_VERSION=1.8.3
 # https://github.com/jwilder/dockerize/releases
 DOCKERIZE_VERSION=0.6.1
 # https://github.com/pagespeed/ngx_pagespeed/releases
