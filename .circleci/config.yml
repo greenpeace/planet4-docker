@@ -133,6 +133,32 @@ jobs:
       - store_artifacts:
           path: /tmp/artifacts
 
+  test-handbook:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Authenticate with gcloud
+          command: |
+            activate-gcloud-account.sh
+      - run:
+          name: Run bats unit tests
+          command: |
+            cd /tmp/workspace/src
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
+            TEST_FOLDERS=tests/src/planet-4-151612/handbook \
+            ./tests/test.sh
+      - run:
+          name: Notify failure
+          when: on_fail
+          command: TYPE="Handbook tests" notify-job-failure.sh
+      - store_test_results:
+          path: /tmp/planet4-docker/merged
+      - store_artifacts:
+          path: /tmp/artifacts
+
   scan-openresty:
     <<: *defaults
     steps:
@@ -177,6 +203,23 @@ jobs:
           name: Microscanner
           command: |
             if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/wordpress:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+            then
+              echo "@todo: list vulnerabilities"
+            else
+              TYPE="Vulnerability Scan" notify-job-failure.sh
+              exit 1
+            fi
+
+  scan-handbook:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Microscanner
+          command: |
+            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/handbook:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
             then
               echo "@todo: list vulnerabilities"
             else
@@ -277,6 +320,13 @@ workflow-references:
           filters:
             branches:
               ignore: master
+      - test-handbook:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
       - scan-openresty:
           context: org-global
           requires:
@@ -292,6 +342,13 @@ workflow-references:
             branches:
               ignore: master
       - scan-wordpress:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+      - scan-handbook:
           context: org-global
           requires:
             - build
@@ -328,9 +385,11 @@ workflow-references:
             - test-openresty
             - test-php-fpm
             - test-wordpress
+            - test-handbook
             - scan-openresty
             - scan-php-fpm
             - scan-wordpress
+            - scan-handbook
           filters:
             branches:
               only: develop
