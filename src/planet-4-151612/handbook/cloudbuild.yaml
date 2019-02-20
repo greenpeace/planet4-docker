@@ -1,0 +1,15 @@
+---
+steps:
+  - id: 'handbook'
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/handbook:${_BUILD_TAG}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/handbook:${_BUILD_NUM}'
+      - '--tag=${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/handbook:${_REVISION_TAG}'
+      - '.'
+
+images:
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/handbook:${_BUILD_TAG}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/handbook:${_BUILD_NUM}'
+  - '${_BUILD_NAMESPACE}/${_GOOGLE_PROJECT_ID}/handbook:${_REVISION_TAG}'
