@@ -37,7 +37,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: activate-gcloud-account.sh
       - run:
           name: Run bats unit tests
@@ -60,7 +61,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Authenticate with gcloud
           command: |
@@ -86,7 +88,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Authenticate with gcloud
           command: |
@@ -112,7 +115,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Authenticate with gcloud
           command: |
@@ -138,7 +142,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Authenticate with gcloud
           command: |
@@ -164,7 +169,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Microscanner
           command: |
@@ -181,7 +187,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Microscanner
           command: |
@@ -198,7 +205,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Microscanner
           command: |
@@ -215,7 +223,8 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Microscanner
           command: |
@@ -233,7 +242,8 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run: activate-gcloud-account.sh
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - deploy:
           name: Deploy tagged release
           command: |
