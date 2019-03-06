@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-if [[ ! -z "${APP_HOSTPATH}" ]]
+if [[ -n "${APP_HOSTPATH}" ]]
 then
   _good "$(printf "%-10s " "openresty:")" "APP_HOSTPATH=${APP_HOSTPATH}"
   dockerize \
