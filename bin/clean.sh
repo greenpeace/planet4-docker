@@ -47,4 +47,7 @@ do
   docker rmi -f ${container} >/dev/null 2>&1
 done
 
+docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/php-fpm/docker-compose.yml" stop || true
+docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/php-fpm/docker-compose.yml" down -v --remove-orphans || true
+docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/wordpress/docker-compose.yml" stop || true
 docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/wordpress/docker-compose.yml" down -v --remove-orphans || true
