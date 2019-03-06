@@ -196,15 +196,15 @@ then
   _good "Checkout: ${GIT_SOURCE}:${GIT_REF}"
   mkdir -p "${SOURCE_PATH}"
   cd "${SOURCE_PATH}"
-  checkout ${GIT_SOURCE} ${GIT_REF}
+  checkout "${GIT_SOURCE}" "${GIT_REF}"
 fi
 
-if [[ ! -z "${MERGE_SOURCE}" ]]
+if [[ -n "${MERGE_SOURCE}" ]]
 then
   _good "Merge:   ${MERGE_SOURCE}:${MERGE_REF}"
   mkdir -p /app/merge
   cd /app/merge
-  checkout ${MERGE_SOURCE} ${MERGE_REF}
+  checkout "${MERGE_SOURCE}" "${MERGE_REF}"
   rsync -a --exclude=.* . "${SOURCE_PATH}"
 fi
 
