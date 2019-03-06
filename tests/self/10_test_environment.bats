@@ -20,7 +20,7 @@ function teardown {
 @test "ag exists and is executable" {
   if [ ! -x "$(type -P ag)" ]
   then
-    fatal "FATAL: ag not found.\nPlease install as per instructions at https://beyondgrep.com/"
+    fatal "FATAL: ag not found.\\nPlease install as per instructions at https://beyondgrep.com/"
   fi
 }
 
