@@ -3,5 +3,6 @@ services:
   app:
     image: ${IMAGE_NAMESPACE:-gcr.io}/${BATS_PROJECT_ID:-planet-4-151612}/openresty:${IMAGE_TAG:-develop}
     environment:
+      - APP_ENV=development
       - APP_HOSTPATH=testing
     network_mode: "${NETWORK_MODE}"

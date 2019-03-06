@@ -24,20 +24,54 @@ function teardown {
 @test "APP_HOSTPATH - container responds on port 80 with status 200" {
   run curl_check_status_code
   [ $status -eq 0 ]
+  run curl_get_response_header path-old
+  printf '%s' "Output: $output" | tee /tmp/wtf.txt
+  # [ "$output" = "" ]
+  run curl_get_response_header path-new
+  printf '%s' "Output: $output" | tee /tmp/wtf.txt
+  # [ "$output" = "" ]
 }
-
+#
 @test "APP_HOSTPATH - container responds at path / with status 200" {
-  run curl_check_status_code 200 http://localhost:80/
+  path="http://localhost:80/"
+  run curl_check_status_code 200 $path
   [ $status -eq 0 ]
 }
-
+#
 @test "APP_HOSTPATH - container responds at path /testing with status 200" {
-  run curl_check_status_code 200 http://localhost:80/testing
+  path="http://localhost/testing"
+  run curl_check_status_code 200 $path
   [ $status -eq 0 ]
+  run curl_get_response_header path-old $path
+  printf '\n\n%s' "Output: $output" | tee /tmp/wtf.txt
+  # [ "$output" = "" ]
+  run curl_get_response_header path-new $path
+  printf '\n\n%s' "Output: $output" | tee /tmp/wtf.txt
+  # [ "$output" = "" ]
 }
 
 @test "APP_HOSTPATH - container responds at path /testing/index.html with status 200" {
   run curl_check_status_code 200 http://localhost:80/testing/index.html
+  [ $status -eq 0 ]
+}
+
+@test "APP_HOSTPATH - container responds at path ?s=greenpeace with status 200" {
+  run curl_check_status_code 200 http://localhost:80?s=greenpeace
+  [ $status -eq 0 ]
+}
+
+@test "APP_HOSTPATH - container responds at path /?s=greenpeace with status 200" {
+  run curl_check_status_code 200 http://localhost:80/?s=greenpeace
+  [ $status -eq 0 ]
+}
+
+@test "APP_HOSTPATH - container responds at path /testing?s=greenpeace with status 200" {
+  run curl_check_status_code 200 http://localhost:80/testing?s=greenpeace
+  [ $status -eq 0 ]
+}
+
+@test "APP_HOSTPATH - container responds at path /testing/?s=greenpeace with status 200" {
+  run curl_check_status_code 200 http://localhost:80/testing/?s=greenpeace
   [ $status -eq 0 ]
 }
 
