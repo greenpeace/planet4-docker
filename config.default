@@ -41,7 +41,7 @@ SOURCE_VERSION=
 # https://github.com/phusion/baseimage-docker/releases
 BASEIMAGE_VERSION=0.10.2
 # https://getcomposer.org/download/
-COMPOSER_VERSION=1.8.3
+COMPOSER_VERSION=1.8.4
 # https://github.com/jwilder/dockerize/releases
 DOCKERIZE_VERSION=0.6.1
 # https://github.com/pagespeed/ngx_pagespeed/releases
@@ -51,7 +51,7 @@ NGX_PAGESPEED_VERSION=latest
 OPENRESTY_VERSION=1.13.6.2
 OPENRESTY_SOURCE=source
 # https://www.openssl.org/source
-OPENSSL_VERSION=1.1.1a
+OPENSSL_VERSION=1.1.1b
 
 PHP_MAJOR_VERSION=7.0
 

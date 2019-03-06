@@ -36,7 +36,7 @@ ENV \
     SSL_ENABLED="false" \
     UPLOAD_MAX_SIZE="50M"
 
-COPY . /app/
+COPY ./bin/install_openresty.sh /app/bin/install_openresty.sh
 
 RUN set -ex && \
     groupadd -g "${APP_GID}" "${APP_GROUP}" && \
@@ -48,3 +48,5 @@ RUN set -ex && \
     mkdir -p /etc/nginx/ssl "${PUBLIC_PATH}" && \
     echo "$(nginx -V 2>&1)" > "${PUBLIC_PATH}/index.html" && \
     echo "TEST-DATA-ONLY" >> "${PUBLIC_PATH}/index.html"
+
+COPY . /app/

@@ -18,7 +18,6 @@ jobs:
       - run: make lint
       - run: activate-gcloud-account.sh
       - run: mkdir -p /tmp/workspace/var
-      - setup_remote_docker
       - run: make build
       - run: rsync -av . /tmp/workspace/src
       - run: echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num

@@ -124,6 +124,18 @@ function curl_check_status_code {
 }
 
 
+# Queries an endpoint and expects a response status code to match parameter
+# shellcheck disable=SC2120
+function curl_get_response_header {
+  set -eu
+  trap finish EXIT
+  local var=${1:-status}
+  local endpoint=${2:-"http://localhost:80"}
+  local container=${3:-$(get_container_id)}
+
+  docker run --network "container:${container}" --rm "${CURL_CONTAINER}" -s -k -I "${endpoint}"
+}
+
 # Pulls docker image parameter
 function pull_image {
   set -eu

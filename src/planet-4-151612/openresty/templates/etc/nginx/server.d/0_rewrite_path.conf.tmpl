@@ -1,11 +1,6 @@
 location ~ ^/{{ .Env.APP_HOSTPATH }}/? {
   rewrite_by_lua_block {
-    local uri = ngx.re.sub(ngx.var.uri, "^/{{ .Env.APP_HOSTPATH }}/?(.*)", "/$1", "o")
-    local environment = "{{ .Env.APP_ENV }}"
-    if "{{ .Env.APP_ENV }}" ~= "production" then
-      ngx.header["path_new"] = uri
-      ngx.header['path_old'] = ngx.var.uri
-    end
+    local uri = ngx.re.sub(ngx.var.uri, "^/{{ .Env.APP_HOSTPATH }}/?", "/", "o")
     ngx.req.set_uri(uri, true)
   }
 }
