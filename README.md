@@ -1,6 +1,7 @@
 # Docker builds for Planet4 on Google Container Registry
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c54834e6f1a4f3e864b5f8614347c01?branch=develop)](https://www.codacy.com/app/Greenpeace/planet4-docker?utm_source=github.com&utm_medium=referral&utm_content=greenpeace/planet4-docker&utm_campaign=badger) [![CircleCI](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop.svg?style=shield)](https://circleci.com/gh/greenpeace/planet4-docker/tree/develop)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgreenpeace%2Fplanet4-docker.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgreenpeace%2Fplanet4-docker?ref=badge_shield)
 
 ## Description
 
@@ -126,3 +127,7 @@ do
   ./bin/gc.sh gcr.io/planet-4-151612/${i} 2017-04-01
 done
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgreenpeace%2Fplanet4-docker.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgreenpeace%2Fplanet4-docker?ref=badge_large)
