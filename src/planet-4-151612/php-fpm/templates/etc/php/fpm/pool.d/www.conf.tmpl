@@ -337,7 +337,7 @@ ping.response = {{ .Env.PHP_HEALTH_CHECK_RESPONSE }}
 ; Set max core size rlimit.
 ; Possible Values: 'unlimited' or an integer greater or equal to 0
 ; Default Value: system defined value
-;rlimit_core = 0
+rlimit_core = 0
 
 ; Chroot to this directory at the start. This value must be defined as an
 ; absolute path. When this value is not set, chroot is not used.
