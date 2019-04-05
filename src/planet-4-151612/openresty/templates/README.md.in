@@ -1,6 +1,6 @@
 # OpenResty + Pagespeed + OpenSSL
 
-![OpenResty ${OPENRESTY_VERSION}](https://img.shields.io/badge/openresty-${OPENRESTY_VERSION}-brightgreen.svg) ![ngx_pagespeed ${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${NGX_PAGESPEED_VERSION}--${NGX_PAGESPEED_RELEASE}-brightgreen.svg) ![OpenSSL ${OPENSSL_VERSION}](https://img.shields.io/badge/OpenSSL-${OPENSSL_VERSION}-brightgreen.svg)
+![OpenResty ${OPENRESTY_VERSION}](https://img.shields.io/badge/openresty-${OPENRESTY_VERSION}-brightgreen.svg) ![ngx_pagespeed ${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}](https://img.shields.io/badge/ngx_pagespeed-${NGX_PAGESPEED_VERSION}--${NGX_PAGESPEED_RELEASE}-brightgreen.svg)
 
 Built on [gcr.io/planet-4-151612/ubuntu](https://registry.hub.docker.com/u/greenpeace/ubuntu/), a lightly modified Ubuntu Xenial [Phusion Base Image](https://phusion.github.io/baseimage-docker/).
 
@@ -48,7 +48,6 @@ CHOWN_APP_DIR              | false   | If true `chown` `${PUBLIC_PATH}` as `APP_
 
 OpenResty is compiled from mainline source according to Ubuntu configuration and compile flags, with the following modifications:
 
-- OpenSSL v${OPENSSL_VERSION} from source - <https://www.openssl.org/source/>
 - Google Pagespeed nginx latest stable from source - <https://github.com/pagespeed/ngx_pagespeed/releases>
 - The `http_autoindex_module` disabled
 
