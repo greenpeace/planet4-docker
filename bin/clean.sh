@@ -26,6 +26,7 @@ test_containers=(
   "php-fpm_nginx" \
   "php-fpm_php-fpm" \
   "php-fpm-test" \
+  "phpfpm-test" \
 )
 
 for container in "${test_containers[@]}"
