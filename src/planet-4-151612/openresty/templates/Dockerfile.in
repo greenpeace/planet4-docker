@@ -13,6 +13,8 @@ ENV \
     APP_HOSTPATH="international" \
     CHOWN_APP_DIR="false" \
     CLOUDFLARE_ENABLED="false" \
+    GEOIP2_ENABLED="false" \
+    GEOIP2_VERSION="3.2" \
     NGX_PAGESPEED_RELEASE="${NGX_PAGESPEED_RELEASE}" \
     NGX_PAGESPEED_VERSION="${NGX_PAGESPEED_VERSION}" \
     OPENRESTY_FASTCGI_BACKEND="php-fpm:9000" \
@@ -44,6 +46,7 @@ RUN groupadd -g "${APP_GID}" "${APP_GROUP}" && \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/* && \
     mkdir -p /etc/nginx/ssl "${PUBLIC_PATH}" && \
     echo "$(nginx -V 2>&1)" > "${PUBLIC_PATH}/index.html" && \
-    echo "TEST-DATA-ONLY" >> "${PUBLIC_PATH}/index.html"
+    echo "TEST-DATA-ONLY" >> "${PUBLIC_PATH}/index.html" && \
+    echo "Country: __P4_GEOIP_COUNTRY_CODE__" >> "${PUBLIC_PATH}/index.html"
 
 COPY . /app/

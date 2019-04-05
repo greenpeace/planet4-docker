@@ -35,7 +35,7 @@ fi
 
 export REAL_IP_HEADER
 
-f=/etc/nginx/conf.d/real_ip.conf
+f=/etc/nginx/conf.d/10_real_ip.conf
 
 _good "$(printf "%-10s " "openresty:")" "REAL_IP_HEADER ${REAL_IP_HEADER}"
 

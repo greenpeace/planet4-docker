@@ -26,13 +26,19 @@ function teardown {
   [ $status -eq 0 ]
 }
 
+@test "GEOIP2_ENABLED Disabled - 'Country: __P4_GEOIP_COUNTRY_CODE__' in test output" {
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec app curl localhost
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep "Country: __P4_GEOIP_COUNTRY_CODE__"
+}
+
 @test "container responds on port 80 with status 200" {
   run curl_check_status_code
   [ $status -eq 0 ]
 }
 
 @test "container fails to respond on port 443" {
-  run curl_check_status_code 200 "https://localhost:443" openresty_app_1 10
+  run curl_check_status_code 200 "https://localhost:443" openresty_app_1 3
   [ $status -ne 0 ]
 }
 

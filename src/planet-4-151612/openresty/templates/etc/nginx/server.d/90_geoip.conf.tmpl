@@ -1,0 +1,6 @@
+{{ if eq .Env.GEOIP2_ENABLED "true" }}
+location / {
+  sub_filter_types text/html;
+  sub_filter '__P4_GEOIP_COUNTRY_CODE__' $geoip2_data_country_code;
+}
+{{ end }}

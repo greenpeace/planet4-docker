@@ -15,6 +15,8 @@ image="${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}:${IMAGE_TAG}"
 export compose_file
 export container_name
 export image
+IMAGE=$image
+export IMAGE
 
 ENDPOINT_PORT=80
 ENDPOINT="http://localhost:${ENDPOINT_PORT}"
