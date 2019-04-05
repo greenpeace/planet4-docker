@@ -159,36 +159,3 @@ function teardown {
   [ ${status} -eq 0 ]
   # [[ $(wc -l <<<"$output") -eq 1 ]]
 }
-
-# ------------------------------------------------------------------------------
-# OPENSSL_VERSION
-#
-@test "${PROJECT_ID} :: build.sh : \$OPENSSL_VERSION : openresty/Dockerfile" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
-  openssl_version="$(grep "OPENSSL_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  grep "OPENSSL_VERSION=\"${openssl_version}\"" "${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
-}
-
-@test "${PROJECT_ID} :: build.sh : \$OPENSSL_VERSION : openresty/README.md : 2 lines" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/README.md"
-  openssl_version="$(grep "OPENSSL_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${openssl_version}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 2 ]]
-}
-
-@test "${PROJECT_ID} :: build.sh : \$OPENSSL_VERSION : php-fpm/README.md : 1 line" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/php-fpm/README.md"
-  openssl_version="$(grep "OPENSSL_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${openssl_version}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}
-
-@test "${PROJECT_ID} :: build.sh : \$OPENSSL_VERSION : wordpress/README.md : 1 line" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/wordpress/README.md"
-  openssl_version="$(grep "OPENSSL_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${openssl_version}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}

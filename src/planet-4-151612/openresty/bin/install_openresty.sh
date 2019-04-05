@@ -39,7 +39,6 @@ else
     uuid-dev \
     zlib1g-dev \
     &
-  wget --retry-connrefused -t 5 -O - "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" | tar xzf - -C /tmp & \
   wget --retry-connrefused -t 5 -O - "https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz" | tar zxf - -C /tmp & \
   wget --retry-connrefused -t 5 -O - "https://github.com/pagespeed/ngx_pagespeed/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz" | tar zxf - -C /tmp
   PSOL_URL="$(cat "/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}/PSOL_BINARY_URL")"
@@ -96,7 +95,6 @@ else
     --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' \
     --with-ipv6 \
     --with-pcre-jit \
-    --with-openssl=/tmp/openssl-${OPENSSL_VERSION} \
     --add-module=/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}
   make -j${procs} install
   apt-get purge -yqq \

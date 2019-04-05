@@ -41,8 +41,8 @@ function teardown {
   [ $status -eq 0 ]
 }
 
-@test "http response contains regex 'built with OpenSSL ${OPENSSL_VERSION}'" {
-  run curl_check_response_regex "built with OpenSSL ${OPENSSL_VERSION}"
+@test "http response contains regex 'built with OpenSSL'" {
+  run curl_check_response_regex "built with OpenSSL"
   [ $status -eq 0 ]
 }
 

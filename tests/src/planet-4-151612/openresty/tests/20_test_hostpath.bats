@@ -73,8 +73,8 @@ function teardown {
   [ $status -eq 0 ]
 }
 
-@test "APP_HOSTPATH - http response contains regex 'built with OpenSSL ${OPENSSL_VERSION}'" {
-  run curl_check_response_regex "built with OpenSSL ${OPENSSL_VERSION}" http://localhost:80/testing
+@test "APP_HOSTPATH - http response contains regex 'built with OpenSSL'" {
+  run curl_check_response_regex "built with OpenSSL" http://localhost:80/testing
   [ $status -eq 0 ]
 }
 

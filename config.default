@@ -50,8 +50,6 @@ NGX_PAGESPEED_VERSION=latest
 # https://openresty.org/en/download.html
 OPENRESTY_VERSION=1.13.6.2
 OPENRESTY_SOURCE=source
-# https://www.openssl.org/source
-OPENSSL_VERSION=1.1.1b
 
 PHP_MAJOR_VERSION=7.0
 
