@@ -15,17 +15,13 @@ RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.c
   		php-imap \
   		php-mcrypt \
   		php-xml \
-  		php-xsl \
   		php-zip \
       php-fpm \
       php-intl \
       php-mbstring \
-      php-memcache \
-      php-memcached \
       php-mysql \
       php-recode \
       php-redis \
-      php-soap \
       ssmtp \
       && \
     newrelic-install install && \
@@ -33,8 +29,7 @@ RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.c
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-fast/*&& \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
 
-ENV \
-    ADMIN_EMAIL="nobody@example.com" \
+ENV ADMIN_EMAIL="nobody@example.com" \
     CHOWN_APP_DIR="false" \
     COMPOSER_HOME="/app/.composer" \
     COMPOSER_PROCESS_TIMEOUT="600" \
