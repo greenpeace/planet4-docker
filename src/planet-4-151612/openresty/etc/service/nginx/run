@@ -16,6 +16,8 @@ nginx_configure_hostpath.sh &
 
 nginx_configure_real_ip.sh &
 
+nginx_configure_geoip2.sh &
+
 # Set worker_processes = num cpu cores
 WORKER_PROCESSES=$(cat /proc/cpuinfo |grep processor | wc -l)
 if [[ $WORKER_PROCESSES -gt ${OPENRESTY_MAX_WORKER_PROCESSES} ]]; then

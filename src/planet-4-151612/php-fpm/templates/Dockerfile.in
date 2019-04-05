@@ -4,8 +4,8 @@ LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
 
 RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.com/548C16BF.gpg | apt-key add - && \
     echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list && \
-    apt-get update && \
-    apt-get -y --no-install-recommends install \
+    apt-fast update && \
+    apt-fast -y --no-install-recommends install \
 	    newrelic-php5 \
   		php \
   		php-cli \
@@ -15,26 +15,21 @@ RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.c
   		php-imap \
   		php-mcrypt \
   		php-xml \
-  		php-xsl \
   		php-zip \
       php-fpm \
       php-intl \
       php-mbstring \
-      php-memcache \
-      php-memcached \
       php-mysql \
       php-recode \
       php-redis \
-      php-soap \
       ssmtp \
       && \
     newrelic-install install && \
-  	apt-get clean && \
-    rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
+    apt-fast clean && \
+    rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-fast/*&& \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
 
-ENV \
-    ADMIN_EMAIL="nobody@example.com" \
+ENV ADMIN_EMAIL="nobody@example.com" \
     CHOWN_APP_DIR="false" \
     COMPOSER_HOME="/app/.composer" \
     COMPOSER_PROCESS_TIMEOUT="600" \

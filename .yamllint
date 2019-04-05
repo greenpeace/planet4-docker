@@ -2,5 +2,4 @@
 extends: default
 
 rules:
-  line-length:
-    level: warning
+  line-length: disable

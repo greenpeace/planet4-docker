@@ -75,7 +75,7 @@ To rewrite platform variables without triggering a build, run `build.sh` without
 ./bin/build.sh
 ```
 
-This will update the local Dockerfile ENV variables such as `OPENRESTY_VERSION` or `OPENSSL_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically in the CI pipeline.
+This will update the local Dockerfile ENV variables such as `OPENRESTY_VERSION`, but does not send a GCR build request. Since this repository is monitored for commit changes, simply updating these variables and pushing the commit will submit a new build request automagically in the CI pipeline.
 
 ## Customising the container build
 
