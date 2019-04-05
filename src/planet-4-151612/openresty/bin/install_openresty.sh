@@ -12,19 +12,19 @@ then
 
   # for installing the add-apt-repository command
   # (you can remove this package and its dependencies later):
-  apt-get -y install software-properties-common
+  apt-fast -y install software-properties-common
 
   # add the our official APT repository:
   add-apt-repository -y "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main"
 fi
 
-apt-get update
+apt-fast update
 
 if [[ "${OPENRESTY_SOURCE}" = "apt" ]]
 then
-  apt-get -y --no-install-recommends install openresty
+  apt-fast -y --no-install-recommends install openresty
 else
-  apt-get -y --no-install-recommends install \
+  apt-fast -y --no-install-recommends install \
     autoconf \
     automake \
     build-essential \
