@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -exo pipefail
+set -eo pipefail
 
 # Description:    Installs openresty from source with prerequisites
 #                  - OpenSSL
@@ -39,9 +39,9 @@ else
     uuid-dev \
     zlib1g-dev \
     &
-  wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" | tar xzf - -C /tmp & \
-  wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz" | tar zxf - -C /tmp & \
-  wget --retry-connrefused --waitretry=1 -t 5 --progress=bar -O - "https://github.com/pagespeed/ngx_pagespeed/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz" | tar zxf - -C /tmp
+  wget --retry-connrefused -t 5 -O - "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" | tar xzf - -C /tmp & \
+  wget --retry-connrefused -t 5 -O - "https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz" | tar zxf - -C /tmp & \
+  wget --retry-connrefused -t 5 -O - "https://github.com/pagespeed/ngx_pagespeed/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz" | tar zxf - -C /tmp
   PSOL_URL="$(cat "/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}/PSOL_BINARY_URL")"
   if [ "$(uname -m)" = x86_64 ]
   then
@@ -117,3 +117,5 @@ fi
 apt-get autoremove -yqq
 
 [[ -x "/usr/sbin/nginx" ]] || exit 1
+
+nginx -V
