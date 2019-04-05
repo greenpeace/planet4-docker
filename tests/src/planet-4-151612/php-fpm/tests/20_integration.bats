@@ -22,8 +22,20 @@ function teardown {
   [ $status -eq 0 ]
 }
 
+@test "docker-compose nginx/php-fpm application shows PHP status internally" {
+  run curl_check_response_regex "pool.*example_com" "http://localhost/_php_status" php-fpm-app 3
+  [ $status -eq 0 ]
+}
+
+@test "docker-compose nginx/php-fpm application hides PHP status externally" {
+  [ -z "$CI" ] || skip "Not functional in CI"
+  run curl -s localhost/_php_status
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep -E "403 Forbidden"
+}
+
 @test "docker-compose nginx/php-fpm application fails to respond on port 443" {
-  run curl_check_status_code 200 ${ENDPOINT_HTTPS} php-fpm-app 10
+  run curl_check_status_code 200 ${ENDPOINT_HTTPS} php-fpm-app 3
   [ $status -ne 0 ]
 }
 
