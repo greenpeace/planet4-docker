@@ -45,6 +45,12 @@ function teardown {
   echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.error.php"
 }
 
+@test "service responds with status data on _php_status" {
+  run test_fastcgi_response "/_php_status"
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep -E "pool.+example_com"
+}
+
 @test "minimal service cleans up" {
   run test_minimal_cleanup
   [ $status -eq 0 ]

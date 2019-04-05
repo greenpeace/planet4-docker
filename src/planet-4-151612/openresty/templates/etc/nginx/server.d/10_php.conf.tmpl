@@ -13,6 +13,15 @@ location / {
   try_files $uri $uri/ @handler;
 }
 
+# Allow PHP-FPM status from localhost only
+location = /_php_status {
+  access_log off;
+  allow 127.0.0.1;
+  deny all;
+  include fastcgi.conf;
+  fastcgi_pass fastcgi_backend;
+}
+
 {{ if eq .Env.REDIS_FASTCGI_CACHE_ENABLED "true" }}
 
 # Cache everything by default
