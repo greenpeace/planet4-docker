@@ -40,6 +40,14 @@ export PHP_MEMORY_LIMIT
 export UPLOAD_MAX_SIZE
 
 
+function setup {
+  begin_output
+}
+
+function teardown {
+  store_output
+}
+
 function test_minimal_cleanup() {
   local name="${1:-phpfpm-test}"
 

@@ -37,5 +37,4 @@ function teardown {
   run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec php-fpm wp option get blogname
   [ $status -eq 0 ]
   printf '%s' "$output" | grep -Eq "$RANDOM_TITLE"
-
 }

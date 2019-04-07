@@ -3,15 +3,6 @@ set -e
 
 load env
 
-function setup {
-  begin_output
-}
-
-function teardown {
-  store_output
-}
-
-
 @test "docker-compose nginx/php-fpm application starts" {
   run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.yml" ${ENDPOINT_HTTP} php-fpm-app
   [ $status -eq 0 ]

@@ -3,14 +3,6 @@ set -e
 
 load env
 
-function setup {
-  begin_output
-}
-
-function teardown {
-  store_output
-}
-
 # @test "image exists ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}:${IMAGE_TAG}" {
 #   run run_test_image_exists "${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/${BATS_IMAGE}.*${IMAGE_TAG}"
 #   [[ $status -eq 0 ]]
