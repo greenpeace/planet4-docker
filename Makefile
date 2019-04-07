@@ -80,10 +80,12 @@ pull :
 .PHONY : build
 build : lint
 		bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
+		$(MAKE) ignore
 
 .PHONY : test
 test :
 		TEST_FOLDERS=$(TEST_FOLDERS) tests/test.sh $(CONFIG)
+		$(MAKE) ignore
 
 deploy:
 	  ./bin/deploy.sh
