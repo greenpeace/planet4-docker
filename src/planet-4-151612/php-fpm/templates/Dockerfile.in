@@ -4,24 +4,24 @@ LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
 
 RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.com/548C16BF.gpg | apt-key add - && \
     echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list && \
+    add-apt-repository ppa:ondrej/php && \
     apt-fast update && \
     apt-fast -y --no-install-recommends install \
-	    newrelic-php5 \
-  		php \
-  		php-cli \
-  		php-curl \
-  		php-gd \
-  		php-imagick \
-  		php-imap \
-  		php-mcrypt \
-  		php-xml \
-  		php-zip \
-      php-fpm \
-      php-intl \
-      php-mbstring \
-      php-mysql \
-      php-recode \
-      php-redis \
+      newrelic-php5 \
+      php${PHP_MAJOR_VERSION} \
+      php${PHP_MAJOR_VERSION}-cli \
+      php${PHP_MAJOR_VERSION}-curl \
+      php${PHP_MAJOR_VERSION}-gd \
+      php${PHP_MAJOR_VERSION}-imagick \
+      php${PHP_MAJOR_VERSION}-imap \
+      php${PHP_MAJOR_VERSION}-xml \
+      php${PHP_MAJOR_VERSION}-zip \
+      php${PHP_MAJOR_VERSION}-fpm \
+      php${PHP_MAJOR_VERSION}-intl \
+      php${PHP_MAJOR_VERSION}-mbstring \
+      php${PHP_MAJOR_VERSION}-mysql \
+      php${PHP_MAJOR_VERSION}-recode \
+      php${PHP_MAJOR_VERSION}-redis \
       ssmtp \
       && \
     newrelic-install install && \

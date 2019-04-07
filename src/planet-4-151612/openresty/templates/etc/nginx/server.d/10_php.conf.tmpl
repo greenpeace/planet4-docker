@@ -102,7 +102,7 @@ location php.ini {
 
 # Deny access to any files with a .php extension in the uploads directory
 # Works in sub-directory installs and also in multisite network
-location ~* /(?:uploads|files)/.*\.php$ {
+location ~* /(?:wflogs|uploads|files)/.*\.php$ {
   deny all;
 }
 
