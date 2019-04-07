@@ -8,7 +8,7 @@ pagespeed DisableFilters "{{ .Env.PAGESPEED_DISABLE_FILTERS }}";
 pagespeed RespectXForwardedProto on;
 
 # Needs to exist and be writable by nginx.  Use tmpfs for best performance.
-pagespeed FileCachePath /tmp/ngx_pagespeed_cache;
+pagespeed FileCachePath /var/cache/pagespeed;
 
 {{ if .Env.PAGESPEED_REDIS_SERVER }}
 pagespeed RedisServer "{{ .Env.PAGESPEED_REDIS_SERVER }}";
