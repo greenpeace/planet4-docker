@@ -34,6 +34,7 @@ pagespeed Disallow "*/wp-admin/*";
 pagespeed Disallow "*.svg*";
 
 pagespeed Domain {{ .Env.APP_HOSTNAME }};
+pagespeed LoadFromFile "https://{{ .Env.APP_HOSTNAME }}" "/app/source/public/";
 
 # pagespeed Domain storage.googleapis.com;
 #
