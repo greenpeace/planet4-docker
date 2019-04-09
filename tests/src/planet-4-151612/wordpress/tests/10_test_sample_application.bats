@@ -50,11 +50,3 @@ function teardown {
   run curl_check_response_regex "FNORDPTANGWIBBLE" http://localhost:80 proxy 1
   [ $status -ne 0 ]
 }
-
-@test "container restarts with modified content" {
-  skip "todo"
-}
-
-@test "can overwrite existing files" {
-  skip "todo"
-}

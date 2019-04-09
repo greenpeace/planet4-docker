@@ -21,6 +21,7 @@ RUN rm -fr /etc/apt/sources.list && \
     apt-get -y install apt-fast && \
     apt-fast -y upgrade && \
     apt-fast install --no-install-recommends -y \
+      rsync \
       time \
       tzdata \
       wget \

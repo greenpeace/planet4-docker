@@ -12,7 +12,7 @@ BATS_PROJECT_ID=${BATS_PROJECT_ID:-"planet-4-151612"}
 # BUILD_TAG > CIRCLE_TAG > CIRCLE_BRANCH > git branch
 IMAGE_TAG=${BUILD_TAG:-${CIRCLE_TAG:-${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}}}
 # Removes non-docker characters from tag name
-IMAGE_TAG=${IMAGE_TAG//[^[:alnum:]_]/-}
+IMAGE_TAG=${IMAGE_TAG//[^[:alnum:]\._]/-}
 
 export CURL_CONTAINER
 export IMAGE_NAMESPACE

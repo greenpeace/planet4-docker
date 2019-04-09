@@ -26,8 +26,8 @@ all : build test
 init: .git/hooks/pre-commit ignore
 
 ignore:
-	git ls-files | grep -E "Dockerfile$$" | tr '\n' ' '| xargs git update-index --assume-unchanged
-	git ls-files | grep -E "README.md$$" | tr '\n' ' '| xargs git update-index --assume-unchanged
+	@git ls-files | grep -E "Dockerfile$$" | tr '\n' ' '| xargs git update-index --assume-unchanged
+	@git ls-files | grep -E "README.md$$" | tr '\n' ' '| xargs git update-index --assume-unchanged
 
 .git/hooks/%:
 	@chmod 755 .githooks/*
@@ -38,7 +38,7 @@ ignore:
 
 .PHONY : lint
 lint: init
-	@$(MAKE) -j lint-docker lint-sh lint-yaml lint-ci
+	@$(MAKE) -sj lint-docker lint-sh lint-yaml lint-ci
 
 lint-docker:
 ifndef DOCKER
@@ -80,10 +80,12 @@ pull :
 .PHONY : build
 build : lint
 		bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
+		$(MAKE) ignore
 
 .PHONY : test
 test :
 		TEST_FOLDERS=$(TEST_FOLDERS) tests/test.sh $(CONFIG)
+		$(MAKE) ignore
 
 deploy:
 	  ./bin/deploy.sh

@@ -3,12 +3,10 @@ set -e
 
 load env
 
-function setup {
-  begin_output
-}
-
-function teardown {
-  store_output
+@test "php --version" {
+  run run_docker_binary "$image" php --version
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep -Eq "PHP [[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+"
 }
 
 @test "composer --version" {

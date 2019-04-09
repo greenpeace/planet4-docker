@@ -39,7 +39,7 @@ SOURCE_VERSION=
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases
-BASEIMAGE_VERSION=0.10.2
+BASEIMAGE_VERSION=0.11
 # https://getcomposer.org/download/
 COMPOSER_VERSION=1.8.4
 # https://github.com/jwilder/dockerize/releases

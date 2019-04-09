@@ -16,6 +16,11 @@ function teardown {
   [ $status -eq 0 ]
 }
 
+@test "curl" {
+  run run_docker_binary "$image" curl --version
+  [ $status -eq 0 ]
+}
+
 @test "dockerize" {
   run run_docker_binary "$image" dockerize --version
   [ $status -eq 0 ]

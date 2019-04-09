@@ -3,11 +3,10 @@ FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/php-fpm:${SOURCE_VERSION}
 LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-fast install -y --no-install-recommends \
       git \
       jq \
       mysql-client \
-      rsync \
       unzip \
       && \
     apt-get clean && \
