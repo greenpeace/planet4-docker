@@ -22,7 +22,7 @@ else
 		# Generate a self signed certificate if one does not exist
 		# Expires in 365 days
 		_good "$(printf "%-10s " "openresty:")" "Generating default /etc/nginx/ssl/${APP_HOSTNAME}.key /etc/nginx/ssl/${APP_HOSTNAME}.crt"
-		openssl req -x509 -newkey rsa:2048 -keyout "/etc/nginx/ssl/${APP_HOSTNAME}.key" -out "/etc/nginx/ssl/${APP_HOSTNAME}.crt" -nodes -days 365 -subj "/C=NL/ST=State/L=Location/O=/OU=/CN=localdomain" >/dev/null 2>&1 &
+		openssl req -x509 -newkey rsa:2048 -keyout "/etc/nginx/ssl/${APP_HOSTNAME}.key" -out "/etc/nginx/ssl/${APP_HOSTNAME}.crt" -nodes -days 365 -subj "/C=NL/ST=State/L=Location/O=Org/OU=OrgUnit/CN=localdomain" >/dev/null 2>&1 &
 	fi
 
 fi

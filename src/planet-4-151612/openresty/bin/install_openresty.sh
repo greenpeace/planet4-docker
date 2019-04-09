@@ -33,7 +33,7 @@ else
     build-essential \
     geoipupdate \
     libmaxminddb-dev \
-    libgd2-xpm-dev \
+    libgd-dev \
     libgeoip-dev \
     libgoogle-perftools-dev \
     libpcre3-dev \
@@ -110,7 +110,7 @@ else
     autoconf \
     automake \
     build-essential \
-    libgd2-xpm-dev \
+    libgd-dev \
     libgeoip-dev \
     libgoogle-perftools-dev \
     libpcre3-dev \
