@@ -34,6 +34,8 @@ update-exim4.conf -v
 
 _good "exim4:  Starting service exim4..."
 
+mkdir -p /var/log/exim4
+
 exec dockerize \
 	-stdout /var/log/exim4/mainlog \
 	exim4 -bd -v
