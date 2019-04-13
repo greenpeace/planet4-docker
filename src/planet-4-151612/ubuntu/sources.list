@@ -21,9 +21,9 @@ deb http://mirror.rackspace.com/ubuntu/ bionic-updates universe
 ## your rights to use the software. Also, please note that software in
 ## multiverse WILL NOT receive any review or updates from the Ubuntu
 ## security team.
-deb http://mirror.rackspace.com/ubuntu/ bionic multiverse
+# deb http://mirror.rackspace.com/ubuntu/ bionic multiverse
 # deb-src http://mirror.rackspace.com/ubuntu/ bionic multiverse
-deb http://mirror.rackspace.com/ubuntu/ bionic-updates multiverse
+# deb http://mirror.rackspace.com/ubuntu/ bionic-updates multiverse
 # deb-src http://mirror.rackspace.com/ubuntu/ bionic-updates multiverse
 
 ## N.B. software from this repository may not have been tested as
@@ -31,7 +31,8 @@ deb http://mirror.rackspace.com/ubuntu/ bionic-updates multiverse
 ## newer versions of some applications which may provide useful features.
 ## Also, please note that software in backports WILL NOT receive any review
 ## or updates from the Ubuntu security team.
-deb http://mirror.rackspace.com/ubuntu/ bionic-backports main restricted universe multiverse
+deb http://mirror.rackspace.com/ubuntu/ bionic-backports main restricted universe
+# deb http://mirror.rackspace.com/ubuntu/ bionic-backports main restricted universe multiverse
 # deb-src http://mirror.rackspace.com/ubuntu/ bionic-backports main restricted universe multiverse
 
 ## Uncomment the following two lines to add software from Canonical's
@@ -45,5 +46,5 @@ deb http://security.ubuntu.com/ubuntu/ bionic-security main restricted
 # deb-src http://security.ubuntu.com/ubuntu/ bionic-security main restricted
 deb http://security.ubuntu.com/ubuntu/ bionic-security universe
 # deb-src http://security.ubuntu.com/ubuntu/ bionic-security universe
-deb http://security.ubuntu.com/ubuntu/ bionic-security multiverse
+# deb http://security.ubuntu.com/ubuntu/ bionic-security multiverse
 # deb-src http://security.ubuntu.com/ubuntu/ bionic-security multiverse

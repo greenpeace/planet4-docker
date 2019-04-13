@@ -6,6 +6,7 @@ ifneq ($(strip $(CONFIG)),)
 CONFIG := -c $(CONFIG)
 endif
 
+# Pass TEST_FOLDERS env variable to limit which tests to run
 TEST_FOLDERS ?=
 
 # Check necessary commands exist
@@ -79,12 +80,12 @@ pull :
 
 .PHONY : build
 build : lint
-		bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
+		time bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
 		$(MAKE) ignore
 
 .PHONY : test
 test :
-		TEST_FOLDERS=$(TEST_FOLDERS) tests/test.sh $(CONFIG)
+		TEST_FOLDERS=$(TEST_FOLDERS) time tests/test.sh $(CONFIG)
 		$(MAKE) ignore
 
 deploy:

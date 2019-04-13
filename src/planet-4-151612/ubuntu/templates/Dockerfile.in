@@ -2,19 +2,15 @@ FROM phusion/baseimage:${BASEIMAGE_VERSION} as base
 
 LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
 
-COPY . /app/
-
 ARG MICROSCANNER_TOKEN
 
 ENV MICROSCANNER_TOKEN="${MICROSCANNER_TOKEN}"
 
 RUN if [ -z "${MICROSCANNER_TOKEN}" ]; then { echo "ERROR: MICROSCANNER_TOKEN not set"; exit 1; }; fi
 
-ADD https://get.aquasec.com/microscanner .
+COPY . /app/
 
-RUN chmod 755 microscanner
-
-RUN rm -fr /etc/apt/sources.list && \
+RUN mv /etc/apt/sources.list /etc/apt/sources.list.original && \
     ln -s /app/sources.list /etc/apt/sources.list && \
     add-apt-repository ppa:apt-fast/stable && \
     apt-get update && \
@@ -27,12 +23,21 @@ RUN rm -fr /etc/apt/sources.list && \
       wget \
       && \
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-fast/* && \
-    chmod 755 /app/bin/* && \
-    ln -s /app/bin/set_timezone.sh /etc/my_init.d/00_set_timezone.sh && \
-    wget -nv https://github.com/jwilder/dockerize/releases/download/v${DOCKERIZE_VERSION}/dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
+    chmod 755 /app/bin/*
+
+RUN rm -fr /usr/share/man/* /usr/share/doc/*
+
+RUN ln -s /app/bin/set_timezone.sh /etc/my_init.d/00_set_timezone.sh
+
+RUN wget -nv https://github.com/jwilder/dockerize/releases/download/v${DOCKERIZE_VERSION}/dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
     tar -C /app/bin -xzvf dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
-    rm dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
-    rm -fr /usr/share/man/* /usr/share/doc/*
+    rm dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz
+
+RUN rm -fr /etc/service/sshd
+
+ADD https://get.aquasec.com/microscanner .
+
+RUN chmod 755 microscanner
 
 RUN ./microscanner ${MICROSCANNER_TOKEN}
 
@@ -40,7 +45,6 @@ FROM scratch
 
 COPY --from=base / /
 
-# Local time zone of application container
 ENV \
     APP_ENV="production" \
     APP_GID="1000" \
