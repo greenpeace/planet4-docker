@@ -17,8 +17,6 @@ GIT_SOURCE=https://github.com/greenpeace/planet4-base-fork
 # see: https://getcomposer.org/doc/articles/aliases.md#why-aliases-
 GIT_REF=develop
 
-COMPOSER=composer.json
-
 # default build tags are derived from `git rev-parse --abbrev-ref HEAD`
 # Use SOURCE_VERSION or BUILD_TAG in environment or custom config to set these values
 # Note that each step in the build chain relies on the previous image, so unless
