@@ -18,21 +18,23 @@ find "${GIT_ROOT_DIR}/src" -name "Dockerfile" -exec rm -r "{}" \;
 find "${GIT_ROOT_DIR}/tests/src" -name "Dockerfile" -exec rm -r "{}" \;
 
 test_containers=(
-  "p4sampleapplication_openresty" \
-  "openresty_app" \
-  "p4sampleapplication_db" \
-  "p4sampleapplication_redis" \
-  "p4sampleapplication_php-fpm" \
-  "php-fpm_nginx" \
-  "php-fpm_php-fpm" \
-  "php-fpm-test" \
-  "phpfpm-test" \
+  "p4sampleapplication_openresty"
+  "openresty_app"
+  "p4sampleapplication_db"
+  "p4sampleapplication_redis"
+  "p4sampleapplication_php-fpm"
+  "php-fpm_nginx"
+  "php-fpm_php-fpm"
+  "php-fpm-test"
+  "phpfpm-test"
+  "exim_mail"
 )
 
 for container in "${test_containers[@]}"
 do
   # FIXME get actual container numbers properly
   # stop running container
+  echo "Stopping $container ... "
   docker stop ${container} >/dev/null 2>&1 &
   docker stop ${container}_1 >/dev/null 2>&1 &
   docker stop ${container}_2 >/dev/null 2>&1 &
