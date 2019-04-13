@@ -61,13 +61,7 @@ function test_minimal_startup() {
 
   docker rm -f $name >/dev/null || true
 
-  if [[ -z $CIRCLECI ]]
-  then
-    docker run --name $name -p "9000:9000" -d --rm $image
-  else
-    docker run --name $name -d --rm $image
-  fi
-  sleep 5
+  docker run --name $name -d --rm $image
 }
 
 # Queries a fastcgi endpoint and expects a response to match regular expression parameter
