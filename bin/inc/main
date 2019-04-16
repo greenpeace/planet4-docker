@@ -90,7 +90,7 @@ function set_vars() {
     if [[ -z "$current" ]] || [[ $config_pass -gt 0 ]]
     then
       # Skip any variables set in the environment
-      [[ $(contains "${env_parameters[@]}" $key) == "y" ]] && _build "[ENV] $key=${!key}" && continue
+      #[[ $(contains "${env_parameters[@]}" $key) == "y" ]] && _build "[ENV] $key=${!key}" && continue
       # This key is not set yet
       if [[ $bash_version -lt 4 ]]
       then
