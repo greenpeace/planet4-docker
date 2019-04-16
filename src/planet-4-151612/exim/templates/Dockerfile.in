@@ -1,6 +1,6 @@
 FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/ubuntu:${SOURCE_VERSION}
 
-MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
+LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends exim4-daemon-light \
