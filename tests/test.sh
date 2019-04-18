@@ -47,7 +47,13 @@ TEST_BASE_DIR="$( cd -P "$( dirname "$source" )" && pwd )"
 export TEST_BASE_DIR
 
 echo "Config file: $TEST_BASE_DIR/../${CONFIG_FILE:-config.default}"
-. "$TEST_BASE_DIR/../${CONFIG_FILE:-config.default}"
+while read -r line
+do
+  [[ $line == "#"* ]] && continue
+  [[ -z "$line" ]] && continue
+  echo "$line"
+  declare "$line"
+done < "$TEST_BASE_DIR/../${CONFIG_FILE:-config.default}"
 
 # Include base project helper functions
 . "${TEST_BASE_DIR}/_helpers"

@@ -2,9 +2,20 @@ SHELL := /bin/bash
 BUILD_FLAGS ?= -rp
 BUILD_LIST ?=
 
+# ---
+
+# Read default configuration
+include config.default
+export $(shell sed 's/=.*//' config.default)
+
+# Read custom configuration if exist
 ifneq ($(strip $(CONFIG)),)
-CONFIG := -c $(CONFIG)
+include $(CONFIG)
+export $(shell sed 's/=.*//' config.custom)
 endif
+
+MICROSCANNER_TOKEN ?= $(shell cat MICROSCANNER_TOKEN)
+export MICROSCANNER_TOKEN
 
 # Pass TEST_FOLDERS env variable to limit which tests to run
 TEST_FOLDERS ?=

@@ -45,7 +45,7 @@ RUN groupadd -g "${APP_GID}" "${APP_GROUP}" && \
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-fast/* && \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/* && \
     mkdir -p /etc/nginx/ssl "${PUBLIC_PATH}" && \
-    echo "$(nginx -V 2>&1)" > "${PUBLIC_PATH}/index.html" && \
+    nginx -V > "${PUBLIC_PATH}/index.html" 2>&1 && \
     echo "TEST-DATA-ONLY" >> "${PUBLIC_PATH}/index.html" && \
     echo "Country: __P4_GEOIP_COUNTRY_CODE__" >> "${PUBLIC_PATH}/index.html"
 

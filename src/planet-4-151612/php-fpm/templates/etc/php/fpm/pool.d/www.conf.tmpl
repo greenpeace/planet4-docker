@@ -419,7 +419,7 @@ php_admin_value[max_input_vars] = {{ .Env.PHP_MAX_INPUT_VARS }}
 php_admin_value[memory_limit] = {{ .Env.PHP_MEMORY_LIMIT }}
 php_admin_value[sendmail_path] = /usr/sbin/ssmtp -t
 php_admin_value[session.save_handler] = {{ .Env.PHP_SESSION_SAVE_HANDLER }}
-php_admin_value[session.save_path] = "{{ .Env.PHP_SESSION_SAVE_PATH }}"
+php_admin_value[session.save_path] = {{ .Env.PHP_SESSION_SAVE_PATH }}
 
 ; Soft values, can be overridden by ini_set
 php_flag[display_errors] = off

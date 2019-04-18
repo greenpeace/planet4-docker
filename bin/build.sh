@@ -21,7 +21,7 @@ export GIT_ROOT_DIR
 
 # ----------------------------------------------------------------------------
 
-function sendBuildRequest() {
+sendBuildRequest() {
   local dir=${1:-${GIT_ROOT_DIR}}
 
   gcloud config set project "${GOOGLE_PROJECT_ID}"
@@ -81,7 +81,7 @@ function sendBuildRequest() {
 }
 
 # Reads key-value file as functionargument, extracts and wraps key with ${..} for use in envsubst
-function get_var_array() {
+get_var_array() {
   set -eu
   local file
   file="$1"

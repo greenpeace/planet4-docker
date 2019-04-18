@@ -5,12 +5,6 @@ load env
 
 function setup {
   begin_output
-
-  # Perform the build once only
-  if [[ $BATS_TEST_NUMBER -eq 1 ]]
-  then
-    "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -c "${TEST_CONFIG_FILE}" | tee -a "${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}/$BATS_IMAGE"
-  fi
 }
 
 function teardown {
@@ -73,4 +67,9 @@ function teardown {
   run "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -h
   [ $status -eq 0 ]
   printf '%s' "$output" | grep -Eq "Usage"
+}
+
+@test "build.sh builds with custom file" {
+  run "${PROJECT_GIT_ROOT_DIR}/bin/build.sh" -c "${TEST_CONFIG_FILE}"
+  [ $status -eq 0 ]
 }

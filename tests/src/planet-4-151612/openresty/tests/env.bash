@@ -18,6 +18,9 @@ export image
 IMAGE=$image
 export IMAGE
 
+IMAGE_FROM=${IMAGE_NAMESPACE:-gcr.io}/${BATS_PROJECT_ID:-planet-4-151612}/openresty:${IMAGE_TAG:-$(git rev-parse --abbrev-ref HEAD)}
+export IMAGE_FROM
+
 ENDPOINT_PORT=80
 ENDPOINT="http://localhost:${ENDPOINT_PORT}"
 if [[ ${CI:-} ]]

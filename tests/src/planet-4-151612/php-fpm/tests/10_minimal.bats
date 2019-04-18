@@ -28,19 +28,19 @@ load env
   run test_fastcgi_response "/app/source/public/index.php"
   [ $status -eq 0 ]
   version_detect="[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+"
-  printf '%s' "$output" | grep -E "PHP Version ${version_detect}"
+  printf '%s' "$output" | grep -Eo "PHP Version ${version_detect}"
 }
 
 @test "service errors 404 on non-existent file" {
   run test_fastcgi_response "/app/source/public/error.php"
-  printf '%s' "$output" | grep -Eq "Status: 404 Not Found"
+  printf '%s' "$output" | grep -Eo "Status: 404 Not Found"
   echo "$output" > "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}.error.php"
 }
 
 @test "service responds with status data on _php_status" {
   run test_fastcgi_response "/_php_status"
   [ $status -eq 0 ]
-  printf '%s' "$output" | grep -E "pool.+example_com"
+  printf '%s' "$output" | grep -Eo "pool.+example_com"
 }
 
 @test "minimal service cleans up" {

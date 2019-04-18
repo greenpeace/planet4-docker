@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+_good "$(printf "%-10s " "openresty:")" "APP_ENV ${APP_ENV}"
 _good "$(printf "%-10s " "openresty:")" "server_name ${APP_HOSTNAME}"
 _good "$(printf "%-10s " "openresty:")" "client_max_body_size=${UPLOAD_MAX_SIZE}"
 

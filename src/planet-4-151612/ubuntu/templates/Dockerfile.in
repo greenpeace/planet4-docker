@@ -10,11 +10,13 @@ RUN if [ -z "${MICROSCANNER_TOKEN}" ]; then { echo "ERROR: MICROSCANNER_TOKEN no
 
 COPY . /app/
 
+# hadolint ignore=DL3008
 RUN mv /etc/apt/sources.list /etc/apt/sources.list.original && \
     ln -s /app/sources.list /etc/apt/sources.list && \
     add-apt-repository ppa:apt-fast/stable && \
     apt-get update && \
-    apt-get -y install apt-fast && \
+    apt-get -y install --no-install-recommends apt-fast && \
+    apt-fast remove sshd && \
     apt-fast -y upgrade && \
     apt-fast install --no-install-recommends -y \
       rsync \

@@ -90,7 +90,7 @@ function set_vars() {
     if [[ -z "$current" ]] || [[ $config_pass -gt 0 ]]
     then
       # Skip any variables set in the environment
-      [[ $(contains "${env_parameters[@]}" $key) == "y" ]] && _build "[ENV] $key=${!key}" && continue
+      #[[ $(contains "${env_parameters[@]}" $key) == "y" ]] && _build "[ENV] $key=${!key}" && continue
       # This key is not set yet
       if [[ $bash_version -lt 4 ]]
       then
@@ -207,11 +207,13 @@ fi
 
 if [[ -z "${MICROSCANNER_TOKEN:-}" ]]
 then
-  echo "ERROR: Environment variable MICROSCANNER_TOKEN not set."
-  >&2 echo "ERROR: Environment variable MICROSCANNER_TOKEN not set."
-  >&2 echo "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
-  >&2 echo ""
-  exit 1
+  if [[ "${BUILD_LOCALLY}" = "true" ]] || [[ "${BUILD_REMOTELY}" = "true" ]]
+  then
+    >&2 echo "ERROR: Environment variable MICROSCANNER_TOKEN not set."
+    >&2 echo "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
+    >&2 echo ""
+    exit 1
+  fi
 fi
 
 BRANCH_NAME_RAW=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}

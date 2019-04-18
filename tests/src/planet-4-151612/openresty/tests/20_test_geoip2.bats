@@ -11,15 +11,36 @@ function teardown {
   store_output
 }
 
+@test "GEOIP - container builds" {
+  envsubst < "${BATS_TEST_DIRNAME}/../geoip/Dockerfile.in" > "${BATS_TEST_DIRNAME}/../geoip/Dockerfile"
+  docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" rm -fsv
+  docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" build --no-cache
+}
+
 @test "GEOIP - container starts" {
   run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml"
   [ $status -eq 0 ]
 }
 
-@test "GEOIP - 'Country: Unknown' in test output" {
+@test "GEOIP - 'Country: Unknown' for localhost lookups" {
   run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app curl localhost
   [ $status -eq 0 ]
   printf '%s' "$output" | grep "Country: Unknown"
+}
+
+@test "GEOIP - Country code and name in response headers" {
+  ip=$(getent hosts iinet.net.au | cut -f1 -d' ')
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app curl -I --header "X-Forwarded-For: $ip" 127.0.0.1
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep "X-Country-Code: AU"
+  printf '%s' "$output" | grep "X-Country-Name: Australia"
+}
+
+@test "GEOIP - 'Country: AU' sub_filter rewrite" {
+  ip=$(getent hosts iinet.net.au | cut -f1 -d' ')
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app curl -s --header "X-Forwarded-For: $ip" 127.0.0.1
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep "Country: AU"
 }
 
 @test "GEOIP - container cleans up" {
