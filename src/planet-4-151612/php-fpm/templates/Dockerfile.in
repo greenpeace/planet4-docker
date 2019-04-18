@@ -20,6 +20,7 @@ RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.c
       php${PHP_MAJOR_VERSION}-mysql \
       php${PHP_MAJOR_VERSION}-recode \
       php${PHP_MAJOR_VERSION}-redis \
+      php${PHP_MAJOR_VERSION}-xml \
       php${PHP_MAJOR_VERSION}-zip \
       ssmtp \
       && \
