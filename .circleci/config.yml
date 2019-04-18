@@ -163,6 +163,33 @@ jobs:
       - store_artifacts:
           path: /tmp/artifacts
 
+  test-exim:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Authenticate with gcloud
+          command: |
+            activate-gcloud-account.sh
+      - run:
+          name: Run bats unit tests
+          command: |
+            cd /tmp/workspace/src
+            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
+            TEST_FOLDERS=tests/src/planet-4-151612/exim \
+            ./tests/test.sh
+      - run:
+          name: Notify failure
+          when: on_fail
+          command: TYPE="Exim tests" notify-job-failure.sh
+      - store_test_results:
+          path: /tmp/planet4-docker/merged
+      - store_artifacts:
+          path: /tmp/artifacts
+
   scan-openresty:
     <<: *defaults
     steps:
@@ -228,6 +255,24 @@ jobs:
           name: Microscanner
           command: |
             if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/handbook:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
+            then
+              echo "@todo: list vulnerabilities"
+            else
+              TYPE="Vulnerability Scan" notify-job-failure.sh
+              exit 1
+            fi
+
+  scan-exim:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Microscanner
+          command: |
+            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/exim:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
             then
               echo "@todo: list vulnerabilities"
             else
