@@ -8,10 +8,6 @@ function usage {
 Build and test artifacts in this repository
 
 Options:
-  -c    Configuration file for build variables, eg:
-          \$ $(basename "$0") -c config.custom
-        Note that the file config.default is always loaded first and any
-        key-value pairs in this custom configuration file overrides the defaults
   -h    Show usage (this information)
   -v    Verbose output
 "
@@ -28,7 +24,6 @@ OPTIONS=':c:hv'
 while getopts $OPTIONS option
 do
     case $option in
-        c  )    CONFIG_FILE=$OPTARG;;
         h  )    usage
                 exit 0;;
         v  )    set -x;;
@@ -39,34 +34,7 @@ do
 done
 shift $((OPTIND - 1))
 
-# CONFIG FILE
-# Read parameters from key->value configuration files
-# Note this will override environment variables at this stage
-# @todo prioritise ENV over config file ?
-
-DEFAULT_CONFIG_FILE="./config.default"
-if [ -f "${DEFAULT_CONFIG_FILE}" ]; then
- # shellcheck disable=SC1090
- source ${DEFAULT_CONFIG_FILE}
-fi
-
-# Read from custom config file from command line parameter
-if [ "${CONFIG_FILE}" != "" ]; then
- echo "Reading custom configuration from ${CONFIG_FILE}"
-
- if [ ! -f "${CONFIG_FILE}" ]; then
-   fatal "File not found: ${CONFIG_FILE}"
- fi
- # https://github.com/koalaman/shellcheck/wiki/SC1090
- # shellcheck source=/dev/null
- source ${CONFIG_FILE}
-fi
-
-# Environment consolidation
-
-BUILD_NAMESPACE=${BUILD_NAMESPACE}
 BUILD_TAG=${BUILD_TAG:-"build-$CIRCLE_BUILD_NUM"}
-GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
 
 # Get all the project subdirectories
 
