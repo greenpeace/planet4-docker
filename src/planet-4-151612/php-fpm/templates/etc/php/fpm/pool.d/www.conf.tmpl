@@ -410,6 +410,8 @@ env[HOSTNAME] = {{ .Env.APP_HOSTNAME }}
 
 ; Hard values, can not be overridden
 php_admin_flag[log_errors] = on
+php_admin_value[catch_workers_output] = yes
+php_admin_value[decorate_workers_output] = no
 php_admin_value[cgi.fix_pathinfo] = 0
 php_admin_value[disable_functions] = {{ .Env.PHP_DISABLE_FUNCTIONS }}
 php_admin_value[access_log] = /proc/self/fd/2
