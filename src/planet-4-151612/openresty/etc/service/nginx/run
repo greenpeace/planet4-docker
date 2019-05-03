@@ -7,19 +7,19 @@ _good "$(printf "%-10s " "openresty:")" "client_max_body_size=${UPLOAD_MAX_SIZE}
 
 mkdir -p /etc/nginx/sites-enabled
 
-nginx_configure_ssl.sh &
+nginx_configure_ssl.sh
 
-nginx_configure_pagespeed.sh &
+nginx_configure_pagespeed.sh
 
-nginx_configure_fastcgi_backend.sh &
+nginx_configure_fastcgi_backend.sh
 
-nginx_configure_hostpath.sh &
+nginx_configure_hostpath.sh
 
-nginx_configure_real_ip.sh &
+nginx_configure_real_ip.sh
 
-nginx_configure_geoip2.sh &
+nginx_configure_geoip2.sh
 
-nginx_configure_health_checks.sh &
+nginx_configure_health_checks.sh
 
 # Set worker_processes = num cpu cores
 WORKER_PROCESSES=$(cat /proc/cpuinfo |grep processor | wc -l)
@@ -30,8 +30,6 @@ if [[ $WORKER_PROCESSES -gt ${OPENRESTY_MAX_WORKER_PROCESSES} ]]; then
 fi
 _good "$(printf "%-10s " "openresty:")" "worker_processes=$WORKER_PROCESSES"
 export WORKER_PROCESSES
-
-wait # for background processes to finish
 
 _title "Starting service: nginx v${OPENRESTY_VERSION}"
 
