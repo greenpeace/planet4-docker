@@ -16,7 +16,7 @@
 #
 # This is a Debian specific file
 
-MAIN_HARDCODE_PRIMARY_HOSTNAME='{{ default .Env.APP_HOSTNAME }}'
+MAIN_HARDCODE_PRIMARY_HOSTNAME={{ default .Env.APP_HOSTNAME }}
 dc_eximconfig_configtype='{{ .Env.EXIM_DELIVERY_MODE }}'
 dc_other_hostnames=''
 dc_local_interfaces=''
