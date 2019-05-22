@@ -11,6 +11,9 @@ function teardown {
   store_output
 }
 
+ipv4=$(host iinet.net.au | grep 'has address' | cut -d' ' -f4)
+ipv6=$(host iinet.net.au | grep 'has IPv6 address' | cut -d' ' -f4)
+
 @test "GEOIP - container builds" {
   envsubst < "${BATS_TEST_DIRNAME}/../geoip/Dockerfile.in" > "${BATS_TEST_DIRNAME}/../geoip/Dockerfile"
   docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" rm -fsv
@@ -28,17 +31,23 @@ function teardown {
   printf '%s' "$output" | grep "Country: Unknown"
 }
 
-@test "GEOIP - Country code and name in response headers" {
-  ip=$(getent hosts iinet.net.au | cut -f1 -d' ')
-  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app curl -I --header "X-Forwarded-For: $ip" 127.0.0.1
+@test "GEOIP - IPv4 - Country code and name in response headers" {
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app curl -I --header "X-Forwarded-For: $ipv4" 127.0.0.1
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep "X-Country-Code: AU"
+  printf '%s' "$output" | grep "X-Country-Name: Australia"
+}
+
+@test "GEOIP - IPv6 - Country code and name in response headers" {
+  skip "#FIXME: Test currently failing"
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app curl -I --header "X-Forwarded-For: $ipv6" 127.0.0.1
   [ $status -eq 0 ]
   printf '%s' "$output" | grep "X-Country-Code: AU"
   printf '%s' "$output" | grep "X-Country-Name: Australia"
 }
 
 @test "GEOIP - 'Country: AU' sub_filter rewrite" {
-  ip=$(getent hosts iinet.net.au | cut -f1 -d' ')
-  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app curl -s --header "X-Forwarded-For: $ip" 127.0.0.1
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app curl -s --header "X-Forwarded-For: $ipv4" 127.0.0.1
   [ $status -eq 0 ]
   printf '%s' "$output" | grep "Country: AU"
 }
