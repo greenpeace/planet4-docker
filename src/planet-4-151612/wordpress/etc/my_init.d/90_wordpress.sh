@@ -57,4 +57,10 @@ else
   fi
 fi
 
-exit 0
+# Wordfence workaround to enable WAF rules immediately instead of waiting for learning period
+# See: https://wordpress.org/support/topic/waf-rules-in-a-stateless-environment/#post-11549432
+if [[ -f "${PUBLIC_PATH}/wp-content/plugins/wordfence/wordfence.php" ]]
+then
+  wp eval "define('WFWAF_ALWAYS_ALLOW_FILE_WRITING',true); \
+    wfConfig::save(array('wafStatus'=>'enabled'));"
+fi
