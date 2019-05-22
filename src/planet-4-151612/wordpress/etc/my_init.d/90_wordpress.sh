@@ -46,18 +46,15 @@ else
   _good "WP_SET_OPTIONS_ON_BOOT is false, skip setting WP options on boot..."
 fi
 
-_good "00 Will try redis configuration"
 if [[ ${WP_REDIS_ENABLED} = "true" ]]
 then
   # Install WP-Redis object cache file if exist
-  _good "01 Install WP-Redis object cache file if exist"
   [[ -f "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" ]] && wp redis enable
-  _good "02 Installed WP-Redis object cache file if exist"
 else
-  _good "03 ELSE before running command"
-  [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]] && rm -f "${PUBLIC_PATH}/wp-content/object-cache.php" || true
-  _good "04 After after running command"
+  if [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]]
+  then
+    rm -f "${PUBLIC_PATH}/wp-content/object-cache.php"
+  fi
 fi
-_good "00 ended redis configuration"
 
 exit 0
