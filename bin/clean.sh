@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-
+set -euo pipefail
 # ----------------------------------------------------------------------------
 
 # Find real file path of current script
 # https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
-
 source="${BASH_SOURCE[0]}"
 while [[ -h "$source" ]]
 do # resolve $source until the file is no longer a symlink
@@ -14,8 +13,15 @@ do # resolve $source until the file is no longer a symlink
 done
 GIT_ROOT_DIR="$( cd -P "$( dirname "$source" )/.." && pwd )"
 
+# Remove dockerfiles
 find "${GIT_ROOT_DIR}/src" -name "Dockerfile" -exec rm -r "{}" \;
 find "${GIT_ROOT_DIR}/tests/src" -name "Dockerfile" -exec rm -r "{}" \;
+
+# Remove test containers
+docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/php-fpm/docker-compose.yml" stop || true
+docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/php-fpm/docker-compose.yml" down -v --remove-orphans || true
+docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/wordpress/docker-compose.yml" stop || true
+docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/wordpress/docker-compose.yml" down -v --remove-orphans || true
 
 test_containers=(
   "p4sampleapplication_openresty"
@@ -30,27 +36,14 @@ test_containers=(
   "exim_mail"
 )
 
-for container in "${test_containers[@]}"
+for i in $(docker ps --format '{{.Names}}')
 do
-  # FIXME get actual container numbers properly
-  # stop running container
-  echo "Stopping $container ... "
-  docker stop ${container} >/dev/null 2>&1 &
-  docker stop ${container}_1 >/dev/null 2>&1 &
-  docker stop ${container}_2 >/dev/null 2>&1 &
-  docker stop ${container}_3 >/dev/null 2>&1 &
-  docker stop ${container}_4 >/dev/null 2>&1 &
+  for j in "${test_containers[@]}"
+  do
+    [[ $i =~ $j ]] || continue
+    echo " . $i ... "
+    docker rm -f "${i}" >/dev/null 2>&1 &
+  done
   wait
-  docker rm ${container} >/dev/null 2>&1 &
-  docker rm ${container}_1 >/dev/null 2>&1 &
-  docker rm ${container}_2 >/dev/null 2>&1 &
-  docker rm ${container}_3 >/dev/null 2>&1 &
-  docker rm ${container}_4 >/dev/null 2>&1 &
-  wait
-  docker rmi -f ${container} >/dev/null 2>&1
-done
 
-docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/php-fpm/docker-compose.yml" stop || true
-docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/php-fpm/docker-compose.yml" down -v --remove-orphans || true
-docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/wordpress/docker-compose.yml" stop || true
-docker-compose -f "${GIT_ROOT_DIR}/tests/src/planet-4-151612/wordpress/docker-compose.yml" down -v --remove-orphans || true
+done
