@@ -37,6 +37,7 @@ ENV ADMIN_EMAIL="nobody@example.com" \
     NEWRELIC_APPNAME="${APPLICATION_NAME}" \
     NEWRELIC_ENABLED="true" \
     NEWRELIC_LICENSE="" \
+    PHP_CATCH_WORKERS_OUTPUT="yes" \
     PHP_CLEAR_ENV="yes" \
     PHP_DISABLE_FUNCTIONS="" \
     PHP_HEALTH_CHECK_PATH="/health-check" \
