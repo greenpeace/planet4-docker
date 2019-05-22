@@ -22,8 +22,9 @@ nginx_configure_geoip2.sh
 nginx_configure_health_checks.sh
 
 # Set worker_processes = num cpu cores
-WORKER_PROCESSES=$(cat /proc/cpuinfo |grep processor | wc -l)
-if [[ $WORKER_PROCESSES -gt ${OPENRESTY_MAX_WORKER_PROCESSES} ]]; then
+WORKER_PROCESSES=$(grep -c processor /proc/cpuinfo)
+if [[ $WORKER_PROCESSES -gt ${OPENRESTY_MAX_WORKER_PROCESSES} ]]
+then
 	# number of available processor cores exceeds the maximum permitted, limit to maximum
 	_good "$(printf "%-10s " "openresty:")" "Using max ${OPENRESTY_MAX_WORKER_PROCESSES} of $WORKER_PROCESSES available cores"
 	WORKER_PROCESSES=${OPENRESTY_MAX_WORKER_PROCESSES}

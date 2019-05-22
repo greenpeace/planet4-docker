@@ -104,12 +104,19 @@ then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
   fi
-elif [[ "${num_files}" -eq 2 ]] && \
-  [[ -f "${PUBLIC_PATH}/index.php" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.php")" ]] && \
-  [[ -f "${PUBLIC_PATH}/index.html" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.html")" ]]
+elif [[ "${num_files}" -eq 2 ]]
 then
-  _good "Test data detected, deleting source directories..."
-  delete_source_directories
+  if [[ -f "${PUBLIC_PATH}/index.php" ]] && \
+    [[ -f "${PUBLIC_PATH}/health_php.php" ]] && \
+    grep -q TEST-DATA-ONLY "${PUBLIC_PATH}/index.php"
+  then
+    _good "Test data detected, deleting source directories..."
+    delete_source_directories
+  else
+    _warn "Unknown file detected"
+    cat "${PUBLIC_PATH}/index.php"
+    _warn "Attempting to continue ..."
+  fi
 elif [[ "${num_files}" -gt 0 ]]
 then
   _good "${num_files} files found in ${PUBLIC_PATH} folder"

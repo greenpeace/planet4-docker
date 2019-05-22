@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 # Executed after my_init.d and environment is established
 
@@ -14,7 +14,7 @@ timeout=2
 i=0
 until dockerize -wait "tcp://${WP_DB_HOST}:${WP_DB_PORT}" -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
 do
-  let i=i+1
+  i=$((i + 1))
   if [[ $i -ge $timeout ]]
   then
     _error "Timeout waiting for database to become ready"
@@ -46,18 +46,21 @@ else
   _good "WP_SET_OPTIONS_ON_BOOT is false, skip setting WP options on boot..."
 fi
 
-_good "00 Will try redis configuration"
 if [[ ${WP_REDIS_ENABLED} = "true" ]]
 then
   # Install WP-Redis object cache file if exist
-  _good "01 Install WP-Redis object cache file if exist"
   [[ -f "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" ]] && wp redis enable
-  _good "02 Installed WP-Redis object cache file if exist"
 else
-  _good "03 ELSE before running command"
-  [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]] && rm -f "${PUBLIC_PATH}/wp-content/object-cache.php" || true
-  _good "04 After after running command"
+  if [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]]
+  then
+    rm -f "${PUBLIC_PATH}/wp-content/object-cache.php"
+  fi
 fi
-_good "00 ended redis configuration"
 
-exit 0
+# Wordfence workaround to enable WAF rules immediately instead of waiting for learning period
+# See: https://wordpress.org/support/topic/waf-rules-in-a-stateless-environment/#post-11549432
+if [[ -f "${PUBLIC_PATH}/wp-content/plugins/wordfence/wordfence.php" ]]
+then
+  wp eval "define('WFWAF_ALWAYS_ALLOW_FILE_WRITING',true); \
+    wfConfig::save(array('wafStatus'=>'enabled'));"
+fi

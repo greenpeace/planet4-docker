@@ -21,7 +21,7 @@ function fatal {
 
 function get_container_id {
   # Guesses correct container name, returns associated container ID
-  docker ps | grep "${BATS_IMAGE//[^[:alnum:]_]/}" | head -n1 | cut -d' ' -f1
+  docker ps --format '{{.Names}}' | grep "${BATS_IMAGE//[^[:alnum:]_]/}" | head -n1 | cut -d' ' -f1
 }
 
 function get_container_name {
@@ -86,7 +86,6 @@ function curl_check_response_regex {
   local regex=${1:-"OK"}
   local endpoint=${2:-"http://localhost:80"}
   local container=${3:-$(get_container_id)}
-
 
   local interval=1
   local loop=${4:-60}
