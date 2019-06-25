@@ -23,6 +23,7 @@ services:
       - GIT_SOURCE=${GIT_SOURCE}
       - GIT_REF=${GIT_BRANCH}
       - MERGE_SOURCE=
+      - WP_REDIS_ENABLED=true
       - WP_TITLE=${WP_TITLE}
       - WP_VERSION=${WP_VERSION:-latest}
     env_file:

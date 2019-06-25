@@ -50,13 +50,15 @@ if [[ ${WP_REDIS_ENABLED} = "true" ]]
 then
   # Install WP-Redis object cache file if exist
   [[ -f "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" ]] && {
-    [[ -e "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" ]] || {
+    _good "Enabling redis object cache ..."
+    [[ -e "${PUBLIC_PATH}/wp-content/object-cache.php" ]] || {
       ln -s "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" "${PUBLIC_PATH}/wp-content/object-cache.php"
     }
   }
 else
-  if [[ -f "${PUBLIC_PATH}/wp-content/object-cache.php" ]]
+  if [[ -e "${PUBLIC_PATH}/wp-content/object-cache.php" ]]
   then
+    _good "Disabling redis object cache ..."
     rm -f "${PUBLIC_PATH}/wp-content/object-cache.php"
   fi
 fi
