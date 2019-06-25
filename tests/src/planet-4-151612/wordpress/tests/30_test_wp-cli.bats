@@ -18,6 +18,12 @@ function teardown {
   [ $status -eq 0 ]
 }
 
+@test "wp-cli has redis connection" {
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec php-fpm wp redis info
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep -Eq "status.*connected"
+}
+
 @test "wp-cli gets wordpress version" {
   run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec php-fpm wp core version
   [ $status -eq 0 ]
