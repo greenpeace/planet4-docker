@@ -5,7 +5,7 @@ defaults: &defaults
     TEST_OUTPUT_DIR: /tmp/planet4-docker
     BUILD_FLAGS: -r
   docker:
-    - image: gcr.io/planet-4-151612/circleci-base:latest
+    - image: greenpeaceinternational/circleci-base:latest
   working_directory: /home/circleci/app
 
 version: 2
