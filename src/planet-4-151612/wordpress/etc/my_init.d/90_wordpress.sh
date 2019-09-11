@@ -52,10 +52,13 @@ then
   [[ -f "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" ]] && {
     _good "Enabling redis object cache ..."
     [[ -e "${PUBLIC_PATH}/wp-content/object-cache.php" ]] || {
+      _good " - 01 - Doing the ln -s for the object-cache.php ..."
       ln -s "${PUBLIC_PATH}/wp-content/plugins/wp-redis/object-cache.php" "${PUBLIC_PATH}/wp-content/object-cache.php"
+      _good " - 02 - Did the ln -s for the object-cache.php ..."
     }
   }
 else
+  _good "The WP_REDIS_ENABLED was not true ..."
   if [[ -e "${PUBLIC_PATH}/wp-content/object-cache.php" ]]
   then
     _good "Disabling redis object cache ..."
