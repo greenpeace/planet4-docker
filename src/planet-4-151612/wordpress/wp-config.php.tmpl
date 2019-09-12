@@ -59,6 +59,7 @@ define('NONCE_SALT',       '{{ .Env.WP_NONCE_SALT }}');
 {{ if eq .Env.APP_ENV "develop" }}
 define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
+define( 'SCRIPT_DEBUG', true );
 {{ end }}
 
 {{ if eq .Env.WP_STATELESS_MEDIA_ENABLED "true" }}
