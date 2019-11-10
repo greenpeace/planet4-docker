@@ -410,11 +410,8 @@ env[HOSTNAME] = {{ .Env.APP_HOSTNAME }}
 
 ; Hard values, can not be overridden
 php_admin_flag[log_errors] = on
-php_admin_value[catch_workers_output] = yes
-php_admin_value[decorate_workers_output] = no
 php_admin_value[cgi.fix_pathinfo] = 0
 php_admin_value[disable_functions] = {{ .Env.PHP_DISABLE_FUNCTIONS }}
-php_admin_value[access_log] = /proc/self/fd/2
 php_admin_value[error_log] = /proc/self/fd/2
 php_admin_value[max_execution_time] = {{ .Env.PHP_MAX_EXECUTION_TIME }}
 php_admin_value[max_input_vars] = {{ .Env.PHP_MAX_INPUT_VARS }}
@@ -422,6 +419,11 @@ php_admin_value[memory_limit] = {{ .Env.PHP_MEMORY_LIMIT }}
 php_admin_value[sendmail_path] = /usr/sbin/ssmtp -t
 php_admin_value[session.save_handler] = {{ .Env.PHP_SESSION_SAVE_HANDLER }}
 php_admin_value[session.save_path] = {{ .Env.PHP_SESSION_SAVE_PATH }}
+
+; Re-enable for PHP 7.3
+; See: https://github.com/docker-library/php/issues/207
+;php_admin_value[decorate_workers_output] = no
+;php_admin_value[catch_workers_output] = yes
 
 ; Soft values, can be overridden by ini_set
 php_flag[display_errors] = off
