@@ -27,10 +27,7 @@
 # FIXME This is not implemented properly yet
 
 if [[ "$APP_ENV" = "production" ]]
-then
-  REAL_IP_HEADER=True-Client-IP
-else
-  REAL_IP_HEADER=X-Forwarded-For
+  REAL_IP_HEADER=CF-Connecting-IP
 fi
 
 export REAL_IP_HEADER
