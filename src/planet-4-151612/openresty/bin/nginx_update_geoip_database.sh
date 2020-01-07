@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 # Setup weekly cron job to get updated GEOIP databases
 # by running the nginx_configure_geoip2.sh script with mods
@@ -13,11 +13,3 @@ echo "" >> $GeoIP_RANGES_FILE_PATH
 
 # Update GeoIP data
 /usr/bin/geoipupdate -v >> $GeoIP_RANGES_FILE_PATH 2>&1
-
-
-# Reload configuration if running
-if [[ $(pgrep nginx > /dev/null 2>&1) ]]
-then
-  _good "$(printf "%-10s " "openresty:")" "Reloading configuration ..."
-  sv reload nginx
-fi

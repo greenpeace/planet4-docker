@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # This cron job is just to update the IP files and reread nginx configuration
 
@@ -23,45 +23,36 @@
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
+set -euo pipefail
 
 # CHANGE AS PER YOUR SERVER
-CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY="/etc/nginx/conf.d/cloudflare-ips_today.conf"
+CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY="/tmp/cloudflare-ips_today.conf"
 CLOUDFLARE_IP_RANGES_FILE_PATH="/etc/nginx/conf.d/cloudflare-ips.conf"
-WWW_GROUP=${APP_GROUP}
-WWW_USER=${APP_USER}
 
 CLOUDFLARE_IPSV4_REMOTE_FILE="https://www.cloudflare.com/ips-v4/"
 CLOUDFLARE_IPSV6_REMOTE_FILE="https://www.cloudflare.com/ips-v6/"
 CLOUDFLARE_IPSV4_LOCAL_FILE="/tmp/cloudflare-ips-v4"
 CLOUDFLARE_IPSV6_LOCAL_FILE="/tmp/cloudflare-ips-v6"
 
-if [ -f /usr/bin/fetch ];
-then
-    fetch $CLOUDFLARE_IPSV4_REMOTE_FILE --no-verify-hostname --no-verify-peer -o $CLOUDFLARE_IPSV4_LOCAL_FILE --quiet
-    fetch $CLOUDFLARE_IPSV6_REMOTE_FILE --no-verify-hostname --no-verify-peer -o $CLOUDFLARE_IPSV6_LOCAL_FILE --quiet
-else
-    wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV4_REMOTE_FILE -O $CLOUDFLARE_IPSV4_LOCAL_FILE --no-check-certificate
-    wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV6_REMOTE_FILE -O $CLOUDFLARE_IPSV6_LOCAL_FILE --no-check-certificate
-fi
+wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV4_REMOTE_FILE -O $CLOUDFLARE_IPSV4_LOCAL_FILE --no-check-certificate
+wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV6_REMOTE_FILE -O $CLOUDFLARE_IPSV6_LOCAL_FILE --no-check-certificate
 
 echo "# CloudFlare IP Ranges" > $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 echo "# Generated at $(date) by $0" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 echo "" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV4_LOCAL_FILE >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV6_LOCAL_FILE >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
-# This real_ip_header value is already declared by nginx_configure_real_ip.sh
-#echo "real_ip_header CF-Connecting-IP;" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 echo "" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 
-chown $WWW_USER:$WWW_GROUP $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+chown $APP_USER:$APP_GROUP $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 
 mv $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY $CLOUDFLARE_IP_RANGES_FILE_PATH
 rm -rf $CLOUDFLARE_IPSV4_LOCAL_FILE
 rm -rf $CLOUDFLARE_IPSV6_LOCAL_FILE
 
 # Reload configuration if running
-if [[ $(pgrep nginx > /dev/null 2>&1) ]]
+if  $(pgrep nginx > /dev/null 2>&1)
 then
-  _good "$(printf "%-10s " "openresty:")" "Reloading configuration ..."
+  echo "# Reloading configuration ..." >> $CLOUDFLARE_IP_RANGES_FILE_PATH
   sv reload nginx
 fi
