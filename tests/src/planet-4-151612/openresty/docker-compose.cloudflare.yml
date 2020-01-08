@@ -1,0 +1,8 @@
+---
+version: '3'
+services:
+  app:
+    image: ${IMAGE_NAMESPACE:-gcr.io}/${BATS_PROJECT_ID:-planet-4-151612}/openresty:${IMAGE_TAG:-develop}
+    network_mode: "${NETWORK_MODE}"
+    environment:
+      - CLOUDFLARE_ENABLED=true

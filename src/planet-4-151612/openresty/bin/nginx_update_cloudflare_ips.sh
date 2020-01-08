@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This cron job is just to update the IP files and reread nginx configuration
+
 #  (The MIT License)
 #
 #  Copyright (c) 2013 M.S. Babaei
@@ -21,17 +23,10 @@
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
-
-# CHANGE AS PER YOUR SERVER
 set -euo pipefail
 
-_good "$(printf "%-10s " "openresty:")" "CLOUDFLARE ${CLOUDFLARE_ENABLED}"
-
-[[ ${CLOUDFLARE_ENABLED} = "true" ]] || {
-  exit 0
-}
-
-# Create cloudflare config file
+# CHANGE AS PER YOUR SERVER
+CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY="/tmp/cloudflare-ips_today.conf"
 CLOUDFLARE_IP_RANGES_FILE_PATH="/etc/nginx/conf.d/cloudflare-ips.conf"
 
 CLOUDFLARE_IPSV4_REMOTE_FILE="https://www.cloudflare.com/ips-v4/"
@@ -42,21 +37,22 @@ CLOUDFLARE_IPSV6_LOCAL_FILE="/tmp/cloudflare-ips-v6"
 wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV4_REMOTE_FILE -O $CLOUDFLARE_IPSV4_LOCAL_FILE --no-check-certificate
 wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV6_REMOTE_FILE -O $CLOUDFLARE_IPSV6_LOCAL_FILE --no-check-certificate
 
-echo "# CloudFlare IP Ranges" > $CLOUDFLARE_IP_RANGES_FILE_PATH
-echo "# Generated at $(date) by $0" >> $CLOUDFLARE_IP_RANGES_FILE_PATH
-echo "" >> $CLOUDFLARE_IP_RANGES_FILE_PATH
-awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV4_LOCAL_FILE >> $CLOUDFLARE_IP_RANGES_FILE_PATH
-awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV6_LOCAL_FILE >> $CLOUDFLARE_IP_RANGES_FILE_PATH
-echo "" >> $CLOUDFLARE_IP_RANGES_FILE_PATH
+echo "# CloudFlare IP Ranges" > $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+echo "# Generated at $(date) by $0" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+echo "" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV4_LOCAL_FILE >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV6_LOCAL_FILE >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+echo "" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 
-chown $APP_USER:$APP_GROUP $CLOUDFLARE_IP_RANGES_FILE_PATH
+chown $APP_USER:$APP_GROUP $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 
+mv $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY $CLOUDFLARE_IP_RANGES_FILE_PATH
 rm -rf $CLOUDFLARE_IPSV4_LOCAL_FILE
 rm -rf $CLOUDFLARE_IPSV6_LOCAL_FILE
 
-#Setup cron job to update Cloudflare ips
-CRON_SCHEDULE="cron.daily"
-CLOUDFLARE_DAILY_CRON_FILE_PATH="/etc/$CRON_SCHEDULE/nginx_update_cloudflare_ips"
-CLOUDFLARE_CRON_FILE="/app/bin/nginx_update_cloudflare_ips.sh"
-
-ln -s $CLOUDFLARE_CRON_FILE $CLOUDFLARE_DAILY_CRON_FILE_PATH
+# Reload configuration if running
+if  $(pgrep nginx > /dev/null 2>&1)
+then
+  echo "# Reloading configuration ..." >> $CLOUDFLARE_IP_RANGES_FILE_PATH
+  sv reload nginx
+fi

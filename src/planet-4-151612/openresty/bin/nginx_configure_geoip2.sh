@@ -20,4 +20,10 @@ do
   dockerize -template "/app/templates$f.tmpl:$f"
 done
 
+# Setup cron job to update GeoIP data
+CRON_SCHEDULE="cron.weekly"
+GEOIP_WEEKLY_CRON_FILE_PATH="/etc/$CRON_SCHEDULE/nginx_update_geoip_database"
+GEOIP_CRON_FILE="/app/bin/nginx_update_geoip_database.sh"
+ln -s $GEOIP_CRON_FILE $GEOIP_WEEKLY_CRON_FILE_PATH
+
 wait
