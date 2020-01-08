@@ -52,6 +52,12 @@ ipv6=$(host iinet.net.au | grep 'has IPv6 address' | cut -d' ' -f4)
   printf '%s' "$output" | grep "Country: AU"
 }
 
+@test "GEOIP - Cron job deployed" {
+  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.geoip.yml" exec app run-parts --list /etc/cron.weekly
+  [ $status -eq 0 ]
+  printf '%s' "$output" | grep "nginx_update_geoip_database"
+}
+
 @test "GEOIP - container cleans up" {
   run clean_docker_compose
   [ $status -eq 0 ]
