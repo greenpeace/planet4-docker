@@ -45,8 +45,9 @@ OPENRESTY_MAX_WORKER_PROCESSES | ${OPENRESTY_MAX_WORKER_PROCESSES}       | Sets 
 CHOWN_APP_DIR              | false   | If true `chown` `${PUBLIC_PATH}` as `APP_USER:APP_GROUP`
 MAXMIND_ACCOUNTID          | \_\_DISABLED\_\_   | Maxmind account, can be regenerated via [Maxmind.com](https://www.maxmind.com/en/accounts/current/people/current/)
 MAXMIND_LICENSE            | \_\_DISABLED\_\_   | Maxmind license, can be regenerated via [Maxmind.com](https://www.maxmind.com/en/accounts/current/people/current/)
-GEOIP2_ENABLED             | false   | Enables or disables GeoIP Maxmind databases
-- @todo CLOUDFLARE_ENABLED
+GEOIP2_ENABLED             | false   | Enables GeoIP Maxmind database updates and Country & City codes
+CLOUDFLARE_ENABLED         | false   | Enables correct variables and IP updates for sites behind Cloudflare
+
 
 ## Security
 

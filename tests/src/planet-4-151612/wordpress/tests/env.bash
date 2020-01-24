@@ -18,7 +18,7 @@ export image
 APP_HOSTNAME="www.planet4.test"
 DB_IMAGE="mysql:5.7"
 GIT_SOURCE="https://github.com/greenpeace/planet4-base-fork"
-GIT_BRANCH="develop"
+GIT_BRANCH="build-test"
 RANDOM_TITLE="Test-mcBkUCqAO3yCvAjy"
 WP_TITLE="Greenpeace - Testing"
 
