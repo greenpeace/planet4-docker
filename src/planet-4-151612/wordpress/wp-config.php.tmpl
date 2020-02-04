@@ -34,7 +34,7 @@ define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 {{ if .Env.WP_SENTRY_DSN }}
 define( 'WP_SENTRY_DSN', '{{ .Env.WP_SENTRY_DSN }}' );
 define( 'WP_SENTRY_ERROR_TYPES', {{ .Env.WP_SENTRY_ERROR_TYPES }} );
-define( 'WP_SENTRY_ENV' ), {{ .Env.WP_SENTRY_ENV }} );
+define( 'WP_SENTRY_ENV', {{ .Env.WP_SENTRY_ENV }} );
 {{ end }}
 
 {{ if eq .Env.WP_AUTOMATIC_UPDATER_DISABLED "true" }}
