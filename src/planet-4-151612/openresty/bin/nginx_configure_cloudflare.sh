@@ -27,8 +27,9 @@ set -euo pipefail
 
 _good "$(printf "%-10s " "openresty:")" "CLOUDFLARE ${CLOUDFLARE_ENABLED}"
 
-if [[ ${CLOUDFLARE_ENABLED} = "true" ]]
-then
+[[ ${CLOUDFLARE_ENABLED} = "true" ]] || {
+  exit 0
+}
 
 # Create cloudflare config file
 CLOUDFLARE_IP_RANGES_FILE_PATH="/etc/nginx/conf.d/cloudflare-ips.conf"
@@ -59,5 +60,3 @@ CLOUDFLARE_DAILY_CRON_FILE_PATH="/etc/$CRON_SCHEDULE/nginx_update_cloudflare_ips
 CLOUDFLARE_CRON_FILE="/app/bin/nginx_update_cloudflare_ips.sh"
 
 ln -s $CLOUDFLARE_CRON_FILE $CLOUDFLARE_DAILY_CRON_FILE_PATH
-
-fi
