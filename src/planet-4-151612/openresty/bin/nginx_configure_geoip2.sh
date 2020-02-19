@@ -7,7 +7,9 @@ set -euo pipefail
 }
 
 [[ ${PHP_ENABLED} = 'true' ]] && {
-_error "$(printf "%-10s " "openresty:")" "PHP is not compatible with GeoIP"
+GEOIP2_ENABLED="false"
+export GEOIP2_ENABLED
+_error "$(printf "%-10s " "openresty:")" "PHP is not compatible with GEOIP2, disabling GEOIP2"
   exit 1
 }
 
