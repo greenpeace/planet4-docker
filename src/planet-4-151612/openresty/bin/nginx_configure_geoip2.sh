@@ -2,14 +2,14 @@
 set -euo pipefail
 #Check License and Account key variables
 
-[[ ${GEOIP2_ENABLED} = 'true' ]] || {
+[[ ${GEOIP2_ENABLED} = "true" ]] || {
   exit 0
 }
 
-[[ ${PHP_ENABLED} = 'true' ]] && {
+[[ ${PHP_ENABLED} = "true" ]] && {
 GEOIP2_ENABLED="false"
 export GEOIP2_ENABLED
-_error "$(printf "%-10s " "openresty:")" "PHP is not compatible with GEOIP2, disabling GEOIP2"
+_warning "$(printf "%-10s " "openresty:")" "PHP is not compatible with GEOIP2, disabling GEOIP2"
   exit 1
 }
 
