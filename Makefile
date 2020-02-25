@@ -2,6 +2,8 @@ SHELL := /bin/bash
 BUILD_FLAGS ?= -rp
 BUILD_LIST ?=
 
+DOCKER_BUILDKIT ?= 1
+
 # ---
 
 # Read default configuration
