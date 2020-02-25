@@ -7,3 +7,5 @@ services:
     network_mode: "${NETWORK_MODE}"
     environment:
       - GEOIP2_ENABLED=true
+      - GEOIP_LICENSE=tsDyjvwURivDEK4F
+      - GEOIP_ACCOUNTID=146520
