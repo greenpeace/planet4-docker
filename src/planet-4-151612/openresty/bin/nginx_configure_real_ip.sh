@@ -26,7 +26,7 @@
 # See: https://modpagespeed.com/doc/downstream-caching
 # FIXME This is not implemented properly yet
 
-if [[ "$APP_ENV" = "production" ]]
+if [[ ${CLOUDFLARE_ENABLED} = "true" ]]
 then
   REAL_IP_HEADER=CF-Connecting-IP
 else

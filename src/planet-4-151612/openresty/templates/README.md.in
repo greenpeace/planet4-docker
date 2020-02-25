@@ -43,6 +43,11 @@ APP_GROUP                  | nginx   | Service group name
 UPLOAD_MAX_SIZE            | ${UPLOAD_MAX_SIZE}     | Sets `nginx_client_max_body_size`
 OPENRESTY_MAX_WORKER_PROCESSES | ${OPENRESTY_MAX_WORKER_PROCESSES}       | Sets `worker_processes`, will not exceed number of logical cores
 CHOWN_APP_DIR              | false   | If true `chown` `${PUBLIC_PATH}` as `APP_USER:APP_GROUP`
+GEOIP_ACCOUNTID          |    | Maxmind account, can be regenerated via [Maxmind.com](https://www.maxmind.com/en/accounts/current/people/current/)
+GEOIP_LICENSE            |    | Maxmind license, can be regenerated via [Maxmind.com](https://www.maxmind.com/en/accounts/current/people/current/)
+GEOIP2_ENABLED             | false   | Enables GeoIP Maxmind database updates and Country & City codes
+CLOUDFLARE_ENABLED         | false   | Enables correct variables and IP updates for sites behind Cloudflare
+
 
 ## Security
 
