@@ -94,6 +94,11 @@ $redis_server = array(
 {{ end }}
 
 /**
+ * Smartsheet credentials.
+ */
+define('SMARTSHEET_API_KEY', '{{ .Env.SMARTSHEET_API_KEY }}');
+
+/**
  * WordPress Database Table prefix.
  *
  * You can have multiple installations in one database if you give each
