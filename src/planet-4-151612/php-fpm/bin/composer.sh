@@ -8,10 +8,11 @@ uid=$(id -u)
 
 if [[ $uid = "0" ]]
 then
-  if [[ $(ls -ldn . | awk '{print $3}') != "${APP_USER}" ]]
+  if [[ $(ls -ld "${SOURCE_PATH}" | awk '{print $3}') != "${APP_USER}" ]]
   then
     chown -R ${APP_USER} /app/.composer
-    [[ -e "${SOURCE_PATH}" ]] && chown -R ${APP_USER} "${SOURCE_PATH}"
+    # Find dirs/files *not* owned by APP_USER, and pipe them one by one to chown
+    [[ -e "${SOURCE_PATH}" ]] && find "${SOURCE_PATH}" ! -user ${APP_USER} -exec chown -f ${APP_USER} {} \;
   fi
   exec setuser ${APP_USER} php /app/bin/composer.phar "$@"
 elif [[ $uid = "${APP_UID}" ]]
