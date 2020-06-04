@@ -113,9 +113,9 @@ then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
   else
-    _warn "Unknown file detected"
-    cat "${PUBLIC_PATH}/index.php"
-    _warn "Attempting to continue ..."
+    _warning "Unknown file detected"
+    cat "${PUBLIC_PATH}/index.php" || true
+    _warning "Attempting to continue ..."
   fi
 elif [[ "${num_files}" -gt 0 ]]
 then
@@ -144,7 +144,7 @@ fi
 create_source_directories
 
 _good "Setting permissions of /app to ${APP_USER}..."
-chown -R "${APP_USER}" /app || true
+find /app ! -user "${APP_USER}" -exec chown -f "${APP_USER}" {} \;
 
 # ==============================================================================
 # ENVIRONMENT VARIABLE CHECKS
@@ -215,7 +215,7 @@ then
   rsync -a --exclude=.* . "${SOURCE_PATH}"
 fi
 
-composer_exec="time composer -vv --no-ansi"
+composer_exec="time setuser ${APP_USER} composer -vv --no-ansi"
 
 # if [[ ! -d "${SOURCE_PATH}/composer.lock" ]]
 # then
@@ -229,6 +229,12 @@ then
 else
   composer_install_flags=" --prefer-dist --no-dev"
 fi
+
+_good "Setting permissions of composer to ${APP_USER}..."
+chown -f "${APP_USER}" /app/bin/composer
+
+_good "Setting permissions of /app to ${APP_USER}..."
+find /app ! -user "${APP_USER}" -exec chown -f "${APP_USER}" {} \;
 
 cd "${SOURCE_PATH}"
 
