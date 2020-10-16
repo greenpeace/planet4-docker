@@ -53,3 +53,8 @@ RUN groupadd -g "${APP_GID}" "${APP_GROUP}" && \
     echo "Country: __P4_GEOIP_COUNTRY_CODE__" >> "${PUBLIC_PATH}/index.html"
 
 COPY . /app/
+
+RUN \
+    if [ -d ${SOURCE_PATH}/built-dev-assets/ ]; then \
+        rsync -av ${SOURCE_PATH}/built-dev-assets/ ${SOURCE_PATH}/ && rm -rf ${SOURCE_PATH}/built-dev-assets; \
+    fi
