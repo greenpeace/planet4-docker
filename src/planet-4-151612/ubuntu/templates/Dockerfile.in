@@ -16,7 +16,6 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.original && \
     add-apt-repository ppa:apt-fast/stable && \
     apt-get update && \
     apt-get -y install --no-install-recommends apt-fast && \
-    apt-fast remove sshd && \
     apt-fast -y upgrade && \
     apt-fast install --no-install-recommends -y \
       rsync \
