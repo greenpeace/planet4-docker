@@ -22,6 +22,7 @@ WORKDIR ${SOURCE_PATH}
 
 ENV \
     APP_HOSTPATH="" \
+    CLOUDFLARE_API_KEY="" \
     DELETE_EXISTING_FILES="false" \
     GIT_REF="master" \
     GIT_SOURCE="${GIT_SOURCE}" \
