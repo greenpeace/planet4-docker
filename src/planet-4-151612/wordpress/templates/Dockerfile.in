@@ -66,6 +66,7 @@ ENV \
     WP_REDIS_HOST="redis" \
     WP_REDIS_PORT="6379" \
     WP_REDIS_DB="0" \
+    WP_REDIS_DEFAULT_EXPIRE_SECONDS="86400" \
     WP_REWRITE_STRUCTURE="/%category%/%post_id%/%postname%/" \
     WP_SECURE_AUTH_KEY="" \
     WP_SECURE_AUTH_SALT="" \
