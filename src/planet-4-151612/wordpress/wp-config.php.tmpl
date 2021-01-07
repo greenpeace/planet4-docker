@@ -91,6 +91,9 @@ $redis_server = array(
   'port'=> {{ .Env.WP_REDIS_PORT }},
   'database' => {{ .Env.WP_REDIS_DB }}
 );
+{{ if .Env.WP_REDIS_DEFAULT_EXPIRE_SECONDS }}
+define( 'WP_REDIS_DEFAULT_EXPIRE_SECONDS',   '{{ .Env.WP_REDIS_DEFAULT_EXPIRE_SECONDS }}' );
+{{ end }}
 {{ end }}
 
 /**
