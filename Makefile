@@ -24,7 +24,6 @@ TEST_FOLDERS ?=
 
 # Check necessary commands exist
 
-CIRCLECI := $(shell command -v circleci 2> /dev/null)
 DOCKER := $(shell command -v docker 2> /dev/null)
 SHELLCHECK := $(shell command -v shellcheck 2> /dev/null)
 YAMLLINT := $(shell command -v yamllint 2> /dev/null)
@@ -52,7 +51,7 @@ ignore:
 
 .PHONY : lint
 lint: init
-	@$(MAKE) -sj lint-docker lint-sh lint-yaml lint-ci
+	@$(MAKE) -sj lint-docker lint-sh lint-yaml
 
 lint-docker:
 ifndef DOCKER
@@ -74,12 +73,6 @@ ifndef YAMLLINT
 endif
 	@find . -type f -name '*.yml' | xargs yamllint
 	@find . -type f -name '*.yaml' | xargs yamllint
-
-lint-ci:
-ifndef CIRCLECI
-	$(error "circleci is not installed: https://circleci.com/docs/2.0/local-cli/#installation")
-endif
-	@circleci config validate >/dev/null
 
 ################################################################################
 

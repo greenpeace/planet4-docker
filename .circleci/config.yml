@@ -1,4 +1,6 @@
 ---
+version: 2.1
+
 docker_auth: &docker_auth
   username: $DOCKERHUB_USERNAME
   password: $DOCKERHUB_PASSWORD
@@ -13,8 +15,6 @@ defaults: &defaults
       auth:
         <<: *docker_auth
   working_directory: /home/circleci/app
-
-version: 2
 
 jobs:
   build:
@@ -313,7 +313,6 @@ jobs:
               exit 1
             fi
 
-
   notify-promote:
     <<: *defaults
     steps:
@@ -345,11 +344,6 @@ jobs:
           name: Commit updated build numbers
           command: |
             update-build-numbers.sh
-
-  trigger-planet4:
-    <<: *defaults
-    steps:
-      - run: trigger-build-api.sh planet4-base-fork develop
 
 workflow-references:
   branch_jobs: &branch_jobs
@@ -429,30 +423,6 @@ workflow-references:
           filters:
             branches:
               ignore: master
-      # - hold-promote:
-      #     type: approval
-      #     requires:
-      #       - test-openresty
-      #       - test-php-fpm
-      #       - test-wordpress
-      #       - scan-openresty
-      #       - scan-php-fpm
-      #       - scan-wordpress
-      #     filters:
-      #       branches:
-      #         ignore: master
-      # - notify-promote:
-      #     context: org-global
-      #     requires:
-      #       - test-openresty
-      #       - test-php-fpm
-      #       - test-wordpress
-      #       - scan-openresty
-      #       - scan-php-fpm
-      #       - scan-wordpress
-      #     filters:
-      #       branches:
-      #         ignore: master
       - promote:
           context: org-global
           requires:
@@ -582,16 +552,6 @@ workflow-references:
             - scan-wordpress
             - scan-exim
             - scan-handbook
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-
-      - trigger-planet4:
-          context: org-global
-          requires:
-            - deploy
           filters:
             branches:
               ignore: /.*/
