@@ -23,7 +23,7 @@ if (isset($_SERVER['HTTP_VIA']) && strpos($_SERVER['HTTP_VIA'], 'akamai') !== fa
 
 if (!isset($_SERVER['HTTP_HOST'])) {
   # Circumvent HTTP_HOST array key not set messages when using wp-cli
-  $_SERVER['HTTP_HOST']='';
+  $_SERVER['HTTP_HOST']='{{ .Env.APP_HOSTNAME }}';
 }
 
 define('WP_SITEURL',  $protocol . '://{{ .Env.APP_HOSTNAME }}{{ .Env.APP_HOSTPATH }}');
