@@ -9,25 +9,13 @@ define('DB_HOST',     '{{ .Env.WP_DB_HOST}}:{{ .Env.WP_DB_PORT }}');
 define('DB_CHARSET',  '{{ .Env.WP_DB_CHARSET }}');
 define('DB_COLLATE',  '{{ .Env.WP_DB_COLLATION }}');
 
-/* Respect upstream SSL termination headers */
-if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
-    $_SERVER['HTTPS']='on';
-    $protocol='https';
-} else {
-    $protocol='http';
-}
-
-if (isset($_SERVER['HTTP_VIA']) && strpos($_SERVER['HTTP_VIA'], 'akamai') !== false) {
-  $_SERVER['HTTP_HOST']='www.greenpeace.org';
-}
-
 if (!isset($_SERVER['HTTP_HOST'])) {
   # Circumvent HTTP_HOST array key not set messages when using wp-cli
   $_SERVER['HTTP_HOST']='{{ .Env.APP_HOSTNAME }}';
 }
 
-define('WP_SITEURL',  $protocol . '://{{ .Env.APP_HOSTNAME }}{{ .Env.APP_HOSTPATH }}');
-define('WP_HOME',     $protocol . '://{{ .Env.APP_HOSTNAME }}{{ .Env.APP_HOSTPATH }}');
+define('WP_SITEURL',  'https://{{ .Env.APP_HOSTNAME }}{{ .Env.APP_HOSTPATH }}');
+define('WP_HOME',     'https://{{ .Env.APP_HOSTNAME }}{{ .Env.APP_HOSTPATH }}');
 
 define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
