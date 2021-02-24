@@ -37,12 +37,12 @@ CLOUDFLARE_IPSV6_LOCAL_FILE="/tmp/cloudflare-ips-v6"
 wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV4_REMOTE_FILE -O $CLOUDFLARE_IPSV4_LOCAL_FILE --no-check-certificate
 wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV6_REMOTE_FILE -O $CLOUDFLARE_IPSV6_LOCAL_FILE --no-check-certificate
 
-echo "# CloudFlare IP Ranges" > $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
-echo "# Generated at $(date) by $0" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
-echo "" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
-awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV4_LOCAL_FILE >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
-awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV6_LOCAL_FILE >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
-echo "" >> $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+echo "# CloudFlare IP Ranges" >$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+echo "# Generated at $(date) by $0" >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+echo "" >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV4_LOCAL_FILE >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV6_LOCAL_FILE >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+echo "" >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 
 chown $APP_USER:$APP_GROUP $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 
@@ -51,8 +51,7 @@ rm -rf $CLOUDFLARE_IPSV4_LOCAL_FILE
 rm -rf $CLOUDFLARE_IPSV6_LOCAL_FILE
 
 # Reload configuration if running
-if  $(pgrep nginx > /dev/null 2>&1)
-then
-  echo "# Reloading configuration ..." >> $CLOUDFLARE_IP_RANGES_FILE_PATH
+if $(pgrep nginx >/dev/null 2>&1); then
+  echo "# Reloading configuration ..." >>$CLOUDFLARE_IP_RANGES_FILE_PATH
   sv reload nginx
 fi

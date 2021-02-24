@@ -14,14 +14,13 @@ TEST_CONFIG_FILE="${PROJECT_GIT_ROOT_DIR}/tests/self/fixtures/config.test"
 # Override automatic image name for self-test
 BATS_IMAGE="self"
 
-function shellcheck_all_bash_scripts {
+function shellcheck_all_bash_scripts() {
   set -ex
   trap finish EXIT
 
-  files=( "$(ack --shell -l "" "${PROJECT_GIT_ROOT_DIR}")" )
+  files=("$(ack --shell -l "" "${PROJECT_GIT_ROOT_DIR}")")
 
-  for i in "${files[@]}"
-  do
+  for i in "${files[@]}"; do
     shellcheck "$i"
   done
 }

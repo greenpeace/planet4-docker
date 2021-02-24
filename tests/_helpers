@@ -1,30 +1,30 @@
 #!/usr/bin/env bash
 set -ae
 
-function finish {
+function finish() {
   { set +ex; } 2>/dev/null
 }
 trap finish EXIT
 
-function warning {
-  >&2 echo "WARNING: $1"
+function warning() {
+  echo >&2 "WARNING: $1"
 }
 
-function error {
+function error() {
   fatal "$1"
 }
 
-function fatal {
-  >&2 echo "ERROR: $1"
+function fatal() {
+  echo >&2 "ERROR: $1"
   exit 1
 }
 
-function get_container_id {
+function get_container_id() {
   # Guesses correct container name, returns associated container ID
   docker ps --format '{{.Names}}' | grep "${BATS_IMAGE//[^[:alnum:]_]/}" | head -n1 | cut -d' ' -f1
 }
 
-function get_container_name {
+function get_container_name() {
   # Removes any non-alphanumeric or '_' characters,
   # in an attempt to match docker-compose service naming convention
   echo "${BATS_IMAGE//[^[:alnum:]_]/}_app_1"
@@ -32,21 +32,21 @@ function get_container_name {
 
 # Used in setup function to log file, line number and function information in
 # artifact storage for review and debug information
-function begin_output {
+function begin_output() {
   ARTIFACT_LOGS_DIR=${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}
   [[ -d "$ARTIFACT_LOGS_DIR" ]] || mkdir -p "$ARTIFACT_LOGS_DIR"
   [[ -f "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}" ]] || touch "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
   PS4='+($(basename "$BASH_SOURCE"):${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
-  echo -e "=============== vvv [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
+  echo -e "=============== vvv [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}" >>"${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
 }
 
 # Used in teardown function to store function output in artifacts
-function store_output {
+function store_output() {
   ARTIFACT_LOGS_DIR=${ARTIFACT_LOGS_DIR:-"/tmp/artifacts/logs"}
   # $output is defined in bats `run` command, don't panic @shellcheck
   # shellcheck disable=SC2154
-  echo "$output" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
-  echo -e "=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >> "${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
+  echo "$output" >>"${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
+  echo -e "=============== ^^^ [${BATS_TEST_NUMBER}] ${BATS_IMAGE} - ${BATS_TEST_DESCRIPTION}\n" >>"${ARTIFACT_LOGS_DIR}/${BATS_IMAGE}"
   PS4=''
 }
 
@@ -80,7 +80,7 @@ function simple_grep() {
 }
 
 # Queries an endpoint and expects a response to match regular expression parameter
-function curl_check_response_regex {
+function curl_check_response_regex() {
   set -euo pipefail
   trap finish EXIT
   local regex=${1:-"OK"}
@@ -89,12 +89,10 @@ function curl_check_response_regex {
 
   local interval=1
   local loop=${4:-60}
-  until docker run -t --network "container:${container}" --rm "${CURL_CONTAINER}" -s -k -N "${endpoint}" | grep -o "${regex}"
-  do
+  until docker run -t --network "container:${container}" --rm "${CURL_CONTAINER}" -s -k -N "${endpoint}" | grep -o "${regex}"; do
     sleep $interval
-    loop=$((loop-1))
-    if [[ $loop -lt 1 ]]
-    then
+    loop=$((loop - 1))
+    if [[ $loop -lt 1 ]]; then
       exit 1
     fi
   done
@@ -102,7 +100,7 @@ function curl_check_response_regex {
 
 # Queries an endpoint and expects a response status code to match parameter
 # shellcheck disable=SC2120
-function curl_check_status_code {
+function curl_check_status_code() {
   set -eu
   trap finish EXIT
   local status_code=${1:-200}
@@ -111,21 +109,18 @@ function curl_check_status_code {
 
   local interval=1
   local loop=${4:-60}
-  until docker run --network "container:${container}" --rm "${CURL_CONTAINER}" -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep "${status_code}"
-  do
+  until docker run --network "container:${container}" --rm "${CURL_CONTAINER}" -s -k -o /dev/null -w "%{http_code}" "${endpoint}" | grep "${status_code}"; do
     sleep $interval
-    loop=$((loop-1))
-    if [[ $loop -lt 1 ]]
-    then
+    loop=$((loop - 1))
+    if [[ $loop -lt 1 ]]; then
       return 1
     fi
   done
 }
 
-
 # Queries an endpoint and expects a response status code to match parameter
 # shellcheck disable=SC2120
-function curl_get_response_header {
+function curl_get_response_header() {
   set -eu
   trap finish EXIT
   local var=${1:-status}
@@ -136,13 +131,13 @@ function curl_get_response_header {
 }
 
 # Pulls docker image parameter
-function pull_image {
+function pull_image() {
   set -eu
   trap finish EXIT
   docker pull "${1:-${image}}"
 }
 
-function start_docker_compose {
+function start_docker_compose() {
   set -eu
   trap finish EXIT
   # [[ -z "$1" ]] && fatal "Container name not set"
@@ -160,22 +155,20 @@ function start_docker_compose {
   docker-compose --no-ansi -p "${BATS_IMAGE//[^[:alnum:]_]/}" -f "${compose_file}" up --remove-orphans -d
 
   # Query the container until a 200 response is returned
-  until curl_check_status_code 200 "${endpoint}" "${container}"
-  do
+  until curl_check_status_code 200 "${endpoint}" "${container}"; do
     sleep $interval
-    loop=$((loop-1))
-    if [[ $loop -lt 1 ]]
-    then
+    loop=$((loop - 1))
+    if [[ $loop -lt 1 ]]; then
       docker-compose --no-ansi -p "${BATS_IMAGE//[^[:alnum:]_]/}" -f "$compose_file" stop
-      >&2 echo "Timeout without successful connection to ${endpoint} on ${container}"
-      >&2 docker-compose --no-ansi -p "${BATS_IMAGE//[^[:alnum:]_]/}" -f "$compose_file" logs
+      echo >&2 "Timeout without successful connection to ${endpoint} on ${container}"
+      docker-compose >&2 --no-ansi -p "${BATS_IMAGE//[^[:alnum:]_]/}" -f "$compose_file" logs
       exit 1
     fi
   done
   # Container is up and running
 }
 
-function clean_container {
+function clean_container() {
   set -eu
   trap finish EXIT
   [[ -z "$1" ]] && fatal "Container name not set"
@@ -184,7 +177,7 @@ function clean_container {
   yes | docker rm "$1" || true
 }
 
-function clean_docker_compose {
+function clean_docker_compose() {
   set -eu
   trap finish EXIT
   local compose_file="${1:-${BATS_TEST_DIRNAME}/../docker-compose.yml}"
@@ -192,7 +185,7 @@ function clean_docker_compose {
   docker-compose --no-ansi -p "${BATS_IMAGE//[^[:alnum:]_]/}" -f "${compose_file}" down -v
 }
 
-function run_test_image_exists {
+function run_test_image_exists() {
   set -eu
   trap finish EXIT
   [[ -z "$1" ]] && fatal "Expected response regex not set"
@@ -200,7 +193,7 @@ function run_test_image_exists {
   docker images | grep "${image_regex}"
 }
 
-function run_test_container_starts {
+function run_test_container_starts() {
   set -eu
   trap finish EXIT
   [[ -z "$1" ]] && fatal "No container name specified"

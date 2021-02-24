@@ -22,8 +22,7 @@ ENDPOINT_PORT_HTTP=80
 ENDPOINT_PORT_HTTPS=443
 ENDPOINT_HTTP="http://localhost:${ENDPOINT_PORT_HTTP}"
 ENDPOINT_HTTPS="https://localhost:${ENDPOINT_PORT_HTTPS}"
-if [[ ${CI} ]]
-then
+if [[ ${CI} ]]; then
   NETWORK_MODE="host"
 else
   NETWORK_MODE="bridge"
@@ -39,12 +38,11 @@ export NETWORK_MODE
 export PHP_MEMORY_LIMIT
 export UPLOAD_MAX_SIZE
 
-
-function setup {
+function setup() {
   begin_output
 }
 
-function teardown {
+function teardown() {
   store_output
 }
 

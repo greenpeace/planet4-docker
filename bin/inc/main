@@ -20,16 +20,14 @@ BUILD_TMPDIR="$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")"
 # Find real file path of current script
 # https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 
-if [[ -z "${GIT_ROOT_DIR:-}" ]]
-then
+if [[ -z "${GIT_ROOT_DIR:-}" ]]; then
   source="${BASH_SOURCE[0]}"
-  while [[ -h "$source" ]]
-  do # resolve $source until the file is no longer a symlink
-    dir="$( cd -P "$( dirname "$source" )" && pwd )"
+  while [[ -L "$source" ]]; do # resolve $source until the file is no longer a symlink
+    dir="$(cd -P "$(dirname "$source")" && pwd)"
     source="$(readlink "$source")"
     [[ $source != /* ]] && source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
   done
-  GIT_ROOT_DIR="$( cd -P "$( dirname "$source" )/.." && pwd )"
+  GIT_ROOT_DIR="$(cd -P "$(dirname "$source")/.." && pwd)"
   export GIT_ROOT_DIR
 fi
 # ----------------------------------------------------------------------------
@@ -44,22 +42,22 @@ rm "${BUILD_TMPDIR}/pretty_print.sh"
 
 # VARIABLE ASSIGNMENT
 
-bash_version=$(bash --version | head -n 1| cut -d' ' -f4 | cut -d '.' -f 1)
+bash_version=$(bash --version | head -n 1 | cut -d' ' -f4 | cut -d '.' -f 1)
 
 env_parameters=()
 config_pass=0
 
 function contains() {
-    local n=$#
-    local value=${!n}
-    for ((i=1;i < $#;i++)) {
-        if [ "${!i}" == "${value}" ]; then
-            echo "y"
-            return 0
-        fi
-    }
-    echo "n"
-    return 1
+  local n=$#
+  local value=${!n}
+  for ((i = 1; i < $#; i++)); do
+    if [ "${!i}" == "${value}" ]; then
+      echo "y"
+      return 0
+    fi
+  done
+  echo "n"
+  return 1
 }
 
 # Reads key-value file as function argument, assigns variable to environment
@@ -67,8 +65,7 @@ function set_vars() {
   local file
   file="${1}"
   _build "Config pass #$config_pass"
-  while read -r line
-  do
+  while read -r line; do
     # Skip comments
     [[ $line == \#* ]] && continue
     # Skip lines that don't include an assignment =
@@ -80,28 +77,24 @@ function set_vars() {
 
     # Current value
     set +u
-    if [[ ${!key} ]]
-    then
+    if [[ ${!key} ]]; then
       current="${!key}"
     else
       current=
     fi
 
-    if [[ -z "$current" ]] || [[ $config_pass -gt 0 ]]
-    then
+    if [[ -z "$current" ]] || [[ $config_pass -gt 0 ]]; then
       # Skip any variables set in the environment
       #[[ $(contains "${env_parameters[@]}" $key) == "y" ]] && _build "[ENV] $key=${!key}" && continue
       # This key is not set yet
-      if [[ $bash_version -lt 4 ]]
-      then
+      if [[ $bash_version -lt 4 ]]; then
         # Urgh, eval is evil
         eval "${line}"
       else
         declare -g "$key=$value"
       fi
 
-      if [[ $value != "${current}" ]]
-      then
+      if [[ $value != "${current}" ]]; then
         _notice " ++ $key=$value"
       else
         _notice " -- $key=$value"
@@ -110,7 +103,7 @@ function set_vars() {
       _notice "[ENV] $key=${!key}"
       env_parameters+=($key)
     fi
-  done < "${file}"
+  done <"${file}"
   let config_pass+=1
   export config_pass
   printf "\n"
@@ -127,17 +120,15 @@ function set_vars() {
 # @todo prioritise ENV over config file ?
 
 default_config="${GIT_ROOT_DIR}/config.default"
-if [[ -f "${default_config}" ]]
-then
+if [[ -f "${default_config}" ]]; then
   set_vars "${default_config}"
 fi
-
 
 # ----------------------------------------------------------------------------
 
 # UTILITY
 
-function usage {
+function usage() {
   echo "Usage: $(basename "$0") [OPTION|OPTION2] [<image build list>|all]...
 Build and test artifacts in this repository
 
@@ -155,22 +146,27 @@ Options:
 # COMMAND LINE OPTIONS
 
 OPTIONS=':vc:lhpr'
-while getopts $OPTIONS option
-do
-    case $option in
-        c  )    # shellcheck disable=SC2034
-                CONFIG_FILE=$OPTARG;;
-        l  )    BUILD_LOCALLY=true;;
-        h  )    usage
-                exit 0;;
-        p  )    PULL_IMAGES=true;;
-        r  )    BUILD_REMOTELY=true;;
-        v  )    verbosity=debug
-                _verbose_debug on;;
-        *  )    echo "Unkown option: ${OPTARG}"
-                usage
-                exit 1;;
-    esac
+while getopts $OPTIONS option; do
+  case $option in
+    c) # shellcheck disable=SC2034
+      CONFIG_FILE=$OPTARG ;;
+    l) BUILD_LOCALLY=true ;;
+    h)
+      usage
+      exit 0
+      ;;
+    p) PULL_IMAGES=true ;;
+    r) BUILD_REMOTELY=true ;;
+    v)
+      verbosity=debug
+      _verbose_debug on
+      ;;
+    *)
+      echo "Unkown option: ${OPTARG}"
+      usage
+      exit 1
+      ;;
+  esac
 done
 shift $((OPTIND - 1))
 
@@ -178,40 +174,33 @@ shift $((OPTIND - 1))
 
 # LOAD CUSTOM CONFIGURATION
 set +u
-if [[ ! -z "${CONFIG_FILE}" ]]
-then
+if [[ ! -z "${CONFIG_FILE}" ]]; then
   echo "Reading configuration from ${CONFIG_FILE}"
 
-  if [[ ! -f "${CONFIG_FILE}" ]]
-  then
+  if [[ ! -f "${CONFIG_FILE}" ]]; then
     _fatal "File not found: ${CONFIG_FILE}"
   fi
   # https://github.com/koalaman/shellcheck/wiki/SC1090
   set_vars "${CONFIG_FILE}"
 fi
 
-
 # ----------------------------------------------------------------------------
 # Configure build variables based on CircleCI environment vars
 
-if [[ "${CIRCLECI:-}" ]]
-then
+if [[ "${CIRCLECI:-}" ]]; then
   BUILD_NUM=${BUILD_NUM:-"build-${CIRCLE_BUILD_NUM}"}
 
-  if [[ -z "${BUILD_TAG:-}" ]]
-  then
+  if [[ -z "${BUILD_TAG:-}" ]]; then
     BUILD_TAG="${CIRCLE_TAG:-$CIRCLE_BRANCH}"
   fi
 
 fi
 
-if [[ -z "${MICROSCANNER_TOKEN:-}" ]]
-then
-  if [[ "${BUILD_LOCALLY}" = "true" ]] || [[ "${BUILD_REMOTELY}" = "true" ]]
-  then
-    >&2 echo "ERROR: Environment variable MICROSCANNER_TOKEN not set."
-    >&2 echo "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
-    >&2 echo ""
+if [[ -z "${MICROSCANNER_TOKEN:-}" ]]; then
+  if [[ "${BUILD_LOCALLY}" = "true" ]] || [[ "${BUILD_REMOTELY}" = "true" ]]; then
+    echo >&2 "ERROR: Environment variable MICROSCANNER_TOKEN not set."
+    echo >&2 "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
+    echo >&2 ""
     exit 1
   fi
 fi

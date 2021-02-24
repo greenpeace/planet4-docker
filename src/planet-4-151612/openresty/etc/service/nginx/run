@@ -25,11 +25,10 @@ nginx_configure_health_checks.sh
 
 # Set worker_processes = num cpu cores
 WORKER_PROCESSES=$(grep -c processor /proc/cpuinfo)
-if [[ $WORKER_PROCESSES -gt ${OPENRESTY_MAX_WORKER_PROCESSES} ]]
-then
-	# number of available processor cores exceeds the maximum permitted, limit to maximum
-	_good "$(printf "%-10s " "openresty:")" "Using max ${OPENRESTY_MAX_WORKER_PROCESSES} of $WORKER_PROCESSES available cores"
-	WORKER_PROCESSES=${OPENRESTY_MAX_WORKER_PROCESSES}
+if [[ $WORKER_PROCESSES -gt ${OPENRESTY_MAX_WORKER_PROCESSES} ]]; then
+  # number of available processor cores exceeds the maximum permitted, limit to maximum
+  _good "$(printf "%-10s " "openresty:")" "Using max ${OPENRESTY_MAX_WORKER_PROCESSES} of $WORKER_PROCESSES available cores"
+  WORKER_PROCESSES=${OPENRESTY_MAX_WORKER_PROCESSES}
 fi
 _good "$(printf "%-10s " "openresty:")" "worker_processes=$WORKER_PROCESSES"
 export WORKER_PROCESSES
@@ -37,8 +36,8 @@ export WORKER_PROCESSES
 _title "Starting service: nginx v${OPENRESTY_VERSION}"
 
 dockerize \
-	-template /app/templates/etc/nginx/sites-enabled/default.conf.tmpl:/etc/nginx/sites-enabled/default.conf \
-	-template /app/templates/etc/nginx/sites-enabled/default-ssl.conf.tmpl:/etc/nginx/sites-enabled/default-ssl.conf \
-	-template /app/templates/etc/nginx/nginx.conf.tmpl:/etc/nginx/nginx.conf
+  -template /app/templates/etc/nginx/sites-enabled/default.conf.tmpl:/etc/nginx/sites-enabled/default.conf \
+  -template /app/templates/etc/nginx/sites-enabled/default-ssl.conf.tmpl:/etc/nginx/sites-enabled/default-ssl.conf \
+  -template /app/templates/etc/nginx/nginx.conf.tmpl:/etc/nginx/nginx.conf
 
 exec nginx

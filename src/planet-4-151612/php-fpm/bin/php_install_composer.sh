@@ -15,9 +15,8 @@ EXPECTED_SIGNATURE=$(wget --retry-connrefused --waitretry=1 -t $retries -q -O - 
 wget --retry-connrefused --waitretry=1 -t $retries -O composer-setup.php http://getcomposer.org/installer
 ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', 'composer-setup.php');")
 
-if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]
-then
-  >&2 echo 'ERROR: Invalid installer signature'
+if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then
+  echo >&2 'ERROR: Invalid installer signature'
   exit 1
 fi
 

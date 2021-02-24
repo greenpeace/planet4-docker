@@ -7,32 +7,31 @@ set -euo pipefail
 }
 
 [[ ${PHP_ENABLED} = "true" ]] && {
-GEOIP2_ENABLED="false"
-export GEOIP2_ENABLED
-_warning "$(printf "%-10s " "openresty:")" "PHP is not compatible with GEOIP2, disabling GEOIP2"
+  GEOIP2_ENABLED="false"
+  export GEOIP2_ENABLED
+  _warning "$(printf "%-10s " "openresty:")" "PHP is not compatible with GEOIP2, disabling GEOIP2"
   exit 1
 }
 
 [[ -z "${GEOIP_ACCOUNTID}" ]] && {
-GEOIP2_ENABLED="false"
-export GEOIP2_ENABLED
-_warning "$(printf "%-10s " "openresty:")" "GEOIP_ACCOUNTID is blank, account id is required"
-_warning "$(printf "%-10s " "openresty:")" "disabling GeoIP"
+  GEOIP2_ENABLED="false"
+  export GEOIP2_ENABLED
+  _warning "$(printf "%-10s " "openresty:")" "GEOIP_ACCOUNTID is blank, account id is required"
+  _warning "$(printf "%-10s " "openresty:")" "disabling GeoIP"
   exit 1
 }
 
-[[ -z "${GEOIP_LICENSE}" ]]  && {
-GEOIP2_ENABLED="false"
-export GEOIP2_ENABLED
-_warning "$(printf "%-10s " "openresty:")" "GEOIP_LICENSE is blank, license is required"
-_warning "$(printf "%-10s " "openresty:")" "disabling GeoIP"
- exit 1
+[[ -z "${GEOIP_LICENSE}" ]] && {
+  GEOIP2_ENABLED="false"
+  export GEOIP2_ENABLED
+  _warning "$(printf "%-10s " "openresty:")" "GEOIP_LICENSE is blank, license is required"
+  _warning "$(printf "%-10s " "openresty:")" "disabling GeoIP"
+  exit 1
 }
 
 _good "$(printf "%-10s " "openresty:")" "$(printf "%-22s" "geoip.accountid:")" "${GEOIP_ACCOUNTID//[[:alnum:]]/*}"
 _good "$(printf "%-10s " "openresty:")" "$(printf "%-22s" "geoip.license:")" "${GEOIP_LICENSE//[[:alnum:]]/*}"
 _good "$(printf "%-10s " "openresty:")" "GEOIP2 ${GEOIP2_ENABLED}"
-
 
 files=(
   /etc/nginx/conf.d/90_geoip.conf
@@ -40,8 +39,7 @@ files=(
   /etc/GeoIP.conf
 )
 
-for f in "${files[@]}"
-do
+for f in "${files[@]}"; do
   dockerize -template "/app/templates$f.tmpl:$f"
 done
 

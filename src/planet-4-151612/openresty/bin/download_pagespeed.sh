@@ -2,8 +2,8 @@
 
 echo "Downloading incubator-pagespeed-ngx ${NGX_PAGESPEED_VERSION} from https://github.com/apache/incubator-pagespeed-ngx/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz..."
 
-wget -O - https://github.com/apache/incubator-pagespeed-ngx/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz --progress=bar --tries=3 \
-	| tar zxf - -C /tmp
+wget -O - https://github.com/apache/incubator-pagespeed-ngx/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz --progress=bar --tries=3 |
+  tar zxf - -C /tmp
 
 PSOL_URL=$(cat "/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}/PSOL_BINARY_URL")
 
@@ -16,5 +16,5 @@ fi
 
 echo "Downloading incubator-pagespeed-ngx PSOL ${NGX_PAGESPEED_VERSION} from ${PSOL_URL/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME}..."
 
-wget -O - ${PSOL_URL/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME} --progress=bar --tries=3 \
-	| tar zxf - -C /tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}/
+wget -O - ${PSOL_URL/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME} --progress=bar --tries=3 |
+  tar zxf - -C /tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}/

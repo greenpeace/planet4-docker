@@ -16,12 +16,12 @@ function beep() {
 date
 
 time (
-  make clean;
-  make build ${1:+BUILD_FLAGS=${1}} ${2:+BUILD_LIST=${2}} || exit 1;
-  pushd "../${SIBLING}" >/dev/null 2>&1;
-  INFRA_VERSION="${INFRA_VERSION}" make || exit 1;
-  beep;
-  popd >/dev/null 2>&1;
-  make test;
+  make clean
+  make build ${1:+BUILD_FLAGS=${1}} ${2:+BUILD_LIST=${2}} || exit 1
+  pushd "../${SIBLING}" >/dev/null 2>&1
+  INFRA_VERSION="${INFRA_VERSION}" make || exit 1
+  beep
+  popd >/dev/null 2>&1
+  make test
   beep 2
 )

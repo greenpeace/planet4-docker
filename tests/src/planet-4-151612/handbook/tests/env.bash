@@ -34,10 +34,10 @@ export RANDOM_TITLE
 export HANDBOOK_BUILD_TAG
 export WP_TITLE
 
-function setup {
+function setup() {
   begin_output
 }
 
-function teardown {
+function teardown() {
   store_output
 }

@@ -5,8 +5,7 @@ set -euo pipefail
 chmod +x /app/bin/*
 
 # Configure environment
-for env_file in /app/env/*
-do
+for env_file in /app/env/*; do
   . "${env_file}"
 done
 
@@ -28,10 +27,9 @@ done
 # _good "$(date) -" "exec $*"
 
 # Default Docker CMD will be /sbin/my_init
-if [[ $1 = /sbin/my_init ]]
-then
-	exec /sbin/my_init
+if [[ $1 = /sbin/my_init ]]; then
+  exec /sbin/my_init
 else
   # Execute the custom CMD
-	exec /bin/bash -c "$*"
+  exec /bin/bash -c "$*"
 fi

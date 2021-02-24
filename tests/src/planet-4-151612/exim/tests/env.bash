@@ -16,10 +16,10 @@ export container_name
 export image
 export project
 
-function setup {
+function setup() {
   begin_output
 }
 
-function teardown {
+function teardown() {
   store_output
 }

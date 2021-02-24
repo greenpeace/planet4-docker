@@ -22,7 +22,7 @@ mkdir -p "${PUBLIC_PATH}"
 
 # Create a test PHP index file if it doesn't exist
 [[ -f "${PUBLIC_PATH}/index.php" ]] || {
-  cat <<EOF > "${PUBLIC_PATH}/index.php"
+  cat <<EOF >"${PUBLIC_PATH}/index.php"
 <?php
 //TEST-DATA-ONLY
 phpinfo();

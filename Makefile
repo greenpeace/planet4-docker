@@ -26,6 +26,7 @@ TEST_FOLDERS ?=
 
 DOCKER := $(shell command -v docker 2> /dev/null)
 SHELLCHECK := $(shell command -v shellcheck 2> /dev/null)
+SHFMT := $(shell command -v shfmt 2> /dev/null)
 YAMLLINT := $(shell command -v yamllint 2> /dev/null)
 
 .DEFAULT_GOAL := all
@@ -49,6 +50,14 @@ ignore:
 
 ################################################################################
 
+format: format-sh
+
+format-sh:
+ifndef SHFMT
+	$(error "shfmt is not installed: https://github.com/mvdan/sh")
+endif
+	@shfmt -i 2 -ci -w .
+
 .PHONY : lint
 lint: init
 	@$(MAKE) -sj lint-docker lint-sh lint-yaml
@@ -57,15 +66,17 @@ lint-docker:
 ifndef DOCKER
 	$(error "docker is not installed: https://docs.docker.com/install/")
 endif
-# 	for d in $(shell find . -type f -name 'Dockerfile') ; do \
-# 		docker run --rm -i hadolint/hadolint < $$d ; \
-# 	done
+	@find . -type f -name 'Dockerfile' -exec docker run --rm -i hadolint/hadolint {} \;
 
 lint-sh:
 ifndef SHELLCHECK
 	$(error "shellcheck is not installed: https://github.com/koalaman/shellcheck")
 endif
-# 	@find . -type f -name '*.sh' | xargs shellcheck
+ifndef SHFMT
+	$(error "shfmt is not installed: https://github.com/mvdan/sh")
+endif
+	#@shfmt -f . | xargs shellcheck
+	@shfmt -i 2 -ci -d .
 
 lint-yaml:
 ifndef YAMLLINT
@@ -78,21 +89,21 @@ endif
 
 .PHONY : clean
 clean :
-		bin/clean.sh
+	bin/clean.sh
 
 .PHONY : pull
 pull :
-		pushd bin >/dev/null; ./build.sh -p; popd > /dev/null
+	pushd bin >/dev/null; ./build.sh -p; popd > /dev/null
 
 .PHONY : build
 build : lint
-		time bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
-		$(MAKE) ignore
+	time bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
+	$(MAKE) ignore
 
 .PHONY : test
 test :
-		TEST_FOLDERS=$(TEST_FOLDERS) time tests/test.sh $(CONFIG)
-		$(MAKE) ignore
+	TEST_FOLDERS=$(TEST_FOLDERS) time tests/test.sh $(CONFIG)
+	$(MAKE) ignore
 
 deploy:
-	  ./bin/deploy.sh
+	./bin/deploy.sh

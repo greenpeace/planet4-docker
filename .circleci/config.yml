@@ -302,7 +302,6 @@ jobs:
               TYPE="Tests" notify-job-success.sh
               exit 0
             fi
-
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
             cd /tmp/workspace/src
             if make deploy
@@ -318,111 +317,79 @@ jobs:
     steps:
       - run:
           name: Notify of held workflow
-          command: TYPE="@rawalker Promotion" ${HOME}/scripts/notify-job-hold.sh
+          command: TYPE="Promotion" notify-job-hold.sh
 
   promote:
     <<: *defaults
     steps:
       - attach_workspace:
           at: /tmp/workspace
-
       - checkout
-
-      - deploy:
-          name: Start release
+      - run:
+          name: prepare git
+          command: |
+            git config user.email "plint@greenpeace.org"
+            git config user.name "CircleCI Bot"
+            git config merge.ours.driver true
+      - run:
+          name: tag
           command: |
             current_version=$(git-current-tag.sh)
             new_version=$(increment-version.sh $current_version)
-
-            echo "Old: $current_version"
-            echo "New: $new_version"
-
-            release-start.sh $new_version
-            release-finish.sh $new_version
-
+            echo "Tagging to ${new_version}"
+            git tag -a "$new_version" -m "$new_version"
+            git push origin --tags
       - deploy:
-          name: Commit updated build numbers
+          name: commit updated build numbers
           command: |
             update-build-numbers.sh
+
 
 workflow-references:
   branch_jobs: &branch_jobs
     jobs:
       - build:
           context: org-global
-          filters:
-            branches:
-              ignore: master
       - test-openresty:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - test-php-fpm:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - test-wordpress:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - test-handbook:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - test-exim:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - scan-openresty:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - scan-php-fpm:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - scan-wordpress:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - scan-handbook:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - scan-exim:
           context: org-global
           requires:
             - build
-          filters:
-            branches:
-              ignore: master
       - promote:
           context: org-global
           requires:
@@ -438,7 +405,7 @@ workflow-references:
             - scan-exim
           filters:
             branches:
-              only: develop
+              only: main
 
   tag_jobs: &tag_jobs
     jobs:
@@ -559,20 +526,19 @@ workflow-references:
               only: /^v.*/
 
 workflows:
-  version: 2
-  nightly-branch:
+  weekly-build:
     <<: *branch_jobs
     triggers:
       - schedule:
-          # Weekly 2100UTC Sunday night = 0700 AEST Monday
+          # Weekly 2100UTC Sunday night
           cron: "0 21 * * 0"
           filters:
             branches:
               only:
                 - develop
 
-  build-branch:
+  branch:
     <<: *branch_jobs
 
-  build-tag:
+  tag:
     <<: *tag_jobs

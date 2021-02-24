@@ -20,8 +20,7 @@ function get_num_files_exist() {
   local dir
   dir="${1:-${PUBLIC_PATH}}"
 
-  if [[ ! -d "$dir" ]]
-  then
+  if [[ ! -d "$dir" ]]; then
     echo 0
     return 0
   fi
@@ -44,7 +43,7 @@ function create_source_directories() {
 function delete_source_directories() {
   # Force clean exit code in the event that these are bind-mounted
   _good "Deleting source directory: ${PUBLIC_PATH}"
-  rm -fr "${PUBLIC_PATH}:?}/*" "${PUBLIC_PATH}/.*" >/dev/null 2>&1  || true
+  rm -fr "${PUBLIC_PATH}:?}/*" "${PUBLIC_PATH}/.*" >/dev/null 2>&1 || true
 }
 # ==============================================================================
 # touch_install_lock()
@@ -52,7 +51,7 @@ function delete_source_directories() {
 function touch_install_lock() {
   [[ ! -e "${SOURCE_PATH}" ]] && _good "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
   _good "Creating install lock file: ${install_lock}"
-  true > "${install_lock}"
+  true >"${install_lock}"
 }
 # ==============================================================================
 # clear_install_lock()
@@ -69,18 +68,16 @@ function clear_install_lock() {
 # FIXME Race conditions still exist! Best to init shared file systems once with
 # a single container before scaling.
 # Random sleep from 0ms to 1000ms to avoid race conditions with multiple containers
-milliseconds=$(( RANDOM % 1000 ))
+milliseconds=$((RANDOM % 1000))
 _good "Sleeping ${milliseconds}ms ..."
 sleep ".${milliseconds}"
 
 num_files="$(get_num_files_exist)"
 
 sync
-if [[ -f "${install_lock}" ]]
-then
+if [[ -f "${install_lock}" ]]; then
   _good "Installation already underway, ${install_lock} exists. Sleeping..."
-  until [[ ! -f "${install_lock}" ]]
-  do
+  until [[ ! -f "${install_lock}" ]]; do
     sleep .1
   done
   _good "Install finished, resuming startup ..."
@@ -93,23 +90,18 @@ touch_install_lock
 _good "Number of files in source folder: ${num_files}"
 
 # Check for test data files
-if [[ "${num_files}" -eq 1 ]]
-then
-  if [[ -f "${PUBLIC_PATH}/index.php" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.php")" ]]
-  then
+if [[ "${num_files}" -eq 1 ]]; then
+  if [[ -f "${PUBLIC_PATH}/index.php" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.php")" ]]; then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
-  elif [[ -f "${PUBLIC_PATH}/index.html" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.html")" ]]
-  then
+  elif [[ -f "${PUBLIC_PATH}/index.html" ]] && [[ "$(grep TEST-DATA-ONLY "${PUBLIC_PATH}/index.html")" ]]; then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
   fi
-elif [[ "${num_files}" -eq 2 ]]
-then
-  if [[ -f "${PUBLIC_PATH}/index.php" ]] && \
-    [[ -f "${PUBLIC_PATH}/health_php.php" ]] && \
-    grep -q TEST-DATA-ONLY "${PUBLIC_PATH}/index.php"
-  then
+elif [[ "${num_files}" -eq 2 ]]; then
+  if [[ -f "${PUBLIC_PATH}/index.php" ]] &&
+    [[ -f "${PUBLIC_PATH}/health_php.php" ]] &&
+    grep -q TEST-DATA-ONLY "${PUBLIC_PATH}/index.php"; then
     _good "Test data detected, deleting source directories..."
     delete_source_directories
   else
@@ -117,12 +109,10 @@ then
     cat "${PUBLIC_PATH}/index.php" || true
     _warning "Attempting to continue ..."
   fi
-elif [[ "${num_files}" -gt 0 ]]
-then
+elif [[ "${num_files}" -gt 0 ]]; then
   _good "${num_files} files found in ${PUBLIC_PATH} folder"
 
-  if [[ "${OVERWRITE_EXISTING_FILES,,}" = "true" ]] || [[ "${DELETE_EXISTING_FILES,,}" = "true" ]]
-  then
+  if [[ "${OVERWRITE_EXISTING_FILES,,}" = "true" ]] || [[ "${DELETE_EXISTING_FILES,,}" = "true" ]]; then
     _good "Continuing with installation ..."
   else
     _good "Non-default files found in directory, and OVERWRITE_EXISTING_FILES != true"
@@ -135,10 +125,9 @@ then
 fi
 
 # Clean up if we're starting fresh
-if [[ "${DELETE_EXISTING_FILES,,}" = "true" ]]
-then
-    _good "Deleting source directories..."
-    delete_source_directories
+if [[ "${DELETE_EXISTING_FILES,,}" = "true" ]]; then
+  _good "Deleting source directories..."
+  delete_source_directories
 fi
 
 create_source_directories
@@ -150,30 +139,26 @@ find /app ! -user "${APP_USER}" -exec chown -f "${APP_USER}" {} \;
 # ENVIRONMENT VARIABLE CHECKS
 # ==============================================================================
 
-if [[ -z "${WP_DB_HOST}" ]]
-then
-    _error "WP_DB_HOST cannot be blank"
+if [[ -z "${WP_DB_HOST}" ]]; then
+  _error "WP_DB_HOST cannot be blank"
 else
-    _good "WP_DB_HOST         ${WP_DB_HOST}"
+  _good "WP_DB_HOST         ${WP_DB_HOST}"
 fi
 
-if [[ -z "${WP_DB_NAME}" ]]
-then
-    _error "WP_DB_NAME cannot be blank"
+if [[ -z "${WP_DB_NAME}" ]]; then
+  _error "WP_DB_NAME cannot be blank"
 else
-    _good "WP_DB_NAME         ${WP_DB_NAME}"
+  _good "WP_DB_NAME         ${WP_DB_NAME}"
 fi
 
-if [[ -z "${WP_DB_USER}" ]]
-then
-    _error "WP_DB_USER cannot be blank"
+if [[ -z "${WP_DB_USER}" ]]; then
+  _error "WP_DB_USER cannot be blank"
 else
-    _good "WP_DB_USER         ${WP_DB_USER}"
+  _good "WP_DB_USER         ${WP_DB_USER}"
 fi
 
-if [[ -z "${WP_DB_PASS}" ]]
-then
-    _error "WP_DB_PASS cannot be blank"
+if [[ -z "${WP_DB_PASS}" ]]; then
+  _error "WP_DB_PASS cannot be blank"
 fi
 _good "WP_DB_PREFIX           ${WP_DB_PREFIX}"
 
@@ -198,16 +183,14 @@ function checkout() {
 }
 
 # Ensure the expected composer.json file is found
-if [[ ! -f "${SOURCE_PATH}/composer.json" ]]
-then
+if [[ ! -f "${SOURCE_PATH}/composer.json" ]]; then
   _good "Checkout: ${GIT_SOURCE}:${GIT_REF}"
   mkdir -p "${SOURCE_PATH}"
   cd "${SOURCE_PATH}"
   checkout "${GIT_SOURCE}" "${GIT_REF}"
 fi
 
-if [[ -n "${MERGE_SOURCE}" ]]
-then
+if [[ -n "${MERGE_SOURCE}" ]]; then
   _good "Merge:   ${MERGE_SOURCE}:${MERGE_REF}"
   mkdir -p /app/merge
   cd /app/merge
@@ -223,8 +206,7 @@ composer_exec="time setuser ${APP_USER} composer -vv --no-ansi"
 #   $composer_exec update
 # fi
 
-if [[ $APP_ENV =~ develop ]]
-then
+if [[ $APP_ENV =~ develop ]]; then
   composer_install_flags=" --prefer-dist"
 else
   composer_install_flags=" --prefer-dist --no-dev"
@@ -238,8 +220,7 @@ find /app ! -user "${APP_USER}" -exec chown -f "${APP_USER}" {} \;
 
 cd "${SOURCE_PATH}"
 
-if [[ ! -d "vendor" ]]
-then
+if [[ ! -d "vendor" ]]; then
   _good "Performing composer install..."
   $composer_exec install $composer_install_flags
 fi
@@ -258,9 +239,8 @@ setuser "${APP_USER}" dockerize -template "/app/wp-config.php.tmpl:${PUBLIC_PATH
 # Wait up to two minutes for the database to become ready
 timeout=2
 i=0
-until dockerize -wait "tcp://${WP_DB_HOST}:${WP_DB_PORT}" -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"
-do
-  i=$(( i + 1 ))
+until dockerize -wait "tcp://${WP_DB_HOST}:${WP_DB_PORT}" -timeout 60s mysql -h "${WP_DB_HOST}" -u "${WP_DB_USER}" --password="${WP_DB_PASS}" -e "use ${WP_DB_NAME}"; do
+  i=$((i + 1))
   [[ $i -gt $timeout ]] && _error "Timeout waiting for database to become ready" && exit 1
 done
 
@@ -285,4 +265,4 @@ $composer_exec site:global
 
 clear_install_lock
 
-date > "${PUBLIC_PATH}/.installed"
+date >"${PUBLIC_PATH}/.installed"

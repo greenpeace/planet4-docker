@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-if [[ ${NEWRELIC_ENABLED} = 'true' ]]
-then
-  if [[ -z "${NEWRELIC_LICENSE}" ]]
-  then
+if [[ ${NEWRELIC_ENABLED} = 'true' ]]; then
+  if [[ -z "${NEWRELIC_LICENSE}" ]]; then
     NEWRELIC_ENABLED="false"
     export NEWRELIC_ENABLED
     _warning "$(printf "%-10s " "php:")" "NEWRELIC_LICENSE is blank, license key is required"

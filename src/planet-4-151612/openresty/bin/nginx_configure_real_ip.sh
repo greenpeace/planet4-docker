@@ -26,8 +26,7 @@
 # See: https://modpagespeed.com/doc/downstream-caching
 # FIXME This is not implemented properly yet
 
-if [[ ${CLOUDFLARE_ENABLED} = "true" ]]
-then
+if [[ ${CLOUDFLARE_ENABLED} = "true" ]]; then
   REAL_IP_HEADER=CF-Connecting-IP
 else
   REAL_IP_HEADER=X-Forwarded-For

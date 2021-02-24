@@ -2,10 +2,9 @@
 
 optionlock="${PUBLIC_PATH}/.optionlock"
 
-if [[ -f "$optionlock" ]]
-then
-   _warning "$optionlock exists, will not set wp options..."
-   exit 0
+if [[ -f "$optionlock" ]]; then
+  _warning "$optionlock exists, will not set wp options..."
+  exit 0
 fi
 
 touch "$optionlock"
@@ -22,4 +21,4 @@ _good "rewrite          ${WP_REWRITE_STRUCTURE}"
 # wp option set home            "${WP_SITE_PROTOCOL}://${WP_SITE_HOME:-${WP_SITE_URL:-WP_SITE_URL}}"
 # wp option set blogname        "${WP_TITLE}"
 # wp option set blogdescription "${WP_TITLE}"
-wp rewrite structure          "${WP_REWRITE_STRUCTURE}"
+wp rewrite structure "${WP_REWRITE_STRUCTURE}"

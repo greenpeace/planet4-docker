@@ -5,13 +5,12 @@ set -euo pipefail
 # Find real file path of current script
 # https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 source="${BASH_SOURCE[0]}"
-while [[ -h "$source" ]]
-do # resolve $source until the file is no longer a symlink
-  dir="$( cd -P "$( dirname "$source" )" && pwd )"
+while [[ -L "$source" ]]; do # resolve $source until the file is no longer a symlink
+  dir="$(cd -P "$(dirname "$source")" && pwd)"
   source="$(readlink "$source")"
   [[ $source != /* ]] && source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
-GIT_ROOT_DIR="$( cd -P "$( dirname "$source" )/.." && pwd )"
+GIT_ROOT_DIR="$(cd -P "$(dirname "$source")/.." && pwd)"
 
 # Remove dockerfiles
 find "${GIT_ROOT_DIR}/src" -name "Dockerfile" -exec rm -r "{}" \;
@@ -36,10 +35,8 @@ test_containers=(
   "exim_mail"
 )
 
-for i in $(docker ps --format '{{.Names}}')
-do
-  for j in "${test_containers[@]}"
-  do
+for i in $(docker ps --format '{{.Names}}'); do
+  for j in "${test_containers[@]}"; do
     [[ $i =~ $j ]] || continue
     echo " . $i ... "
     docker rm -f "${i}" >/dev/null 2>&1 &
