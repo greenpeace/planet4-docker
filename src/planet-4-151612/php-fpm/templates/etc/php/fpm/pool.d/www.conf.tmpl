@@ -420,11 +420,6 @@ php_admin_value[sendmail_path] = /usr/sbin/ssmtp -t
 php_admin_value[session.save_handler] = {{ .Env.PHP_SESSION_SAVE_HANDLER }}
 php_admin_value[session.save_path] = {{ .Env.PHP_SESSION_SAVE_PATH }}
 
-; Re-enable for PHP 7.3
-; See: https://github.com/docker-library/php/issues/207
-php_admin_value[decorate_workers_output] = no
-php_admin_value[catch_workers_output] = yes
-
 ; Soft values, can be overridden by ini_set
 php_flag[display_errors] = off
 php_value[output_buffering] = 4096
