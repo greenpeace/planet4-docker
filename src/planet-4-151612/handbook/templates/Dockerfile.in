@@ -1,7 +1,5 @@
 FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/wordpress:${SOURCE_VERSION}
 
-LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
-
 ENV WP_DISALLOW_FILE_MODS="false"
 
 COPY etc/my_init.d/* /etc/my_init.d/

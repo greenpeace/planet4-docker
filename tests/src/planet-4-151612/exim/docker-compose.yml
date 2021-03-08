@@ -2,4 +2,4 @@
 version: '3'
 services:
   mail:
-    image: ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/exim:${IMAGE_TAG:-develop}
+    image: ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/exim:${IMAGE_TAG:-main}

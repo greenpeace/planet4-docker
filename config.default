@@ -5,6 +5,7 @@
 
 APPLICATION_NAME=Greenpeace P4 Docker application
 GOOGLE_PROJECT_ID=planet-4-151612
+MAINTAINER_EMAIL=plint@greenpeace.org
 
 # application repository to build, expects a composer.json to be present,
 # or alternate file defined by COMPOSER
@@ -13,7 +14,7 @@ GIT_SOURCE=https://github.com/greenpeace/planet4-base
 # branch of application repository to build
 # note, composer requires prefixes with dev- for branch names
 # see: https://getcomposer.org/doc/articles/aliases.md#why-aliases-
-GIT_REF=develop
+GIT_REF=main
 
 # default build tags are derived from `git rev-parse --abbrev-ref HEAD`
 # Use SOURCE_VERSION or BUILD_TAG in environment or custom config to set these values

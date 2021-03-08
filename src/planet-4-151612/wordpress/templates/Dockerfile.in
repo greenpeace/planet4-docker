@@ -1,7 +1,5 @@
 FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/php-fpm:${SOURCE_VERSION}
 
-LABEL authors="${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>"
-
 RUN apt-get update && \
     apt-fast install -y --no-install-recommends \
       git \
@@ -24,7 +22,7 @@ ENV \
     APP_HOSTPATH="" \
     CLOUDFLARE_API_KEY="" \
     DELETE_EXISTING_FILES="false" \
-    GIT_REF="master" \
+    GIT_REF="main" \
     GIT_SOURCE="${GIT_SOURCE}" \
     INSTALL_WORDPRESS="true" \
     MERGE_REF="" \

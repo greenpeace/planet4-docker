@@ -2,4 +2,4 @@
 version: '3'
 services:
   app:
-    image: ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/ubuntu:${IMAGE_TAG:-develop}
+    image: ${IMAGE_NAMESPACE}/${BATS_PROJECT_ID}/ubuntu:${IMAGE_TAG:-main}
