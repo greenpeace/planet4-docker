@@ -21,8 +21,8 @@ GIT_REF=main
 # Note that each step in the build chain relies on the previous image, so unless
 # you really know what you're doing, these two values should probably be the same
 # eg:
-# SOURCE_VERSION=develop
-# BUILD_TAG=develop
+# SOURCE_VERSION=main
+# BUILD_TAG=main
 
 # Which timezone this container uses for logs etc
 CONTAINER_TIMEZONE=UTC
