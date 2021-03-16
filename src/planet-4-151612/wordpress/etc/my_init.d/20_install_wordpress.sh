@@ -229,6 +229,11 @@ fi
 
 chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
 
+WP_VERSION=$(jq -r '.extra["wp-version"]' <"${SOURCE_PATH}"/composer.json)
+export WP_VERSION
+echo "Using WP_VERSION: ${WP_VERSION}"
+echo
+
 wp --root core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
 $composer_exec copy:themes
