@@ -25,7 +25,6 @@ services:
       - MERGE_SOURCE=
       - WP_REDIS_ENABLED=true
       - WP_TITLE=${WP_TITLE}
-      - WP_VERSION=${WP_VERSION:-latest}
     env_file:
       - db.env
     volumes:
