@@ -5,6 +5,10 @@ set -e
 
 install_lock="${SOURCE_PATH}/.install"
 
+_good "Setting permissions of composer to ${APP_USER}..."
+chown -f "${APP_USER}" /app/bin/composer
+chown -fR "${APP_USER}" /app/.composer
+
 # ==============================================================================
 # UTILITY FUNCTIONS
 # ==============================================================================
@@ -211,9 +215,6 @@ if [[ $APP_ENV =~ develop ]]; then
 else
   composer_install_flags=" --prefer-dist --no-dev"
 fi
-
-_good "Setting permissions of composer to ${APP_USER}..."
-chown -f "${APP_USER}" /app/bin/composer
 
 _good "Setting permissions of /app to ${APP_USER}..."
 find /app ! -user "${APP_USER}" -exec chown -f "${APP_USER}" {} \;
