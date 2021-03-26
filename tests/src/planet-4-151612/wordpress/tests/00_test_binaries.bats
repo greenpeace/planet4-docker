@@ -40,3 +40,8 @@ function teardown {
   run run_docker_binary "$image" wp --version
   [ $status -eq 0 ]
 }
+
+@test "composer" {
+  run run_docker_binary "$image" composer --no-ansi --version
+  [ $status -eq 0 ]
+}
