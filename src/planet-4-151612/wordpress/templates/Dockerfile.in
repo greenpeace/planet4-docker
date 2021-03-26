@@ -11,7 +11,6 @@ RUN apt-get update && \
     rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
     curl --retry 5 -o /app/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     ln -s /app/bin/wp.sh /app/bin/wp && \
-    php /app/bin/composer.phar -vv global require hirak/prestissimo && \
     mkdir -p "${SOURCE_PATH}"
 
 COPY . /app/
