@@ -31,6 +31,9 @@ var | default | description
 OVERWRITE_FILES | false | Set true to force install Wordpress and overwrite the contents of ${PUBLIC_PATH}
 CLOUDFLARE_API_KEY | | The key used to send edge cache purges when content changes
 SMARTSHEET_API_KEY | | API key for the Smartsheet integration, associated with a functional account
+ELASTIC_APM_SECRET_TOKEN | | API token for the Elastic APM service
+ELASTIC_APM_SERVICE_NAME | | App name to set in the Elastic APM service
+ELASTIC_APM_SERVER_URL | | API url for the Elastic APM service
 WP_TITLE | greenpeace/wordpress | The title of the Wordpress install
 WP_HOSTNAME |  | Wordpress URL. Tries to fallback to `$APP_HOSTNAME` if blank
 WP_DB_HOST | db | Database hostname
