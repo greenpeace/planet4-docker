@@ -30,6 +30,8 @@ ENV \
     OVERWRITE_EXISTING_FILES="false" \
     PHP_CLEAR_ENV="yes" \
     SMARTSHEET_API_KEY="" \
+    ELASTIC_APM_SERVICE_NAME="${APPLICATION_NAME}" \
+    ELASTIC_APM_SERVER_URL="https://apm.p4.greenpeace.org" \
     WP_ADMIN_EMAIL="${MAINTAINER_EMAIL}" \
     WP_ADMIN_NAME="" \
     WP_ADMIN_PASS="" \
