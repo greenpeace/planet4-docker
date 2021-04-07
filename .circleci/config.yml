@@ -204,15 +204,14 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Microscanner
+          name: Trivy
           command: |
-            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/openresty:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
-            then
-              echo "@todo: list vulnerabilities"
-            else
-              TYPE="Vulnerability Scan" notify-job-failure.sh
-              exit 1
-            fi
+            mkdir -p /tmp/trivy-results
+            trivy --exit-code 0 image \
+              "gcr.io/${GOOGLE_PROJECT_ID}/openresty:build-$(cat /tmp/workspace/var/circle-build-num)" \
+              > /tmp/trivy-results/report.txt
+      - store_artifacts:
+          path: /tmp/trivy-results
 
   scan-php-fpm:
     <<: *defaults
@@ -222,15 +221,14 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Microscanner
+          name: Trivy
           command: |
-            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/php-fpm:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
-            then
-              echo "@todo: list vulnerabilities"
-            else
-              TYPE="Vulnerability Scan" notify-job-failure.sh
-              exit 1
-            fi
+            mkdir -p /tmp/trivy-results
+            trivy --exit-code 0 image \
+              "gcr.io/${GOOGLE_PROJECT_ID}/php-fpm:build-$(cat /tmp/workspace/var/circle-build-num)" \
+              > /tmp/trivy-results/report.txt
+      - store_artifacts:
+          path: /tmp/trivy-results
 
   scan-wordpress:
     <<: *defaults
@@ -240,15 +238,14 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Microscanner
+          name: Trivy
           command: |
-            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/wordpress:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
-            then
-              echo "@todo: list vulnerabilities"
-            else
-              TYPE="Vulnerability Scan" notify-job-failure.sh
-              exit 1
-            fi
+            mkdir -p /tmp/trivy-results
+            trivy --exit-code 0 image \
+              "gcr.io/${GOOGLE_PROJECT_ID}/wordpress:build-$(cat /tmp/workspace/var/circle-build-num)" \
+              > /tmp/trivy-results/report.txt
+      - store_artifacts:
+          path: /tmp/trivy-results
 
   scan-handbook:
     <<: *defaults
@@ -258,15 +255,14 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Microscanner
+          name: Trivy
           command: |
-            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/handbook:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
-            then
-              echo "@todo: list vulnerabilities"
-            else
-              TYPE="Vulnerability Scan" notify-job-failure.sh
-              exit 1
-            fi
+            mkdir -p /tmp/trivy-results
+            trivy --exit-code 0 image \
+              "gcr.io/${GOOGLE_PROJECT_ID}/handbook:build-$(cat /tmp/workspace/var/circle-build-num)" \
+              > /tmp/trivy-results/report.txt
+      - store_artifacts:
+          path: /tmp/trivy-results
 
   scan-exim:
     <<: *defaults
@@ -276,15 +272,14 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Microscanner
+          name: Trivy
           command: |
-            if docker run --rm -ti "gcr.io/${GOOGLE_PROJECT_ID}/exim:build-$(cat /tmp/workspace/var/circle-build-num)" /microscanner ${MICROSCANNER_TOKEN}
-            then
-              echo "@todo: list vulnerabilities"
-            else
-              TYPE="Vulnerability Scan" notify-job-failure.sh
-              exit 1
-            fi
+            mkdir -p /tmp/trivy-results
+            trivy --exit-code 0 image \
+              "gcr.io/${GOOGLE_PROJECT_ID}/exim:build-$(cat /tmp/workspace/var/circle-build-num)" \
+              > /tmp/trivy-results/report.txt
+      - store_artifacts:
+          path: /tmp/trivy-results
 
   deploy:
     <<: *defaults

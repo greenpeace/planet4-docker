@@ -2,14 +2,6 @@ FROM phusion/baseimage:${BASEIMAGE_VERSION} as base
 
 COPY . /app/
 
-ARG MICROSCANNER_TOKEN
-
-ENV MICROSCANNER_TOKEN="${MICROSCANNER_TOKEN}"
-
-ADD https://get.aquasec.com/microscanner .
-
-RUN chmod 755 microscanner
-
 RUN rm -fr /etc/apt/sources.list && \
     ln -s /app/sources.list /etc/apt/sources.list && \
     apt-get update && \
@@ -22,8 +14,6 @@ RUN rm -fr /etc/apt/sources.list && \
     tar -C /app/bin -xzvf dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
     rm dockerize-linux-amd64-v${DOCKERIZE_VERSION}.tar.gz && \
     rm -fr /usr/share/man/* /usr/share/doc/*
-
-RUN ./microscanner "${MICROSCANNER_TOKEN}"
 
 FROM scratch
 
@@ -42,7 +32,6 @@ ENV \
     LANG="en_US.UTF-8" \
     LANGUAGE="en_US:en" \
     LC_ALL="en_US.UTF-8" \
-    MICROSCANNER_TOKEN="" \
     PATH="/app/bin:$PATH"
 
 WORKDIR /app
