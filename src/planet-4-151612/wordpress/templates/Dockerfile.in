@@ -31,7 +31,7 @@ ENV \
     PHP_CLEAR_ENV="yes" \
     SMARTSHEET_API_KEY="" \
     ELASTIC_APM_SERVICE_NAME="${APPLICATION_NAME}" \
-    ELASTIC_APM_SERVER_URL="https://apm.p4.greenpeace.org" \
+    ELASTIC_APM_SERVER_URL="http://apm-apm-server.elastic.svc.cluster.local:8200/" \
     WP_ADMIN_EMAIL="${MAINTAINER_EMAIL}" \
     WP_ADMIN_NAME="" \
     WP_ADMIN_PASS="" \
