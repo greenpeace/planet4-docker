@@ -16,9 +16,6 @@ include $(CONFIG)
 export $(shell sed 's/=.*//' config.custom)
 endif
 
-MICROSCANNER_TOKEN ?= $(shell cat MICROSCANNER_TOKEN)
-export MICROSCANNER_TOKEN
-
 # Pass TEST_FOLDERS env variable to limit which tests to run
 TEST_FOLDERS ?=
 

@@ -196,15 +196,6 @@ if [[ "${CIRCLECI:-}" ]]; then
 
 fi
 
-if [[ -z "${MICROSCANNER_TOKEN:-}" ]]; then
-  if [[ "${BUILD_LOCALLY}" = "true" ]] || [[ "${BUILD_REMOTELY}" = "true" ]]; then
-    echo >&2 "ERROR: Environment variable MICROSCANNER_TOKEN not set."
-    echo >&2 "See: https://github.com/aquasecurity/microscanner#registering-for-a-token"
-    echo >&2 ""
-    exit 1
-  fi
-fi
-
 BRANCH_NAME_RAW=${CIRCLE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 BRANCH_NAME=${BRANCH_NAME_RAW//[^a-zA-Z0-9\._-]/-}
 
