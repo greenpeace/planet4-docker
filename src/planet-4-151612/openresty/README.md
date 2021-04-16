@@ -5,7 +5,7 @@
 Built on [gcr.io/planet-4-151612/ubuntu](https://registry.hub.docker.com/u/greenpeace/ubuntu/), a lightly modified Ubuntu Xenial [Phusion Base Image](https://phusion.github.io/baseimage-docker/).
 
 ```bash
-docker run -v "/path/to/www:/app/source/public" -p "80:80" -p "443:443" greenpeace/openresty
+docker run -v "/path/to/www:/app/source/public" -p "80:80" -p "443:443"  gcr.io/planet-4-151612/openresty:main
 ```
 
 Files are served from `/app/source/public/`, SSL certificates are generated in `/etc/nginx/ssl`, `/etc/nginx/sites-enabled/*` is searched for virtual hosts.
