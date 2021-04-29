@@ -3,11 +3,14 @@ set -euo pipefail
 
 # Executed after my_init.d and environment is established
 
-# Generates keys and salts for wp-config.php
-/app/bin/generate_wp_keys.sh
+# Create wp-config.php file, overwrite if not in local environment
+if [[ ! -f "${PUBLIC_PATH}/wp-config.php" ]] || [[ "${APP_ENV}" != "local" ]]; then
+  # Generates keys and salts for wp-config.php
+  /app/bin/generate_wp_keys.sh
 
-# Write the wp-config.php file from template
-/app/bin/generate_wp_config.sh
+  # Write the wp-config.php file from template
+  /app/bin/generate_wp_config.sh
+fi
 
 # Wait up to two minutes for the database to become ready
 timeout=2

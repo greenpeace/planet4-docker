@@ -22,7 +22,7 @@ fi
 #   EXIM email redirect
 # -----------------------------------------------------------------------------
 
-if [[ "${APP_ENV}" =~ develop ]]; then
+if [[ "${APP_ENV}" =~ develop ]] || [[ "${APP_ENV}" = "local" ]]; then
   _good "exim4:  re-routing all outgoing email to ${EXIM_ADMIN_EMAIL}"
 else
   rm -fr /etc/exim4/conf.d/router/190_exim4-config_intercept
