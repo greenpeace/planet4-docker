@@ -210,7 +210,7 @@ composer_exec="time setuser ${APP_USER} composer -vv --no-ansi"
 #   $composer_exec update
 # fi
 
-if [[ $APP_ENV =~ develop ]]; then
+if [[ $APP_ENV =~ develop ]] || [[ "${APP_ENV}" = "local" ]]; then
   composer_install_flags=" --prefer-dist"
 else
   composer_install_flags=" --prefer-dist --no-dev"
@@ -245,7 +245,10 @@ wp --root core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 $composer_exec copy:themes
 $composer_exec copy:plugins
 
-setuser "${APP_USER}" dockerize -template "/app/wp-config.php.tmpl:${PUBLIC_PATH}/wp-config.php"
+# Generate wp config file
+chown -f "${APP_USER}" /app/bin/generate_wp*
+setuser "${APP_USER}" /app/bin/generate_wp_keys.sh
+setuser "${APP_USER}" /app/bin/generate_wp_config.sh
 
 # Wait up to two minutes for the database to become ready
 timeout=2

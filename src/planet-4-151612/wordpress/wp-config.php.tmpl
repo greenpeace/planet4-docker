@@ -57,7 +57,7 @@ define('SECURE_AUTH_SALT', '{{ .Env.WP_SECURE_AUTH_SALT }}');
 define('LOGGED_IN_SALT',   '{{ .Env.WP_LOGGED_IN_SALT }}');
 define('NONCE_SALT',       '{{ .Env.WP_NONCE_SALT }}');
 
-{{ if eq .Env.APP_ENV "develop" }}
+{{ if eq .Env.APP_ENV "local" "develop" }}
 define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 define( 'SCRIPT_DEBUG', true );
