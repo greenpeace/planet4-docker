@@ -51,10 +51,16 @@ function delete_source_directories() {
   rm -fr "${PUBLIC_PATH}:?}/*" "${PUBLIC_PATH}/.*" >/dev/null 2>&1 || true
 }
 # ==============================================================================
+# create_source_path()
+#
+function create_source_path() {
+  [[ ! -e "${SOURCE_PATH}" ]] && _good "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
+  return 0
+}
+# ==============================================================================
 # touch_install_lock()
 #
 function touch_install_lock() {
-  [[ ! -e "${SOURCE_PATH}" ]] && _good "Creating ${SOURCE_PATH} ..." && mkdir -p "${SOURCE_PATH}"
   _good "Creating install lock file: ${install_lock}"
   true >"${install_lock}"
 }
@@ -79,6 +85,7 @@ sleep ".${milliseconds}"
 
 num_files="$(get_num_files_exist)"
 
+# Install-lock system resolution
 sync
 if [[ -f "${install_lock}" ]]; then
   _good "Installation already underway, ${install_lock} exists. Sleeping..."
@@ -90,7 +97,11 @@ if [[ -f "${install_lock}" ]]; then
   exit 0
 fi
 
-touch_install_lock
+# Create install lock in potential concurrent install environments only
+create_source_path
+if [[ "${APP_ENV}" != "local" ]]; then
+  touch_install_lock
+fi
 
 _good "Number of files in source folder: ${num_files}"
 
