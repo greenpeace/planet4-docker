@@ -8,6 +8,7 @@ install_lock="${SOURCE_PATH}/.install"
 _good "Setting permissions of composer to ${APP_USER}..."
 chown -f "${APP_USER}" /app/bin/composer
 chown -fR "${APP_USER}" /app/.composer
+mkdir -p "${SOURCE_PATH}/artifacts" && chown -fR "${APP_USER}" "${SOURCE_PATH}/artifacts"
 
 # ==============================================================================
 # UTILITY FUNCTIONS
