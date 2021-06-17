@@ -23,6 +23,7 @@ ENV \
     DELETE_EXISTING_FILES="false" \
     GIT_REF="main" \
     GIT_SOURCE="${GIT_SOURCE}" \
+    INSTALL_APM_AGENT="true" \
     INSTALL_WORDPRESS="true" \
     MERGE_REF="" \
     MERGE_SOURCE="" \
