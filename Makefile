@@ -42,8 +42,8 @@ ignore:
 
 .git/hooks/%:
 	@chmod 755 .githooks/*
-	@find .git/hooks -type l -exec rm {} \;
-	@find .githooks -type f -exec ln -sf ../../{} .git/hooks/ \;
+	@find .git/hooks -type l -exec rm {} \; 2> /dev/null || echo ""
+	@mkdir -p .git/hooks && find .githooks -type f -exec ln -sf ../../{} .git/hooks/ \;
 
 ################################################################################
 
