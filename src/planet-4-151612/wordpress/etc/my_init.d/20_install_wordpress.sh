@@ -242,10 +242,17 @@ fi
 
 chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
 
-WP_VERSION=$(jq -r '.extra["wp-version"] // empty' <"${SOURCE_PATH}"/composer.json)
+# Get WP_VERSION. Checking for env specific variable.
+if [[ -f "${SOURCE_PATH}/${APP_ENV}.json" ]]; then
+  echo "Environment: ${APP_ENV}"
+  jq -s '.[0] * .[1]' "${SOURCE_PATH}/composer.json" "${SOURCE_PATH}/${APP_ENV}.json" >"${SOURCE_PATH}/merged.json"
+else
+  echo "No APP_ENVIRONMENT"
+  cp "${SOURCE_PATH}/composer.json" "${SOURCE_PATH}/merged.json"
+fi
+WP_VERSION=$(jq -r '.extra["wp-version"] // empty' <"${SOURCE_PATH}/merged.json")
 export WP_VERSION
 echo "Using WP_VERSION: ${WP_VERSION}"
-echo
 
 if [ -z "$WP_VERSION" ]; then
   echo "WP_VERSION not set"
