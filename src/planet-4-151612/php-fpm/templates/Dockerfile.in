@@ -2,12 +2,9 @@ FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/ubuntu:${SOURCE_VERSION}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.com/548C16BF.gpg | apt-key add - && \
-    echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list && \
-    add-apt-repository ppa:ondrej/php && \
+RUN add-apt-repository ppa:ondrej/php && \
     apt-fast update && \
     apt-fast -y --no-install-recommends install \
-      newrelic-php5 \
       php${PHP_MAJOR_VERSION} \
       php${PHP_MAJOR_VERSION}-cli \
       php${PHP_MAJOR_VERSION}-curl \
@@ -22,7 +19,6 @@ RUN wget --retry-connrefused --waitretry=1 -t 5 -O - https://download.newrelic.c
       php${PHP_MAJOR_VERSION}-zip \
       ssmtp \
       && \
-    newrelic-install install && \
     apt-fast clean && \
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-fast/*&& \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
@@ -32,9 +28,7 @@ ENV ADMIN_EMAIL="nobody@example.com" \
     COMPOSER_HOME="/app/.composer" \
     COMPOSER_PROCESS_TIMEOUT="600" \
     COMPOSER_VERSION="${COMPOSER_VERSION}" \
-    NEWRELIC_APPNAME="${APPLICATION_NAME}" \
-    NEWRELIC_ENABLED="true" \
-    NEWRELIC_LICENSE="" \
+    NEWRELIC_ENABLED="false" \
     PHP_CATCH_WORKERS_OUTPUT="yes" \
     PHP_CLEAR_ENV="yes" \
     PHP_DISABLE_FUNCTIONS="" \
