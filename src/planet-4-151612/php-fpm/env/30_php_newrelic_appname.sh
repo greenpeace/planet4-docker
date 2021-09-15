@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-NEWRELIC_APPNAME=${NEWRELIC_APPNAME}
-export NEWRELIC_APPNAME

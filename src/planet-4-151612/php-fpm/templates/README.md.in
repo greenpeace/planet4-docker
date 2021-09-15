@@ -7,7 +7,6 @@
 
 Included:
 -   [ngx_pagespeed](https://github.com/apache/incubator-pagespeed-ngx)
--   [NewRelic PHP monitoring](https://newrelic.com)
 -   ssmtp for mail delivery via [sendgrid](https://sendgrid.net) or [mailgun](http://mailgun.net/)
 -   cron daemon
 -   Mozilla intermediate SSL profile
@@ -30,9 +29,6 @@ EXIM_DELIVERY_MODE | local | smarthost, local :: set to smarthost to enable thir
 EXIM_MAIL_FROM | example.com | domain from which exim4 mail appears to originate
 EXIM_SMARTHOST_AUTH_PASSWORD | password_123 | SMTP password
 EXIM_SMARTHOST_AUTH_USERNAME | postmaster@example.com | SMTP username
-NEWRELIC_APPNAME | $PHP_PHP_POOL_NAME | Application name in Newrelic APM list. Defaults to PHP pool name (APP_HOSTNAME with underscores instead of periods)
-NEWRELIC_ENABLED | true | Enables or disables [Newrelic.com](https://newrelic.com/) reporting
-NEWRELIC_LICENSE | \_\_DISABLED\_\_ | Newrelic account license key.  Available from your Newrelic account page
 OPENRESTY_FASTCGI_BACKEND | unix:/run/php/php7.0-fpm.sock | Location of the PHP upstream fastcgi_backend
 OPENRESTY_MAX_WORKER_PROCESSES | 8 | nginx worker_processes is determined from number of processor cores on service start, up to the maximum permitted by OPENRESTY_MAX_WORKER_PROCESSES
 PHP_CLEAR_ENV | yes | yes, no :: if set to 'no', enables access to all environment variables via php `getenv()`

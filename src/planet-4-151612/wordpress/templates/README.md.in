@@ -15,7 +15,6 @@ Docker Hub: [greenpeace/wordpress](https://hub.docker.com/r/greenpeace/wordpress
 Included in this image:
 - [wp-cli](http://wp-cli.org/), executes as `$APP_USER` and is preconfigured with --path="${PUBLIC_PATH}"
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed)
-- [NewRelic](https://newrelic.com) PHP application monitoring - just add license
 - exim4, ready for smarthost delivery to [sendgrid](https://sendgrid.net) or [mailgun](http://mailgun.net/)
 - fully configurable cron daemon
 - [xdebug](https://xdebug.org/) with configurable remote host/port/key
