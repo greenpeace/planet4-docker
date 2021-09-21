@@ -242,16 +242,18 @@ fi
 
 chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
 
+WP_VERSION=$(jq -r '.extra["wp-version"] // empty' <"${SOURCE_PATH}"/composer-local.json)
 if [[ -z "${WP_VERSION}" ]]; then
   WP_VERSION=$(jq -r '.extra["wp-version"] // empty' <"${SOURCE_PATH}"/composer.json)
 fi
-export WP_VERSION
-echo "Using WP_VERSION: ${WP_VERSION}"
 
 if [ -z "$WP_VERSION" ]; then
   echo "WP_VERSION not set"
   exit 1
 fi
+
+export WP_VERSION
+echo "Using WP_VERSION: ${WP_VERSION}"
 
 wp --root core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
