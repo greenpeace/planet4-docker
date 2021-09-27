@@ -13,7 +13,6 @@ RUN add-apt-repository ppa:ondrej/php && \
       php${PHP_MAJOR_VERSION}-imagick \
       php${PHP_MAJOR_VERSION}-mbstring \
       php${PHP_MAJOR_VERSION}-mysql \
-      php${PHP_MAJOR_VERSION}-recode \
       php${PHP_MAJOR_VERSION}-redis \
       php${PHP_MAJOR_VERSION}-xml \
       php${PHP_MAJOR_VERSION}-zip \
