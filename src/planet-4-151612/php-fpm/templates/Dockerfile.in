@@ -11,6 +11,7 @@ RUN add-apt-repository ppa:ondrej/php && \
       php${PHP_MAJOR_VERSION}-fpm \
       php${PHP_MAJOR_VERSION}-gd \
       php${PHP_MAJOR_VERSION}-imagick \
+      php${PHP_MAJOR_VERSION}-intl \
       php${PHP_MAJOR_VERSION}-mbstring \
       php${PHP_MAJOR_VERSION}-mysql \
       php${PHP_MAJOR_VERSION}-redis \
