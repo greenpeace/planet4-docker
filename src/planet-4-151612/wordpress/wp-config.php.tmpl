@@ -64,6 +64,10 @@ define( 'SCRIPT_DEBUG', true );
 define( 'ALLOW_EXPERIMENTAL_FEATURES', true );
 {{ end }}
 
+{{ if .Env.APP_ENV }}
+define( 'WP_APP_ENV', .Env.APP_ENV );
+{{ end }}
+
 {{ if eq .Env.WP_STATELESS_MEDIA_ENABLED "true" }}
 define( 'WP_STATELESS_MEDIA_BUCKET',            '{{ .Env.WP_STATELESS_MEDIA_BUCKET }}' );
 define( 'WP_STATELESS_MEDIA_MODE',              '{{ .Env.WP_STATELESS_MEDIA_MODE }}' );
