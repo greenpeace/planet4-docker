@@ -32,6 +32,7 @@ CLOUDFLARE_API_KEY | | The key used to send edge cache purges when content chang
 SMARTSHEET_API_KEY | | API key for the Smartsheet integration, associated with a functional account
 GOOGLE_SHEETS_KEY | | API key for the Google Sheets integration, associated with a service account
 ELASTIC_APM_SECRET_TOKEN | | API token for the Elastic APM service
+GF_LICENSE | | GravityForms License Key
 WP_TITLE | greenpeace/wordpress | The title of the Wordpress install
 WP_HOSTNAME |  | Wordpress URL. Tries to fallback to `$APP_HOSTNAME` if blank
 WP_DB_HOST | db | Database hostname

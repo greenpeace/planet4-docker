@@ -102,6 +102,10 @@ define('SMARTSHEET_API_KEY', '{{ .Env.SMARTSHEET_API_KEY }}');
 define( 'GOOGLE_SHEETS_KEY',   '{{ .Env.GOOGLE_SHEETS_KEY }}' );
 {{ end }}
 
+{{ if .Env.GF_LICENSE }}
+define( 'GF_LICENSE',   '{{ .Env.GF_LICENSE }}' );
+{{ end }}
+
 /**
  * Cloudflare key
  */
