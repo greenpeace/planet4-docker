@@ -11,6 +11,10 @@ server {
     {{ else }}
     index index.html;
     {{ end }}
+    
+    {{ if .Env.CUSTOM_404 }}
+    error_page 404 {{ .Env.CUSTOM_404 }};
+    {{ end }}
 
     include server.d/*.conf;
 
