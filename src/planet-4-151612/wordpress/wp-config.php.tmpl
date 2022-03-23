@@ -65,6 +65,7 @@ define( 'SCRIPT_DEBUG', true );
 
 {{ if .Env.APP_ENV }}
 define( 'WP_APP_ENV', '{{ .Env.APP_ENV }}' );
+define( 'WP_SENTRY_ENV', '{{ .Env.APP_ENV }}' );
 {{ end }}
 
 {{ if eq .Env.WP_STATELESS_MEDIA_ENABLED "true" }}
