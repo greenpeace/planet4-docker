@@ -36,7 +36,7 @@ if ($query_string != "") {
 }
 
 # Don't cache uris containing the following segments
-if ($request_uri ~* "/wp-admin/|/xmlrpc.php|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml|health_*.php") {
+if ($request_uri ~* "/wp-admin/|/get-en-session-token|/xmlrpc.php|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml|health_*.php") {
   set $skip_cache 1;
 }
 
