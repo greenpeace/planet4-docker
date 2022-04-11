@@ -84,6 +84,10 @@ define( 'WP_STATELESS_MEDIA_JSON_KEY',          '{{ .Env.WP_STATELESS_MEDIA_JSON
 define( 'WP_STATELESS_MEDIA_SERVICE_ACCOUNT',   '{{ .Env.WP_STATELESS_MEDIA_SERVICE_ACCOUNT }}' );
 {{ end }}
 
+{{ if eq .Env.WPML_ST_SYNC_TRANSLATION_FILES "true" }}
+define( 'WPML_ST_SYNC_TRANSLATION_FILES', true );
+{{ end }}
+
 {{ end }}
 
 {{ if eq .Env.WP_REDIS_ENABLED "true" }}
