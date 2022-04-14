@@ -186,6 +186,7 @@ _good "Installing Wordpress for site ${WP_HOSTNAME:-$APP_HOSTNAME} ..."
 
 function checkout() {
   set -x
+  git config --system --add safe.directory /app/source
   git init
   git remote add origin $1
   git fetch --tags
