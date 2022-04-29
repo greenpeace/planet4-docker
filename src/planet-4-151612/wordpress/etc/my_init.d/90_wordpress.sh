@@ -65,6 +65,7 @@ else
   fi
 fi
 
+wp plugin activate wordfence
 _good "Starting Wordfence WAF rules"
 # Wordfence workaround to enable WAF rules immediately instead of waiting for learning period
 # See: https://wordpress.org/support/topic/waf-rules-in-a-stateless-environment/#post-11549432

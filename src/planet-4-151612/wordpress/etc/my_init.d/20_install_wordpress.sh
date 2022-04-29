@@ -279,8 +279,7 @@ _good "Database ready: ${WP_DB_HOST}:${WP_DB_PORT}"
 # FIXME If installed, perform site-update?
 
 wp core install --url="${WP_HOSTNAME}" --title="$WP_TITLE" --admin_user="${WP_ADMIN_USER:-admin}" --admin_email="${WP_ADMIN_EMAIL:-$MAINTAINER_EMAIL}"
-
-wp plugin activate --all
+wp plugin activate --all --skip-plugins=wordfence
 
 # FIXME Determine which theme to activate
 # FIXME Why does the composer theme install script fail?
