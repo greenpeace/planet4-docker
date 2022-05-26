@@ -4,3 +4,8 @@ location ~ ^/{{ .Env.APP_HOSTPATH }}/? {
     ngx.req.set_uri(uri, true)
   }
 }
+
+# workaround because I can't figure out how to get the redirects to work properly
+location ~ ^/wp-admin$ {
+  return 301 /{{ .Env.APP_HOSTPATH }}/wp-admin/;
+}
