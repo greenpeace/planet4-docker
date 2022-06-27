@@ -83,7 +83,7 @@ ENV \
     WP_STATELESS_MEDIA_JSON_KEY="" \
     WP_STATELESS_MEDIA_KEY_FILE_PATH="" \
     WP_STATELESS_MEDIA_MODE="stateless" \
-    WP_STATELESS_MEDIA_ROOT_DIR="" \
+    WP_STATELESS_MEDIA_ROOT_DIR="/%date_year/date_month%/" \
     WP_STATELESS_MEDIA_SERVICE_ACCOUNT="" \
     WP_THEME="planet4-master-theme" \
     WP_TITLE="Greenpeace"
