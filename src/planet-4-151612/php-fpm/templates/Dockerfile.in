@@ -19,6 +19,7 @@ RUN add-apt-repository ppa:ondrej/php && \
       php${PHP_MAJOR_VERSION}-zip \
       ssmtp \
       && \
+    apt-get purge -y php8.1-cli php8.1-common php8.1-opcache php8.1-phpdbg php8.1-readline && \
     apt-fast clean && \
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-fast/*&& \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
