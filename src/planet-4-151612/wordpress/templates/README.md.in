@@ -29,6 +29,7 @@ var | default | description
 --- | ------- | -----------
 OVERWRITE_FILES | false | Set true to force install Wordpress and overwrite the contents of ${PUBLIC_PATH}
 CLOUDFLARE_API_KEY | | The key used to send edge cache purges when content changes
+SMARTSHEET_API_KEY | | API key for the Smartsheet integration, associated with a functional account
 GOOGLE_SHEETS_KEY | | API key for the Google Sheets integration, associated with a service account
 ELASTIC_APM_SECRET_TOKEN | | API token for the Elastic APM service
 GF_LICENSE | | GravityForms License Key

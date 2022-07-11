@@ -97,6 +97,8 @@ define( 'WP_REDIS_DEFAULT_EXPIRE_SECONDS',   '{{ .Env.WP_REDIS_DEFAULT_EXPIRE_SE
 {{ end }}
 {{ end }}
 
+define('SMARTSHEET_API_KEY', '{{ .Env.SMARTSHEET_API_KEY }}');
+
 {{ if .Env.GOOGLE_SHEETS_KEY }}
 define( 'GOOGLE_SHEETS_KEY',   '{{ .Env.GOOGLE_SHEETS_KEY }}' );
 {{ end }}
