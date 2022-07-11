@@ -29,7 +29,6 @@ ENV \
     MERGE_SOURCE="" \
     OVERWRITE_EXISTING_FILES="false" \
     PHP_CLEAR_ENV="yes" \
-    SMARTSHEET_API_KEY="" \
     GOOGLE_SHEETS_KEY="" \
     GF_LICENSE="" \
     ELASTIC_APM_ENABLED="true" \
