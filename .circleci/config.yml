@@ -27,10 +27,6 @@ jobs:
       - run: make build
       - run: rsync -av . /tmp/workspace/src
       - run: echo "${CIRCLE_BUILD_NUM}" > /tmp/workspace/var/circle-build-num
-      - run:
-          name: Notify failure
-          when: on_fail
-          command: TYPE="Build" notify-job-failure.sh
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -52,10 +48,6 @@ jobs:
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/ubuntu \
             ./tests/test.sh
-      - run:
-          name: Notify failure
-          when: on_fail
-          command: TYPE="Ubuntu tests" notify-job-failure.sh
       - store_test_results:
           path: /tmp/planet4-docker/merged
       - store_artifacts:
@@ -79,10 +71,6 @@ jobs:
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/php-fpm \
             ./tests/test.sh
-      - run:
-          name: Notify failure
-          when: on_fail
-          command: TYPE="PHP tests" notify-job-failure.sh
       - store_test_results:
           path: /tmp/planet4-docker/merged
       - store_artifacts:
@@ -106,10 +94,6 @@ jobs:
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/openresty \
             ./tests/test.sh
-      - run:
-          name: Notify failure
-          when: on_fail
-          command: TYPE="Openresty tests" notify-job-failure.sh
       - store_test_results:
           path: /tmp/planet4-docker/merged
       - store_artifacts:
@@ -133,10 +117,6 @@ jobs:
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/wordpress \
             ./tests/test.sh
-      - run:
-          name: Notify failure
-          when: on_fail
-          command: TYPE="Wordpress tests" notify-job-failure.sh
       - store_test_results:
           path: /tmp/planet4-docker/merged
       - store_artifacts:
@@ -160,10 +140,6 @@ jobs:
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/handbook \
             ./tests/test.sh
-      - run:
-          name: Notify failure
-          when: on_fail
-          command: TYPE="Handbook tests" notify-job-failure.sh
       - store_test_results:
           path: /tmp/planet4-docker/merged
       - store_artifacts:
@@ -187,10 +163,6 @@ jobs:
             BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
             TEST_FOLDERS=tests/src/planet-4-151612/exim \
             ./tests/test.sh
-      - run:
-          name: Notify failure
-          when: on_fail
-          command: TYPE="Exim tests" notify-job-failure.sh
       - store_test_results:
           path: /tmp/planet4-docker/merged
       - store_artifacts:
@@ -306,13 +278,6 @@ jobs:
               TYPE="Deployment" notify-job-failure.sh
               exit 1
             fi
-
-  notify-promote:
-    <<: *defaults
-    steps:
-      - run:
-          name: Notify of held workflow
-          command: TYPE="Promotion" notify-job-hold.sh
 
   promote:
     <<: *defaults
