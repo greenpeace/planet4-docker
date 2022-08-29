@@ -101,7 +101,8 @@ else
     --with-ipv6 \
     --with-pcre-jit \
     --add-dynamic-module=/tmp/ngx_http_geoip2_module-${GEOIP2_VERSION} \
-    --add-module=/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}
+    --add-module=/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE} \
+    --with-debug
   make -j${procs} install
   apt-get purge -yqq \
     autoconf \
