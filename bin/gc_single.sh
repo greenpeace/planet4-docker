@@ -78,7 +78,6 @@ main() {
   for image in $(gcloud container images list-tags "${IMAGE}" --limit=999999 --sort-by=TIMESTAMP \
     --filter="timestamp.datetime < '${DATE}'" --format=json | jq -r -c '.[]'); do
 
-    # printf "%s" "."
     digest=$(echo "$image" | jq -j '.digest')
     deletions+=("$digest")
 
@@ -94,8 +93,6 @@ main() {
       fi
     done
   done
-
-  printf "\n"
 
   save+=("$latest" "$last")
   # shellcheck disable=SC2207
