@@ -22,8 +22,8 @@ jobs:
     steps:
       - checkout
       - run: activate-gcloud-account.sh
-      - run: cat bin/repo_list.txt | xargs -L 1 --max-procs=100 ./bin/gc_single.sh
-      - run: cat command_list.txt | xargs -I CMD --max-procs=100 bash -c CMD
+      - run: cat bin/repo_list.txt | xargs -L 1 --max-procs=200 ./bin/gc_single.sh
+      - run: cat command_list.txt | xargs -I CMD --max-procs=200 bash -c CMD
 
   build:
     <<: *defaults
