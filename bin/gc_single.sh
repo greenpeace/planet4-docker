@@ -78,7 +78,7 @@ main() {
   for image in $(gcloud container images list-tags "${IMAGE}" --limit=999999 --sort-by=TIMESTAMP \
     --filter="timestamp.datetime < '${DATE}'" --format=json | jq -r -c '.[]'); do
 
-    printf "%s" "."
+    # printf "%s" "."
     digest=$(echo "$image" | jq -j '.digest')
     deletions+=("$digest")
 
@@ -109,7 +109,8 @@ main() {
     fi
     _=$((C++))
   done
-  echo "Deleted ${C} images in ${IMAGE}." >&2
+  echo "Added ${C} images in ${IMAGE} to command_list.txt." >&2
 }
 
 main "${1}" "${2}"
+echo "" >>command_list.txt
