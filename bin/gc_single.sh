@@ -27,7 +27,7 @@ if [[ "$#" -lt 1 || "${1}" == '-h' || "${1}" == '--help' ]]; then
 
 gc_single.sh generates a list of deletion commands for a single repository that are older than a certain date (or by default 6 months)
 
-It will, regardless of age, preserve the most recently pushed image, the most recent image with the tag 'latest' 
+It will, regardless of age, preserve the most recently pushed image, the most recent image with the tag 'latest'
 and all images that are tagged with a semver version.
 
 USAGE:
@@ -62,9 +62,9 @@ fi
 
 main() {
   IMAGE="${1}"
-  six_months_ago=$(( $(date "+%s") - 15552000))
+  six_months_ago=$(($(date "+%s") - 15552000))
   six_months_ago_format=$(date -d "@$six_months_ago" "+%F")
-  
+
   DATE="${2:-$six_months_ago_format}"
   # init vars
   latest=''
@@ -77,22 +77,22 @@ main() {
   echo "Preparing to delete images created before $DATE"
   for image in $(gcloud container images list-tags "${IMAGE}" --limit=999999 --sort-by=TIMESTAMP \
     --filter="timestamp.datetime < '${DATE}'" --format=json | jq -r -c '.[]'); do
-      
-      printf "%s" "."
-      digest=$(echo "$image" | jq -j '.digest')
-      deletions+=("$digest")
 
-      for tag in $(echo "$image" | jq -r -c '.tags[]'); do
-          if [ "$tag" == 'latest' ]; then
-            latest="$digest"
-          elif [[ $tag =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
-            save+=("$digest")
-          elif [[ $tag =~ v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-            save+=("$digest")
-          else
-            last=$digest
-          fi
-      done
+    printf "%s" "."
+    digest=$(echo "$image" | jq -j '.digest')
+    deletions+=("$digest")
+
+    for tag in $(echo "$image" | jq -r -c '.tags[]'); do
+      if [ "$tag" == 'latest' ]; then
+        latest="$digest"
+      elif [[ $tag =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
+        save+=("$digest")
+      elif [[ $tag =~ v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+        save+=("$digest")
+      else
+        last=$digest
+      fi
+    done
   done
 
   printf "\n"
@@ -105,7 +105,7 @@ main() {
     if [[ ${TRIAL_RUN} ]]; then
       echo "gcloud container images delete -q --force-delete-tags ${IMAGE}@${digest}"
     else
-      echo "gcloud container images delete -q --force-delete-tags ${IMAGE}@${digest}" >> command_list.txt
+      echo "gcloud container images delete -q --force-delete-tags ${IMAGE}@${digest}" >>command_list.txt
     fi
     _=$((C++))
   done
