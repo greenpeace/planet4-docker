@@ -316,11 +316,6 @@ workflow-references:
     jobs:
       - image-clean:
           context: org-global
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
       - build:
           context: org-global
       - test-openresty:
