@@ -40,7 +40,7 @@ EXAMPLE
   would clean up everything under the gcr.io/greenpeace/php-fpm repository
   pushed before 2017-04-01.
 
-  By default if DATE is omitted then it will be set to a date six months ago from today.
+  By default if DATE is omitted then it will be set to a date two months ago from today.
 
 TRIAL RUN
   Setting the environment variable will display a list of all images instead of generating a file with the commands.
@@ -62,10 +62,10 @@ fi
 
 main() {
   IMAGE="${1}"
-  six_months_ago=$(($(date "+%s") - 15552000))
-  six_months_ago_format=$(date -d "@$six_months_ago" "+%F")
+  two_months_ago=$(($(date "+%s") - 5184000))
+  two_months_ago_format=$(date -d "@$two_months_ago" "+%F")
 
-  DATE="${2:-$six_months_ago_format}"
+  DATE="${2:-$two_months_ago_format}"
   # init vars
   latest=''
   save=()
@@ -75,21 +75,25 @@ main() {
   C=0
   echo "Querying GCR for current images for $IMAGE"
   echo "Preparing to delete images created before $DATE"
-  for image in $(gcloud container images list-tags "${IMAGE}" --limit=999999 --sort-by=TIMESTAMP \
+  for image in $(gcloud container images list-tags "${IMAGE}" --limit=999999 --sort-by=~TIMESTAMP \
     --filter="timestamp.datetime < '${DATE}'" --format=json | jq -r -c '.[]'); do
 
     digest=$(echo "$image" | jq -j '.digest')
     deletions+=("$digest")
 
     for tag in $(echo "$image" | jq -r -c '.tags[]'); do
-      if [ "$tag" == 'latest' ]; then
+      if [[ "$tag" == 'latest' && "$latest" == '' ]]; then
         latest="$digest"
-      elif [[ $tag =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
+      elif [[ $tag =~ [0-9]+\.[0-9]+\.[0-9]+ && ${#save[@]} -le 10 ]]; then
         save+=("$digest")
-      elif [[ $tag =~ v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+      elif [[ $tag =~ v[0-9]+\.[0-9]+\.[0-9]+ && ${#save[@]} -le 10 ]]; then
         save+=("$digest")
-      else
+      elif [[ $tag =~ v[0-9]+\.[0-9]+ && ${#save[@]} -le 10 ]]; then
+        save+=("$digest")
+      elif [ "$last" == '' ]; then
         last=$digest
+      else
+        :
       fi
     done
   done
