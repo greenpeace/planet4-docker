@@ -17,6 +17,15 @@ defaults: &defaults
   working_directory: /home/circleci/app
 
 jobs:
+  image-clean:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: activate-gcloud-account.sh
+      - run: bin/generate_repos.sh
+      - run: cat bin/repo_list.txt | xargs -L 1 --max-procs=200 ./bin/gc_single.sh
+      - run: cat command_list.txt | xargs -I CMD --max-procs=200 bash -c CMD
+
   build:
     <<: *defaults
     steps:
@@ -304,7 +313,6 @@ jobs:
           command: |
             update-build-numbers.sh
 
-
 workflow-references:
   branch_jobs: &branch_jobs
     jobs:
@@ -496,6 +504,17 @@ workflows:
             branches:
               only:
                 - main
+  weekly-image-clean:
+    triggers:
+      - schedule:
+          # Weekly 1800UTC Sunday night
+          cron: "0 18 * * 0"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - image-clean
 
   branch:
     <<: *branch_jobs

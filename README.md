@@ -114,27 +114,33 @@ GIT_REF=feature/example ./bin/build.sh -r wordpress+
 
 ## Cleaning old images
 
-A garbage collection script `gcrgc.sh` is available which can automatically delete old images in Google Container Regsitry.
+A garbage collection script `gc_single.sh` is available which can automatically delete old images in Google Container Regsitry.
+
+This script deletes all images older than a certain date (or by default 6 months). It also preserves all images with a semver tag,
+the latest image tagged 'latest' and the image most recently pushed.
 
 ### Trial run
 
 You can test which images it would delete, without performing any changes to the registry, by setting the envionrment varible `TRIAL_RUN` to any truthy value, eg:
 
 ```bash
-TRIAL_RUN=true ./bin/gc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+TRIAL_RUN=true ./bin/gc_single.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
 ```
 
-### Delete all ubuntu images in the planet-4-151612 project older than 1st October 2017
+By default when the date field is omitted it will delete images older than 6 months ago.
 
 ```bash
-./bin/gc.sh gcr.io/planet-4-151612/ubuntu 2017-10-01
+./bin/gc_single.sh gcr.io/planet-4-151612/ubuntu
 ```
 
-### Iterate over all images in a build order, deleting older than 1st March 2017
+### Generate command list of all images to delete from all repositories and delete them
+
+This code snippet makes use of xargs to paralleise the process as gcloud is very slow.
+
+Unfortunately we cannot dynamically generate the repo_list.txt file as gcloud does not provide a method to list
+all repositories (at least that I could find).
 
 ```bash
-for i in $(cat src/planet-4-151612/build_order)
-do
-  ./bin/gc.sh gcr.io/planet-4-151612/${i} 2017-04-01
-done
+cat bin/repo_list.txt | xargs -L 1 --max-procs=100 ./bin/gc_single.sh
+cat command_list.txt | xargs -I CMD --max-procs=100 bash -c CMD
 ```
