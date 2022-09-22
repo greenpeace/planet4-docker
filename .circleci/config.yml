@@ -273,20 +273,9 @@ jobs:
       - deploy:
           name: Deploy tagged release
           command: |
-            if [[ -z "$CIRCLE_TAG" ]]
-            then
-              TYPE="Tests" notify-job-success.sh
-              exit 0
-            fi
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
             cd /tmp/workspace/src
-            if make deploy
-            then
-              TYPE="Deployment" notify-job-success.sh
-            else
-              TYPE="Deployment" notify-job-failure.sh
-              exit 1
-            fi
+            make deploy
 
   promote:
     <<: *defaults
