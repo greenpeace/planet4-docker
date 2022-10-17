@@ -38,16 +38,18 @@ SOURCE_VERSION=
 # https://github.com/phusion/baseimage-docker/releases
 BASEIMAGE_VERSION=jammy-1.0.1
 # https://getcomposer.org/download/
-COMPOSER_VERSION=2.3.10
+COMPOSER_VERSION=2.5.7
+# https://github.com/wp-cli/wp-cli/releases
+WP_CLI_VERSION=2.8.0
 # https://github.com/jwilder/dockerize/releases
-DOCKERIZE_VERSION=0.6.1
+DOCKERIZE_VERSION=0.7.0
 # https://openresty.org/en/download.html
 OPENRESTY_VERSION=1.15.8.2
 OPENRESTY_SOURCE=source
 # https://github.com/elastic/apm-agent-php/releases
 APM_AGENT_PHP_VERSION=1.6.1
 
-PHP_MAJOR_VERSION=7.4
+PHP_MAJOR_VERSION=8.1
 
 SOURCE_PATH=/app/source
 PUBLIC_PATH=/app/source/public

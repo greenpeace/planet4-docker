@@ -30,8 +30,8 @@ load env
   [ $status -ne 0 ]
 }
 
-@test "docker-compose nginx/php-fpm application response contains PHP 7 version string" {
-  run curl_check_response_regex "PHP Version 7.[0-9]*.[0-9]*" "http://localhost/index.php" php-fpm-app
+@test "docker-compose nginx/php-fpm application response contains PHP 8 version string" {
+  run curl_check_response_regex "PHP Version 8.[0-9]*.[0-9]*" "http://localhost/index.php" php-fpm-app
   [ $status -eq 0 ]
 }
 

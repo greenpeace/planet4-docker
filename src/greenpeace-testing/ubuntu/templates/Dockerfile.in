@@ -2,6 +2,7 @@ FROM phusion/baseimage:${BASEIMAGE_VERSION} as base
 
 COPY . /app/
 
+# hadolint ignore=DL3008
 RUN rm -fr /etc/apt/sources.list && \
     ln -s /app/sources.list /etc/apt/sources.list && \
     apt-get update && \
