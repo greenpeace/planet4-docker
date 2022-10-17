@@ -258,6 +258,7 @@ echo "Using WP_VERSION: ${WP_VERSION}"
 wp --root core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
 echo "Creating wp-content directories"
+mkdir -p "${SOURCE_PATH}/public/wp-content/"
 chown -R "${APP_USER}:" "${SOURCE_PATH}/public/wp-content/"
 
 echo "Moving themes and plugins over to wp-content"

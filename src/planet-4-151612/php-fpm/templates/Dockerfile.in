@@ -2,8 +2,8 @@ FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/ubuntu:${SOURCE_VERSION}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN add-apt-repository ppa:ondrej/php && \
-    apt-get update && \
+# hadolint ignore=DL3008
+RUN apt-get update && \
     apt-get -y --no-install-recommends install \
       php${PHP_MAJOR_VERSION} \
       php${PHP_MAJOR_VERSION}-cli \
@@ -17,9 +17,7 @@ RUN add-apt-repository ppa:ondrej/php && \
       php${PHP_MAJOR_VERSION}-redis \
       php${PHP_MAJOR_VERSION}-xml \
       php${PHP_MAJOR_VERSION}-zip \
-      ssmtp \
-      && \
-    apt-get purge -y php8.1-cli php8.1-common php8.1-opcache php8.1-phpdbg php8.1-readline && \
+      ssmtp && \
     apt-get clean && \
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-get/*&& \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
