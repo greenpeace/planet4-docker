@@ -41,7 +41,7 @@ ENV \
 COPY ./bin/install_openresty.sh /app/bin/install_openresty.sh
 
 RUN groupadd -g "${APP_GID}" "${APP_GROUP}" && \
-    useradd -r -s /usr/sbin/nologin "${APP_USER}" -u "${APP_UID}" -g "${APP_GID}" && \
+    useradd -r -l -s /usr/sbin/nologin "${APP_USER}" -u "${APP_UID}" -g "${APP_GID}" && \
     time bash "/app/bin/install_openresty.sh" && \
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-fast/* && \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/* && \

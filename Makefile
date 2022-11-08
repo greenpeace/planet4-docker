@@ -63,7 +63,7 @@ lint-docker:
 ifndef DOCKER
 	$(error "docker is not installed: https://docs.docker.com/install/")
 endif
-	@find . -type f -name 'Dockerfile' -exec docker run --rm -i hadolint/hadolint {} \;
+	@find . -type f -name 'Dockerfile' -exec sh -c "cat {} | docker run --rm -i hadolint/hadolint" \;
 
 lint-sh:
 ifndef SHELLCHECK
