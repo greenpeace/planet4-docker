@@ -106,6 +106,10 @@ define( 'GOOGLE_SHEETS_KEY',   '{{ .Env.GOOGLE_SHEETS_KEY }}' );
 define( 'GF_LICENSE',   '{{ .Env.GF_LICENSE }}' );
 {{ end }}
 
+{{ if .Env.GF_SENDGRID_KEY }}
+define( 'GF_SENDGRID_KEY',   '{{ .Env.GF_SENDGRID_KEY }}' );
+{{ end }}
+
 /**
  * Cloudflare key
  */
