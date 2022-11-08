@@ -10,14 +10,14 @@ function setup {
 function teardown {
   store_output
 }
-#
-# @test "shutdown existing containers" {
-#   docker-compose -f "${compose_file}" down -v
-# }
-#
-# @test "pull new container versions" {
-#   docker-compose -f "${compose_file}" pull --parallel
-# }
+
+@test "shutdown existing containers" {
+  docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" down -v
+}
+
+@test "pull new container versions" {
+  docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" pull --parallel
+}
 
 @test "docker-compose start: $IMAGE_TAG" {
   # Wait up to 10 minutes for the build to complete!
