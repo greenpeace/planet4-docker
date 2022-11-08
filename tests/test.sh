@@ -63,7 +63,7 @@ bats_switches=("$@")
 
 # Configure test output directory
 if [[ -z "${TEST_OUTPUT_DIR:-}" ]]; then
-  TEST_TMPDIR="$(mktemp -d "${TMPDIR:-/tmp/}$(basename 0).XXXXXXXXXXXX")"
+  TEST_TMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/XXXXXXXXXXXX")
   TEST_OUTPUT_DIR="${TEST_TMPDIR}/planet4-docker-output"
 fi
 
