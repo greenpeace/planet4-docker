@@ -257,6 +257,11 @@ echo "Using WP_VERSION: ${WP_VERSION}"
 
 wp --root core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
+echo "Creating wp-content directories"
+install -d -o "${APP_USER}" -g "${APP_USER}" -m 755 "${SOURCE_PATH}/public/wp-content/themes"
+install -d -o "${APP_USER}" -g "${APP_USER}" -m 755 "${SOURCE_PATH}/public/wp-content/plugins"
+
+echo "Moving themes and plugins over to wp-content"
 $composer_exec copy:themes
 $composer_exec copy:plugins
 
