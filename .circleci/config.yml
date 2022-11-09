@@ -493,17 +493,6 @@ workflows:
             branches:
               only:
                 - main
-  weekly-image-clean:
-    triggers:
-      - schedule:
-          # Weekly 1800UTC Sunday night
-          cron: "0 18 * * 0"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - image-clean
 
   branch:
     <<: *branch_jobs
