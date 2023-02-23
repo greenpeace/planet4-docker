@@ -241,7 +241,7 @@ fi
 
 [[ -e "$PUBLIC_PATH/index.php" ]] && rm -f "$PUBLIC_PATH/index.php"
 
-chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH"
+chown -R "${APP_USER}:${APP_USER}" "$PUBLIC_PATH" || true
 
 # Get WP_VERSION from NRO. If it's empty fallback to base.
 WP_VERSION=$(jq -r '.extra["wp-version"] // empty' <"${SOURCE_PATH}"/composer-local.json)
@@ -258,7 +258,7 @@ echo "Using WP_VERSION: ${WP_VERSION}"
 wp --root core download --version="${WP_VERSION}" --force "${WP_DOWNLOAD_FLAGS}"
 
 echo "Creating wp-content directories"
-chown -R "${APP_USER}:" "${SOURCE_PATH}/public/wp-content/"
+chown -R "${APP_USER}:" "${SOURCE_PATH}/public/wp-content/" || true
 
 echo "Moving themes and plugins over to wp-content"
 $composer_exec copy:themes

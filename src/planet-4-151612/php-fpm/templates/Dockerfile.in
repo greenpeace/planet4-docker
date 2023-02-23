@@ -27,7 +27,7 @@ RUN add-apt-repository ppa:ondrej/php && \
 ENV ADMIN_EMAIL="nobody@example.com" \
     CHOWN_APP_DIR="false" \
     COMPOSER_HOME="/app/.composer" \
-    COMPOSER_PROCESS_TIMEOUT="600" \
+    COMPOSER_PROCESS_TIMEOUT="1800" \
     COMPOSER_VERSION="${COMPOSER_VERSION}" \
     NEWRELIC_ENABLED="false" \
     PHP_CATCH_WORKERS_OUTPUT="yes" \
