@@ -142,7 +142,7 @@ if [[ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]]; then
 
     build_dir="${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}"
 
-    # Specify which Dockerfile|README.md variables we want to change
+    # Specify which Dockerfile variables we want to change
     # shellcheck disable=SC2016
     envvars=($(get_var_array "${GIT_ROOT_DIR}/config.default"))
     [[ ! -z "${CONFIG_FILE}" ]] && envvars+=($(get_var_array "${CONFIG_FILE}"))
@@ -166,13 +166,6 @@ if [[ "${REWRITE_LOCAL_DOCKERFILES}" = "true" ]]; then
       echo -e "$build_string\n$input" >"${build_dir}/Dockerfile"
     else
       _warning "Dockerfile not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/Dockerfile.in"
-    fi
-
-    if [[ -f "${GIT_ROOT_DIR}/src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in" ]]; then
-      _notice " - ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/${image}/README.md"
-      envsubst "${envvars_string}" <"${build_dir}/templates/README.md.in" >"${build_dir}/README.md"
-    else
-      _notice "README not found: src/${GOOGLE_PROJECT_ID}/${image}/templates/README.md.in"
     fi
 
   done

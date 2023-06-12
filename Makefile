@@ -34,11 +34,7 @@ all : build test
 ################################################################################
 
 .PHONY: init
-init: .git/hooks/pre-commit ignore
-
-ignore:
-	@git ls-files | grep -E "Dockerfile$$" | tr '\n' ' '| xargs git update-index --assume-unchanged
-	@git ls-files | grep -E "README.md$$" | tr '\n' ' '| xargs git update-index --assume-unchanged
+init: .git/hooks/pre-commit
 
 .git/hooks/%:
 	@chmod 755 .githooks/*
@@ -95,12 +91,10 @@ pull :
 .PHONY : build
 build : lint
 	time bin/build.sh $(CONFIG) $(BUILD_FLAGS) $(BUILD_LIST)
-	$(MAKE) ignore
 
 .PHONY : test
 test :
 	TEST_FOLDERS=$(TEST_FOLDERS) time tests/test.sh $(CONFIG)
-	$(MAKE) ignore
 
 deploy:
 	./bin/deploy.sh

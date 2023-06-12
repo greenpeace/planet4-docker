@@ -72,28 +72,6 @@ function teardown {
   grep "NGX_PAGESPEED_RELEASE=\"${ngx_pagespeed_release}\"" "${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
 }
 
-@test "${PROJECT_ID} :: build.sh : \$NGX_PAGESPEED_RELEASE : openresty/README.md : 1 lines" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/README.md"
-  ngx_pagespeed_release="$(grep "NGX_PAGESPEED_RELEASE=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  grep "${ngx_pagespeed_release}" "${srcfile}"
-}
-
-@test "${PROJECT_ID} :: build.sh : \$NGX_PAGESPEED_RELEASE : php-fpm/README.md : 1 lines" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/php-fpm/README.md"
-  ngx_pagespeed_release="$(grep "NGX_PAGESPEED_RELEASE=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${ngx_pagespeed_release}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}
-
-@test "${PROJECT_ID} :: build.sh : \$NGX_PAGESPEED_RELEASE : wordpress/README.md : 1 lines" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/wordpress/README.md"
-  ngx_pagespeed_release="$(grep "NGX_PAGESPEED_RELEASE=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${ngx_pagespeed_release}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}
-
 # ------------------------------------------------------------------------------
 # NGX_PAGESPEED_VERSION
 #
@@ -103,30 +81,6 @@ function teardown {
   grep "NGX_PAGESPEED_VERSION=\"${ngx_pagespeed_version}\"" "${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
 }
 
-@test "${PROJECT_ID} :: build.sh : \$NGX_PAGESPEED_VERSION : openresty/README.md : 1 lines" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/README.md"
-  ngx_pagespeed_version="$(grep "NGX_PAGESPEED_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${ngx_pagespeed_version}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}
-
-@test "${PROJECT_ID} :: build.sh : \$NGX_PAGESPEED_VERSION : php-fpm/README.md : 1 lines" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/php-fpm/README.md"
-  ngx_pagespeed_version="$(grep "NGX_PAGESPEED_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${ngx_pagespeed_version}" "${srcfile}"
-  [[ ${status} -eq 0 ]]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}
-
-@test "${PROJECT_ID} :: build.sh : \$NGX_PAGESPEED_VERSION : wordpress/README.md : 1 lines" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/wordpress/README.md"
-  ngx_pagespeed_version="$(grep "NGX_PAGESPEED_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${ngx_pagespeed_version}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}
-
 # ------------------------------------------------------------------------------
 # OPENRESTY_VERSION
 #
@@ -134,28 +88,4 @@ function teardown {
   srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
   nginx_version="$(grep "OPENRESTY_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   grep "OPENRESTY_VERSION=\"${nginx_version}\"" "${srcfile}"
-}
-
-@test "${PROJECT_ID} :: build.sh : \$OPENRESTY_VERSION : openresty/README.md : 1 line" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/README.md"
-  nginx_version="$(grep "OPENRESTY_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${nginx_version}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}
-
-@test "${PROJECT_ID} :: build.sh : \$OPENRESTY_VERSION : php-fpm/README.md : 1 line" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/php-fpm/README.md"
-  nginx_version="$(grep "OPENRESTY_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${nginx_version}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
-}
-
-@test "${PROJECT_ID} :: build.sh : \$OPENRESTY_VERSION : wordpress/README.md : 1 line" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/wordpress/README.md"
-  nginx_version="$(grep "OPENRESTY_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  run simple_grep "${nginx_version}" "${srcfile}"
-  [ ${status} -eq 0 ]
-  # [[ $(wc -l <<<"$output") -eq 1 ]]
 }
