@@ -3,8 +3,8 @@ FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/ubuntu:${SOURCE_VERSION}
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN add-apt-repository ppa:ondrej/php && \
-    apt-fast update && \
-    apt-fast -y --no-install-recommends install \
+    apt-get update && \
+    apt-get -y --no-install-recommends install \
       php${PHP_MAJOR_VERSION} \
       php${PHP_MAJOR_VERSION}-cli \
       php${PHP_MAJOR_VERSION}-curl \
@@ -20,8 +20,8 @@ RUN add-apt-repository ppa:ondrej/php && \
       ssmtp \
       && \
     apt-get purge -y php8.1-cli php8.1-common php8.1-opcache php8.1-phpdbg php8.1-readline && \
-    apt-fast clean && \
-    rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-fast/*&& \
+    apt-get clean && \
+    rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/* /var/cache/apt/apt-get/*&& \
     rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
 
 ENV ADMIN_EMAIL="nobody@example.com" \

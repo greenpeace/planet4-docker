@@ -6,10 +6,6 @@ pid /var/run/nginx.pid;
 # Add stdout logging
 error_log /dev/stdout info;
 
-{{ if eq .Env.GEOIP2_ENABLED "true" }}
-load_module modules/ngx_http_geoip2_module.so;
-{{ end }}
-
 events {
     worker_connections 1024;
 }

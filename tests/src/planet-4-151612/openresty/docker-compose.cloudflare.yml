@@ -6,3 +6,4 @@ services:
     network_mode: "${NETWORK_MODE}"
     environment:
       - CLOUDFLARE_ENABLED=true
+      - GEOIP_ENABLED=true

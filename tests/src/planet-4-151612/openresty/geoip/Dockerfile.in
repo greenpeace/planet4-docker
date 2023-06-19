@@ -1,5 +1,0 @@
-FROM ${IMAGE_FROM}
-
-COPY . /
-
-ENV APP_ENV="testing"

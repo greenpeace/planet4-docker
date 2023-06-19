@@ -65,23 +65,6 @@ function teardown {
 }
 
 # ------------------------------------------------------------------------------
-# NGX_PAGESPEED_RELEASE
-#
-@test "${PROJECT_ID} :: build.sh : \$NGX_PAGESPEED_RELEASE : openresty/Dockerfile" {
-  ngx_pagespeed_release="$(grep "NGX_PAGESPEED_RELEASE=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  grep "NGX_PAGESPEED_RELEASE=\"${ngx_pagespeed_release}\"" "${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
-}
-
-# ------------------------------------------------------------------------------
-# NGX_PAGESPEED_VERSION
-#
-@test "${PROJECT_ID} :: build.sh : \$NGX_PAGESPEED_VERSION : openresty/Dockerfile" {
-  srcfile="${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/bin/install_openresty.sh"
-  ngx_pagespeed_version="$(grep "NGX_PAGESPEED_VERSION=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
-  grep "NGX_PAGESPEED_VERSION=\"${ngx_pagespeed_version}\"" "${PROJECT_GIT_ROOT_DIR}/src/${PROJECT_ID}/openresty/Dockerfile"
-}
-
-# ------------------------------------------------------------------------------
 # OPENRESTY_VERSION
 #
 @test "${PROJECT_ID} :: build.sh : \$OPENRESTY_VERSION : openresty/Dockerfile" {
