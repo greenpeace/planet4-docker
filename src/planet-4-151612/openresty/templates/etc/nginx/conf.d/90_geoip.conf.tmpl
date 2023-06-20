@@ -1,3 +1,16 @@
-{{ if eq .Env.GEOIP_ENABLED "true" }}
-add_header X-COUNTRY-CODE {{ .Env.COUNTRY_CODE }};
+{{ if eq .Env.GEOIP2_ENABLED "true" }}
+geoip2 /usr/share/GeoIP/GeoLite2-Country.mmdb {
+    auto_reload 30m;
+    $geoip2_metadata_country_build metadata build_epoch;
+    $geoip2_data_country_code default=Unknown source=$remote_addr country iso_code;
+    $geoip2_data_country_name country names en;
+}
+
+geoip2 /usr/share/GeoIP/GeoLite2-City.mmdb {
+    $geoip2_data_city_name default=Unknown city names en;
+}
+
+fastcgi_param COUNTRY_CODE $geoip2_data_country_code;
+fastcgi_param COUNTRY_NAME $geoip2_data_country_name;
+fastcgi_param CITY_NAME    $geoip2_data_city_name;
 {{ end }}

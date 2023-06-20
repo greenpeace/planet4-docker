@@ -1,7 +1,12 @@
-{{ if eq .Env.GEOIP_ENABLED "true" }}
+{{ if eq .Env.GEOIP2_ENABLED "true" }}
 location / {
-  more_set_headers 'X-Country-Code $http_cf_ipcountry';
+  {{- if eq .Env.APP_ENV "testing" }}
+  more_set_headers 'X-Country-Code $geoip2_data_country_code';
+  more_set_headers 'X-Country-Name $geoip2_data_country_name';
+  more_set_headers 'X-City-Name $geoip2_data_city_name';
+  more_set_headers 'X-IP' $remote_addr;
+  {{- end }}
   sub_filter_types text/html;
-  sub_filter '__P4_GEOIP_COUNTRY_CODE__' $http_cf_ipcountry;
+  sub_filter '__P4_GEOIP_COUNTRY_CODE__' $geoip2_data_country_code;
 }
 {{ end }}
