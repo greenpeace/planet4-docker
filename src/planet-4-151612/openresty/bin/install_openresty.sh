@@ -28,8 +28,10 @@ else
     autoconf \
     automake \
     build-essential \
+    geoipupdate \
     libmaxminddb-dev \
     libgd-dev \
+    libgeoip-dev \
     libgoogle-perftools-dev \
     libpcre3-dev \
     libperl-dev \
