@@ -26,7 +26,7 @@ function teardown {
   [ $status -eq 0 ]
 }
 
-@test "GEOIP_ENABLED Disabled - 'Country: __P4_GEOIP_COUNTRY_CODE__' in test output" {
+@test "GEOIP2_ENABLED Disabled - 'Country: __P4_GEOIP_COUNTRY_CODE__' in test output" {
   run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.yml" exec app curl localhost
   [ $status -eq 0 ]
   printf '%s' "$output" | grep "Country: __P4_GEOIP_COUNTRY_CODE__"

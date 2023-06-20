@@ -15,7 +15,7 @@ nginx_configure_hostpath.sh
 
 nginx_configure_real_ip.sh
 
-nginx_configure_geoip.sh
+nginx_configure_geoip2.sh
 
 nginx_configure_cloudflare.sh
 

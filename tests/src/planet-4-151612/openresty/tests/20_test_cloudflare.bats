@@ -24,12 +24,6 @@ EXT_IP=$(curl -s http://ipecho.net/plain; echo)
   printf '%s' "$output" | grep "CF-Connecting-IP"
 }
 
-@test "Cloudflare - Country Code enabled" {
-  run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.cloudflare.yml" exec app nginx -T
-  [ $status -eq 0 ]
-  printf '%s' "$output" | grep "CF-IPCountry"
-}
-
 @test "Cloudflare - Configuration deployed" {
   run docker-compose -f "${BATS_TEST_DIRNAME}/../docker-compose.cloudflare.yml" exec app nginx -T
   [ $status -eq 0 ]

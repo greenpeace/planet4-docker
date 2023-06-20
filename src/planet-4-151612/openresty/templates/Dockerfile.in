@@ -11,7 +11,7 @@ ENV \
     APP_HOSTPATH="international" \
     CHOWN_APP_DIR="false" \
     CLOUDFLARE_ENABLED="false" \
-    GEOIP_ENABLED="false" \
+    GEOIP2_ENABLED="false" \
     GEOIP2_VERSION="3.2" \
     GEOIP_ACCOUNTID="" \
     GEOIP_LICENSE="" \

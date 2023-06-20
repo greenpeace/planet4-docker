@@ -14,6 +14,9 @@ if [[ "${OPENRESTY_SOURCE}" = "apt" ]]; then
 
   # add the our official APT repository:
   add-apt-repository -y "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main"
+else
+  # Add GeoIP2 support
+  add-apt-repository -y ppa:maxmind/ppa
 fi
 
 apt-get update
@@ -38,7 +41,7 @@ else
     zlib1g-dev \
     ;
   wget -nv --retry-connrefused -t 5 -O - "https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz" | tar zxf - -C /tmp &
-  wget -nv --retry-connrefused -t 5 -O - "https://github.com/leev/ngx_http_geoip2_module/archive/${GEOIP2_VERSION}.tar.gz" | tar zxf - -C /tmp
+  wget -nv --retry-connrefused -t 5 -O - "https://github.com/leev/ngx_http_geoip2_module/archive/${GEOIP2_VERSION}.tar.gz" | tar zxf - -C /tmp &
   procs=$(cat /proc/cpuinfo | grep processor | wc -l)
   mkdir -p /var/log/nginx /var/cache/nginx
   wait
@@ -64,6 +67,7 @@ else
     --with-http_auth_request_module \
     --with-http_dav_module \
     --with-http_flv_module \
+    --with-http_geoip_module=dynamic \
     --with-http_gunzip_module \
     --with-http_gzip_static_module \
     --with-http_mp4_module \
@@ -93,6 +97,7 @@ else
     automake \
     build-essential \
     libgd-dev \
+    libgeoip-dev \
     libgoogle-perftools-dev \
     libpcre3-dev \
     libperl-dev \
