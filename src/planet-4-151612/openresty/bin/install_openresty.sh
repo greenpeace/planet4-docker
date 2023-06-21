@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-# Description:    Installs openresty from source with prerequisites
-#                  - OpenSSL
-#                  - ngx_pagespeed
+# Description: Installs openresty from source with prerequisites
+#  - OpenSSL
 
 if [[ "${OPENRESTY_SOURCE}" = "apt" ]]; then
   # import our GPG key:
@@ -11,7 +10,7 @@ if [[ "${OPENRESTY_SOURCE}" = "apt" ]]; then
 
   # for installing the add-apt-repository command
   # (you can remove this package and its dependencies later):
-  apt-fast -y install software-properties-common
+  apt-get -y install software-properties-common
 
   # add the our official APT repository:
   add-apt-repository -y "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main"
@@ -20,12 +19,12 @@ else
   add-apt-repository -y ppa:maxmind/ppa
 fi
 
-apt-fast update
+apt-get update
 
 if [[ "${OPENRESTY_SOURCE}" = "apt" ]]; then
-  apt-fast -y --no-install-recommends install openresty
+  apt-get -y --no-install-recommends install openresty
 else
-  apt-fast -y --no-install-recommends install \
+  apt-get -y --no-install-recommends install \
     autoconf \
     automake \
     build-essential \
@@ -45,14 +44,6 @@ else
     ;
   wget -nv --retry-connrefused -t 5 -O - "https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz" | tar zxf - -C /tmp &
   wget -nv --retry-connrefused -t 5 -O - "https://github.com/leev/ngx_http_geoip2_module/archive/${GEOIP2_VERSION}.tar.gz" | tar zxf - -C /tmp &
-  wget -nv --retry-connrefused -t 5 -O - "https://github.com/pagespeed/ngx_pagespeed/archive/${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}.tar.gz" | tar zxf - -C /tmp
-  PSOL_URL="$(cat "/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}/PSOL_BINARY_URL")"
-  if [ "$(uname -m)" = x86_64 ]; then
-    PSOL_BIT_SIZE_NAME="x64"
-  else
-    PSOL_BIT_SIZE_NAME="ia32"
-  fi
-  wget -nv --retry-connrefused --waitretry=1 -t 5 -O - "$(echo $PSOL_URL | sed "s/\$BIT_SIZE_NAME/$PSOL_BIT_SIZE_NAME/g")" | tar zxf - -C "/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE}" &
   procs=$(cat /proc/cpuinfo | grep processor | wc -l)
   mkdir -p /var/log/nginx /var/cache/nginx
   wait
@@ -101,7 +92,6 @@ else
     --with-ipv6 \
     --with-pcre-jit \
     --add-dynamic-module=/tmp/ngx_http_geoip2_module-${GEOIP2_VERSION} \
-    --add-module=/tmp/incubator-pagespeed-ngx-${NGX_PAGESPEED_VERSION}-${NGX_PAGESPEED_RELEASE} \
     --with-debug
   make -j${procs} install
   apt-get purge -yqq \

@@ -9,8 +9,6 @@ mkdir -p /etc/nginx/sites-enabled
 
 nginx_configure_ssl.sh
 
-nginx_configure_pagespeed.sh
-
 nginx_configure_fastcgi_backend.sh
 
 nginx_configure_hostpath.sh

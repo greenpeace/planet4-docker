@@ -36,14 +36,11 @@ SOURCE_VERSION=
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases
-BASEIMAGE_VERSION=0.11
+BASEIMAGE_VERSION=jammy-1.0.1
 # https://getcomposer.org/download/
 COMPOSER_VERSION=2.3.10
 # https://github.com/jwilder/dockerize/releases
 DOCKERIZE_VERSION=0.6.1
-# https://github.com/pagespeed/ngx_pagespeed/releases
-NGX_PAGESPEED_RELEASE=stable
-NGX_PAGESPEED_VERSION=latest
 # https://openresty.org/en/download.html
 OPENRESTY_VERSION=1.15.8.2
 OPENRESTY_SOURCE=source
