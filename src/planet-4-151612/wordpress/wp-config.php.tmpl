@@ -124,6 +124,13 @@ define('CLOUDFLARE_API_KEY', '{{ .Env.CLOUDFLARE_API_KEY }}');
  */
 define('ELASTIC_APM_SECRET_TOKEN', '{{ .Env.ELASTIC_APM_SECRET_TOKEN }}');
 
+{{ if .Env.PLANET4_API_KEY }}
+/**
+ * Planet 4 API key
+ */
+define('PLANET4_API_KEY', '{{ .Env.PLANET4_API_KEY }}');
+{{ end }}
+
 /**
  * WordPress Database Table prefix.
  *
