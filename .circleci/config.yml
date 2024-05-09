@@ -270,7 +270,7 @@ jobs:
       - run: activate-gcloud-account.sh
       - setup_remote_docker:
           docker_layer_caching: true
-      - deploy:
+      - run:
           name: Deploy tagged release
           command: |
             export CIRCLE_BUILD_NUM=$(cat /tmp/workspace/var/circle-build-num)
@@ -297,7 +297,7 @@ jobs:
             echo "Tagging to ${new_version}"
             git tag -a "$new_version" -m "$new_version"
             git push origin --tags
-      - deploy:
+      - run:
           name: commit updated build numbers
           command: |
             update-build-numbers.sh
