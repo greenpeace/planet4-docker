@@ -110,6 +110,10 @@ define( 'GF_LICENSE',   '{{ .Env.GF_LICENSE }}' );
 define( 'SENDGRID_API_KEY',   '{{ .Env.SENDGRID_API_KEY }}' );
 {{ end }}
 
+{{ if .Env.SENDGRID_NRO_API_KEY }}
+define( 'SENDGRID_NRO_API_KEY',   '{{ .Env.SENDGRID_NRO_API_KEY }}' );
+{{ end }}
+
 {{ if .Env.GOOGLE_PROFILE_AVATARS_KEY }}
 define( 'GOOGLE_PROFILE_AVATARS_KEY',   '{{ .Env.GOOGLE_PROFILE_AVATARS_KEY }}' );
 {{ end }}
