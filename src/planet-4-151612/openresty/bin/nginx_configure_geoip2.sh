@@ -57,6 +57,6 @@ else
 fi
 
 # Update GeoIP data
-/usr/bin/geoipupdate -v & || echo "GeoIP update failed"
+(/usr/bin/geoipupdate -v &) || echo "GeoIP update failed"
 
 wait
