@@ -11,4 +11,4 @@ echo "# Generated at $(date) by $0" >>$GeoIP_RANGES_FILE_PATH
 echo "" >>$GeoIP_RANGES_FILE_PATH
 
 # Update GeoIP data
-/usr/bin/geoipupdate -v >>$GeoIP_RANGES_FILE_PATH 2>&1
+/usr/bin/geoipupdate -v >>$GeoIP_RANGES_FILE_PATH 2>&1 || echo "GeoIP update failed"

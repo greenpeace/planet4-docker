@@ -47,9 +47,16 @@ done
 CRON_SCHEDULE="cron.weekly"
 GEOIP_WEEKLY_CRON_FILE_PATH="/etc/$CRON_SCHEDULE/nginx_update_geoip_database"
 GEOIP_CRON_FILE="/app/bin/nginx_update_geoip_database.sh"
-ln -s $GEOIP_CRON_FILE $GEOIP_WEEKLY_CRON_FILE_PATH
+
+# Only create the symbolic link if it doesn't already exist
+if [ ! -L "$GEOIP_WEEKLY_CRON_FILE_PATH" ]; then
+  ln -s $GEOIP_CRON_FILE $GEOIP_WEEKLY_CRON_FILE_PATH
+  echo "Symlink created at $GEOIP_WEEKLY_CRON_FILE_PATH"
+else
+  echo "Symlink already exists at $GEOIP_WEEKLY_CRON_FILE_PATH"
+fi
 
 # Update GeoIP data
-/usr/bin/geoipupdate -v &
+(/usr/bin/geoipupdate -v &) || echo "GeoIP update failed"
 
 wait
