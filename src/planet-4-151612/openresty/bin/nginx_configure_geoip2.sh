@@ -57,7 +57,8 @@ else
 fi
 
 # Update GeoIP data
-
+export GEOIP_ACCOUNTID
+export GEOIP_LICENSE
 # Check the status of the GeoIP update service
 status_code=$(curl -s -o /dev/null -w "%{http_code}" -O -J -L -u "${GEOIP_ACCOUNTID}:${GEOIP_LICENSE}" "https://download.maxmind.com/geoip/databases/GeoIP2-City-CSV/download?suffix=zip")
 
