@@ -63,10 +63,10 @@ status_code=$(curl -s -o /dev/null -w "%{http_code}" https://updates.maxmind.com
 
 # Check if the status code is 429 (rate limit exceeded)
 if [ "$status_code" -eq 429 ]; then
-    echo "GeoIP update failed: Daily limit reached (HTTP 429)"
+  echo "GeoIP update failed: Daily limit reached (HTTP 429)"
 else
-    # Run the GeoIP update if the limit has not been reached
-    /usr/bin/geoipupdate -v
+  # Run the GeoIP update if the limit has not been reached
+  /usr/bin/geoipupdate -v
 fi
 
 wait
