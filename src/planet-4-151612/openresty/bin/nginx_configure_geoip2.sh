@@ -57,6 +57,7 @@ else
 fi
 
 # Update GeoIP data
-#/usr/bin/geoipupdate -v
+# TODO: we need to change this to an init container
+/usr/bin/geoipupdate -v
 
 wait
