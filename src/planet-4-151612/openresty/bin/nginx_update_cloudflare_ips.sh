@@ -38,19 +38,21 @@ wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV4_REMOTE_FILE -O 
 wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV6_REMOTE_FILE -O $CLOUDFLARE_IPSV6_LOCAL_FILE --no-check-certificate
 
 echo "# CloudFlare IP Ranges" >$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+# shellcheck disable=SC2129
 echo "# Generated at $(date) by $0" >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 echo "" >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV4_LOCAL_FILE >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV6_LOCAL_FILE >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 echo "" >>$CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 
-chown $APP_USER:$APP_GROUP $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
+chown "$APP_USER":"$APP_GROUP" $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY
 
 mv $CLOUDFLARE_IP_RANGES_FILE_PATH_TODAY $CLOUDFLARE_IP_RANGES_FILE_PATH
 rm -rf $CLOUDFLARE_IPSV4_LOCAL_FILE
 rm -rf $CLOUDFLARE_IPSV6_LOCAL_FILE
 
 # Reload configuration if running
+# shellcheck disable=SC2091
 if $(pgrep nginx >/dev/null 2>&1); then
   echo "# Reloading configuration ..." >>$CLOUDFLARE_IP_RANGES_FILE_PATH
   sv reload nginx

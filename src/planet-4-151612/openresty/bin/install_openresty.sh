@@ -44,13 +44,15 @@ else
     ;
   wget -nv --retry-connrefused -t 5 -O - "https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz" | tar zxf - -C /tmp &
   wget -nv --retry-connrefused -t 5 -O - "https://github.com/leev/ngx_http_geoip2_module/archive/${GEOIP2_VERSION}.tar.gz" | tar zxf - -C /tmp &
+  # shellcheck disable=SC2126
+  # shellcheck disable=SC2002
   procs=$(cat /proc/cpuinfo | grep processor | wc -l)
   mkdir -p /var/log/nginx /var/cache/nginx
   wait
 
   cd "/tmp/openresty-${OPENRESTY_VERSION}" || exit 1
   ./configure \
-    -j${procs} \
+    -j"${procs}" \
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
@@ -91,9 +93,9 @@ else
     --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' \
     --with-ipv6 \
     --with-pcre-jit \
-    --add-dynamic-module=/tmp/ngx_http_geoip2_module-${GEOIP2_VERSION} \
+    --add-dynamic-module=/tmp/ngx_http_geoip2_module-"${GEOIP2_VERSION}" \
     --with-debug
-  make -j${procs} install
+  make -j"${procs}" install
   apt-get purge -yqq \
     autoconf \
     automake \

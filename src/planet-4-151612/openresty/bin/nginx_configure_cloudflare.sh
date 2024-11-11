@@ -43,20 +43,27 @@ wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV4_REMOTE_FILE -O 
 wget --retry-connrefused --waitretry=1 -t 5 -q $CLOUDFLARE_IPSV6_REMOTE_FILE -O $CLOUDFLARE_IPSV6_LOCAL_FILE --no-check-certificate
 
 echo "# CloudFlare IP Ranges" >$CLOUDFLARE_IP_RANGES_FILE_PATH
+# shellcheck disable=SC2129
 echo "# Generated at $(date) by $0" >>$CLOUDFLARE_IP_RANGES_FILE_PATH
 echo "" >>$CLOUDFLARE_IP_RANGES_FILE_PATH
 awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV4_LOCAL_FILE >>$CLOUDFLARE_IP_RANGES_FILE_PATH
 awk '{ print "set_real_ip_from " $0 ";" }' $CLOUDFLARE_IPSV6_LOCAL_FILE >>$CLOUDFLARE_IP_RANGES_FILE_PATH
 echo "" >>$CLOUDFLARE_IP_RANGES_FILE_PATH
 
-chown $APP_USER:$APP_GROUP $CLOUDFLARE_IP_RANGES_FILE_PATH
+chown "$APP_USER":"$APP_GROUP" $CLOUDFLARE_IP_RANGES_FILE_PATH
 
 rm -rf $CLOUDFLARE_IPSV4_LOCAL_FILE
 rm -rf $CLOUDFLARE_IPSV6_LOCAL_FILE
 
-#Setup cron job to update Cloudflare ips
+# Setup cron job to update Cloudflare ips
 CRON_SCHEDULE="cron.daily"
 CLOUDFLARE_DAILY_CRON_FILE_PATH="/etc/$CRON_SCHEDULE/nginx_update_cloudflare_ips"
 CLOUDFLARE_CRON_FILE="/app/bin/nginx_update_cloudflare_ips.sh"
 
-ln -s $CLOUDFLARE_CRON_FILE $CLOUDFLARE_DAILY_CRON_FILE_PATH
+# Only create the symbolic link if it doesn't already exist
+if [ ! -L "$CLOUDFLARE_DAILY_CRON_FILE_PATH" ]; then
+  ln -s $CLOUDFLARE_CRON_FILE $CLOUDFLARE_DAILY_CRON_FILE_PATH
+  echo "Symlink created at $CLOUDFLARE_DAILY_CRON_FILE_PATH"
+else
+  echo "Symlink already exists at $CLOUDFLARE_DAILY_CRON_FILE_PATH"
+fi

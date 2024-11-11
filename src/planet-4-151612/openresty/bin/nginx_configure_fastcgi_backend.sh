@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+# shellcheck disable=SC2269
 OPENRESTY_FASTCGI_BACKEND=${OPENRESTY_FASTCGI_BACKEND}
 export OPENRESTY_FASTCGI_BACKEND
 
