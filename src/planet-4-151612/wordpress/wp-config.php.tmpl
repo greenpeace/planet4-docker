@@ -73,6 +73,7 @@ define( 'WP_STATELESS_MEDIA_BUCKET',            '{{ .Env.WP_STATELESS_MEDIA_BUCK
 define( 'WP_STATELESS_MEDIA_MODE',              '{{ .Env.WP_STATELESS_MEDIA_MODE }}' );
 define( 'WP_STATELESS_MEDIA_ROOT_DIR',          '{{ .Env.WP_STATELESS_MEDIA_ROOT_DIR }}' );
 define( 'WP_STATELESS_COMPATIBILITY_GF',        true );
+define( 'WP_STATELESS_SKIP_ACL_SET',            true );
 
 {{ if .Env.WP_STATELESS_MEDIA_KEY_FILE_PATH }}
 define( 'WP_STATELESS_MEDIA_KEY_FILE_PATH',     '{{ .Env.WP_STATELESS_MEDIA_KEY_FILE_PATH }}' );
