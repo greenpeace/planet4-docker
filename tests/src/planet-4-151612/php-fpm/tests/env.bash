@@ -74,7 +74,7 @@ function test_fastcgi_response() {
   docker run --network "container:${container}" \
     -e "SCRIPT_FILENAME=${path}" \
     -e "SCRIPT_NAME=${path}" \
-    -t --rm gcr.io/greenpeace-global-it/cgi-fcgi -bind -connect "${endpoint}"
+    -t --rm greenpeaceinternational/cgi-fcgi -bind -connect "${endpoint}"
 }
 
 export -f test_minimal_cleanup
