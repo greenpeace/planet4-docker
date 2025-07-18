@@ -36,7 +36,7 @@ SOURCE_VERSION=
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases
-BASEIMAGE_VERSION=jammy-1.0.1
+BASEIMAGE_VERSION=jammy-1.0.4
 # https://getcomposer.org/download/
 COMPOSER_VERSION=2.5.7
 # https://github.com/wp-cli/wp-cli/releases
