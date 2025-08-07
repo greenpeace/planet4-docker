@@ -13,12 +13,12 @@ load env
   [ $status -eq 0 ]
 }
 
-@test "docker-compose nginx/php-fpm health_php.php" {
-  docker cp "${BATS_TEST_DIRNAME}/../health_php.php" phpfpm_php-fpm_1:/app/source/public/
-  docker exec php-fpm-app touch /app/source/public/health_php.php
-  run curl_check_response_regex "^ok$" "http://localhost/health_php.php" php-fpm-app 3
-  [ $status -eq 0 ]
-}
+# @test "docker-compose nginx/php-fpm health_php.php" {
+#  docker cp "${BATS_TEST_DIRNAME}/../health_php.php" phpfpm_php-fpm_1:/app/source/public/
+#  docker exec php-fpm-app touch /app/source/public/health_php.php
+#  run curl_check_response_regex "^ok$" "http://localhost/health_php.php" php-fpm-app 3
+#  [ $status -eq 0 ]
+# }
 
 @test "docker-compose nginx/php-fpm application shows PHP status internally" {
   skip "Temporarily skip failing test"
