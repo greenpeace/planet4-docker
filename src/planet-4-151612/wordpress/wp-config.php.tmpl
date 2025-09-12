@@ -28,8 +28,10 @@ define('WP_HOME',     $protocol . '://{{ .Env.APP_HOSTNAME }}{{ .Env.APP_HOSTPAT
 define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 
 {{ if .Env.WP_SENTRY_DSN }}
-define( 'WP_SENTRY_DSN', '{{ .Env.WP_SENTRY_DSN }}' );
-define( 'WP_SENTRY_ERROR_TYPES', {{ .Env.WP_SENTRY_ERROR_TYPES }} );
+define('WP_SENTRY_PHP_DSN', '{{ .Env.WP_SENTRY_DSN }}');
+define('WP_SENTRY_BROWSER_DSN', '{{ .Env.WP_SENTRY_DSN }}');
+define('WP_SENTRY_TRACES_SAMPLE_RATE', 0.05);
+define('WP_SENTRY_BROWSER_TRACES_SAMPLE_RATE', 0.05);
 {{ end }}
 
 {{ if eq .Env.WP_AUTOMATIC_UPDATER_DISABLED "true" }}
