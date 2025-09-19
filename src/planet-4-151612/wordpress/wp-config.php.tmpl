@@ -100,12 +100,26 @@ define( 'WP_REDIS_DEFAULT_EXPIRE_SECONDS',   '{{ .Env.WP_REDIS_DEFAULT_EXPIRE_SE
 {{ end }}
 {{ end }}
 
+define('CLOUDFLARE_API_KEY', '{{ .Env.CLOUDFLARE_API_KEY }}');
+
+{{ if .Env.GF_LICENSE }}
+define( 'GF_LICENSE',   '{{ .Env.GF_LICENSE }}' );
+{{ end }}
+
+{{ if .Env.GOOGLE_PROFILE_AVATARS_KEY }}
+define( 'GOOGLE_PROFILE_AVATARS_KEY',   '{{ .Env.GOOGLE_PROFILE_AVATARS_KEY }}' );
+{{ end }}
+
 {{ if .Env.GOOGLE_SHEETS_KEY }}
 define( 'GOOGLE_SHEETS_KEY',   '{{ .Env.GOOGLE_SHEETS_KEY }}' );
 {{ end }}
 
-{{ if .Env.GF_LICENSE }}
-define( 'GF_LICENSE',   '{{ .Env.GF_LICENSE }}' );
+{{ if .Env.NRO_FORM_DATA_PRIVATE_KEY }}
+define( 'NRO_FORM_DATA_PRIVATE_KEY',   '{{ .Env.NRO_FORM_DATA_PRIVATE_KEY }}' );
+{{ end }}
+
+{{ if .Env.PLANET4_API_KEY }}
+define('PLANET4_API_KEY', '{{ .Env.PLANET4_API_KEY }}');
 {{ end }}
 
 {{ if .Env.SENDGRID_API_KEY }}
@@ -116,24 +130,12 @@ define( 'SENDGRID_API_KEY',   '{{ .Env.SENDGRID_API_KEY }}' );
 define( 'SENDGRID_NRO_API_KEY',   '{{ .Env.SENDGRID_NRO_API_KEY }}' );
 {{ end }}
 
-{{ if .Env.NRO_FORM_DATA_PRIVATE_KEY }}
-define( 'NRO_FORM_DATA_PRIVATE_KEY',   '{{ .Env.NRO_FORM_DATA_PRIVATE_KEY }}' );
+{{ if .Env.TURNSTILE_SITE_KEY }}
+define( 'TURNSTILE_SITE_KEY',   '{{ .Env.TURNSTILE_SITE_KEY }}' );
 {{ end }}
 
-{{ if .Env.GOOGLE_PROFILE_AVATARS_KEY }}
-define( 'GOOGLE_PROFILE_AVATARS_KEY',   '{{ .Env.GOOGLE_PROFILE_AVATARS_KEY }}' );
-{{ end }}
-
-/**
- * Cloudflare key
- */
-define('CLOUDFLARE_API_KEY', '{{ .Env.CLOUDFLARE_API_KEY }}');
-
-{{ if .Env.PLANET4_API_KEY }}
-/**
- * Planet 4 API key
- */
-define('PLANET4_API_KEY', '{{ .Env.PLANET4_API_KEY }}');
+{{ if .Env.TURNSTILE_SECRET_KEY }}
+define( 'TURNSTILE_SECRET_KEY',   '{{ .Env.TURNSTILE_SECRET_KEY }}' );
 {{ end }}
 
 /**
