@@ -31,7 +31,6 @@ define('WP_AUTO_UPDATE_CORE', '{{ .Env.WP_AUTO_UPDATE_CORE }}' );
 define('WP_SENTRY_PHP_DSN', '{{ .Env.WP_SENTRY_DSN }}');
 define('WP_SENTRY_BROWSER_DSN', '{{ .Env.WP_SENTRY_DSN }}');
 define('WP_SENTRY_TRACES_SAMPLE_RATE', 0.05);
-define('WP_SENTRY_BROWSER_TRACES_SAMPLE_RATE', 0.05);
 {{ end }}
 
 {{ if eq .Env.WP_AUTOMATIC_UPDATER_DISABLED "true" }}
