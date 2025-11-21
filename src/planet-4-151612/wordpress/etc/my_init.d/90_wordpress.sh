@@ -64,12 +64,3 @@ else
     rm -f "${PUBLIC_PATH}/wp-content/object-cache.php"
   fi
 fi
-
-_good "Starting Wordfence WAF rules"
-# Wordfence workaround to enable WAF rules immediately instead of waiting for learning period
-# See: https://wordpress.org/support/topic/waf-rules-in-a-stateless-environment/#post-11549432
-if [[ -f "${PUBLIC_PATH}/wp-content/plugins/wordfence/wordfence.php" ]]; then
-  _good "Running wp eval for wordfence.php"
-  wp eval "define('WFWAF_ALWAYS_ALLOW_FILE_WRITING',true); \
-    wfConfig::save(array('wafStatus'=>'enabled'));"
-fi
