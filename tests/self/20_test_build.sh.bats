@@ -16,8 +16,7 @@ function teardown {
 @test "${PROJECT_ID} :: build.sh : \$APPLICATION_NAME : */Dockerfile : 1 line" {
   application_name="$(grep "APPLICATION_NAME=.*" "${TEST_CONFIG_FILE}" | cut -d \" -f 2)"
   shopt -s nullglob
-  for i in "${PROJECT_GIT_ROOT_DIR}"/src/${PROJECT_ID}/*/
-  do
+  for i in "${PROJECT_GIT_ROOT_DIR}"/src/${PROJECT_ID}/*/; do
     run simple_grep "$application_name" "${i}Dockerfile"
     [ $status -eq 0 ]
     # [[ $(wc -l <<<"$output") -eq 1 ]]

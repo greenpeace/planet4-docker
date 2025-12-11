@@ -11,7 +11,10 @@ function teardown {
   store_output
 }
 
-EXT_IP=$(curl -s http://ipecho.net/plain; echo)
+EXT_IP=$(
+  curl -s http://ipecho.net/plain
+  echo
+)
 
 @test "CloudFlare - container starts" {
   run start_docker_compose "${BATS_TEST_DIRNAME}/../docker-compose.cloudflare.yml"

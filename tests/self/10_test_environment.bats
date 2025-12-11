@@ -12,15 +12,13 @@ function teardown {
 }
 
 @test "ag exists and is executable" {
-  if [ ! -x "$(type -P ag)" ]
-  then
+  if [ ! -x "$(type -P ag)" ]; then
     fatal "FATAL: ag not found.\\nPlease install as per instructions at https://beyondgrep.com/"
   fi
 }
 
 @test "tap-xunit exists and is executable" {
-  if [ ! -x "$(type -P tap-xunit)" ]
-  then
+  if [ ! -x "$(type -P tap-xunit)" ]; then
     fatal "FATAL: tap-xunit not found.\nPlease install as per instructions at https://github.com/aghassemi/tap-xunit/releases"
     exit 1
   fi
@@ -28,8 +26,7 @@ function teardown {
 
 @test "shellcheck exists and is executable" {
   skip "Shellcheck tests not implemented"
-  if [ ! -x "$(type -P shellcheck)" ]
-  then
+  if [ ! -x "$(type -P shellcheck)" ]; then
     fatal "FATAL: shellcheck not found.\nPlease install as per instructions at https://www.shellcheck.net/"
     exit 1
   fi
@@ -39,20 +36,17 @@ function teardown {
   skip "Shellcheck tests not implemented"
   run shellcheck_all_bash_scripts
   # We don't care bout failures here, just log them for future reference
-  if [ $status -ne 0 ]
-  then
-    echo "${output}" > "${ARTIFACT_LOGS_DIR:-/tmp/artifacts/logs}"/shellcheck.txt
+  if [ $status -ne 0 ]; then
+    echo "${output}" >"${ARTIFACT_LOGS_DIR:-/tmp/artifacts/logs}"/shellcheck.txt
   fi
 }
 
 @test "cgi-fcgi exists and is executable" {
   # Circle doesn't need this, the test relies on docker
-  if [ ${CIRCLECI} ]
-  then
+  if [ ${CIRCLECI} ]; then
     skip "CircleCI doesn't require cgi-fcgi binary"
   fi
-  if [[ ! -x "$(type -P cgi-fcgi)" ]]
-  then
+  if [[ ! -x "$(type -P cgi-fcgi)" ]]; then
     fatal "FATAL: cgi-fcgi not found.\nPlease install the 'fcgi' package from your operating system repository.\n E.g. brew install fcgi or apt-get install libfcgi0ldbl"
     exit 1
   fi

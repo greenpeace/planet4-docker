@@ -3,7 +3,7 @@ set -e
 
 load env
 
-envsubst < "${BATS_DIRECTORY:-${BATS_TEST_DIRNAME}/..}/Dockerfile.in" > "${BATS_DIRECTORY:-${BATS_TEST_DIRNAME}/..}/Dockerfile"
+envsubst <"${BATS_DIRECTORY:-${BATS_TEST_DIRNAME}/..}/Dockerfile.in" >"${BATS_DIRECTORY:-${BATS_TEST_DIRNAME}/..}/Dockerfile"
 
 function setup {
   begin_output
