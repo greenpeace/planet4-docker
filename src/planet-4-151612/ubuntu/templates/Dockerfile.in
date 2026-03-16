@@ -3,7 +3,8 @@ FROM phusion/baseimage:${BASEIMAGE_VERSION} as base
 COPY . /app/
 
 # hadolint ignore=DL3008
-RUN apt-get update && \
+RUN add-apt-repository ppa:ondrej/php && \
+    apt-get update && \
     apt-get -y upgrade && \
     apt-get install --no-install-recommends -y \
       rsync \
