@@ -1,5 +1,0 @@
-FROM ${BUILD_NAMESPACE}/${GOOGLE_PROJECT_ID}/wordpress:${SOURCE_VERSION}
-
-ENV WP_DISALLOW_FILE_MODS="false"
-
-COPY etc/my_init.d/* /etc/my_init.d/

@@ -26,7 +26,8 @@ OPTIONS=':vc:lhpr'
 while getopts $OPTIONS option; do
   case $option in
     c) # shellcheck disable=SC2034
-      CONFIG_FILE=$OPTARG ;;
+      CONFIG_FILE=$OPTARG
+      ;;
     *)
       echo "Unkown option: ${OPTARG}"
       usage

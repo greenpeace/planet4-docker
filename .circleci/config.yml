@@ -131,29 +131,6 @@ jobs:
       - store_artifacts:
           path: /tmp/artifacts
 
-  test-handbook:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Authenticate with gcloud
-          command: |
-            activate-gcloud-account.sh
-      - run:
-          name: Run bats unit tests
-          command: |
-            cd /tmp/workspace/src
-            BUILD_TAG="build-$(cat /tmp/workspace/var/circle-build-num)" \
-            TEST_FOLDERS=tests/src/planet-4-151612/handbook \
-            ./tests/test.sh
-      - store_test_results:
-          path: /tmp/planet4-docker/merged
-      - store_artifacts:
-          path: /tmp/artifacts
-
   test-exim:
     <<: *defaults
     steps:
@@ -224,23 +201,6 @@ jobs:
             mkdir -p /tmp/trivy-results
             trivy --exit-code 0 image \
               "gcr.io/${GOOGLE_PROJECT_ID}/wordpress:build-$(cat /tmp/workspace/var/circle-build-num)" \
-              > /tmp/trivy-results/report.txt
-      - store_artifacts:
-          path: /tmp/trivy-results
-
-  scan-handbook:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Trivy
-          command: |
-            mkdir -p /tmp/trivy-results
-            trivy --exit-code 0 image \
-              "gcr.io/${GOOGLE_PROJECT_ID}/handbook:build-$(cat /tmp/workspace/var/circle-build-num)" \
               > /tmp/trivy-results/report.txt
       - store_artifacts:
           path: /tmp/trivy-results
@@ -319,10 +279,6 @@ workflow-references:
           context: org-global
           requires:
             - build
-      - test-handbook:
-          context: org-global
-          requires:
-            - build
       - test-exim:
           context: org-global
           requires:
@@ -339,10 +295,6 @@ workflow-references:
           context: org-global
           requires:
             - build
-      - scan-handbook:
-          context: org-global
-          requires:
-            - build
       - scan-exim:
           context: org-global
           requires:
@@ -353,12 +305,10 @@ workflow-references:
             - test-openresty
             - test-php-fpm
             - test-wordpress
-            - test-handbook
             - test-exim
             - scan-openresty
             - scan-php-fpm
             - scan-wordpress
-            - scan-handbook
             - scan-exim
           filters:
             branches:
@@ -409,15 +359,6 @@ workflow-references:
               ignore: /.*/
             tags:
               only: /^v.*/
-      - test-handbook:
-          context: org-global
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
       - scan-openresty:
           context: org-global
           requires:
@@ -454,15 +395,6 @@ workflow-references:
               ignore: /.*/
             tags:
               only: /v.*/
-      - scan-handbook:
-          context: org-global
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /v.*/
       - deploy:
           context: org-global
           requires:
@@ -470,12 +402,10 @@ workflow-references:
             - test-php-fpm
             - test-wordpress
             - test-exim
-            - test-handbook
             - scan-openresty
             - scan-php-fpm
             - scan-wordpress
             - scan-exim
-            - scan-handbook
           filters:
             branches:
               ignore: /.*/
