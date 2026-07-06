@@ -40,7 +40,7 @@ BASEIMAGE_VERSION=jammy-1.0.4
 # https://getcomposer.org/download/
 COMPOSER_VERSION=2.5.7
 # https://github.com/wp-cli/wp-cli/releases
-WP_CLI_VERSION=2.8.0
+WP_CLI_VERSION=2.9.0
 # https://github.com/jwilder/dockerize/releases
 DOCKERIZE_VERSION=0.6.1
 # https://openresty.org/en/download.html
