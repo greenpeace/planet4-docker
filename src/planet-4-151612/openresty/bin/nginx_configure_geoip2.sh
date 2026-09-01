@@ -76,9 +76,9 @@ download_geoip_fallback() {
 
 # Update GeoIP data
 # TODO: we need to change this to an init container
-# If the upstream API rate-limits requests, try a public GCP bucket fallback and continue.
-if ! /usr/bin/geoipupdate -v; then
-  _warning "$(printf "%-10s " "openresty:")" "geoipupdate failed; trying bucket fallback"
+# If the upstream API rate-limits requests, time out and try a public GCP bucket fallback.
+if ! timeout 30s /usr/bin/geoipupdate -v; then
+  _warning "$(printf "%-10s " "openresty:")" "geoipupdate failed or timed out. Trying bucket fallback."
 
   if download_geoip_fallback; then
     _good "$(printf "%-10s " "openresty:")" "Bucket GeoIP fallback succeeded"
