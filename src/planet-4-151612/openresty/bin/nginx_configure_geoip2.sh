@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 #Check License and Account key variables
 
 [[ ${GEOIP2_ENABLED} = "true" ]] || {
@@ -33,6 +34,8 @@ _good "$(printf "%-10s " "openresty:")" "$(printf "%-22s" "geoip.accountid:")" "
 _good "$(printf "%-10s " "openresty:")" "$(printf "%-22s" "geoip.license:")" "${GEOIP_LICENSE//[[:alnum:]]/*}"
 _good "$(printf "%-10s " "openresty:")" "GEOIP2 ${GEOIP2_ENABLED}"
 
+GEOIP_FALLBACK_BASE_URL="https://storage.googleapis.com/planet4-assets/GeoIP/"
+
 files=(
   /etc/nginx/conf.d/90_geoip.conf
   /etc/nginx/server.d/90_geoip.conf
@@ -56,8 +59,32 @@ else
   echo "Symlink already exists at $GEOIP_WEEKLY_CRON_FILE_PATH"
 fi
 
+download_geoip_fallback() {
+  mkdir -p /usr/share/GeoIP
+
+  for db in GeoLite2-Country.mmdb GeoLite2-City.mmdb; do
+    local remote_url="${GEOIP_FALLBACK_BASE_URL}${db}"
+    local target="/usr/share/GeoIP/$db"
+
+    if ! wget -q --tries=3 --timeout=10 --no-verbose -O "$target" "$remote_url"; then
+      return 1
+    fi
+  done
+
+  return 0
+}
+
 # Update GeoIP data
 # TODO: we need to change this to an init container
-/usr/bin/geoipupdate -v
+# If the upstream API rate-limits requests, try a public GCP bucket fallback and continue.
+if ! /usr/bin/geoipupdate -v; then
+  _warning "$(printf "%-10s " "openresty:")" "geoipupdate failed; trying bucket fallback"
+
+  if download_geoip_fallback; then
+    _good "$(printf "%-10s " "openresty:")" "Bucket GeoIP fallback succeeded"
+  else
+    _warning "$(printf "%-10s " "openresty:")" "GeoIP bucket fallback failed; continuing without a GeoIP refresh"
+  fi
+fi
 
 wait
