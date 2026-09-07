@@ -69,5 +69,3 @@ for db in GeoLite2-Country.mmdb GeoLite2-City.mmdb; do
 
   wget -q --tries=3 --timeout=10 --no-verbose -O "$target" "$remote_url"
 done
-
-wait
