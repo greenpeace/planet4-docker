@@ -64,8 +64,8 @@ fi
 mkdir -p /usr/share/GeoIP
 
 for db in GeoLite2-Country.mmdb GeoLite2-City.mmdb; do
-  local remote_url="${GEOIP_FALLBACK_BASE_URL}${db}"
-  local target="/usr/share/GeoIP/$db"
+  remote_url="${GEOIP_FALLBACK_BASE_URL}${db}"
+  target="/usr/share/GeoIP/$db"
 
   wget -q --tries=3 --timeout=10 --no-verbose -O "$target" "$remote_url"
 done
