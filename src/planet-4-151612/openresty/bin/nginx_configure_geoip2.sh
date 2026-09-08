@@ -34,7 +34,7 @@ _good "$(printf "%-10s " "openresty:")" "$(printf "%-22s" "geoip.accountid:")" "
 _good "$(printf "%-10s " "openresty:")" "$(printf "%-22s" "geoip.license:")" "${GEOIP_LICENSE//[[:alnum:]]/*}"
 _good "$(printf "%-10s " "openresty:")" "GEOIP2 ${GEOIP2_ENABLED}"
 
-GEOIP_FALLBACK_BASE_URL="https://storage.googleapis.com/planet4-assets/GeoIP/"
+GEOIP_BASE_URL="https://storage.googleapis.com/planet4-assets/GeoIP/"
 
 files=(
   /etc/nginx/conf.d/90_geoip.conf
@@ -64,8 +64,8 @@ fi
 mkdir -p /usr/share/GeoIP
 
 for db in GeoLite2-Country.mmdb GeoLite2-City.mmdb; do
-  remote_url="${GEOIP_FALLBACK_BASE_URL}${db}"
+  remote_url="${GEOIP_BASE_URL}${db}"
   target="/usr/share/GeoIP/$db"
 
-  wget -q --tries=3 --timeout=10 --no-verbose -O "$target" "$remote_url"
+  wget --tries=3 --timeout=10 -O "$target" "$remote_url"
 done
