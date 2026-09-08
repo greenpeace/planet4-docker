@@ -11,7 +11,7 @@ set -euo pipefail
   GEOIP2_ENABLED="false"
   export GEOIP2_ENABLED
   _warning "$(printf "%-10s " "openresty:")" "PHP is not compatible with GEOIP2, disabling GEOIP2"
-  exit 1
+  exit 0
 }
 
 [[ -z "${GEOIP_ACCOUNTID}" ]] && {
@@ -19,7 +19,7 @@ set -euo pipefail
   export GEOIP2_ENABLED
   _warning "$(printf "%-10s " "openresty:")" "GEOIP_ACCOUNTID is blank, account id is required"
   _warning "$(printf "%-10s " "openresty:")" "disabling GeoIP"
-  exit 1
+  exit 0
 }
 
 [[ -z "${GEOIP_LICENSE}" ]] && {
@@ -27,7 +27,7 @@ set -euo pipefail
   export GEOIP2_ENABLED
   _warning "$(printf "%-10s " "openresty:")" "GEOIP_LICENSE is blank, license is required"
   _warning "$(printf "%-10s " "openresty:")" "disabling GeoIP"
-  exit 1
+  exit 0
 }
 
 _good "$(printf "%-10s " "openresty:")" "$(printf "%-22s" "geoip.accountid:")" "${GEOIP_ACCOUNTID//[[:alnum:]]/*}"
@@ -66,6 +66,10 @@ mkdir -p /usr/share/GeoIP
 for db in GeoLite2-Country.mmdb GeoLite2-City.mmdb; do
   remote_url="${GEOIP_BASE_URL}${db}"
   target="/usr/share/GeoIP/$db"
+  temporary_target="${target}.tmp"
 
-  wget --tries=3 --timeout=10 -O "$target" "$remote_url"
+  [[ -s "$target" ]] && continue
+
+  wget -q --tries=3 --timeout=10 --no-verbose -O "$temporary_target" "$remote_url"
+  mv "$temporary_target" "$target"
 done
