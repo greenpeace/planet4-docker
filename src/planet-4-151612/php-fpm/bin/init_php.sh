@@ -9,6 +9,7 @@ cp "/etc/php/${PHP_MAJOR_VERSION}/fpm/pool.d/www.conf" "/etc/php/${PHP_MAJOR_VER
 
 # Don't fork
 sed -i -r "s/;daemonize = yes/daemonize = no/g" "/etc/php/${PHP_MAJOR_VERSION}/fpm/php-fpm.conf"
+sed -i -r "s/;session.upload_progress.enabled = On/session.upload_progress.enabled = Off/g" "/etc/php/${PHP_MAJOR_VERSION}/fpm/php.ini"
 
 # Clear upstream data
 rm -fr "${PUBLIC_PATH}" || true
