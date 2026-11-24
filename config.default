@@ -44,7 +44,7 @@ WP_CLI_VERSION=2.9.0
 # https://github.com/jwilder/dockerize/releases
 DOCKERIZE_VERSION=0.6.1
 # https://openresty.org/en/download.html
-OPENRESTY_VERSION=1.31.8.1
+OPENRESTY_VERSION=1.31.9.1
 OPENRESTY_SOURCE=source
 
 PHP_MAJOR_VERSION=8.3
