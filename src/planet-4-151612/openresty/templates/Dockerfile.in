@@ -4,15 +4,15 @@ EXPOSE 80
 EXPOSE 443
 
 ENV \
-    APP_GID="1000" \
+    APP_GID="1001" \
     APP_GROUP="nginx" \
-    APP_UID="1000" \
+    APP_UID="1001" \
     APP_USER="nginx" \
     APP_HOSTPATH="international" \
     CHOWN_APP_DIR="false" \
     CLOUDFLARE_ENABLED="false" \
     GEOIP2_ENABLED="false" \
-    GEOIP2_VERSION="3.2" \
+    GEOIP2_VERSION="${GEOIP2_VERSION}" \
     GEOIP_ACCOUNTID="" \
     GEOIP_LICENSE="" \
     OPENRESTY_FASTCGI_BACKEND="php-fpm:9000" \

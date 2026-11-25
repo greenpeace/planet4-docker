@@ -6,14 +6,10 @@ set -eo pipefail
 
 if [[ "${OPENRESTY_SOURCE}" = "apt" ]]; then
   # import our GPG key:
-  wget -qO - https://openresty.org/package/pubkey.gpg | apt-key add -
-
-  # for installing the add-apt-repository command
-  # (you can remove this package and its dependencies later):
-  apt-get -y install software-properties-common
+  wget -O - https://openresty.org/package/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/openresty.gpg
 
   # add the our official APT repository:
-  add-apt-repository -y "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main"
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/openresty.gpg] https://openresty.org/package/ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/openresty.list >/dev/null
 else
   # Add GeoIP2 support
   add-apt-repository -y ppa:maxmind/ppa
@@ -33,7 +29,7 @@ else
     libgd-dev \
     libgeoip-dev \
     libgoogle-perftools-dev \
-    libpcre3-dev \
+    libpcre2-dev \
     libperl-dev \
     libssl-dev \
     libtool \

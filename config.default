@@ -36,7 +36,7 @@ SOURCE_VERSION=
 # Infrastructure version numbers
 
 # https://github.com/phusion/baseimage-docker/releases
-BASEIMAGE_VERSION=jammy-1.0.4
+BASEIMAGE_VERSION=resolute-1.0.9
 # https://getcomposer.org/download/
 COMPOSER_VERSION=2.5.7
 # https://github.com/wp-cli/wp-cli/releases
@@ -46,8 +46,10 @@ DOCKERIZE_VERSION=0.6.1
 # https://openresty.org/en/download.html
 OPENRESTY_VERSION=1.31.9.1
 OPENRESTY_SOURCE=source
-
-PHP_MAJOR_VERSION=8.3
+# https://github.com/leev/ngx_http_geoip2_module/releases
+GEOIP2_VERSION=3.4
+# https://www.php.net/supported-versions.php
+PHP_MAJOR_VERSION=8.5
 
 SOURCE_PATH=/app/source
 PUBLIC_PATH=/app/source/public

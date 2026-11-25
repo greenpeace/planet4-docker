@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-#Check License and Account key variables
+# Check License and Account key variables
 
 [[ ${GEOIP2_ENABLED} = "true" ]] || {
   exit 0
